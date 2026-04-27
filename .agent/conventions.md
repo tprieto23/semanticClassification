@@ -2,16 +2,51 @@
 
 ## Estilo de código
 
-<!-- Convenciones de estilo -->
+- **Python:** PEP 8
+- **Type hints:** TBD
+- **Formato:** TBD (Black, ruff?)
 
 ## Naming
 
-<!-- Convenciones de nombres -->
+### Archivos y carpetas
+- **Carpetas:** `snake_case`
+- **Archivos:** `snake_case.py`
+- **Documentos en raw:** mantener nombre original
+
+### Código
+- **Variables:** `snake_case`
+- **Clases:** `PascalCase`
+- **Constantes:** `UPPER_CASE`
+- **Funciones:** `snake_case`
+
+### Base de datos
+- **Tablas:** `snake_case` (plural)
+- **Columnas:** `snake_case`
+- **IDs:** `id` (primary key), `{tabla}_id` (foreign key)
 
 ## Estructura de archivos
 
-<!-- Organización de archivos y carpetas -->
+```
+src/
+├── api/            # Endpoints de FastAPI
+├── core/           # Lógica de negocio
+├── models/         # Modelos SQLAlchemy
+├── services/       # Servicios de procesamiento
+└── utils/          # Funciones utilitarias
+```
 
 ## Buenas prácticas
 
-<!-- Prácticas adoptadas en el proyecto -->
+- **Documentación:** Todo cambio importante va a `.agent/`
+- **Migraciones:** Cada cambio en DB tiene su migration en Alembic
+- **Tests:** TBD
+- **Logging:** TBD
+- **Errores:** TBD
+
+## TBD (Por definir)
+
+- Linter/formatter específico
+- Convenciones de commits
+- Estructura de tests
+- Logging y manejo de errores
+- Variables de entorno (.env)

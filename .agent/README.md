@@ -43,6 +43,8 @@ Cada vez que se inicie una sesión nueva, **leer en este orden**:
 1. Leer todos los archivos en el orden especificado
 2. Revisar `session.md` para ver en qué se quedó
 3. Actualizar `session.md` con lo que se va a trabajar
+4. **Preguntar:** "Tengo todo el contexto, ¿en qué vamos a trabajar hoy?"
+5. **Ofrecer opciones** basadas en el estado actual del proyecto (ver `tasks.md`)
 
 ### Al terminar una sesión:
 1. Actualizar `session.md` con lo realizado
