@@ -9,6 +9,7 @@
 - Definición de objetivos del proyecto (1-10)
 - Decisiones tecnológicas principales
 - Configuración de Docker
+- Redacción de metodología técnica completa
 
 ## Resumen de la sesión
 
@@ -25,6 +26,7 @@
 10. ✅ Docker configurado (docker-compose.yml + Dockerfile)
 11. ✅ Estructura de carpetas `src/` y `data/`
 12. ✅ API básica con 2 endpoints probada con Postman
+13. ✅ `methodology.md` con las 10 etapas, métricas e interpretación crítica
 
 ### Decisiones tomadas:
 - PostgreSQL + pgvector como DB
@@ -62,4 +64,4 @@
 
 | Fecha | Trabajado en |
 |-------|--------------|
-| 2026-04-27 | Creación de documentación, definición de objetivos, decisiones tecnológicas, configuración de Docker |
+| 2026-04-27 | Creación de documentación, definición de objetivos, decisiones tecnológicas, configuración de Docker, metodología técnica |
