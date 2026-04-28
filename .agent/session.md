@@ -8,6 +8,7 @@
 - Creación de estructura de documentación (.agent/)
 - Definición de objetivos del proyecto (1-10)
 - Decisiones tecnológicas principales
+- Configuración de Docker
 
 ## Resumen de la sesión
 
@@ -21,6 +22,9 @@
 7. ✅ `tasks.md` con los 10 objetivos como roadmap
 8. ✅ `decisions.md` con 5 ADRs registrados
 9. ✅ `tech-debt.md` con deuda técnica conocida
+10. ✅ Docker configurado (docker-compose.yml + Dockerfile)
+11. ✅ Estructura de carpetas `src/` y `data/`
+12. ✅ API básica con 2 endpoints probada con Postman
 
 ### Decisiones tomadas:
 - PostgreSQL + pgvector como DB
@@ -41,8 +45,8 @@
 
 ## Pendientes para próxima sesión
 
-1. Definir schema de la base de datos
-2. Configurar Docker (docker-compose.yml)
+1. Definir schema de la base de datos (modelos SQLAlchemy)
+2. Crear migraciones iniciales con Alembic
 3. Implementar endpoint POST /documents
 4. Empezar con Objetivo 2 (conversión)
 
@@ -58,4 +62,4 @@
 
 | Fecha | Trabajado en |
 |-------|--------------|
-| 2026-04-27 | Creación de documentación, definición de objetivos y decisiones tecnológicas |
+| 2026-04-27 | Creación de documentación, definición de objetivos, decisiones tecnológicas, configuración de Docker |
