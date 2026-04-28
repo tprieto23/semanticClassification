@@ -8,12 +8,13 @@ Cada vez que se inicie una sesión nueva, **leer en este orden**:
 
 1. `README.md` (este archivo) - Guía de uso
 2. `project-overview.md` - Contexto general del proyecto
-3. `architecture.md` - Arquitectura y estructura
-4. `tech-stack.md` - Tecnologías utilizadas
-5. `conventions.md` - Convenciones de código
-6. `tasks.md` - Estado actual de tareas
-7. `decisions.md` - Decisiones técnicas tomadas
-8. `session.md` - Última sesión trabajada
+3. `methodology.md` - Metodología técnica y métricas
+4. `architecture.md` - Arquitectura y estructura
+5. `tech-stack.md` - Tecnologías utilizadas
+6. `conventions.md` - Convenciones de código
+7. `tasks.md` - Estado actual de tareas
+8. `decisions.md` - Decisiones técnicas tomadas
+9. `session.md` - Última sesión trabajada
 
 ## Archivos de la documentación
 
@@ -21,6 +22,7 @@ Cada vez que se inicie una sesión nueva, **leer en este orden**:
 |---------|-----------|
 | `README.md` | Esta guía |
 | `project-overview.md` | Visión general, objetivos y alcance |
+| `methodology.md` | Metodología técnica, etapas, métricas e interpretación |
 | `architecture.md` | Arquitectura, patrones y estructura |
 | `tech-stack.md` | Tecnologías, librerías y dependencias |
 | `conventions.md` | Convenciones de código, naming, estilo |
