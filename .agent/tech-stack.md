@@ -36,11 +36,14 @@
 
 | Herramienta | Versión |
 |-------------|---------|
-| Python | TBD |
-| PostgreSQL | TBD |
-| pgvector | TBD |
-| FastAPI | TBD |
-| SQLAlchemy | TBD |
+| Python | 3.11 |
+| PostgreSQL | 16 |
+| pgvector | 0.2.4 |
+| FastAPI | 0.109.0 |
+| SQLAlchemy | 2.0.25 |
+| Alembic | 1.13.1 |
+| Uvicorn | 0.27.0 |
+| Pydantic | 2.5.3 |
 
 ## TBD (Por definir)
 

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL con pgvector
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: sc_database
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-semantic_db}
+      POSTGRES_USER: ${POSTGRES_USER:-sc_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sc_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sc_user} -d ${POSTGRES_DB:-semantic_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API FastAPI
+  api:
+    build: .
+    container_name: sc_api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-8000}:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-sc_user}:${POSTGRES_PASSWORD:-sc_password}@db:5432/${POSTGRES_DB:-semantic_db}
+      POSTGRES_DB: ${POSTGRES_DB:-semantic_db}
+      POSTGRES_USER: ${POSTGRES_USER:-sc_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sc_password}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:

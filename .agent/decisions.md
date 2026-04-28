@@ -90,17 +90,25 @@ No sabíamos si guardar vectores, matrices y grafos en DB o en archivos.
 ### 2026-04-27 - Docker para desarrollo local
 
 **Contexto:**
-Necesitábamos un entorno reproducible para desarrollar.
+Necesitábamos un entorno reproducible para desarrollar con PostgreSQL + pgvector y FastAPI.
+
+**Opciones consideradas:**
+1. Instalar todo local (Python, PostgreSQL, pgvector)
+2. Docker con docker-compose
+3. Máquinas virtuales
 
 **Decisión:**
-- PostgreSQL en Docker
-- API en Docker
+- PostgreSQL en Docker (imagen `pgvector/pgvector:pg16`)
+- API en Docker (imagen custom desde Dockerfile)
 - docker-compose para orquestar
+- Volúmenes para persistencia de datos y hot-reload
 
 **Consecuencias:**
-- ✅ Entorno consistente
-- ✅ Fácil de levantar/bajar
+- ✅ Entorno consistente entre desarrolladores
+- ✅ Fácil de levantar/bajar (`docker-compose up/down`)
 - ✅ Aislado del sistema local
+- ✅ pgvector preinstalado (sin compilar)
+- ✅ Hot-reload con volúmenes
 - ⚠️ Curva de aprendizaje Docker
 - ⚠️ Overhead de recursos
 

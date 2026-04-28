@@ -58,40 +58,49 @@
 - [ ] Decidir si guardar historial
 - [ ] Implementar cálculo de métricas
 
-### Objetivo 9: Diseñar API ✅ DECIDIDO
+### Objetivo 9: Diseñar API ✅ EN PROGRESO
 - [x] Seleccionar framework (FastAPI)
 - [x] Definir endpoints iniciales (/documents)
 - [x] Decidir sin autenticación por ahora
 - [x] Decidir Docker para local
 - [x] OpenAPI para documentación
-- [ ] Implementar endpoints de documents
+- [x] docker-compose.yml configurado
+- [x] Dockerfile creado
+- [x] API básica con endpoints `/` y `/health`
+- [ ] Implementar endpoint POST /documents
+- [ ] Implementar endpoint GET /documents
 - [ ] Implementar endpoints de entities (futuro)
 - [ ] Implementar endpoints de graphs (futuro)
 - [ ] Implementar endpoints de metrics (futuro)
 
-### Objetivo 10: Base de datos ✅ DECIDIDO
+### Objetivo 10: Base de datos ✅ EN PROGRESO
 - [x] PostgreSQL + pgvector
 - [x] SQLAlchemy como ORM
 - [x] Alembic para migraciones
 - [x] Docker para DB
 - [x] Backup manual
+- [x] docker-compose.yml con servicio db
 - [ ] Definir schema completo
 - [ ] Crear migraciones iniciales
 - [ ] Configurar conexión desde API
 
 ## En progreso
 
-<!-- Tareas que se están trabajando actualmente -->
+- Docker configurado y probado ✅
+- API básica corriendo en contenedor
 
 ## Completadas
 
 - [x] Definir estructura de documentación (.agent/)
 - [x] Documentar objetivos del proyecto
 - [x] Decidir stack tecnológico principal
+- [x] Configurar Docker (docker-compose.yml + Dockerfile)
+- [x] Crear estructura de carpetas src/ y data/
+- [x] API básica con 2 endpoints probada con Postman
 
 ## Próximos pasos
 
-1. Definir schema de la base de datos
-2. Configurar Docker (PostgreSQL + API)
+1. Definir schema de la base de datos (modelos SQLAlchemy)
+2. Crear migraciones iniciales con Alembic
 3. Implementar endpoint POST /documents
-4. Implementar conversión de documentos (Objetivo 2)
+4. Empezar con Objetivo 2 (conversión)
