@@ -58,7 +58,7 @@
 - [ ] Decidir si guardar historial
 - [ ] Implementar cálculo de métricas
 
-### Objetivo 9: Diseñar API ✅ EN PROGRESO
+### Objetivo 9: Diseñar API ✅ COMPLETADO
 - [x] Seleccionar framework (FastAPI)
 - [x] Definir endpoints iniciales (/documents)
 - [x] Decidir sin autenticación por ahora
@@ -67,27 +67,27 @@
 - [x] docker-compose.yml configurado
 - [x] Dockerfile creado
 - [x] API básica con endpoints `/` y `/health`
-- [ ] Implementar endpoint POST /documents
-- [ ] Implementar endpoint GET /documents
-- [ ] Implementar endpoints de entities (futuro)
+- [x] Implementar endpoint POST /documents
+- [x] Implementar endpoint GET /documents
+- [x] Implementar endpoint GET /documents/{id}
+- [x] Implementar endpoint GET /entities
 - [ ] Implementar endpoints de graphs (futuro)
 - [ ] Implementar endpoints de metrics (futuro)
 
-### Objetivo 10: Base de datos ✅ EN PROGRESO
+### Objetivo 10: Base de datos ✅ COMPLETADO
 - [x] PostgreSQL + pgvector
 - [x] SQLAlchemy como ORM
 - [x] Alembic para migraciones
 - [x] Docker para DB
 - [x] Backup manual
 - [x] docker-compose.yml con servicio db
-- [ ] Definir schema completo
-- [ ] Crear migraciones iniciales
-- [ ] Configurar conexión desde API
+- [x] Definir schema completo
+- [x] Crear migraciones iniciales
+- [x] Configurar conexión desde API
 
 ## En progreso
 
-- Docker configurado y probado ✅
-- API básica corriendo en contenedor
+- (nada activo — listo para empezar Objetivo 2)
 
 ## Completadas
 
@@ -97,10 +97,15 @@
 - [x] Configurar Docker (docker-compose.yml + Dockerfile)
 - [x] Crear estructura de carpetas src/ y data/
 - [x] API básica con 2 endpoints probada con Postman
+- [x] Schema de DB con 5 modelos SQLAlchemy
+- [x] Migración inicial Alembic aplicada (extensión `vector` + 5 tablas + índices)
+- [x] Volúmenes de `migrations/` y `alembic.ini` agregados a docker-compose
+- [x] Stack completo (DB + API) levantado y verificado en Docker
 
 ## Próximos pasos
 
-1. Definir schema de la base de datos (modelos SQLAlchemy)
-2. Crear migraciones iniciales con Alembic
-3. Implementar endpoint POST /documents
-4. Empezar con Objetivo 2 (conversión)
+1. Probar endpoints `POST /documents`, `GET /documents`, `GET /entities` con Postman/curl
+2. Empezar con Objetivo 2 (conversión de documentos):
+   - Decidir librerías para PDF (PyMuPDF / pdfplumber), Word (python-docx), OCR (EasyOCR / Tesseract), audio (Whisper)
+   - Implementar primer conversor (sugerencia: empezar por PDF que es lo más común)
+   - Endpoint `POST /documents/{id}/process` para disparar conversión
