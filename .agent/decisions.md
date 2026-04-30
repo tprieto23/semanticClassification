@@ -114,6 +114,45 @@ Necesitábamos un entorno reproducible para desarrollar con PostgreSQL + pgvecto
 
 ---
 
+### 2026-04-29 - Conversión de documentos: PyMuPDF + python-docx (1ra iteración)
+
+**Contexto:**
+Para el Objetivo 2 (conversión de documentos no estructurados a texto plano) hay que decidir librerías por formato. El corpus puede incluir PDF, Word, imágenes, audio y video, pero conviene priorizar lo más común para no sobre-diseñar.
+
+**Opciones consideradas (PDF):**
+1. **PyMuPDF (`fitz`)** - Rápido, robusto con layouts complejos. Licencia AGPL.
+2. **pdfplumber** - Mejor para tablas. Más lento. Licencia MIT.
+3. **PyPDF2/pypdf** - Pure Python. Limitado en PDFs complejos.
+
+**Opciones consideradas (Word):**
+1. **python-docx** - Estándar, simple, solo `.docx`.
+2. **antiword / LibreOffice headless** - Necesarios para `.doc` legacy. Diferido si aparecen.
+
+**Opciones consideradas (OCR/audio/video):**
+1. Tesseract / EasyOCR / PaddleOCR para imágenes
+2. OpenAI Whisper / faster-whisper para audio
+3. ffmpeg-python / moviepy para extraer audio de video
+
+**Decisión:**
+- **1ra iteración:** PyMuPDF (PDF) + python-docx (Word).
+- **2da iteración (diferida):** OCR (sugerido: `pytesseract` con paquete de español), audio (sugerido: `faster-whisper`), video (sugerido: `ffmpeg-python` + `faster-whisper`).
+
+**Razones:**
+- PDF y Word cubren la mayoría del corpus documental típico.
+- Permite tener pipeline funcional rápido sin instalar dependencias pesadas (Tesseract a nivel sistema, modelos de Whisper de varios GB).
+- La licencia AGPL de PyMuPDF es aceptable para uso académico/investigación de este proyecto.
+- OCR/audio/video se incorporan cuando aparezcan documentos que los necesiten.
+
+**Consecuencias:**
+- ✅ Pipeline funcional para la mayoría de documentos rápido
+- ✅ Sin dependencias del sistema operativo en el Dockerfile
+- ✅ Imagen Docker liviana
+- ⚠️ Documentos escaneados (PDFs sin texto seleccionable) no se procesan hasta 2da iteración
+- ⚠️ Audio/video no se procesan hasta 2da iteración
+- ⚠️ Si el proyecto se vuelve cerrado/comercial, revisar licencia AGPL de PyMuPDF
+
+---
+
 ### 2026-04-27 - Sin autenticación inicial
 
 **Contexto:**

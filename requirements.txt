@@ -13,3 +13,7 @@ pgvector==0.2.4
 python-dotenv==1.0.0
 pydantic==2.5.3
 pydantic-settings==2.1.0
+
+# Conversión de documentos (Objetivo 2)
+PyMuPDF==1.24.0
+python-docx==1.1.0
