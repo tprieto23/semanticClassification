@@ -16,9 +16,13 @@
 - **SQLAlchemy** - ORM
 - **Alembic** - Migraciones de DB
 
-### Procesamiento (TBD)
-- **Conversión:** Agente de IA (a definir)
-- **Limpieza:** IA (a definir)
+### Procesamiento
+- **Conversión PDF:** PyMuPDF (`fitz`) — rápido, robusto con layouts complejos
+- **Conversión DOCX:** python-docx — estándar para .docx
+- **Conversión imágenes/OCR:** TBD (sugerido: pytesseract con `tesseract-ocr-spa`) — diferido a 2da iteración
+- **Conversión audio:** TBD (sugerido: faster-whisper) — diferido a 2da iteración
+- **Conversión video:** TBD (sugerido: ffmpeg-python + faster-whisper) — diferido a 2da iteración
+- **Limpieza:** TBD
 - **Clasificación:** TBD
 - **Embeddings:** TBD (sentence-transformers, OpenAI, etc.)
 - **Grafos:** TBD (networkx, igraph)
@@ -44,11 +48,13 @@
 | Alembic | 1.13.1 |
 | Uvicorn | 0.27.0 |
 | Pydantic | 2.5.3 |
+| PyMuPDF | 1.24.0 |
+| python-docx | 1.1.0 |
 
 ## TBD (Por definir)
 
 - Modelo de embeddings
 - Librería de grafos
-- Librerías de conversión (PDF, Word, OCR, audio)
+- Librerías de conversión OCR/audio/video (diferidas a 2da iteración)
 - Librerías de limpieza de texto
 - Versiones específicas
