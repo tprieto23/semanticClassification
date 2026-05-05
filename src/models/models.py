@@ -18,6 +18,10 @@ class Document(Base):
     status = Column(Text, nullable=False, default="raw")
     uploaded_at = Column(DateTime, default=datetime.utcnow)
     metadata_ = Column(JSONB, name="metadata")
+    original_char_count = Column(Integer)
+    cleaned_char_count = Column(Integer)
+    reduction_percentage = Column(Float)
+    cleaning_metadata = Column(JSONB)
 
     entities = relationship("Entity", back_populates="document", cascade="all, delete-orphan")
     relationships = relationship("Relationship", back_populates="document", cascade="all, delete-orphan")

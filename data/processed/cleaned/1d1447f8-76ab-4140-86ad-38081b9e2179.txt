@@ -1,0 +1,788 @@
+ACCIÓN COLECTIVA
+PARA UNA
+PRODUCCIÓN LIBRE DE
+DEFORESTACIÓN EN LA
+AMAZONÍA PERUANA
+Memoria y lecciones aprendidas de la Tropical
+Forest Alliance en el Perú (2020- 2024).
+
+Agradecimientos (1 de 2)
+Jack Hurd, Director ejecutivo
+Javier Ortiz, Director para América latina
+Daniel Coronel, Coordinador para Perú
+Felipe Carazo, Responsable de productos básicos sostenibles
+Maisa Signor, Jefa de gestión de proyectos para América Latina
+Lara Mouftier, Líder de estrategia y programación
+Donantes de TFA en Perú:
+Nos gustaría expresar nuestro más sincero agradecimiento y reconocimiento a los siguientes donantes, sin cuyo apoyo
+TFA no habría podido llevar a cabo esta labor en Perú durante los últimos cinco años: la Iniciativa Internacional de Clima y
+Bosques de Noruega (NICFI); el Ministerio de Asuntos Exteriores, Estados Unidos de América; la Agencia de los Estados
+Unidos para el Desarrollo Internacional (USAID), el UK Partnering for Accelerated Climate Transitions (UK PACT) del Reino
+Unido; el Reino de los Países Bajos; el Ministerio Federal de Medio Ambiente, Conservación de la Naturaleza, Seguridad
+Nuclear y Protección de los Consumidores (BMUV), Alemania; y Re:wild.
+Foto de portada:
+Agricultor Pablo Granda (San Martín). Photo by Marlon del Aguila Guerrero/CIFOR
+Foto de contraportada:
+Marlon del Aguila Guerrero/ CIFOR
+Este documento ha sido elaborado gracias al apoyo de:
+Redacción y diseño
+Pilar Saez, autora
+Dinamita, diseño
+
+Agradecimientos (2 de 2)
+Personas
+Ada Lis Rosell, Alexander Becerra, Alfredo Camones, Ana María Gonzalez, Anaximandro Rojas, Angelica Fort, Antonio
+Arbe, Belinda Tello, Berioska Quispe, Brenda Hernández, Carlos Rueda, Carlos Valdivia, Carlos Yusa, Carlos Sanchez,
+Carmen Rosa Chávez, Catty Samaniego, César Santisteban, David Gonzales, Denis Armas, Dick Vergara, Eduardo Rocca,
+Efrain Ramirez, Ernesto Parra, Eugenio Amilcar, Ezio Varese, Ethel Huaman, Fabiola Muñoz, Fernando Loayza, Fiorela Pizzini,
+Francisco Retuerto, Frank Hajek, Gonzalo Rios, Gonzalo La Cruz, Gustavo Suarez, Humberto Huamán, Irma Romero, Ivan
+Alcántara, Iván Mena, Ivo Encomenderos, Illich Rivas, Jaime Mansilla, Javier Guzmán, Jean Carlo Rivera, Jesus Cordero,
+Jessica Moscoso, Jesus Diaz, Jorge Aguilar, Jorge Amaya ,Jorge Lazo, Jorge Carrillo, Jorge Figueroa, Jorge Barrientos, Jorge
+Lopez Dóriga, Jorge Saenz, José Antonio Mejía, José Astete, Jose Enrique Delgado, Julio Molina, Juliana Villabona, Kurt
+Holle, Kaori Wong, Karina Salas, Kaspar Schmidt, Lesly Vera, Lorenzo Castillo, Luis Mendoza, Luis Briceño, Luis Navarro,
+Luiz Calado, Lucy Cudeña, Lucy Dublin, Lucetty Ullilen, Maria Claudia Tristan, Maria Pia Julián, Mariana Jaramillo, Marybel
+Torres, Martin Villafuerte, Mario Rivero, Mario Cavero, Melissa Macher, Miguel Pacheco, Nathalie Gil, Nelson Gutierrez,
+Nicolás Reátegui, Peter Cronkleton, Paula Acevedo, Patricia Cabanillas, Patricia Seijas, Patricia Patron, Pierre Encinas, Pilar
+Saez, Pol Pacheco, Priscila Pasco, Rafael Pflucker, Rafael de los Rios, Raul Gonzales, Renato Portillo, René Bartra, Ricardo
+Rivero, Ricardo Villanueva, Rita Vilca, Rolly Calvo, Salvador Orrego, Santiago Castillo, Simone Ransijn, Shuar Velásquez,
+Teófilo Beingolea, Talia Postigo, Willy Espinoza, Wilson Rodriguez, Yovita Ivanova, Yurfa Miroslava, Yuri Monroy, Yvan
+Paredes.
+Instituciones
+Abiseo Group SAC, Acopagro, Acuícola de la Selva SAC, AgroBanco, Agroideas, Alianza CIAT – Bioversity, Alisos
+Colombia, Allima Cacao, Amazon Trading Perú, Amazon Impact Ventures, AMPA, Asociación de Mujeres Emprendedoras
+(AMUJENP), Andes Trade & Services, APP Cacao, APROCHOC, APROSELVANOR, Asociación Verde Amazónico - AVA,
+Asociación de Exportadores (ADEX), Cacao de Aroma, Corporación Andina de Fomento - CAF, Cámara de Café y
+Cacao, Cámara de Comercio de los Pueblos Indígenas, Cámara de Comercio y Producción de Tocache, Campo Verde,
+CDP, Centro de Conservación, Investigación y Manejo de Áreas Naturales - CIMA, CIFOR-ICRAF, Climate Focus, Coinca,
+Colpa de Loros, Conservación Internacional, Control Union, COOPERAMAZ, Cooperativa Cacaotera Agroindustrial de
+Uchiza - COCAU, DEVIDA, Earthworm, ECOM, Earth Innovation Institute – EII, Embajada de la Unión Europea en Perú,
+Embajada del Reino de Países Bajos en Perú, ESAN, Esmeralda Corp., FONDGICARV, Fredepalma San Martín, Frigorífico
+Manu, Fundación Amazonía Viva, GIZ, Gobierno Regional de Amazonas, Gobierno Regional de Huánuco, Gobierno
+Regional de Madre de Dios, Gobierno Regional de San Martín, Gobierno Regional de Ucayali, Grupo AJE, Helvetas,
+High Carbon Stock Approach, IICA, Imperative, INCACAOPE, Indelcar, Junta Nacional del Café, Kaoka, Lutheran World
+Relief, Machu Picchu Foods, Mafrox, Mecanismos de Desarrollo Alternos – MDA, Mesa Boliviana de Carne Sostenible,
+Mesa Global de Carne Sostenible, Mesa Técnica Cacao San Martin, Mesa Técnica Cacao VRAEM, Mesa Técnica
+Ganadera de Madre de Dios, Mesa Técnica Ganadera de Ucayali, Mesa Uruguaya de Carne Sostenible, Ministerio de Desarrollo Agrario y Riego - MIDAGRI, Ministerio de Ambiente – MINAM, Mancomunidad Regional Amazónica –
+MRA, Municipalidad Distrital de Neshuya, Municipalidad Provincial de Tambopata, Municipalidad Provincial de Tocache,
+Nature Services, NCBA CLUSA, Olam Food Ingredients (OFI), Oleoginosas Amazónicas SA - Olamsa, OSINFOR, PNUD,
+Practical Action, ProAmazonia Ecuador, Productos de la Selva, Promperu, Pronaturaleza, Rainforest Alliance, Re:wild, Refinca,
+Reforestadora Amazónica - Ramsa, RGC Coffee, RIKOLTO, Romex, SERFOR, Shanantina, Solidaridad, Sociedad Peruana de EcoDesarrollo - SPDE, The Nature Conservancy – TNC, Universidad Científica del Sur, Universidad San Ignacio Loyola
+(USIL), USAID, WRI, WWF Perú, WWF Bolivia, Wyss Academy, Zedina Alimentos.
+
+Estructura de contenidos
+Prefacio
+El cambio transformativo
+Acciones e impacto
+Lecciones aprendidas
+Recomendaciones
+Crédito: Lenin Quevedo
+
+Luego de cinco años de trabajo, desde el año 2020 hasta el 2024, la Tropical Forest Alliance (TFA) concluye su etapa en
+Perú donde orgullosamente podemos afirmar que hemos contribuido a establecer las bases para la acción colectiva en cadenas productivas y jurisdicciones libres de deforestación. Gracias a la confianza brindada y el soporte de los miembros
+y aliados de la TFA, la Coalición por una Producción Sostenible - el espacio que TFA apoyó en Perú - es una sólida y activa plataforma que genera acuerdos duraderos entre múltiples partes, diseña herramientas e instrumentos para el cumplimiento de
+los compromisos, comunica activamente del trabajo de sus miembros y aliados y posiciona temas claves de la sostenibilidad en la agenda pública de Perú.
+El reto de contribuir a generar condiciones para reducir la deforestación de la Amazonía peruana, la principal zona de bosque tropical del Perú, no es un reto menor. La deforestación de la Amazonía peruana requiere un cambio de modelo productivo de
+un gran número de productores de pequeña escala, con baja productividad y con conexiones débiles a las regulaciones o a los incentivos de mercado. Desde un enfoque de desarrollo bajo en emisiones, esto requiere la implementación simultánea de
+muchos frentes: la participación activa de las cooperativas y asociaciones de productores (que tienen un gran peso económico en la Amazonía peruana), de las empresas peruanas de mediano y pequeño tamaño, de los actores jurisdiccionales en las
+principales zonas de producción agropecuaria, la articulación gubernamental a todo nivel (nacional, subnacional y local) y la movilización de recursos del sector financiero. Sin duda, la acción colectiva es fundamental para abordar estos frentes y
+actuar de forma sistémica.
+El presente documento busca resumir el trabajo realizado en estos cinco años, para señalar el cambio transformativo al que TFA ha contribuido, principalmente a través de la Coalición y sus iniciativas, así como brindar lecciones aprendidas
+y recomendaciones. De ese modo, TFA espera dejar un legado a sus miembros y aliados, que permita el fortalecimiento institucional de las plataformas multiactor (incluyendo, por supuesto, a la Coalición) y la continuidad de la promoción de la
+producción sostenible en la Amazonia peruana.
+El proceso desarrollado en Perú ha generado un proceso de innovación transformativa sobre cómo construir consensos, movilizar esfuerzos y posicionar avances a través de la acción colectiva que permite asegurar su continuidad en el largo plazo.
+El trabajo de TFA solo ha sido posible gracias al esfuerzo de más de 60 organizaciones públicas, privadas, de la sociedad civil, de los pueblos indígenas e instituciones de cooperación que han contribuido con el tiempo de sus equipos técnicos,
+sus conocimientos y sus recursos para alcanzar los logros y el legado que serán expuestos en este documento. Muchos profesionales de dichas instituciones han confiado en TFA y han sido aliados indispensables durante todos estos años. A todos
+ellos, a las personas y a las instituciones, muchas gracias.
+Prefacio
+
+La deforestación de la Amazonía peruana no tiene la imagen típica de deforestación de grandes extensiones y asociada
+a cadenas de suministro con fuerte integración vertical, sino más bien es de escala micro1, vinculada a la agricultura
+de pequeña escala y muchos actores privados (traders, exportadoras, procesadoras, entre otros) de mediano y
+pequeño tamaño. Además, esta agricultura se caracteriza por sus bajos niveles de productividad, poca eficiencia en
+el uso del suelo y elevada informalidad en la producción
+(MINAM, 2016).
+Según datos oficiales del Gobierno peruano, en 2023, la selva amazónica peruana contaba con 427
+.000 hectáreas dedicadas a la producción de café, 198.000 hectáreas
+al cultivo de cacao; mientras que se estima2 que existen
+92,000 hectáreas dedicadas al cultivo de palma. Estas áreas eran gestionadas por 21
+1.000, 83.000 y 9.000 familias, respectivamente. Dada esta multiplicidad de actores
+e informalidad, los marcos regulatorios o los incentivos de mercado actuales son insuficientes, por sí solos, para
+generar un cambio de manera rápida y efectiva en detener la deforestación.
+Alcanzar una producción sostenible en la Amazonía peruana requiere romper el ciclo de "deforestación - agricultura -
+agotamiento del suelo - más deforestación". Esto implica la adopción de (1) mejores prácticas en la actividad
+productiva, la conservación de bosques y otros ecosistemas naturales3 e (2) inversiones sustanciales por parte del
+productor para preservar su capital principal, el suelo, que lo persuadan de seguir deforestando; así como el desarrollo
+de incentivos para la reconversión del modelo productivo.
+Por ello, la apuesta de la agricultura tropical y de la gestión de los bosques en Perú, debe ser orientada a productos
+competitivos en los mercados y a ingresos complementarios por servicios ecosistémicos al alcance de los productores,
+sustentada en la calidad del producto, haciendo que
+1 Dos son los elementos que explican esta diferencia: (1) gran parte del cambio de uso de la tierra de bosque a agricultura - a través de la tala y quema - es fundamentalmente para reemplazar suelos degradados - que ya no pueden producir de manera rentable, debido a la falta de inversión en su manejo adecuado; (2) los principales actores del
+proceso son, en gran parte, agricultores familiares informales, con baja productividad, vínculos directos débiles con el mercado global (aunque producen cultivos comerciales) y acceso limitado a financiamiento y asistencia técnica y tecnología (MINAM, 2016).
+2 Información obtenida por Solidaridad. Tomada de Coalición por una Producción Sostenible (2024a)
+3 El autoconsumo y la agricultura de mercado local difícilmente pueden soportar el costo de la sustentabilidad.
+4 Con datos hasta el 2022, en valores FOB, el mercado de la Unión Europea representa el 51 por ciento de las exportaciones de café y el 29 por ciento de las exportaciones de cacao. (Coalición por una Producción Sostenible, 2024a)
+Situación del sector agropecuario tropical del Perú conservar el bosque sea económicamente favorable. Estas
+acciones se enmarcan en el enfoque del desarrollo rural de bajas emisiones donde se establecen las prioridades de
+cambio de los sistemas productivos y se realizan mejores políticas públicas con involucramiento multiactor.
+Asimismo, cabe señalar que los episodios extremos de lluvias y sequías intensificadas en los últimos años impactan
+profundamente en la producción agropecuaria de la
+Amazonía peruana, y por ende en su competitividad.
+Por otro lado, el sector agropecuario está experimentando cambios regulatorios en los mercados internacionales, como
+la nueva regulación próxima a entrar en vigencia, EUDR
+(por sus siglas en inglés, European Union Deforestation-Free
+Regulation). Las regulaciones de este tipo, afectan de forma importante a la producción agropecuaria de la Amazonía
+peruana, por el peso de los mercados internacionales, como la Unión Europea, en la compra de productos básicos
+(cacao y café, principalmente)4.
+Sumado a esto, la crisis institucional que enfrenta el Perú desde hace varios años, ha hecho inestable y lenta la
+implementación de condiciones habilitantes para el sector agropecuario amazónico.
+Los varios y complejos procesos que deben ser coordinados simultáneamente para abordar la situación y la problemática
+señalada, requieren catalizar esfuerzos vía la acción colectiva para comprometer, diseñar e implementar las
+mejoras a los modelos productivos y a la conservación de los bosques. La acción colectiva es crucial, o acaso la única
+vía, ya que se requiere coordinación de los gobiernos, las empresas y el sector financiero para que sus diferenciados
+roles sean, al mismo tiempo, sinérgicos.
+El cambio transformativo para la producción libre de deforestación
+desde la acción colectiva
+
+Con el objetivo de avanzar en la reducción de la deforestación en el país, el 23 de setiembre del 2014, el Perú suscribió
+una Declaración Conjunta de Intención (DCI) con Noruega y Alemania (al que posteriormente se sumó Reino Unido);
+con el fin de establecer mecanismos para el cumplimiento de metas asociadas a la reducción de la deforestación en la
+Amazonía peruana. La Fase II de este acuerdo, denominada
+"fase de transformación", comprendía seis entregables: el primero, buscaba cesar las autorizaciones de conversión de
+tierras con bosques a usos agrícolas, y estaba formado por tres componentes, el tercero de los cuales establecía "una
+coalición público-privada con compañías multinacionales comprometidas con ambiciosas políticas de deforestación
+cero."
+Posteriormente, en la feria ExpoAmazónica 20175, cerca de 44 organizaciones firmaron la Declaración de Tarapoto
+que estableció la creación de una "Coalición público- privada por una Desarrollo Rural Bajo Emisiones para lograr
+Jurisdicciones Sostenibles en la Amazonía Peruana". Desde ese año, un grupo de organizaciones denominados "Grupo
+Impulsor6" estuvo haciendo valiosos esfuerzos para que esta coalición cobrará vida institucional. El Ministerio del
+Ambiente y el Ministerio de Desarrollo Agrario y Riego se unieron a la Declaración de Tarapoto en el 2019, valorando
+positivamente los avances generados por la iniciativa surgida desde las regiones amazónicas, reconociendo su
+coincidencia con el compromiso del país de constituir una
+Coalición Público – Privada establecido en la DCI (Coalición por una Producción Sostenible, 2020).
+Actualmente, la Coalición reúne de manera voluntaria a entidades del gobierno nacional, subnacional y local,
+organizaciones de la sociedad civil, organizaciones de pueblos indígenas, grupos de productores agrarios y al
+sector privado. Es un espacio de trabajo colaborativo para fomentar la coordinación y generación de sinergias en la
+implementación de los compromisos de acción; articulando procesos de nivel internacional, nacional y jurisdiccionales
+en marcha y en diseño, que catalizan la promoción de jurisdicciones sostenibles y cadenas productivas libres de
+deforestación.
+5 La principal feria de negocios en la Amazonía peruana, promovida por la Mancomunidad Regional Amazónica (una institución de coordinación de gobiernos subnacionales amazónicos en el Perú)
+6 El Grupo Impulsor estuvo conformado por: Earth Innovation Institute - EII, Mecanismos de Desarrollo Alternos - MDA, Amazónicos por la Amazonía – AMPA, Solidaridad,
+Alianza Cacao Perú (un programa de desarrollo financiado por USAID), Sociedad Peruana de Ecodesarrollo - SPDE y el Consejo Interregional Amazónico – CIAM (hoy la
+Mancomunidad Regional Amazónica).
+La Coalición, una plataforma de acción colectiva para la producción libre de deforestación
+Tropical Forest Alliance y el Perú
+La Tropical Forest Alliance (TFA) es una organización global que trabaja para reducir la deforestación asociada con la
+producción de materias primas agrícolas procedente de áreas tropicales, como café, cacao, palma aceitera, carne,
+entre otros productos. La TFA reúne a gobiernos, empresas, organizaciones de la sociedad civil, pueblos indígenas
+y comunidades locales para colaborar en iniciativas que promuevan cadenas de suministro sostenibles y reduzcan
+la deforestación asociada a las actividades económicas.
+En la Reunión Anual del Foro Económico Mundial (201
+9), el
+Gobierno del Perú se unió a esta plataforma y en el 2020, el país fue incorporado a las acciones que TFA desarrollaba en
+América Latina, con el establecimiento de una coordinación para Perú conectado con un equipo de soporte regional.
+Las instituciones de gobierno y organizaciones de sociedad civil socias de TFA en el Perú, coincidieron en señalar que
+la Coalición por una Producción Sostenible era el espacio ideal donde la TFA debería concentrar sus esfuerzos. Por ello,
+considerando la etapa de gestación en la que se encontraba la Coalición por una Producción Sostenible, TFA estableció
+los siguientes objetivos estratégicos en su soporte al Perú: i) contribuir a la consolidación estratégica y organizativa de la
+Coalición; ii) promover acuerdos voluntarios y de naturaleza multiactor en las principales cadenas productivas de la
+Amazonía peruana y iii) desarrollar una prueba de concepto de sostenibilidad jurisdiccional. Luego de cinco años de
+intervención, todos estos objetivos han sido cumplidos a cabalidad.
+Para cumplir sus objetivos, la Coalición cumple roles de convocador, catalizador y comunicador para el desarrollo
+de los compromisos por parte de los actores involucrados desde la mirada de cadenas productivas, jurisdicciones y
+sobre condiciones habilitantes.
+
+La TFA encontró elevadas coincidencias con la Coalición en el enfoque para una producción sostenible: A través de
+coordinación y articulación de instituciones de gobierno, sector privado y la sociedad civil; contribuir al desarrollo rural
+de bajas emisiones y al incremento de la competitividad del país, llevando a la práctica enfoques como el de cadenas
+de valor7 y el jurisdiccional8, que orienten la acción hacia una producción libre de deforestación.
+En esa línea, la producción libre de deforestación está asociada a la reducción del riesgo y el impacto negativo de
+la producción de bienes primarios del sector agropecuario tropical, desde el productor hasta el consumidor, es decir, a
+lo largo de la cadena de suministro. Además, los esfuerzos de una producción libre de deforestación también están
+orientados a i) mejorar los beneficios positivos para los proveedores (productores), trabajadores, clientes, usuarios
+finales y cualquier otra parte interesada ii) dar la oportunidad
+7 En enfoque de cadena propone la transición de ser cadenas productivas pasando a ser cadenas de valor, el cual refuerza las formas de articulación por las cuales los actores se planifican, preparan, organizan, coordinan para que el producto llegue con el valor (conjunto de características y atributos) requerido por el mercado. En el caso
+de los alimentos, uno de los atributos en alta demanda es el impacto sobre el medio ambiente. Las cadenas consideran los siguientes supuestos: i) la dependencia de las demandas del mercado (Es la capacidad y disponibilidad del consumidor para adquirir un producto lo que propicia el desarrollo de una cadena). ii) Todos los eslabones,
+procesos y actores de una cadena son importantes para alcanzar el éxito final. iii) La interrelación/interdependencia entre los eslabones y procesos es esencial para su desempeño (Vinci, M. et al., 2019).
+8 Enfoque jurisdiccional, es un tipo de manejo integral del paisaje pero con una característica distintiva muy importante: el paisaje está definido por los límites políticos y la estrategia de fondo está diseñada para lograr un alto grado de participación del gobierno. A través de este enfoque se puede lograr la sostenibilidad jurisdiccional, es decir,
+la transición exitosa hacia el desarrollo sostenible, abarcando dimensiones sociales, ambientales y económicas , por parte de toda una unidad política, es decir un estado, provincia, país o nación. Los resultados se miden en toda la jurisdicción y por lo tanto abarcan todas las actividades, sistemas de producción, ecosistemas y actores (Earth
+Innovation Institute, 2020).
+Una producción libre de deforestación en la
+Amazonía peruana a las empresas de forjar nuevas relaciones comerciales
+y desarrollar competencias más sólidas y maximizar la seguridad de la empresa "asegurando que las cadenas
+de suministro sean sólidas y resistentes a los choques contra los cambios repentinos en precio, disponibilidad
+y calidad". De este modo, las cadenas de suministro aseguran la continuidad, la capacidad de recuperación y
+la competitividad de las empresas a largo plazo (Coalición por una Producción Sostenible, 2020).
+Esta producción libre de deforestación en el Perú, en una lógica del conjunto del paisaje, está sustentada en la
+premisa de que existen millones de hectáreas actualmente deforestadas en la Amazonía peruana que pueden ser objeto
+de intensificación productiva y restauración (p.e. mediante sistemas agroforestales o silvopastoriles); al mismo tiempo
+que se asegura que los bosques actuales se conserven con una buena gobernanza y los productores y las comunidades
+indígenas sean incluidas y respetadas.
+Foto: Lenin Quevedo
+
+9 La innovación transformativa o Política de Innovación Transformativa (TIP, por sus siglas en inglés) se refiere a un enfoque estratégico y proactivo para orientar la innovación de manera que impulse cambios sustanciales y positivos en la sociedad, la economía y el medio ambiente. Va más allá de las políticas de innovación tradicionales, que se
+centran exclusivamente en el crecimiento económico y los avances tecnológicos, al abordar desafíos sociales complejos, promover la sostenibilidad y fomentar un desarrollo inclusivo al incentivar una innovación que genere cambios en los sistemas sociotécnicos. Entre sus principales características están: enfrenta los desafíos sociales y ambientales
+más urgentes; en lugar de centrarse en tecnologías o sectores individuales, TIP adopta una visión holística; va más allá de los beneficios a corto plazo y considera los impactos a largo plazo de la innovación en la sociedad; fomenta la colaboración entre responsables políticos, investigadores, industrias, comunidades y la sociedad civil para co-crear
+soluciones innovadoras; promueve la implementación de nuevos enfoques, métodos e intervenciones mediante experimentos; incorpora una amplia gama de perspectivas, incluyendo aspectos sociales, económicos, ambientales y éticos, para garantizar que la innovación beneficie a una variedad de actores; se esfuerza por garantizar que los
+beneficios de la innovación sean accesibles y equitativos para todos los segmentos de la sociedad, incluidas las comunidades marginadas; e implica un proceso continuo de aprendizaje, donde los conocimientos obtenidos a partir de experimentos y bucles de retroalimentación informan los ajustes de las políticas. Información tomada de: https://
+tipconsortium.net
+10 Un elemento central de las políticas de innovación transformativa son los nichos transformativos. Se refiere a espacios donde se promueven nuevas tecnologías, gobernanzas, comportamiento e instituciones que permitan reemplazar sistemas insostenibles. Un nicho transformativo es una red amplia de actores que experimentan con nuevas prácticas
+sostenibles para el medio ambiente y las personas. El objetivo es que estas innovaciones crezcan y reemplacen al sistema actual, promoviendo un cambio significativo y duradero.
+La innovación transformativa
+El pasar de un modelo agropecuario tropical de baja productividad, informal y causante del deterioro del
+ecosistema a uno libre de deforestación, que mejora la rentabilidad, conserva y restaura los bosques, es un cambio
+deseado por un número cada vez mayor de organizaciones de productores, empresas, instituciones de gobierno y
+organizaciones de la sociedad civil en el Perú. El gran reto es cómo generar las condiciones para que este cambio sea
+suficientemente sostenido en el tiempo para transformar el statu quo.
+En ese sentido, el enfoque de innovación transformativa
+9 puede ser útil para explicar el cambio construido en el
+Perú. Si bien el soporte de TFA en el Perú no fue diseñado explícitamente bajo la luz de este enfoque, sí constituye
+un caso de innovación transformativa. La Coalición está generando las condiciones para desempeñarse como un
+"nicho transformativo"10, donde es posible gestar procesos de innovación transformativa que respondan a la necesidad
+ambiental y social de cambio del actual "sistema de deforestación" en la Amazonía Peruana, para transitar hacia
+la producción libre de deforestación.
+Luego de cinco años de intervención, la TFA, con el activo soporte de muchos de sus miembros en el Perú, ha contribuido
+al proceso de innovación transformativa en la producción agropecuaria de la Amazonía Peruana para mejorar su
+rentabilidad y competitividad, promover una dinámica positiva con los bosques y los ecosistemas y el bienestar de
+los productores y poblaciones vulnerables. Esta innovación transformativa tiene a la Coalición por una Producción
+Sostenible como la plataforma o hub de innovación, que durante este periodo ha fortalecido su institucionalidad,
+ha establecido su orientación estratégica, ha co-diseñado soluciones, herramientas, pruebas de concepto e información
+técnica; y ha generado capacidades en los actores y ha gestionado el conocimiento colectivo.
+Asimismo, la capacidad de innovación transformativa de la
+Coalición se ha constituido durante el periodo 2020 al 2024 por el trabajo de sus miembros en los siguientes ámbitos:
+El compromiso y la transparencia para la producción agropecuaria libre de deforestación
+El entorno habilitante para el crecimiento de la producción sostenible
+La Coalición ha catalizado el compromiso y la acción a través del establecimiento de visiones compartidas
+y acciones priorizadas de los actores de las cadenas de valor, organizados en tres espacios multiactor para
+las cadenas de café, cacao, ganadería, pero también generando condiciones para procesos similares en la
+palma aceitera y los bionegocios. Además, ha acelerado la implementación de áreas de abastecimiento de
+bajo riesgo de deforestación, mediante iniciativas jurisdiccionales (Tocache en San Martín y Neshuya en
+Ucayali). Se ha promovido el acceso y la coordinación y el diseño de aspectos claves para la transparencia de
+la producción libre de deforestación como marcos de verificación, levantamiento de información de fincas,
+instrumentos de monitoreo y herramientas de trazabilidad.
+La Coalición ha generado evidencia para la toma de decisiones sobre procesos asociados a la palma aceitera,
+la ganadería, los frutos amazónicos y, a nivel jurisdiccional, estudios sobre zonas de alto valor de conservación y
+áreas prioritarias para la conservación de la diversidad biológica. También se generó evidencia e información
+sistematizada en temas claves cómo el impacto de la
+EUDR en la Amazonía peruana, incentivos financieros y no financieros para la transición hacia la producción
+libre de deforestación y el impacto del fenómeno de la deforestación causada por comunidades menonitas en
+la Amazonia peruana. Esto ha ido acompañado también del propio proceso de consolidación de la gobernanza
+público - privado de la Coalición que ha sido una parte inherente del proceso de innovación transformativa
+donde participan tomadores de decisión públicos, privados, organizaciones de sociedad civil, academia y
+organizaciones indígenas.
+1.
+2.
+
+Gestión del
+conocimiento y
+comunicación estratégica sobre la producción sostenible
+3.
+Los +30 productos de conocimiento, los +50 encuentros e intercambios y +300 actores locales capacitados han
+permitido posicionar el enfoque de producción libre de deforestación en la agenda nacional. Esto fue parte
+de una estrategia de comunicación y posicionamiento estratégico que convirtió a la Coalición en un centro
+de conocimiento y de referencia para muchos actores nacionales e internacionales.
+Hitos de la Coalición por una Producción Sostenible
+Formación de la Coalición.
+Declaración de Tarapoto (ExpoAmazónica 2017).
+Soporte técnico de TFA.
+Presentación de la Hoja de Ruta.
+Lanzamiento público de la Coalición.
+Iniciativa Jurisdiccional de Tocache (San Martin).
+Acuerdo de Cacao, Bosques y Diversidad.
+Alianza por una Ganadería Regenerativa en la Amazonía Peruana (AGRAP).
+Acuerdo Café y Bosques.
+Iniciativa Jurisdiccional Neshuya (Ucayali).
+Incorporación de Perú a TFA.
+
+El soporte que TFA brindó a la Coalición está relacionado a tres roles principales que los espacios multiactor deben
+cumplir: convocar, catalizar y posicionar. La acción colectiva requiere un convocador confiable que asegure la
+escucha a todas las partes para definir soluciones comunes, asegurando que sean prioritarias o transformativas. Sin
+embargo, una vez establecidos los consensos, el siguiente reto es cómo catalizar (movilizar, activar o incentivar) que
+los actores canalicen o coordinen sus esfuerzos, sumando recursos financieros y técnicos, hacia la implementación.
+Finalmente es clave visibilizar los avances y los logros de la acción colectiva mediante el posicionamiento estratégico,
+de tal forma que la acción colectiva sea un activo para todos.
+Estos son los roles que la Coalición, con el soporte de la TFA, ha fortalecido en los siguientes tres frentes, cuyas principales
+acciones e impactos serán detallados a continuación:
+El compromiso y la transparencia para la producción agropecuaria libre de deforestación
+Acciones e impactos
+Entre el 2020 al 2024, la Coalición por una Producción sostenible estableció cinco acuerdos multiactor; tres de
+naturaleza sectorial (en cacao, café y ganadería) y dos jurisdiccionales (en Tocache, San Martín; y Neshuya,
+Ucayali). Cada uno de estos acuerdos, cuentan con la participación de instituciones de gobierno, el sector
+privado y organizaciones de la sociedad civil, quienes han desarrollado una visión compartida sobre cómo reducir la
+deforestación en sus ámbitos de intervención, definiendo compromisos y estableciendo planes de acción. Los
+acuerdos o iniciativas, han sido el principal instrumento de implementación de la acción colectiva de la Coalición.
+Los compromisos y las regulaciones sobre producción libre de deforestación comprometen a las cadenas productivas
+a demostrar transparencia. La información de base sobre las áreas de producción agropecuaria (p.e. polígonos de
+las tierras), los mecanismos de monitoreo e instrumentos de trazabilidad son elementos esenciales de dicha
+transparencia. En este sentido, los miembros de los acuerdos fueron muy activos en catalizar medidas para abordar estas
+necesidades.
+La información de finca es clave para cumplir con los compromisos voluntarios de producción libre de
+deforestación. Sin embargo, se hizo indispensable cuando en el 2023 se aprobó la EUDR y se señaló la
+georeferenciación como un requisito sine qua non para que una lista de productos agrícolas (donde se incluye al café,
+el cacao, la carne, la madera y la palma aceitera) ingresen a la Unión Europea. En esa línea, el Ministerio de Desarrollo
+Agrario y Riego del Perú desarrolló la aplicación Identidad
+Digital, que tiene como objetivo crear un registro digital de productores y proporcionar información georreferenciada
+sobre las zonas de producción. La aplicación ya está en línea, y se han realizado sesiones de capacitación en
+estas áreas, donde técnicos de campo han enseñado a los productores a usarla de manera efectiva (por ejemplo,
+TFA apoyó, en alianza con Solidaridad y Earth Innovation
+Institute, a la realización de una capacitación en Aguaytía,
+Ucayali, en el 2024). Además, la aplicación permite a los usuarios localizar los polígonos de sus tierras en los mapas
+forestales oficiales del Perú para verificar el cumplimiento con la fecha de referencia del EUDR (31 de diciembre de
+2020). La Dirección General de Estadística, Seguimiento y Evaluación de Políticas del MIDAGRI ha sido un actor
+muy activo en intercambiar información pública, estrechar la coordinación y promover sinergias con los actores de la
+Coalición que deseaban preparar al país frente a la EUDR.
+Por otro lado, sobre monitoreo de la producción libre de deforestación, el World Resources Institute (WRI), con el
+acompañamiento de la TFA, decidieron promover en Perú la herramienta gratuita Global Forest Watch. Actualmente,
+WRI tiene una presencia activa en Perú y colabora con diversos miembros de la Coalición, como la Asociación de
+Exportadores (ADEX), la Asociación Peruana de Productores de Cacao (APPCACAO), el MIDAGRI y PromPerú para
+aumentar su uso entre las empresas exportadoras y los pequeños productores peruanos. Sin embargo, la gran
+cantidad de productores con unidades productivas menores a cinco hectáreas y la siembra en asociación con el bosque
+dificulta el monitoreo de la producción libre de deforestación.
+Para superar estos desafíos, Solidaridad desarrolló el estudio
+"Monitoreo de los bosques primarios" para mejorar la precisión en el monitoreo de la deforestación en pequeñas
+zonas de producción. Utilizando imágenes satelitales del
+Sentinel-2 en fincas de café, validadas por Geobosques
+(una plataforma pública utilizada para el seguimiento de bosques), detectaron la cobertura forestal y su pérdida
+entre 2019 y 2021, con una resolución espacial de hasta 10
+metros. Las importantes conclusiones de este estudio fueron presentadas y difundidas en el marco de la Coalición para
+que los tomadores de decisión conozcan metodologías complementarias..
+El siguiente reto de la transparencia de las cadenas de suministro es la trazabilidad. Los actores de la cadena
+de suministro peruana tienen experiencia con estas herramientas dado que trabajan con diferentes esquemas
+de certificación voluntaria que requieren su trazabilidad, como la certificación orgánica o el Fairtrade. Sin embargo,
+no todos los productores pueden acceder a herramientas tecnológicas para facilitar la trazabilidad, ya que estas suelen
+estar fuera de su alcance por las barreras tecnológicas y los altos costos. Para generar una prueba de concepto sobre
+
+El entorno habilitante para el crecimiento de la producción sostenible
+trazabilidad, en 2023, Proforest, con apoyo de la TFA, trabajó en un piloto con la Cooperativa Agraria Acopagro
+(una cooperativa peruana de pequeños productores) para rastrear sus compromisos de libre de deforestación dentro
+de su cadena de suministro de cacao. Aprovechando el ecosistema de servicios SEP desarrollado por Proforest,
+el proyecto proporcionó información para evaluaciones, estableciendo una línea base clara, abordando los factores
+subyacentes que contribuyen a los riesgos de deforestación e identificando las herramientas necesarias para el
+fortalecimiento de capacidades.
+De manera similar, otras organizaciones como Allima Cacao y Collpa de Loros están avanzando en el desarrollo de
+herramientas de trazabilidad libre de deforestación, con el apoyo de miembros del Acuerdo de Cacao, Bosques
+y Diversidad. Este Acuerdo, el primer acuerdo creado en el seno de la Coalición, ha sido activo en promover que
+diversas organizaciones miembros y aliados intercambien información y articulen sus proyectos. Por ejemplo, Helvetas,
+en colaboración con GIZ, implementó el proyecto MiCacao para abordar este desafío. Este proyecto ha aprovechado
+tecnologías de código abierto que conectan el trabajo de campo con herramientas digitales para rastrear la cadena
+de suministro del cacao, centrándose en la geolocalización, la deforestación y la productividad de los agricultores.
+Este es solo un ejemplo de cómo las organizaciones e instituciones miembros y aliadas de la Coalición están
+trabajando activamente para ayudar a los actores peruanos a cumplir con los requisitos de la regulación de los mercados
+internacionales; convirtiendo a la Coalición un espacio de generación de sinergias y una colaboración eficiente.
+En el caso de la ganadería tropical, debido a que las acciones de monitoreo y la trazabilidad están en gestación, se optó
+por el desarrollo, primero, de un Marco de Verificación de Ganadería Sostenible con enfoque regenerativo. Este
+propone los principios, medios de verificación y escalas de cumplimiento para que los ganaderos y otros actores de la
+cadena de suministro tengan una herramienta de gestión para mejorar sus procesos. El Marco de Verificación fue
+diseñado participativamente, por un equipo especializado en estándares de sostenibilidad, con el soporte de Tropical
+Forest Alliance y WWF. A la fecha, el Marco de Verificación tiene una versión Beta y se encuentra en un proceso de
+consulta pública. Posteriormente, la herramienta será puesta en uso por los ganaderos y se promoverá su escalamiento
+a nivel de la Amazonia peruana por parte de la AGRAP
+(una acuerdo multiactor específico para el sector ganadero tropical).
+En conclusión, los acuerdos son piezas claves para generar impacto a nivel estratégico en la agenda de la producción
+sostenible. El Acuerdo Cacao, Bosques y Diversidad y el
+Acuerdo Café y Bosques han sido útiles para coordinar, generar información y comunicar a los actores como
+abordar las regulaciones internacionales como la EUDR a nivel nacional. La Alianza Ganadera (AGRAP) ha
+permitido promover un enfoque que incluso va más allá de la no deforestación, mediante una solución basada
+en la naturaleza a través de la regeneración de suelos degradados y la promoción de sistemas silvopastoriles.
+Finalmente, las iniciativas jurisdiccionales de Tocache (San
+Martín) y de Neshuya (Ucayali) han generado potenciales oportunidades de zonas de abastecimiento de bajo riesgo
+de deforestación para los actores de las cadenas de
+valor. Si bien la TFA ha sido un puente para que muchos de estos procesos sucedan, en realidad, son los distintos
+miembros de los acuerdos quienes las han implementado y han comprometido su continuidad a través de los acuerdos.
+Todas las iniciativas de la Coalición cuentan con planes de acción claros y se han establecido responsables mediante
+comités o grupos de trabajo que aseguran la continuidad.
+Varios de los retos de las cadenas productivas y jurisdicciones para transitar hacia una producción libre de deforestación
+están asociadas a que cuenten con un entorno habilitante parael cumplimiento del marco regulatorio; que promueva
+incentivos financieros y no financieros públicos o privados que aceleren dicha transición; priorice el desarrollo de la
+investigación y la innovación de las cadenas productivas agropecuarias y el fortalecimiento de la plataforma de
+acción colectiva. En ese sentido, la Coalición y sus iniciativas han generado y compartido evidencia técnica e información
+que permita mejorar la toma de decisiones de los actores públicos y privados.
+En coordinación con la Dirección de Desarrollo Ganadero del MIDAGRI se realizó un Diagnóstico de la Ganadería
+Tropical Sostenible, acompañado de un mapeo de actores y plan de involucramiento, para contribuir a la mejora de
+las políticas para la ganadería amazónica. Este proceso fue realizado en el marco de la Alianza por una Ganadería
+Regenerativa en la Amazonía Peruana (AGRAP), con soporte de WWF y TFA. Un hito que contribuyó a este proceso fue
+la promulgación de la Declaración de interés nacional para el desarrollo de la ganadería sostenible (según Resolución
+Ministerial 0077-2024-MIDAGRI). Esta declaración es importante porque abre, entre otros temas, la posibilidad
+de contar con lineamientos nacionales sobre la ganadería tropical y la potencial movilización de recursos financieros y
+no financieros públicos hacia esté ámbito. Además, con miras a mejorar la investigación asociada, en la AGRAP se diseñó
+la Agenda de Investigación en Ganadería Regenerativa apoyada por un directorio de investigadores nacionales
+e internacionales de distintas universidades peruanas.
+Del mismo modo, se llevó a cabo el estudio "Análisis de instrumentos financieros públicos para transicionar a una
+ganadería sostenible en Madre de Dios y la Amazonía
+Peruana", que analiza las necesidades económicas y financieras del modelo de negocio de ganadería sostenible
+y regenerativo, además, toma los ejemplos de casos de productos financieros internacionales, para finalmente
+brindar analizar y dar recomendaciones a dos instrumentos públicos: Agroideas y Fondo AgroPerú. Además, se brindó
+asesoría técnica a comités de productores ganaderos para diseñar planes de negocio para Agroideas.
+
+Concerniente a la cadena de la palma aceitera, se colaboró con el MIDAGRI y en el marco del Grupo Impulsor
+por una Palma Sostenible, para la construcción de una propuesta de Instrumento de Gestión de Palma Sostenible,
+que contribuyan a una cadena productiva de palma aceitera libre de deforestación. Este Grupo Impulsor apoyó
+muy comprometidamente la gestación de un instrumento de gestión pública de palma y ha colaborado para el
+posicionamiento de la palma sostenible en la agenda pública.
+En cuanto a los bionegocios, en apoyo del Minam, se elaboró la investigación "Estudios de mercados para dos
+cadenas de valor de frutos tropicales (aguaje y camu camu camu". Este estudio brinda recomendaciones para que estas
+dos cadenas de valor puedan ser competitivas y sostenibles, al mismo tiempo que incorporan la participación de pueblos
+indígenas. Además, ha participado articular actores como
+Conservación Internacional y la Mancomunidad Regional
+Amazónica en conformar un grupo de trabajo multilactor alrededor de los bionegocios.
+Respecto al cacao, en el marco del Acuerdo Cacao,
+Bosques y Diversidad, se hizo un análisis sobre factores incentivos que propicien la transición a sistemas productivos
+libres de deforestación mediante el incremento de la productividad y la rentabilidad de la actual superficie y se
+desarrollaron talleres y conversatorios técnicos para abordar dichos aspectos.
+A nivel regional, el trabajo se ha basado en la articulación estratégica con la Mancomunidad Regional Amazónica
+(MRA1
+1), con la que se ha priorizado el desarrollo de la ganadería sostenible, realizando incidencia en los
+gobiernos regionales amazónicos, a través de actividades de capacitación sobre el modelo de negocio de ganadería
+regenerativa. También se ha impulsado la incorporación de este enfoque en los instrumentos públicos, a través del
+diseño de un Perfil de Proyecto de Inversión Pública (PIP) de
+Ganadería Sostenible con enfoque regenerativo.
+Para fortalecer la acción colectiva, se ha apoyado al funcionamiento de los cuerpos de gobierno de la Coalición,
+contribuyendo al funcionamiento del Consejo Directivo, la
+Coordinación, los grupos de trabajo, el comité ejecutivo y la oficina de comunicaciones. Para esto, se apoyó activamente
+la implementación de la Hoja de Ruta, donde se definen los objetivos estratégicos, alcances, enfoques, estructura
+de gobierno, entre otros, fue fundamental. Además, cada acuerdo de cadena o iniciativa jurisdiccional cuenta con sus
+propios memorandos de entendimiento, donde se estipulan los consensos colectivos y se cuentan en cada caso con
+planes de trabajo que guían la acción colectiva.
+El impacto de estas acciones se fundamenta en el soporte que los acuerdos de la Coalición aportan al cumplimiento
+de las Contribuciones Nacionalmente Determinadas (NDC) del Perú. En específico se encuentran alineadas con el AGRI
+6: Medida de Gases de Efecto Invernadero de mitigación asociada a cultivos permanentes en la Amazonía, asociado
+a los cultivos de cacao y café; y con el AGRI 3: sobre sistemas silvopastoriles en la Amazonía, asociado a la ganadería.
+Por otro lado, cabe resaltar que la Coalición ha involucrado activamente al Ministerio de Ambiente y el Ministerio de
+Desarrollo Agrario y Riego, quienes ocupan posiciones permanentes en la Junta Directiva. A la fecha, la Coalición
+cuenta con 90 miembros (39 del sector privado (incluyendo cooperativas y mesas técnicas), 16 del sector público y 35
+de la sociedad civil, academia y organizaciones indígenas), con los cuales impulsa la sinergia, el diálogo y el consenso
+de distintos sectores productivos, niveles de gobierno y organizaciones.
+Con miras a garantizar el fortalecimiento de la acción colectiva, en el marco de la Coalición, el Consejo Directivo
+aprobó la conformación de un comité de apoyo, conformado por las organizaciones que han sido las principales socias
+de TFA durante los últimos cinco años (WWF, Solidaridad,
+International Conservation, Earth Innovation Institute,
+Helvetas, Earthworm Foundations y TNC). Este Comité de apoyo propondrá al Consejo Directivo de la Coalición una
+estrategia de levantamiento de recursos de largo plazo para la continuidad de la Coalición, pero también brindará
+soporté gerencial y operativo en los próximos meses para que la plataforma pueda continuar con las labores que
+realiza.
+1 Es una entidad pública que articula a los gobiernos regionales de Amazonas, Huánuco, Loreto, Madre de Dios, San Martín y Ucayali. Estas regiones abarcan el 53% del territorio nacional y el 90% de los bosques amazónicos del país.
+Gestión del conocimiento y comunicación estratégica
+La gestión del conocimiento fue un elemento especialmente importante en el soporte a la Coalición. Esta gestión
+del conocimiento estuvo compuesto por tres aspectos principales: los productos de conocimiento estratégicos,
+diálogos e intercambios nacionales e internacionales y el programa de capacitación.
+En cuanto a productos de conocimiento, durante 2020 al
+2024 se produjeron cerca de 20 productos asociados a la producción libre de deforestación y otros aspectos de la
+sostenibilidad. Algunos de ellos son especialmente resaltantes.
+En el caso del cacao, en el 2024 se publicó el "Estudio de impacto de la regulación europea de no deforestación
+en cadenas de valor de café y cacao", financiado por
+Solidaridad Network y Conservation International, donde se destaca los posibles riesgos y oportunidades que plantea
+el EUDR para los productores peruanos, particularmente los pequeños agricultores. Asimismo, con el soporte de la
+Alianza Ciat-Bioversity se hizo un análisis para establecer el año de referencia para compromisos voluntarios de
+producción libre de deforestación, que luego han sido tomados como referencia para el Marco de Verificación
+
+de Ganadería Sostenible con enfoque regenerativo. En el caso de ganadería, se resalta el estudio "Análisis sobre
+el mercado potencial de carne bovina procedente de
+Madre de Dios", que permite identificar las oportunidades de la producción ganadera sostenible y se ha articulado a
+empresas de procesamiento a la AGRAP.
+A nivel jurisdiccional, se hizo un "Análisis comparado para seleccionar la unidad territorial del programa jurisdiccional",
+que ha sido referente para otros procesos de análisis de paisajes y el estudio "Cacao libre de deforestación en
+Tocache: Análisis de experiencias promisorias", donde se perfila a las organizaciones de productores en Tocache y
+muestra que existe potencial para transitar a una producción de cacao peruano libre de deforestación y de calidad. Por
+otro lado, se resalta el estudio "Las comunidades menonitas en la Amazonía peruana: un análisis ambiental, regulatorio
+y comercial" donde se analiza a fondo los impactos ambientales, sociales y comerciales de este fenómeno y se
+emite recomendaciones de toma de acción para gobiernos, empresas y organizaciones de la sociedad civil.
+Finalmente, la página web de la Coalición por una Producción
+Sostenible y el Chat GPT EUDR (que es una herramienta automatizada basado en la tecnología ChatGTP y está
+entrenado para responder preguntas relacionadas a la nueva Regulación Europea sobre Deforestación Importada)
+ha brindado orientación a los actores de las cadenas de valor, así como a los tomadores de decisiones y gestores de
+políticas públicas sobre la producción libre de deforestación.
+En cuanto a los más de 50 diálogos e intercambios de conocimiento, han permitido sensibilizar y promover las
+prácticas de producción libre de deforestación, como debates sobre el impacto del EUDR y la promoción del
+enfoque regenerativo en la producción agropecuaria.
+Algunos de ellos resaltan por su importancia en abrir nuevos campos de debate y de acción dentro de la Coalición. En el
+2021, el seminario (en formato webinar debido a la pandemia de Covid 1
+9) "Oportunidades para la competitividad de la palma sostenible en Perú, Colombia y Centroamérica"
+donde se revisaron las experiencias de Colombia,
+Guatemala y Honduras, sobre acuerdos multiactor en palma
+aceitera. En el 2022, la "Visita de estudio sobre ganadería regenerativa en Madre de Dios", donde instituciones de
+gobierno y sector privado conocieron cómo este enfoque en la ganadería era una solución basada en la naturaleza y fue
+la base para la posterior creación de la AGRAP. En el 2023, la Coalición para la Producción Sostenible, en el marco del
+Acuerdo Cacao, Bosques y Diversidad, en coordinación con la Iniciativa Cacao, Bosques y Paz y Fedecacao de
+Colombia, así como con ProAmazonía de Ecuador, llevó a cabo un Diálogo Regional sobre el Cacao Sostenible de
+la Amazonía, en el marco de la Comunidad Global de
+Conocimiento y Práctica para un Cacao Sostenible, donde representantes del sector cacaotero de Ecuador, Colombia
+y Perú intercambiaron información sobre cómo prepararse para la Regulación Europea. También en ese mismo año, se
+realizó el webinar "Ganadería sostenible en los países de los Andes tropicales", realizado por Tropical Forest Alliance y
+Climate Group, en el marco del Climate Week de New York donde los actores peruanos intercambiaron conocimientos
+con actores del sector ganadero de Colombia, Ecuador y Bolivia. También en el 2023, los miembros del Acuerdo
+Cacao, Bosques y Diversidad del Perú participaron del
+Chocoshow 2023 (la feria de cacao y chocolate más importante de Colombia) e hicieron una visita de campo a
+la Amazonia colombiana.
+La Coalición también ha sido crucial para difundir la información relevante (especialmente sobre la EUDR) con
+actores locales de la Amazonia peruana. El Acuerdo de
+Cacao participó en el "EI Encuentro de Tendencias de los
+Mercados Internacionales de Café y Cacao" del VRAEM para promover el conocimiento sobre la EUDR. En el 2024,
+La Coalición realizó un encuentro público en Tarapoto sobre el futuro de la agricultura tropical y los bosques en el
+contexto de la EUDR para presentar los principales avances y desafíos para la sostenibilidad de las cadenas productivas
+en la Amazonía.
+También, entre el 2022 y el 2023 se implementó un programa de capacitaciones dirigido a pequeños productores y
+otros actores de la cadena en aspectos claves para el cumplimiento de compromisos de producción libre de
+deforestación. Este programa contaba con cuatro módulos independientes sobre el uso de Global Forest Watch y otros
+instrumentos de monitoreo, estudios indicativos (como Altos
+Valores de Conservación), el estándar RSPO aplicable para pequeños productores de aceite de palma, y políticas de
+abastecimiento responsable. En ella participaron técnicos de campo, extensionistas rurales y productores.
+Como impacto, las acciones han permitido que los miembros cuenten con información y conozcan experiencias
+de primera fuente sobre producción libre de deforestación y una fuente de consulta para procesos y proyectos. En el
+caso del programa de capacitaciones más de 300 actores conocieron buenas prácticas y herramientas de cumplimiento.
+Todas estas intervenciones han estado sustentadas en una estrategia de comunicación y gestión del conocimiento que
+requieren ser continuadas.
+
+Lecciones aprendidas
+Sí es posible generar procesos estratégicos que trascienden sectores, instituciones, proyectos o personas y
+que perduren en el largo plazo. Hay voluntad de muchos actores de dialogar, comprometerse y coordinar para
+que la dinámica del sector agropecuario de la Amazonia peruana sea positiva con los bosques; comprendiendo
+que los problemas sistémicos sólo pueden abordarse mediante la acción colectiva. En un contexto complejo
+y cambiante, tener visiones compartidas permite continuidad y la posibilidad de mantener la perspectiva de
+largo plazo. Asimismo, se ha aumentado el entendimiento de que la acción colectiva no es solo buena intención,
+sino que hay metodología, disciplina y constancia para organizar la acción colectiva.
+El caso concreto del Perú destaca que, si bien los enfoques para promover los productos básicos libre de deforestación
+pueden persistir en las diferentes administraciones, sigue siendo difícil mantener la implicación del sector público.
+Al principio, el empuje del sector público y los esfuerzos de cooperación internacional impulsaron la Coalición
+por una Producción Sostenible, pero los períodos de inestabilidad en el país y los frecuentes cambios políticos
+han hecho que esta tarea sea un gran reto. Es crucial garantizar una fuerte conexión entre la Coalición (y sus
+acuerdos) y la política nacional con todos los niveles y
+estamentos. El Gobierno peruano ha construido planes de acción sectoriales en café, cacao y ganadería; así
+como a nivel subnacional se cuentan con estrategias de desarrollo rural de bajas emisiones por parte de los
+gobiernos regionales. Asimismo, las medidas asociadas a la Contribución Nacionalmente Determinada de Perú son
+claves. Todos los esfuerzos de los acuerdos sectoriales y jurisdiccionales deben contribuir a la implementación
+de dichas políticas, y en ningún caso reemplazarlas o duplicarlas.
+La acción colectiva en la Coalición por una Producción
+Sostenible tiene en los acuerdos (o también llamadas alianzas o iniciativas jurisdiccionales) su principal
+instrumento de gestión. En ella se establecen las visiones compartidas mínimas entre todas las partes y se generan
+compromisos; que han demostrado ser eficaces para guiar la acción colectiva. Asimismo, todos los acuerdos cuentan
+con planes de acción para los próximos años. Los planes
+Los espacios de acción colectiva cómo la Coalición deben cumplir tres roles esenciales: tener una excelente
+capacidad de convocatoria garantizando la neutralidad y la naturaleza precompetitiva del diálogo; ser un
+espacio de catalización, donde los actores coordinen, resuelvan juntos cuellos de botella, encuentren sinergias y
+oportunidades para el cumplimiento de los compromisos colectivos; y un centro de pensamiento y conocimiento
+donde pueda encontrar información valiosa, de calidad y basada en evidencia.
+La Coalición por su alta representatividad, ha logrado posicionar temas relevantes en espacios, sobre todo,
+públicos. Ello se basa en su capacidad de escuchar múltiples puntos de vista de actores públicos y privados,
+distintas cadenas productivas, jurisdicciones, y mantener una conexión con la agenda global. Este activo de la
+Coalición debe mantenerse, convirtiéndose en un centro de pensamiento y acción sobre los temas relevantes de la
+coyuntura, sin perder la mirada de largo plazo. Ejemplos importantes de la atención a la urgencia han sido el
+abordar temas como la sequía en la Amazonía peruana y su impacto en el sector agropecuario, o la necesidad de
+ir más allá de la EUDR, promoviendo enfoques como el regenerativo; así como visibilizar el impacto que tienen la
+deforestación causada por las comunidades menonitas en la Amazonía peruana.
+Una parte importante de los esfuerzos de fortalecimiento de los espacios multiactor, es la necesidad de establecer
+claridad en su funcionamiento. En el caso de la Coalición, la conformación y funcionamiento del Consejo Directivo,
+Coordinación, Comité de Apoyo y grupos de trabajo con roles diferenciados y definidos, a través del Reglamento,
+ha brindando fortaleza institucional, confianza y reputación entre sus miembros. Sin embargo, también es
+importante reconocer que esta gobernanza aún debe fortalecerse, por ejemplo, haciéndola mucho más visible y
+actualizando la representación en los plazos adecuados.
+
+Consensos de largo plazo para la producción sostenible
+Articulación con las políticas públicas
+Acuerdos multiactor como instrumento de la acción colectiva
+Convocar, catalizar y comunicar
+Otear la urgencia y el futuro
+Estructura de gobierno de la plataforma con capacidad de funcionamiento
+deben ser simples, alcanzables y con roles claros, puesto que esto incentiva y fortalece el compromiso, debido
+al logro progresivo de metas conjuntas y promueve el cumplimiento, al hacer tangible las victorias tempranas.
+
+Finalizadas las pruebas de concepto o las herramientas que la Coalición co-diseña o promueve, es necesario
+plantear mecanismos para que las instituciones de formación profesional públicas y privadas (MIDAGRI,
+Direcciones
+Regionales
+Agrarias
+(DRA),
+Instituto
+Nacional de Innovación Agraria-INIA o universidades e institutos locales), sigan trabajando en el fortaleciendo
+estas capacidades y buenas prácticas sostenibles, el escalamiento de las pruebas de concepto con otros
+territorios amazónicos o ampliando los resultados obtenidos para su escalamiento o institucionalización.
+Asegurar la
+extensión del
+conocimiento y
+herramientas hacia otros actores
+Recomendaciones
+En espacios donde se debaten muchos temas, desde diferentes puntos de vista, perspectivas y sectores,
+es importante que se mantenga la neutralidad de las secretarías técnicas, así como los miembros de los
+cuerpos de gobierno y la coordinación. Esta naturaleza de imparcialidad, neutralidad o pre-competitiva debe
+mantenerse, o mejorarse. De no existir la neutralidad, se corre el riesgo que las plataformas multiactor pierdan su
+valor o su representatividad y se pierda el interés de los actores.
+Dado el complejo contexto de esta cadena, no se pudo ubicar puntos de encuentro común para establecer una
+visión compartida del sector. Es importante asegurar la sostenibilidad de la producción de palma aceitera en el
+Perú, por lo que no deben cesar los esfuerzos por tener diálogos transparentes entre todas los actores de la
+cadena, pero también la apertura de estos actores de abordar puntos críticos con otros grupos de interés cómo
+las organizaciones de sociedad civil, organizaciones de pueblos indígenas y sectores de gobierno. Solo el diálogo,
+la capacidad de escucha y la buena fé permitirán sentar las bases para un acuerdo amplio y de largo plazo. El
+avance de organizaciones de pequeños productores de
+Ucayali en contar con la certificación de RSPO es una excelente señal de que existen oportunidades positivas
+de desarrollo de la palma aceitera.
+El sector privado ha estado más presente en la
+Coalición. Sin embargo, la acción voluntaria por sí sola no es suficiente. Los agentes del sector privado deben
+movilizar, por ejemplo, más tecnología, protocolos de compra, y financiamiento para apoyar a los pequeños
+agricultores y a toda su cadena de suministro. Para ello, es clave visibilizar a los actores privados que avanzan
+en sus compromisos y celebrar sus victorias sobre la producción libre de deforestación. Además, es esencial
+asegurar el compromiso de los actores globales en los acuerdos peruanos que pueden generar diseminación de
+innovaciones y capacidad de réplica.
+Si bien el trabajo de la Coalición ha sido coherente con los objetivos trazados colectivamente, aún no se
+han monitoreado medidas cuantitativas para el control y seguimiento de los compromisos, objetivos y acciones
+planteadas. Del mismo modo, no ha permitido realizar un seguimiento de los procesos, que permita la adecuación
+en el momento adecuado. En ese sentido, esta es una recomendación para establecer indicadores de
+impacto, y monitorear el cumplimiento de compromisos, especialmente de los actores de las cadenas productivas,
+a través de mecanismos como observatorios de avance en las cadenas productivas.
+Durante el 2020-2024 no se pudo sostener acciones para involucrar al sector financiero debido a la necesidad
+prioritaria de generar las estructuras de base. Desarrollar una agenda de involucramiento del sector financiero,
+dentro del enfoque de acción colectiva, es una agenda pendiente de las siguientes etapas de la Coalición.
+Incorporar como parte de los instrumentos de gestión, planes de acción y diseño de propuestas, un enfoque que
+vaya más allá de solo evitar la deforestación, es decir, evitar el impacto negativo, sino que incorpore elementos
+para generar impactos positivos en el territorio, los bosques y sus ecosistemas, como son la bioeconomía y
+el enfoque regenerativo, que ofrecen soluciones basadas
+Cautelar la naturaleza pre competitiva de la Coalición y sus iniciativas
+Una mejor aproximación para la cadena de valor de la palma aceitera
+El reto de que el sector privado pase del compromiso a la acción
+Empezar a monitorear el impacto
+Estrechar alianzas con el sector financiero que movilice recursos para la producción sostenible
+Ir más allá de la EUDR a través de la bioeconomía y el enfoque regenerativo
+Sobre aspectos estratégicos en la naturaleza con resultados más integrales.
+
+La acción de la Coalición se ha concentrado en Lima y algunos lugares específicos de la Amazonía pero es
+momento de llegar a los territorios amazónicos y apoyar plataformas multiactor regionales y locales. En esa
+línea, se recomienda la implementación de los capítulos
+regionales. Espacios como los de la Mancomunidad
+Regional Amazónica (MRA), las agencias regionales de desarrollo, las comisiones y los comités locales son
+aliados para ampliar el alcance de la acción colectiva para la producción libre de deforestación en la Amazonia
+peruana.
+Por ejemplo, el plan de capacitaciones sobre prácticas de cumplimiento de la producción libre de deforestación
+debe anidarse en un institución especializada.
+Siendo una plataforma que aglutina la variedad y fortaleza de sus miembros, es importante tener una
+estrategia constante de involucramiento de los actores.
+Entonces, se recomiendan dos frentes de mejora: i)
+Fortalecer la comunicación y cohesión interna y ii) repensar las estrategias para acercar a nuevos actores
+del entorno nacional, así como a otras plataformas
+multiactor. Este involucramiento debe considerar las necesidades diferenciadas de cada sector. En el caso
+del sector público se debe buscar el mayor compromiso y alineamientos con las políticas nacionales, a través
+de generar espacios de coordinación y articulación interinstitucional pública así como sumar nuevos actores
+como el Ministerio de Economía y Finanzas (MEF) y las mesas ejecutivas. En el caso del sector privado, nuevos
+actores a explorar son los comités de gestión agraria, cámaras de comercio regionales, banca privada,
+empresas del sector HORECA, gremios de pueblos indígenas y comunidades locales, la academia y centros
+de investigación.
+El fortalecimiento de la transparencia es un factor fundamental en las relaciones de confianza en las que se
+basa la acción colectiva. Por ello, es importante activar más decididamente los espacios existentes (grupos de
+trabajo, comité ejecutivo y otros) para rendir información sobre la gobernanza, estructura organizacional, procesos
+en marcha, metas y resultados de manera ordenada y pública. La dinámica de tener reuniones mensuales de
+reporte e información a los miembros (denominadas
+Conexión Coalición) debe continuar.
+Con el objetivo de garantizar la continuidad de la
+Coordinación General, las secretarías técnicas y los comités de apoyo, que son instancias fundamentales
+para la supervivencia de la Coalición y sus iniciativas, es necesario la sostenibilidad económica de la plataforma,
+a través de un plan de recaudación de fondos a largo plazo o pensar en la posibilidad otras formas de
+institucionalización que se adecue a la naturaleza y objetivos de la Coalición (por ejemplo tomando como
+referencia el Instituto de Apoyo a la Coalición creado por la Coalición Brasil por el Clima, Florestas y Agricultura1
+que cuenta con un persona jurídica especializada para administrar los proyectos).
+Implementar los capítulos regionales
+Fortalecimiento de la estrategia de involucramiento
+Aumentar las acciones de rendición de cuentas
+Mecanismos para la sostenibilidad económica
+Las instituciones elegidas para liderar de las secretarías técnicas deben cumplir criterios básicos como ser
+suficientemente flexibles,
+contar con
+capacidad organizativa y técnica, tener experiencia respecto a los
+objetivos conjuntos trazados, y, contar con los recursos humanos y económicos para darle soporte y continuidad
+a las iniciativas. Además, es importante diversificar los liderazgos y promover la renovación de cuadros, para
+mantener la neutralidad y naturaleza precompetitiva.
+Además es necesario promover el empoderamiento y formación de más instituciones líderes en cada iniciativa
+de la Coalición.
+Importancia de los mecanismos de selección y diversificación de liderazgos
+Sobre aspectos organizativos
+1 https://coalizaobr.com.br/
+
+Acrónimos
+ADEX
+Asociación de Exportadores
+AGRAP
+Alianza por una Ganadería Regenerativa en la Amazonía Peruana
+AMPA
+Amazónicos por la Amazonía
+CAF
+
+Corporación Andina de Fomento
+CEGRAS
+Comités de gestión agrarias
+CIAM
+Consejo Interregional Amazónico
+DCI
+
+Declaración Conjunta de Intención
+DRA
+
+Dirección Regional Agraria
+EUDR
+European Union Deforestation-Free Regulation
+FAO
+
+Organización de las Naciones Unidas para la Agricultura y la Alimentación
+GCF
+
+Governors' Climate and Forests Task Force
+GRSB
+Global Roundtable for Sustainable Beef
+HCSA
+Certificación Hikvision Certified Security Associate
+HORECA
+Sector de Hoteles, Restaurantes y Cafeterías
+HUB
+
+Hub Latinoameticano del Consorcio de Política de Innovación Transformativa
+INDELCAR
+Industrias de la Carne
+INIA
+
+Instituto Nacional de Innovación Agraria
+MBCS
+Mesa Boliviana de Carne Sostenible
+MDA
+
+Mecanismos de Desarrollo Alternos
+MEF
+
+Ministerio de Economía y Finanzas
+MIDAGRI
+Ministerio de Desarrollo Agrario y Riego del Perú
+MINAM
+Ministerio de Ambiente del Perú
+MRA
+
+Mancomunidad Regional Amazónica
+MUCS
+Mesa Uruguaya de Carne Sostenible
+RSPO
+Certificación de la Roundtable on Sustainable Palm Oil
+SPDE
+
+Sociedad Peruana de Ecodesarrollo
+TFA
+
+WWF
+Fondo Mundial para la Naturaleza – World Wildlife Fund
+
+Referencias
+Acuerdo Cacao, Bosques y Diversidad, 2022 Plan de Acción. Prioridades 2021 – 2024. https://produccionsostenible.org.
+pe/wp-content/uploads/2022/04/Documento-plan-de-accion-Acuerdo-Cacao-Bosques-y-Diversidad-1.pdf
+Coalición por una Producción Sostenible, (2020) Hoja de Ruta. Hacia la consolidación de una Coalición por una Producción
+Sostenible. https://drive.google.com/file/d/1gu7QcJfvoM48j5P61rbUjpyXcu96S3pK/view
+Coalición por una Producción Sostenible, s.f. Is Peru ready to face the EUDR challenge? Publicado: 31 de octubre del 2024.
+https://produccionsostenible.org.pe/actualidad/is-peru-ready-to-face-the-eudr-challenge/
+Earth Innovation Institute (2020) Sostenibilidad Jurisdiccional. Conceptos básicos y términos clave. https://www.gcftf.org/wp- content/uploads/2020/1
+2/jurisdictional_sustainability_primer_es.pdf
+Ministerio de Desarrollo Agrario y Riego (2023). Sistema Integrado de Estadística Agraria. https://app.powerbi.com/ view?r=eyJrIjoiYjYwYTk5MDgtM2M0MS00NDMyLTgzNDEtMjNhNjEzYWQyOTNlIiwidCI6IjdmMDg0NjI3LTdmNDAtN
+g3OS04OTE3LTk0Yjg2ZmQzNWYzZiJ9
+MINAM, 2016 Estrategia Nacional sobre Bosques y Cambio Climático. Decreto Supremo N° 007-2016-MINAM. 20 de julio de 2016.
+https://www.un-redd.org/sites/default/files/2021-10/Peru_ENBCC_2016_FINAL.pdf
+Ramírez, M., Romero, O., Osorio, A. (2024). Explorando las "rutas" de transición del bosque en la Amazonía Peruana. Wyss
+Academy for Nature y HUB Latinoamericano y Caribeño de Innovación Transformativa.
+TFA, 2024 Coalitions for Sustainable Production: Progress Report from the Tropical Forest Alliance in Latin America. https:// www.tropicalforestalliance.org/assets/Uploads/TFA-Coalitions-for-Sustainable-Production.pdf
+UK ICF, 2023 Extent to which ICF intervention is likely to lead to Transformational Change. ICF KPI 5 Methodology Note.
+Febrero
+2023.
+https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/ file/1
+139441/international-climate-finance_KPI_15_Methodology_Note_Extent_to_which_ICF_intervention_is_likely_to_ lead_to_transformational_change.pdf
+Vinci, M., Hernández, A., Mireles, M., Antúnez, V., Ferrer, M., Pacheco, M., Landa, Y., Anaya, B., Fernández, M. (201
+9).
+Hacia una Gestión con Enfoque de Cadena. Conceptos Básicos e Instrucciones para el Diagnóstico. Ministerio de Agricultura de Cuba (MINAG) y PNUD. https://www.undp.org/sites/g/files/zskgke326/files/migration/cu/Enfoque-de-cadenas---
+metodologia-para-diagnostico.pdf

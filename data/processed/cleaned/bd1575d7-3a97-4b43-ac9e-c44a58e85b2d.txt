@@ -1,0 +1,380 @@
+Guía de uso de plantas y análisis de suelo para las Buenas Prácticas en
+Ganadería Regenerativa
+Con el apoyo de:
+
+La presente publicación ha sido elaborada con el apoyo financiero del Partnering of Accelerated
+Climate Transitions (UK PACT. Su contenido es responsabilidad exclusiva de WWF y no necesariamente refleja los puntos de vista del UK PACT. Además, ha contado con el apoyo de las oficinas de WWF
+Perú.
+Publicado por © WWF
+Editado por © World Wildlife Fund INC
+Av. Gral. Trinidad Moran 853, Lince
+Tel: +51(1) 440 5550 comunicaciones@wwfperu.org
+Lima, Perú
+
+Título: Guía de uso de plantas y análisis de suelo para las buenas prácticas en ganadería regenerativa.
+
+Autores:
+
+© Ethel Huamán Fuertes
+
+Revisión técnica:
+Nelson Gutiérrez Carpio
+Ethel Huamán Fuertes
+Claudia Coronado Landeo
+Pierina Bellota Mejía
+
+Se terminó de imprimir en junio del 2022 en Ecoimpresiones.
+Tiraje: 200 ejemplares
+
+Está permitida la reproducción total o parcial del documento, previa comunicación con el Editor.
+Diseño y diagramación:
+Maricarmen Brenis, David Parra y Carlos Roque para Kipu Visual
+
+Nota aclaratoria: El contenido de este documento considera el enfoque de género, por lo que para la redacción se ha usado un lenguaje neutro.
+
+A. Buenas prácticas para la gestión y uso de plantas con aptitud forrajera en el departamento de Madre de Dios.
+1.
+Introducción
+2.
+Objetivo general
+3.
+Objetivos específicos
+4.
+Glosario de términos
+5.
+Metodología de trabajo
+6.
+Registro de plantas
+7.
+Aporte nutricional de las plantas
+8.
+Aspectos a recordar
+B. Buenas prácticas del manejo de suelo: Uso del análisis del suelo en los sistemas ganaderos.
+1.
+Introducción
+2.
+Objetivo general
+
+Objetivos específicos
+
+Importancia del suelo
+3.
+Beneficios del análisis del suelo en la actividad ganadera
+4.
+Metodología
+5.
+Profundidad de muestreo
+6.
+Tamaño y número de muestras
+7.
+Pruebas de campo realizadas: Densidad aparente y velocidad de in filtración
+8.
+Interpretación de las propiedades físico-químicas de los suelos
+9.
+Resultados obtenidos de los Análisis de suelo
+10. Conclusiones
+ÍNDICE
+
+A. Buenas prácticas para la gestión y uso de plantas con aptitud forrajera en el departamento de Madre de Dios.
+1. Introducción
+En el Perú, la superficie amazónica ocupa alrededor del 60% del territorio nacional, concentra una alta biodiversidad y endemismos en el planeta. Además de ello, la Amazonía peruana
+presenta un gran potencial para el desarrollo de varias actividades productivas, entre las que destaca la actividad ganadera.
+De acuerdo al IV CENAGRO (2012), en esta región geográfica se encuentran alrededor de
+887,299 cabezas de ganado vacuno (17% de la población nacional) y 309,482 hectáreas de pastos cultivados, observándose un crecimiento sostenido de la actividad en los últimos 20
+años.
+Sin embargo, es importante reconocer que el crecimiento desordenado de la actividad ganadera puede también tener un efecto negativo en el ecosistema amazónico. Debido a
+ello, es fundamental identificar las zonas que presentan mayor aptitud para desarrollar dicha actividad, así como las bondades y propiedades que ofrecen los recursos forestales (hierbas,
+arbustos y árboles) para generar valor agregado integrándose bajo sistemas silvopastoriles.
+Estos sistemas contemplan diferentes prácticas ganaderas (manejo, alimentación, sanidad, entre otras), y el fomento de su uso representa una alternativa económica y ambientalmente
+viable en la crianza del ganado, asegurando de esta manera el resguardo del conocimiento del poblador local, el uso adecuado de los recursos naturales, la conservación del bosque y el
+desarrollo de una ganadería sostenible.
+En este sentido, el presente manual de buenas prácticas busca brindar al lector la información proporcionada por los productores ganaderos del departamento de Madre de Dios, sobre las
+propiedades y el uso potencial de algunas plantas presentes en la región, destacando el rol del productor ganadero como principal promotor de la conservación del bosque.
+De esta manera, se pretende contribuir además con las metas de las Contribuciones
+Nacionalmente Determinadas (NDC) del sector agricultura y los compromisos internacionales de nuestro país ante la Convención del Cambio Climático y el Convenio sobre la Diversidad
+Biológica.
+2. Objetivo General
+Generar información e identificar plantas con potencial forrajero en la alimentación animal en el departamento de Madre de Dios.
+
+3. Objetivos Específicos
+4. Glosario de términos
+Generar fichas técnicas para
+las plantas identificadas por
+los productores con potencial uso
+forrajero.
+Materia Seca (% MS): Indica indirectamente la cantidad de agua del
+forraje.
+Lignina: Sustancia natural que forma parte de la pared celular de las plantas,
+se produce cuando las plantas maduran dándole rigidez.
+Proteína bruta (% PB): Fracción que incluye sustancias nitrogenadas no
+proteicas (NNP) como aminas, amidas, urea, nitratos, péptidos y aminoácidos
+aislados.
+Fibra detergente neutra (FDN):
+Representa los componentes de la pared celular de las plantas:
+hemicelulosa, celulosa, lignina, etc. Una alta concentración de FDN en forrajes
+se asocia con un menor consumo de alimentos.
+Fibra detergente ácida (FDA): Es una parte de la pared celular compuesta
+por celulosa ligada a lignina, sílice, entre otras. Una alta concentración de
+FDA en forrajes se asocia con una baja digestibilidad ruminal.
+Revalorar el uso de los recursos
+naturales de la región en la
+alimentación animal.
+Valorar y reconocer el
+conocimiento local.
+
+5. Metodología de trabajo
+Fase de colecta y verificación: Basado en las referencias dadas por los ganaderos, se procedió a recolectar las plantas identificadas, previo proceso de verificación a través de un recorrido
+en corrales de pastoreo buscando evidencias de la presencia de estas plantas con signos de haber sido consumidas por el ganado. La recolección de cada planta se realizó utilizando el
+método clásico de colecta botánica (figura 3).
+Figura 3: Proceso de recolección de muestras de plantas.
+Créditos: MIDAGRI - Dirección General de Desarrollo Ganadero
+Fase de
+entrevistas:
+Se realizó
+mediante entrevistas
+semiestructuradas, a
+través de reuniones colectivas con los productores ganaderos, llevando a cabo
+
+posteriormente visitas a los predios ganaderos para hacer un registro del
+nombre común de las plantas usadas como forraje. Asimismo, se registró la
+percepción que tienen los ganaderos sobre las propiedades y usos de estas
+plantas.
+Fase de toma de muestras para análisis proximal: Se recogieron 150 gramos de
+material seco de cada planta identificada, las cuales fueron embolsadas y etiquetadas, siendo
+trasladadas posteriormente al Laboratorio de
+Análisis Nutricional y Biológica de Alimentos de la Universidad Nacional Agraria La Molina.
+Este análisis nos permitió conocer el aporte de proteína, energía, fibra detergente neutra y
+fibra detergente ácida que brinda cada planta identificada.
+
+6. Registro de Plantas
+
+Fuente: MIDAGRI
+Fuente: MIDAGRI
+
+Fuente: MIDAGRI
+Fuente: MIDAGRI
+
+Fuente: MIDAGRI
+Fuente: MIDAGRI
+
+Fuente: MIDAGRI
+Fuente: MIDAGRI
+
+Fuente: MIDAGRI
+Fuente: MIDAGRI
+
+Fuente: MIDAGRI
+Fuente: MIDAGRI
+
+8. Aspectos claves a recordar
+•
+El conocimiento local es valioso para la protección y conservación de los recursos naturales, genera valor agregado y crea oportunidades para el desarrollo local.
+•
+La integración del conocimiento local y la información científica es importante para las actividades agropecuarias.
+
+Elaboración: MIDAGRI
+Fuente: LABORATORIO DE ANÁLISIS NUTRICIONAL Y BIOLÓGICA DE ALIMENTOS
+7. Aporte nutricional de las plantas identificadas
+
+B. BUENAS PRÁCTICAS DE MANEJO DEL SUELO: USO DEL ANÁLISIS
+DEL SUELO EN LOS SISTEMAS DE PRODUCCIÓN GANADEROS
+1. Introducción
+La Amazonía peruana, abarca una extensión de 759,052 Km2 y representa aproximadamente el 60% del territorio nacional. En esta región geográfica, se distinguen principalmente dos
+zonas diferenciadas por su altitud: la selva alta, que se encuentra entre los 500 y 2,500 m.s.n.m. representando el 27% del territorio nacional; y la selva baja, que se sitúa por debajo
+de los 500 m.s.n.m. comprendiendo una superficie aproximada de 3'278,500 Ha. (Rodriguez
+Fernando, 1995).
+Si bien, existe un potencial para la siembra de pastos y la actividad ganadera en la Amazonía peruana, es importante promover el desarrollo de una actividad que sea sostenible y que guarde
+armonía con el paisaje, resguardando los recursos naturales y los servicios ecosistémicos que ésta provee. Es por ello, que la presente guía busca promover el uso del análisis del suelo
+como una herramienta básica para la toma de decisiones del productor ganadero y de los profesionales de los gobiernos locales, previo al establecimiento de pastos cultivados, ya que
+brinda información sobre el uso potencial y estado nutricional del suelo, así como la necesidad de mejorar su fertilidad, permitiendo de este modo mantener la productividad del suelo a largo
+plazo.
+En esta guía se presenta el proceso y la experiencia realizada en los predios ganaderos del departamento de Madre de Dios.
+2. Objetivo General
+Promover el uso del análisis de suelo como una herramienta para la toma de decisiones en los sistemas de producción ganaderos.
+2.1. Objetivos específicos
+•
+Promover un manejo adecuado de las tierras dedicadas al pastoreo en la Amazonía peruana.
+•
+Promover el cambio de sistemas de producción pecuaria convencionales hacia sistemas silvopastoriles.
+•
+Disminuir el proceso de degradación del suelo en las zonas dedicadas a la actividad ganadera.
+
+2.2. Importancia del recurso suelo
+Entre las principales funciones destacan:
+•
+Brinda soporte y es suministro de nutrientes a las plantas para la producción de biomasa.
+•
+Constituye un medio filtrante que permite la recarga de los acuíferos, influyendo también en la calidad del agua.
+•
+Es el medio donde se realizan los ciclos biogeoquímicos necesarios para el reciclaje de los compuestos orgánicos.
+•
+Constituye el patrimonio físico y cultural de las comunidades.
+•
+Reduce la liberación de CO2 a la atmósfera.
+•
+Actúa como hábitat para diferentes microorganismos.
+3. Beneficios del análisis de suelo en la actividad ganadera
+El análisis de suelo permite determinar el grado de fertilidad del suelo y diagnosticar problemas nutricionales, los cuales son utilizados para establecer recomendaciones técnicas a través de
+programas de fertilización antes de realizar la instalación de los pastos cultivados. A su vez, permite identificar las especies forrajeras que mejor se adapten a la zona. Entre las principales
+características que nos provee este análisis, se encuentran: pH, P disponible, K disponible, materia orgánica, textura, entre otros.
+Imagen 1: Un suelo bien conservado mantiene la presencia de organismos benéficos y además permite el buen crecimiento de las plantas.
+[1] Cotler, H.; Sotelo, E.; Dominguez, J.; Zorrilla, M.; Cortina, S.; Quiñones, L. 2007 La conservación de suelos: un asunto de interés público. Gaceta Ecológica, núm. 83, abril-junio, 2007, pp. 5-71.Secretaría de Medio Ambiente y Recursos
+Naturales Distrito Federal, México
+
+Imagen 2: Talleres de campo realizados con los productores de Madre de Dios.
+Imagen 3: Conociendo sobre las propiedades y funciones del suelo en las actividades agropecuarias.
+
+4. Metodología
+●
+Ubicación y georreferenciación de las parcelas muestreadas
+Consiste en realizar un croquis o mapa de los predios ganaderos, indicando la posición de las parcelas donde se realiza el muestreo. Las zonas donde se realiza la toma de muestra deben
+estar alejadas de caminos, cursos de agua y zonas con pendiente alta.
+Imagen 4: Recorrido por los predios ganaderos para ubicar las zonas de toma de muestra de suelo.
+Imagen 5: Toma de muestra de suelo en cancha de pastoreo.
+
+5. Profundidad de muestreo
+La profundidad para la toma de muestra de suelo en las canchas de pastoreo es de hasta 30 cm, considerando que las raíces de los pastos pueden llegar hasta esta profundidad para tomar
+los nutrientes para su desarrollo. El método de muestreo que se utiliza es el del compuesto, el cual es el resultado de una muestra de suelo obtenida de varias muestras simples.
+Fuente: MIDAGRI. DGDG. Informe de Tomas Samaniego Vivanco.
+Imagen 7: Práctica de toma de muestra de suelo.
+
+6. Tamaño y número de muestras
+El tamaño de cada muestra es de alrededor de 0.5 kg de suelo, y debe ser envuelta en una bolsa de papel. Para esta experiencia, se tomaron un total de 60 muestras de suelo procedentes de
+las provincias de Tambopata y Tahuamanu, las cuales fueron codificadas y etiquetadas.
+Durante el transporte de la muestra se debe evitar la contaminación por contacto con otros materiales tales como fertilizantes, cal, estiércol u otro producto que pueda alterar los
+resultados.
+Imagen 9: Tamaño de muestra de suelo
+Imagen 8: Práctica de toma de muestra de suelo por parte de los ganaderos.
+
+7. Pruebas de campo realizadas: Densidad aparente y velocidad de infiltración
+Densidad aparente:
+La densidad aparente se evalúa rutinariamente en los sistemas agrícolas para caracterizar el estado de compactación del suelo en respuesta al uso y manejo del suelo. Se considera un
+indicador útil para la evaluación de la calidad del suelo ya que cuando ocurre la degradación de su estructura, el efecto inmediato es en su aumento que conlleva a la reducción de la
+macroporosidad.
+Los resultados obtenidos muestran valores de densidad aparente más altos, tanto en Iñapari,
+Las Piedras y Tambopata se observan valores mayores a 1.4 g/cm3 lo que es típico de suelos de textura gruesa, por lo que se espera que estos suelos tengan ese tipo de textura
+predominante. En cambio, tanto en Iberia como en Laberinto se observan valores algo más bajos lo que indicaría un predominio de texturas arcillosas en la zona.
+Si bien es cierto que la densidad aparente está influenciada en gran medida por la textura, esta también se ve modificada por el tipo de manejo, ya que un suelo altamente compactado
+tiende a tener mayor densidad, es por esto que resulta interesante realizar el análisis tomando en cuenta el tipo de terreno muestreado.
+Figura 5: Densidad aparente en las áreas intervenidas
+Fuente: MIDAGRI. DGDG. Informe de Tomas Samaniego Vivanco.
+
+Velocidad de infiltración
+La tasa de infiltración determina la cantidad de agua que entrará en el suelo y la cantidad de agua que no entrará al suelo y se irá como escorrentía. Dado que la tasa de infiltración puede
+cambiar significativamente con el manejo del suelo y el tiempo, es utilizado como un indicador de la calidad del suelo para evaluar los impactos del cambio en el uso de la tierra (O'Farrell et
+al. 2010).
+Aquí se puede observar una alta variabilidad entre los coeficientes, influenciado por los datos de campo obtenidos, lo que demuestra que este indicador es mucho más sensible y es
+influenciado por un mayor número de factores presentes en el suelo.
+Figura 6: Velocidad de infiltración en las áreas de estudio
+Fuente: MIDAGRI. DGDG. Informe de Tomas Samaniego Vivanco.
+
+8. Interpretación de las propiedades físico-químicas de los suelos
+Para realizar la interpretación del análisis de suelo, se utilizan tablas con las principales características físicas y químicas del suelo. A continuación, se presentan las tablas con algunas
+de estas características.
+Principales características del suelo
+Escalas adoptadas para la interpretación de suelos:
+
+Reacción del suelo pH
+Término descriptivo
+Rango
+Extremadamente ácida
+Menor de 4.5
+Muy fuertemente ácida
+4.5 – 5.0
+Fuertemente ácida
+5.1 – 5.5
+Moderadamente ácida
+5.6 – 6.0
+Ligeramente ácida
+6.1 – 6.5
+Neutro
+6.6 – 7.3
+Ligeramente alcalina
+7.4 – 7.8
+Moderadamente alcalina
+7.9 – 8.4
+Fuertemente alcalina
+8.5 – 9.0
+Muy fuertemente alcalina
+Mayor de 9.0
+TEXTURA
+TÉRMINOS GENERALES
+CLASE TEXTURAL
+SUELOS
+TEXTURAS
+ARENOSOS
+Gruesa
+Arena
+Arena franca
+FRANCOS
+Moderadamente gruesa
+Franco arenosa gruesa
+Franco arenosa
+Franco arenosa fina
+Media
+Franco arenosa muy fina
+Franca
+Franco limosa Limo
+Moderadamente fina
+Franco arcillosa
+Franco arcillo arenosa
+Franco arcillo limosa
+
+FÓSFORO DISPONIBLE
+NIVEL mg/kg de P
+Bajo
+Menor de 7
+Medio
+7 - 14
+Alto
+Mayor de 14
+POTASIO DISPONIBLE
+NIVEL mg/kg de P
+Bajo
+Menor de 120
+Medio
+120 - 240
+Alto
+Mayor de 240
+CAPACIDAD DE INTERCAMBIO CATIÓNICO (meq/100g)
+Muy bajo menos de 6
+Bajo
+6 – 13
+Medio
+13 – 25
+Alto
+25 – 40
+Muy alto mayor de 40
+MATERIA ORGÁNICA
+NIVEL
+%
+Bajo
+Menor de 2
+Medio
+2 – 4
+Alto
+Mayor de 4
+ARCILLOSOS
+Fina
+Arcillo arenosa
+Arcillo limosa
+Arcilla
+Fuente: Laboratorio de Agua, Suelos y Medio Ambiente y Fertirriego (LASMAF), UNALM
+
+9. Resultados obtenidos de los Análisis de suelo
+De acuerdo a los resultados de laboratorio obtenidos, se observa que la fertilidad del suelo en las zonas de pastoreo monitoreadas en Madre de Dios, varía de media a baja en el contenido
+de materia orgánica y potasio disponible; y muy bajo en lo relacionado al fósforo disponible. En cuanto a los valores de pH, estos se encuentran entre 3.77 a 5.78, siendo catalogados como
+moderadamente ácido a extremadamente ácido, lo que provoca que los nutrientes como el calcio, magnesio y potasio sean bajos. Esto significa que para aumentar la productividad de
+estos suelos, es necesario incorporar el uso de abonos y/o fertilizantes para compensar esta falta de nutrientes, así como enmiendas para corregir la acidez del suelo.
+Estos resultados indican que en los suelos donde se encuentran las canchas de pastoreo, se presentan limitaciones para sustentar la producción del forraje y por lo tanto la alimentación
+del ganado. Debido a ello, se desarrollaron planes de fertilización que se encuentren al alcance de los productores ganaderos.
+
+10. Conclusiones
+El manejo integrado de la vegetación natural y el suelo en los sistemas de producción ganaderos constituyen prácticas importantes que contribuyen con el equilibrio en el ecosistema
+amazónico, su manteniendo la biodiversidad y mejorando la productividad de la pastura
+El uso de información sobre los principales atributos y características de los recursos suelo y vegetación son claves en la toma de decisiones sobre el diseño y manejo de los sistemas de
+producción ganaderos.
+El análisis de suelo realizados en los predios de Madre de Dios, muestran resultados y características diferentes en cada distrito, los cuales están influenciados por el tipo de pastoreo
+y manejo al cual son sometidos las pasturas, características propias del suelo, entre otros.
+En cuanto al análisis de los indicadores de densidad aparente y velocidad de infiltración, encontrados en los predios evaluados de Madre de Dios, se observó indicios de una fuerte
+degradación (densidad aparente alta e velocidad de infiltración baja), por lo cual la orientación hacia prácticas de pastoreo rotacional, son recomendables.

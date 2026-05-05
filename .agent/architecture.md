@@ -50,10 +50,20 @@ Documentos no estructurados → Conversión → Limpieza → Clasificación → 
 - Agente de IA para conversión
 - Metadata guardada en DB
 
-### 3. Limpieza (Objetivo 3)
-- IA para depuración de textos
-- Versión original + versión limpia
-- Tipo de ruido y reglas: TBD
+### 3. Limpieza (Objetivo 3) — Capas 1 + 2 + 3 (3a + 3b) implementadas
+- Enfoque **determinista por capas** (no IA — ver `decisions.md` 2026-05-04)
+- Original (`data/processed/txt/`) se conserva intacto; resultado va a `data/processed/cleaned/`
+- **Capa 1 (universal):** ftfy + unicodedata NFC + control chars + colapsar espacios y saltos de línea + strip por línea
+- **Capa 2a (números de página):** elimina líneas que son solo números o "Página N" / "Page N" / "- N -"
+- **Capa 2b (headers/footers):** heurística combinada (frecuencia ≥ 3 + longitud 15-150 + sin puntuación interna + no minúscula inicial + no ítem de lista)
+- **Capa 2c (re-unión de oraciones partidas por columnas):** une N con N+1 si N no termina en `.?!:;` + N+1 empieza minúscula + N+1 no es ítem de lista + dentro del mismo párrafo
+- **Capa 3a (dot leaders):** elimina líneas con 5+ puntos consecutivos (`\.{5,}`)
+- **Capa 3b (bloques TOC al inicio):** detecta y elimina bloques en los primeros 15% del doc con ≥5 líneas y ≥70% numeradas (≤100 chars), incluyendo header `CONTENIDO/ÍNDICE` previo si aplica
+- **Skip Capa 2 y 3b** si documento < 200 líneas no vacías; Capa 3a aplica siempre
+- **Pendiente para próximas iteraciones de Capa 3:** créditos editoriales (Autores, Diseño, ISBN), portadas en MAYÚSCULAS, URLs/emails sueltos
+- Servicio: `src/services/cleaning.py`
+- Endpoint: `POST /documents/{id}/clean?dry_run=<bool>` (dry_run devuelve métricas sin escribir archivos ni actualizar DB)
+- Métricas guardadas en columnas de `documents` (`original_char_count`, `cleaned_char_count`, `reduction_percentage`, `cleaning_metadata` JSONB con detalle por capa)
 
 ### 4. Clasificación (Objetivo 4)
 - Entidades: comunidades, instituciones, lugares, prácticas, infraestructuras, valores ecológicos, narrativas, actores, acciones
@@ -96,7 +106,15 @@ Documentos no estructurados → Conversión → Limpieza → Clasificación → 
 
 ### Subida de documento
 ```
-POST /documents → data/raw/ → DB (status=raw) → process → converted → cleaned → entities → vectors
+POST /documents             → data/raw/{id}/file.ext           → DB (status=raw)
+POST /documents/{id}/process→ data/processed/txt/{id}.txt      → DB (status=converted)
+POST /documents/{id}/clean  → data/processed/cleaned/{id}.txt  → DB (status=cleaned + métricas)
+[futuro] entities → vectors → relationships → graphs → metrics
+```
+
+**Endpoint batch (atajo upload+convert en un solo request):**
+```
+POST /documents/batch  → recibe N archivos → guarda en raw + convierte a txt en serie
 ```
 
 ### Consulta de entidades
@@ -195,6 +213,12 @@ docker-compose restart
 - `GET /` → `{"message": "Semantic Classification API", "status": "running"}`
 - `GET /health` → `{"status": "healthy"}`
 - `GET /docs` → Swagger UI (OpenAPI automático)
+- `POST /documents` → Subir un archivo (multipart/form-data)
+- `GET /documents` → Listar documentos (con filtro por status)
+- `GET /documents/{id}` → Ver detalle de documento
+- `POST /documents/{id}/process` → Procesar documento (conversión a TXT)
+- `POST /documents/batch` → Subir y procesar múltiples archivos en un solo request
+- `GET /entities` → Listar entidades (con filtros por categoría y documento)
 
 ### Variables de entorno (.env)
 
