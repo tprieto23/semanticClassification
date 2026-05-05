@@ -1,0 +1,1172 @@
+ANÁLISIS DE
+INSTRUMENTOS
+FINANCIEROS
+PÚBLICOS
+PARA TRANSICIONAR
+HACIA UNA
+GANADERÍA
+SOSTENIBLE
+EN MADRE DE DIOS
+Y LA AMAZONÍA.
+
+Documento elaborado por Earth Innovation Institute por encargo del Foro Económico
+Mundial, mediante su programa Tropical Forest Alliance – TFA –, como parte de las acciones de la Alianza por una Ganadería Regenerativa en la Amazonía Peruana (AGRAP),
+una iniciativa de la Coalición por una Producción Sostenible.
+El presente estudio se realizó en el marco del proyecto "Fomentando la ganadería libre implementado por The Climate Group, World Wildlife Fund y Tropical Forest Alliance.
+Autores:
+Gustavo Suarez de Freitas Calmet, Earth Innovation Institute
+María Adelaida Fernández Muñoz, Earth Innovation Institute
+Patricia Luna del Pozo, Earth Innovation Institute
+Heiber Pantevez Villamil, Earth Innovation Institute
+Seguimiento y coordinación: Daniel Coronel y Javier Ortiz, Tropical Forest Alliance
+Primera Edición
+Lima, Perú. Septiembre del 2023.
+https://produccionsostenible.org.pe/iniciativas
+
+En el Perú, la ganadería genera empleo e ingresos a 1.8 millones de familias rurales, alrededor de 7.6 millones de personas (Midagri, 2017) y representa el 37.28% del valor
+bruto de la producción (VBP) del sector agropecuario nacional (Midagri, 2021). Asimismo, según Midagri, solo en la Amazonía, se ha estimado que existen 5.7 millones de hectáreas
+que tienen potencial para pasturas ganaderas bovinas, de las cuales solo 0.44 millones están en uso. A este número, se sumaría, al menos, 2 millones de hectáreas deforestadas,
+1,6 millones de las cuales están degradadas y pueden ser mejoradas para un adecuado desarrollo ganadero sin deforestar. En ese escenario, en el 2017, el Midagri aprobó el
+Plan Nacional de Desarrollo Ganadero con el objetivo de mejorar la competitividad del subsector pecuario, especialmente, de la pequeña y mediana ganadería, promoviendo
+el desarrollo productivo y comercial sostenible de los productos y derivados de la actividad ganadera a nivel nacional, enumerando al menos cinco acciones asociadas a
+la sostenibilidad.
+factores limitantes para el desarrollo ganadero bovino, entre ellos: predominancia de un sistema de crianza tradicional migratorio, adaptado a las condiciones de la región,
+donde prevalece el uso de praderas naturales, mayormente asociadas con purmas, el uso semillas sin mejoramiento y prácticas inapropiadas como roce, tumbe, quema y pastoreo
+extensivo, entro otros (Midagri, 2019). En Madre de Dios, la ganadería tiene similares características, con excepción del distrito de Iñapari, donde se han desarrollado atributos
+de calidad y origen.
+En la región de Madre de Dios, durante el periodo 2001 – 2021, la deforestación ha aumentado considerablemente pasando de 5,603 ha a 23,142 ha anuales, mostrando
+una clara aceleración. Además, de acuerdo a la Estrategia Regional de Desarrollo Rural
+Bajo en Emisiones (ERDRBE), la conversión de bosques a pastos para ganadería es uno de los siete cambios en el uso de la tierra detectados en la región. Por su lado, el Ministerio
+de Ambiente (Minam) ha estimado que el potencial de reducción de esta medida al 2030 es de 1.18 MtCO2eq y que la reducción acumulada entre el 2010 y 2030 puede alcanzar
+las 7.22 MtCO2eq.
+De tal forma, para reducir la deforestación es necesario, entre otras medidas, fomentar la generación de nuevos paquetes tecnológicos, adaptados al contexto amazónico, para
+RESUMEN EJECUTIVO
+
+incrementar la resiliencia y la competitividad de la cadena ganadera, bajo un enfoque productivo libre de deforestación. Asimismo, para que esta transición sea posible, es
+tecnologías mejoradas y aplicación de buenas prácticas para incrementar la productividad sin deforestar.
+ganaderas y difundidas a más de 150 productores locales, a través de escuelas de campo
+(ECA) de World Wildlife Fund (WWF). Además, en este mismo marco, se estableció la
+Alianza por una Ganadería Regenerativa en la Amazonía Peruana (AGRAP), comunidad de práctica que apunta a establecer una visión compartida y acciones prioritarias para la
+ganadería regenerativa en Madre de Dios y la Amazonía. Esta se encuentra anidada en la Coalición por una Producción Sostenible (CPS), el espacio público - privado que reúne
+a más de 50 organizaciones para promover la producción agropecuaria y forestal libre de deforestación en la Amazonía.
+En esa línea, el presente documento, por encargo de TFA, es un análisis de instrumentos sostenible aplicados con distintos niveles de éxito en Colombia: Finagro, BancoColombia
+e ITPS, seguida de la recolección de lecciones aprendidas del diseño e implementación.
+Considerando los costos de la ganadería tradicional, las inversiones necesarias para la transición hacia la ganadería regenerativa y los resultados respecto a utilidades
+una serie de recomendaciones para potenciar el uso de estos instrumentos por parte de los ganaderos, así como, permitir ser considerados como propuestas de mejora futura
+por los tomadores de decisiones.
+financieros públicos del sector agropecuario peruano para brindar recomendaciones, a
+
+1.1. La ganadería bovina en la Amazonía peruana
+Relevancia y características de la ganadería bovina amazónica
+La ganadería es una de las actividades económicas de mayor importancia para el desarrollo rural y la seguridad alimentaria del Perú. De acuerdo con el Ministerio de
+Desarrollo Agrario y Riego peruano esta actividad genera empleo e ingresos a 1.8 millones de familias rurales, es decir más de 7.6 millones de personas (Midagri, 2017), y representa
+el 37.28% del valor bruto de la producción (VBP) del sector agropecuario nacional con una tasa de crecimiento anual del 2% (Midagri, 2021).
+Se estima que, al 2021, en el Perú existen más de 5.8 millones de unidades de ganado vacuno que se distribuyen en todo el territorio nacional. La mayoría de estas unidades se
+concentran en los departamentos de Puno, Cajamarca, Ayacucho y Amazonas (Midagri,
+2021); y se caracterizan por estar a cargo de pequeños productores (80%) que poseen hatos de 10 a 50 cabezas, seguidos por medianos ganaderos (18%) con hatos entre 50 y
+400 cabezas, y grandes ganaderos (2%) con una tenencia mayor a 400 cabezas (Midagri,
+2017).
+La ganadería vacuna amazónica peruana está conformada en un 20% por ganado criollo, un 70% por ganado cruzado y un 10% por razas puras, y está destinada a sistemas de
+producción de carne y leche. Ríos, en el 2020, señaló que los rendimientos promedios peso (que representan el 50% de rendimiento en carne) y la producción de leche tiene un
+rendimiento promedio de 3 a 5 litros diarios.
+Según el Midagri, en la ganadería bovina amazónica destaca el sistema de crianza extensivo que abarca casi la totalidad de la explotación ganadera. El sistema intensivo
+o estabulado solamente cubre el 1% de la crianza, asociado a ganado mejorado. En el sistema extensivo la práctica común es tumbar y quemar el bosque para la agricultura y
+ganadería durante algunos años hasta que el suelo se degrada. Debido a la pérdida de
+01.
+CONTEXTO PERUANO
+
+fertilidad, el productor deja el suelo descansar o abandona el área y abre más bosques para continuar con su actividad ganadera (Echevarría, 2020).
+de Recursos Naturales (ONERN), ha estimado que la Amazonía peruana tiene 5.7 millones de hectáreas que tienen potencial para pasturas ganaderas bovinas. De este total, solo
+0.44 millones están en uso y mantienen aproximadamente 290,000 cabezas de vacunos con una capacidad de carga de 0.30 a 0.50 UA/ha/año. Además, Schaus (1987) ha
+determinado que la Amazonía peruana cuenta con al menos 2.0 millones de hectáreas deforestadas, 1.6 millones de las cuales están degradadas y pueden ser mejoradas para
+un adecuado desarrollo ganadero sin deforestar.
+
+Breve reseña histórica de la ganadería bovina amazónica
+Desde sus inicios, la ganadería bovina amazónica ha estado vinculada a la construcción de carreteras, caminos rurales, y procesos de colonización. Ríos et al (2007) consideran
+que esta actividad productiva se inició en 1938 y estuvo asociada a la construcción de las principales carreteras de penetración amazónicas, como la carretera Huánuco-Pucallpa,
+que tuvieron como objetivo conectar a la Amazonía con el resto del país y promover la colonización de un territorio visto como "vasto y abandonado".
+Entre 1938 y 1944, la actividad ganadera amazónica tuvo un importante auge al realizarse las primeras importaciones de ganado cebú, Guzerat y Nellore de los Estados Unidos y
+Brasil para realizar experimentos con ganado criollo y desarrollar cruces adaptados al clima y condiciones de la selva peruana. De igual modo, durante este periodo se establecieron las
+primeras granjas y centros experimentales ganaderos en Tingo María (Huánuco), San Jorge
+(Ucayali), Tournavista (Huánuco), Huayabamba (Loreto), Bellavista (San Martín), Tarapoto
+(San Martín), Puerto Patria (San Martín), Santa Clotilde (Loreto), Curaray y Muyui (Loreto).
+Entre los años 1972 y 1973, la ganadería bovina amazónica llegó a más de 70,000 cabezas de ganado. Durante este periodo más de 7,000 cabezas fueron importadas y otorgadas a
+productores y cooperativas agropecuarias de Tingo María, Tocache, Campanilla, centros ganaderos y estaciones experimentales como la estación experimental del IVITA (Tingo
+María) y la estación experimental de Tulumayo (Huánuco), San Jorge y Tournavista. Sin embargo, y a pesar de las políticas estatales de fomento ganadero, la ganadería bovina
+amazónica no se consolidó como una actividad rentable y competitiva debido a la falta de capacidades y limitada asistencia técnica, la escasa conectividad vial que encarecía
+
+terrorismo a inicios de la década de los 80. (Ríos, 2020).
+El Plan Nacional de Desarrollo Ganadero y los retos de la ganadería bovina amazónica
+En el año 2017, el Ministerio de Desarrollo Agrario y Riego aprobó el Plan Nacional de
+Desarrollo Ganadero mediante la Resolución Ministerial No 0297-2017-MINAGRI. Este Plan cuenta con cinco objetivos estratégicos y busca mejorar la competitividad del subsector
+pecuario, especialmente de la pequeña y mediana ganadería, promoviendo el desarrollo productivo y comercial sostenible de los productos y derivados de la actividad ganadera a
+nivel nacional.
+El Plan Nacional de Desarrollo Ganadero considera como principales retos de la ganadería bovina en el Perú: a) la escasez de animales genéticamente mejorados, b) el uso limitado
+de registros genealógicos, productivos y reproductivos como herramientas de selección;
+limitaciones en la alimentación, debido a la falta de pastos cultivados y suplementación;
+y en la sanidad, por enfermedades como la anaplasmosis, piroplasmosis y rabia. Es importante señalar que el documento propone un conjunto de acciones asociadas a la
+sostenibilidad como: 1) promover el manejo y conservación de praderas naturales, suelos y agua, impulsando procesos de revegetación con especies gramíneas y leguminosas nativas
+o introducidas para la recuperación de praderas naturales, 2) impulsar el desarrollo de sistemas silvopastoriles, principalmente en zonas tropicales, 3) promover, en coordinación
+con el Minam, la utilización de esquemas de pago por servicios ambientales en zonas ganaderas, en las regiones de sierra y selva, 4) realizar eventos de sensibilización y
+actividades de capacitación y asistencia técnica en el manejo y conservación de cabeceras de cuenca, y 5) realizar actividades de capacitación y asistencia técnica en el manejo,
+recuperación y conservación de pastos naturales.
+De manera similar a lo propuesto por Midagri, Ríos et al, y Rosemberg, resaltan los siguientes factores limitantes para el desarrollo ganadero bovino amazónico:
+El clima: Las altas temperaturas y alta humedad relativa afectan en forma negativa la producción del ganado, por lo que se requiere variedades adaptadas a climas
+tropicales.
+subsector pecuario.
+
+ganadera. Índices zootécnicos bajos: 40% a 50% anual.
+Ganancias de peso menores a 200 gramos diarios: El peso vivo en el mercado es inferior a 200 kilos. La producción de leche es menor a los cuatro litros por vaca al
+día.
+Alta mortalidad: La mortalidad de terneros es superior al 15%, observándose además, un alto grado de parasitismo.
+Índices económicos bajos: Tasas internas de retorno menores a 4% anual en valores
+constantes. Se tiene altos costos operativos -relacionados principalmente con el mantenimiento de pasturas- y baja productividad de la mano de obra.
+Para superar estas barreras, Rosemberg recomienda la recuperación y utilización de áreas intervenidas, el establecimiento de buenas pasturas y diseño de sistemas ganaderos
+combinados con sistemas agroforestales para incrementar las utilidades, y el fomento de la investigación para la mejora de ganado de doble propósito.
+Adicionalmente, este autor señala que con una fuerte política de recuperación de áreas degradadas, renovación y manejo de pasturas, y división de potreros, es posible duplicar
+productividad por animal y hectárea, y mejorar la capitalización a través de la agroforestería
+(Rosemberg, 2017).
+La baja fertilidad de los suelos: El alto porcentaje de saturación de aluminio, los un suelo de baja fertilidad que requiere ser tratado para poder soportar la actividad
+
+Breve reseña histórica de la ganadería bovina amazónica
+Midagri ha estimado que la producción ganadera bovina de Madre de Dios alcanzó en el año 2021, las 60,875 unidades. De igual modo, el Ministerio precisa que existen tres
+tipos de crianza de ganado bovino en Madre de Dios: i) la crianza familiar mixta (junto con otras especies), con predominancia de razas criollas y cebú con bajo rendimiento; ii) la
+crianza de ganado vacuno de doble propósito, con predominancia del genotipo girolando; y engorde, con predominancia de las razas Senepol y Nelore (Midagri, 2019).
+En esta región, predomina el sistema de crianza tradicional migratorio, adaptado a las condiciones del territorio, y está sujeto a las condiciones climatológicas del medio y a la
+disponibilidad de suelos, casi siempre pobres con alto nivel de acidez (típicos de la selva).
+Prevalece el uso de praderas naturales, mayormente asociado con purmas, además del uso de semilla sin mejoramiento y prácticas inapropiadas del trabajo de la tierra, como roce,
+tumba, quema y pastoreo extensivo, sin seguir programas técnicos de manejo de animales ni de pasturas que, sumado a las condiciones antes descritas, dan como resultado bajos
+medios de subsistencia de la población rural, a través del comercio local, el cual no cubre la demanda regional (Midagri, 2019).
+En relación a las prácticas de mejoramiento genético, Midagri indica que el 96.4% del total de productores ganaderos de Madre de Dios, no aplica técnicas de mejoramiento genético
+transferencia de embriones y otros), mientras que sólo un 3.6% aplica alguna práctica de mejoramiento (Midagri, 2019).
+El ingreso promedio anual de los productores agropecuarios en Madre de Dios, determinado por la relación entre el valor bruto de la producción agropecuaria y el número de productores
+agropecuarios para el año 2007, es de S/. 5,951 nuevos soles con un promedio mensual de
+S/. 496 nuevos soles por mes (Midagri, 2019 con base a información del Plan Estratégico
+Regional del Sector Agrario Madre de Dios 2008-2015).
+Frente al promedio regional, la ganadería en el distrito de Iñapari es excepcional, toda vez que tiene atributos de calidad y de origen superiores. Es posible observar que la saca anual
+en esta área de la región es de aproximadamente 1,000 cabezas de cruce de ganado vacuno machos (toretes) de las razas Senepol, Nelore, o Senepol puros, los que alcanzan
+un peso promedio de carcasa entre 160 y 200 kilogramos (Midagri, 2019).
+
+En el año 2019, Midagri realizó un estudio técnico para una propuesta de lineamientos para el desarrollo ganadero sostenible en la Región Madre de Dios. Como resultado de
+ganadero en Madre de Dios como: a) la abundancia de recursos naturales renovables, b) la voluntad de trabajo de los actores principales de la producción ganadera, que son los
+productores, el apoyo político y presupuestal de las autoridades regionales y locales; y c) el acompañamiento de un equipo de profesionales y técnicos de diversas instituciones del
+Midagri, lideradas por la Dirección General de Desarrollo Ganadero, la academia, a través de la Universidad Nacional de Madre de Dios, ONGs nacionales e internacionales, así como
+el sector privado (Midagri, 2019).
+Fuente: Midagri, 2019
+1. Limitación de ganaderos.
+2. Métodos inadecuados
+de manejo de suelos y
+cobertura vegetal.
+3. Alto riesgo de contaminación
+por actividades no controladas.
+4. Ausencia de previsión
+frente al cambio climático afeta
+el manejo de pastos.
+5. Inadecuado manejo de suelo
+y agua.
+1. Limitada gestión del
+recurso genérico.
+2. Limitada gestión de
+recursos alimenticios.
+prácticas preventivas y de
+control sanitario.
+4. Limitada infraestructura
+productiva.
+5. Limitada innovación
+y acceso a tecnologías
+ganaderas.
+6. Pastos de calidad
+1. Limitada gestión de los productores.
+2. Limitada disponibilidad y
+acceso a información de calidad y servicios
+comerciales.
+3. Bajo acceso a servicios y productos
+4. Limitada cobertura de servicios básicos y
+vías de acceso.
+1. Débil organización de los productores.
+articulación del sector público y
+privado.
+3. Inadecuada normatividad.
+4. Saneamiento físico y legal de la
+propiedad agraria incompleta.
+1. Limitada innovación
+y acceso a tecnologías
+de acopio, transformación y
+distribución.
+control de la inocuidad de
+los productos y derivados.
+3. Escala diferenciación
+e innovación de productos
+ganaderos y derivados.
+BAJO NIVEL DE COMPETITIVIDAD
+GESTIÓN
+INADECUADA DE
+RRNN - EVENTOS
+CLIMA
+LIMITADO VALOR
+AGREGADO DE
+PRODUCTOS
+GANADEROS
+LIMITADA COBERTURA
+DE SERVICIOS PARA
+ACCESO A MERCADOS
+DÉBIL
+INSITUCIONALIDAD Y
+NORMATIVA DEL SUB
+SECTOR GANADERO
+BAJA
+PRODUCCIÓN
+GANADERA
+
+1.2.
+Dinámica del cambio de uso de los bosques y la ganadería en la Amazonía Peruana y Madre de
+Dios el segundo país con mayor extensión de bosques amazónicos y el cuarto en bosques
+tropicales del mundo (FAO, 2015). Además de ser una importante reserva de carbono, los bosques peruanos albergan una gran diversidad biológica y proveen bienes y servicios
+fundamentales para el desarrollo del país y el bienestar de sus habitantes, especialmente, de los pueblos indígenas u originarios (Minam, 2016).
+Los bosques húmedos amazónicos peruanos abarcan 68,070,889 de hectáreas y están distribuidos en quince departamentos, cubriendo aproximadamente el 52% del territorio
+peruano. Estos bosques se concentran en siete departamentos (Amazonas, Cusco,
+Huánuco, Loreto, Madre de Dios, San Martín y Ucayali) que abarcan más del 92% del total nacional o 62,791,305 hectáreas (Minam, 2022).
+De acuerdo con el portal de Geobosques del Minam, el departamento de Madre de
+Dios cuenta con 7,838,185 hectáreas de bosques que cubren el 92% de su territorio.
+Sin embargo, la deforestación en esta región es creciente y acelerada. Tal como puede de Dios fue de 184,065.00 hectáreas, y entre los años 2001 y 2021 se registró una
+deforestación de 277,295 ha. Si bien el porcentaje del área deforestada acumulada en
+Madre de Dios es relativamente bajo (5.56%, equivalente a 461,360 ha hasta el 2021) es importante resaltar que durante el periodo 2001-2021 la deforestación ha aumentado
+considerablemente pasando de 5,603 ha a 23,142 ha anuales, mostrando una clara aceleración.
+
+Fuente: Plataforma Geobosques, 2022
+25 000
+20 000
+15 000
+10 000
+5 000
+5 623
+5 223
+5 626
+7 766
+8 288
+5 756
+7 338
+10 503
+5 691
+14 286
+11 763
+11 701
+12 401
+15 767
+17 802
+17 055
+23 669
+23 492
+21 492
+23 042
+23 142
+Las zonas con mayor pérdida de bosque se ubican al sur de Madre de Dios. Durante el periodo 2001-2021, la provincia de Tambopata acumula la mayor pérdida de bosque
+(145,037 ha), seguida por la provincia de Tahuamanu (71,833 ha) y Manu (60,426 ha). La pérdida de bosques en las tres provincias tiene un patrón creciente, oscilante con un pico
+común durante el año 2010, siendo más pronunciado para la provincia de Tambopata.
+Este crecimiento coincide con el incremento del precio del oro entre los años 2009 – 2011 y la construcción de la carretera Interoceánica (2009-2012), con consecuentes impactos
+en la expansión de áreas para minería aurífera en esta provincia. De igual modo, en el año
+2013, la provincia de Tahuamanu pasó a tener mayor pérdida de bosque que la provincia de Manu, debido a la expansión de cultivos agrícolas como el maíz (el área agrícola se
+cuadruplicó entre el año 2013 y 2016 en Tahuamanu) y la mayor accesibilidad al culminar la construcción de la carretera Interoceánica.
+De acuerdo con el diagnóstico de la Estrategia Regional de Desarrollo Rural Bajo a pastos para la ganadería es uno de los siete cambios en el uso de la tierra detectados
+en la región. Este análisis considera que existen 45 causas directas e indirectas de la deforestación, siendo el 70% causas indirectas vinculadas a factores institucionales,
+políticos y económicos. Es importante señalar que este análisis determinó que la falta de paquetes tecnológicos adecuados al ecosistema amazónico para las principales cadenas
+
+En ese sentido, para reducir la deforestación es necesario entre otras medidas, fomentar la generación de nuevos paquetes tecnológicos, adaptados al contexto amazónico, que
+mejoren la resiliencia y productividad de las cadenas productivas a largo plazo (por ejemplo, promoción de sistemas agroforestales o silvopastoriles sustentables y otros),
+bajo un enfoque de producción libre de deforestación. De igual modo, este análisis resalta puedan implementar mejoras tecnológicas, que permitan incrementar la productividad
+sin deforestar.
+1.3. Ganadería y cambio climático
+El Gobierno Peruano, como parte de la Convención Marco de las Naciones Unidas sobre alcanzar una reducción de emisiones de gases de efecto invernadero (GEI) del 40%, en
+el año 2030, respecto del 2015. Para alcanzar esta reducción, el Gobierno Peruano ha
+Las medidas de adaptación del sector agrario para la ganadería peruana consideran mayor vulnerabilidad, b) el manejo integrado de plagas y enfermedades en cultivos y
+manejo preventivo de enfermedades en crianzas con mayor vulnerabilidad, c) el manejo de praderas naturales para asegurar la alimentación de las crianzas y reducir su
+vulnerabilidad ante al cambio climático, d) el manejo y conservación de pastos cultivados como suplementación alimentaria de las crianzas en zonas vulnerables con peligros
+asociados al cambio climático, e) el mejoramiento y transferencia de recursos genéticos de cultivos y crianzas para incrementar su resiliencia frente al cambio climático, f) la
+conservación in situ y ex situ de la agrobiodiversidad (ABD) para incrementar la resiliencia frente al cambio climático, g) el diseño e implementación de Sistema de Alerta Temprana
+(SAT) para disminuir impactos en zonas vulnerables, con peligros asociados al cambio climático, y h) el fortalecimiento de los sistemas de transferencia de riesgos agropecuarios
+ante eventos climáticos adversos.
+productivas agropecuarias, es una de las principales causas indirectas de deforestación y cambio de uso de la tierra, debido al agotamiento y degradación de suelos .
+económicos que permitan un margen para inversiones, b) no se observa a corto plazo la posibilidad de mejores precios o mayores volúmenes (aunque esto está cambiando, algunos ganaderos comentaron la opción de venta de ganado a Brasil), c) la cadena en Madre
+de Dios no está muy desarrollada y por el momento se limita a la venta de animales vivos a acopiadores que pagan poco por los altos
+
+pastos naturales altoandinos, b) el manejo de sistemas de producción pecuarios de pastos cultivados de sierra, y c) la implementación de sistemas silvopastoriles en la Amazonia
+Peruana. Es importante precisar que al menos una (c) de estas medidas aplica para la ganadería en la Amazonía Peruana.
+Para ambos tipos de medidas, de acuerdo con la metodología propuesta por el complementarias que coadyuven a reducir las emisiones GEI y reducir el impacto negativo
+del cambio climático al 2030.
+La medida de implementación de técnicas de manejo de pastos, a través de sistemas silvopastoriles para la reducción de GEI en la Amazonía considera aplicar técnicas
+apropiadas, destinadas a incrementar la productividad pecuaria, el mejoramiento de pastos y la incorporación de especies forestales en sistemas ganaderos en la Amazonía.
+Esta medida complementa además la mejora en la calidad y cantidad de alimentación de los animales a través de la siembra de pastos y forrajes. Para ello, Midagri y Minam
+(2020) proponen que se implementen:
+El Minam ha estimado que el potencial de reducción de esta medida al 2030 es de 1.18
+MtCO2eq y que la reducción acumulada entre el 2010 y 2030 puede alcanzar las 7.22 y económicos, como el control de la erosión del suelo, conservación de la biodiversidad
+amazónica, control de riesgos de desastres, disminución de la deforestación, aumento de la productividad de los pastos degradados y del ganado, mejores ingresos para los
+donde se pueden desarrollar otras actividades productivas.
+Módulos de producción ganadera de 10 ha divididos en cuatro potreros de 2.5 ha cada uno, permitiendo el adecuado pastoreo.
+Siembra de árboles, que contribuyan a la captura de carbono.
+Instalación de biodigestores.
+Incorporación de razas de animales con mejor capacidad de asimilación del pasto.
+Es importante precisar que, al menos siete (a, b, d, e, f, g, h) de estas medidas aplican para la ganadería en la Amazonía Peruana.
+Las medidas de mitigación del sector agrario para la ganadería consideran las siguientes
+
+Para ello es necesario desarrollar un conjunto de condiciones habilitantes como: a) mitigación (con el objetivo de promover la asociatividad, garantizar los insumos de
+calidad, desarrollar competencias tecnológicas y sensibilización de productores), b) el crédito, la subvención y pago por servicios ecosistémicos, c) diseñar e implementar
+procedimientos administrativos adecuados para esta medida (títulos habilitantes y mejorar la coordinación), y d) desarrollar un sistema de monitoreo para comprobar la
+agricultura y generar información anual sobre el área de pastos cultivados, carga animal, calidad de pastos, fuentes de alimentación, y áreas de sistemas silvopastoriles).
+las mesas de concertación del sector ganadero, la Comisión de Implementación del Plan
+Nacional de Desarrollo Ganadero, los Comités Regionales Agrarios y actores claves de la
+Dirección General de Ganadería, la Dirección General de Asuntos Ambientales Agrarios, el Servicio Nacional Forestal y de Fauna Silvestre, los Gobiernos Regionales, Proyectos
+Especiales, AgroRural; además de empresas privadas y asociaciones de ganaderos.
+climático impactos del cambio climático que reporta el Panel Intergubernamental sobre el Cambio
+Climático (IPCC, 2021). Alcanzar dicho objetivo requerirá un cambio fundamental en la
+Environment Initiative y Investment Leaders Group, NatWest Group y Glasgow Financial relacionados con la naturaleza" para evaluar la pérdida de los servicios ecosistémicos y los
+agrícolas en el mundo.
+
+adoptada por la Organización para la Cooperación y el Desarrollo Económicos (OCDE), el hacia la reducción emisiones, con el propósito de alinear la trayectoria existente de las
+emisiones de gases de efecto invernadero con los objetivos y requisitos del Acuerdo de
+París. Se trata de una "transición de mitigación climática".
+Los sistemas de producción ganadera bajo un enfoque sostenible son capaces de proveer servicios ecosistémicos y ambientales tales como: menores emisiones de gases de efecto
+de invernadero - GEI, captura de carbono, mayor retención de suelos, conservación de biodiversidad, mejora del paisaje, entre otros, así como el aumento de la productividad
+y a su vez, contribuir a la generación de empleo estable. Es decir, un mejor desempeño de valor y estabilidad en los ingresos del productor de carne y de leche, mejorando así, su
+calidad de vida y la de su familia.
+Es importante precisar que si bien se reportan estos avances a nivel internacional, no que puedan ser aplicados para promover la ganadería sostenible y/o generativa en la
+Amazonia peruana.
+1.5. Ganadería Regenerativa
+El concepto de ganadería regenerativa proviene del término de agricultura regenerativa, el cual describe las prácticas agrícolas y de pastoreo que, al reconstruir la materia orgánica
+del suelo y restaurar la biodiversidad en las tierras degradadas, permiten reducir las emisiones de GEI, mitigar el cambio climático y mejorar el ciclo del agua. En ese sentido,
+de acuerdo a Baquero (2021), la ganadería regenerativa es un sistema holístico, que crea sinergias y redes colaborativas suelo-planta-animal-humano y activa la fotosíntesis,
+los ciclos del carbono, del agua, y de los minerales, utilizando herbívoros que sanan el vegetal animal.
+Adicionalmente, existen iniciativas como el Financiamiento para la Transición, la cual fue
+
+ultra densidad, b) restringir el uso de agroquímicos, c) tiempos adecuados de descanso del y mejorar el trato hacia el animal, f) evitar los monocultivos; y g) conservar los bosques y
+otros ecosistemas naturales colindantes (Viancha, 2022).
+Este enfoque ha sido aplicado en la región Madre de Dios desde el 2018, año en el que, líderes ganaderos de esta región, en coordinación con la Mesa Técnica Ganadera
+de Madre de Dios y WWF Perú, iniciaron la implementación de un paquete de buenas prácticas agropecuarias para promover el pastoreo racional.
+Estas prácticas consideran: (i) el mejoramiento de pasturas, con acciones que buscan mejorar la cobertura de las gramíneas y leguminosas rastreras, a través de renovación o
+establecimiento por siembra, (ii) la instalación de cercos eléctricos y acueductos ganaderos para incorporar prácticas de manejo rotacional, con la provisión y suplementación del agua
+que requieren los animales a medida que pastorean en las áreas o lotes delimitados; (iii) la siembra de árboles dispersos en los potreros para incorporar adecuadamente sombras
+y reducir la compactación de los suelos, (iv) el uso de cercos vivos en los perímetros de los predios, en las división de las áreas internas de los predios y en la división de potreros; y (v)
+la implementación de sistemas silvopastoriles intensivos que buscan establecer en alta densidad la siembra de especies forrajeras en combinación con arbustivas y componente
+arbóreo que ofertan grandes volúmenes de biomasa.
+Es importante señalar que aplicado a la ganadería, este concepto implica la regeneración del suelo, animal y de las plantas para lo cual considera prácticas como: a) pastoreo a
+
+2.2. Metodología del análisis
+Como se menciona anteriormente, la deforestación debida a la agricultura y ganadería expansiva está fuertemente vinculada a condiciones de informalidad, baja aplicación
+colindantes y la rentabilidad de su actividad.
+En ese sentido, el enfoque de ganadería regenerativa es una alternativa para reducir la deforestación y degradación de bosques, incrementar la sostenibilidad ganadera y mejorar
+la rentabilidad de los pequeños y medianos productores. Sin embargo, para implementar forma adecuada, integral y oportuna las innovaciones tecnológicas necesarias.
+Es importante señalar que este enfoque ya ha sido desarrollado con resultados exitosos a nivel internacional. Buenos ejemplos de esto son: el Proyecto Ganadería Colombiana
+Sostenible y el Instrumento de Transformación Productiva Sostenible - ITPS, ambos desarrollados en Colombia, y que tienen como objetivo de promover la conversión de
+y diversos. Estos instrumentos buscan enfrentar la deforestación y la transformación de productiva y la baja competitividad; y está enfocado en los pequeños productores
+2.1. Objetivo regenerativa y libre de deforestación.
+02.
+OBJETIVOS Y METODOLOGÍA
+
+incentivo para la liberación de áreas de pastoreo para la restauración, y asistencia técnica integral (incluyendo el monitoreo de tierras con recursos de la cooperación internacional y
+el monitoreo satelital de la condición de deforestación cero realizado por el Estado).
+Metodología utilizada
+Considerando las lecciones aprendidas internacionales y nacionales para promover una ganadería regenerativa, y las condiciones particulares de la ganadería amazónica peruana;
+se utilizó la siguiente metodología de análisis:
+Revisión de información secundaria y sistematización de lecciones aprendidas sobre ganadería sostenible en el ámbito andino-amazónico.
+peruana, elaborado sobre la base de costos en la Región Madre de Dios (Perú).
+Desarrollo de entrevistas virtuales y presenciales con actores claves para sistematizar del sector y proponer mejoras. Esta tarea incluye un análisis comparativo con el caso
+colombiano y aporta conocimientos adicionales para el proceso de diseño, aplicación y requisitos de este tipo de instrumentos.
+del Ministerio de Desarrollo Agrario y Riego, y los socios de la Alianza por una Ganadería
+Regenerativa en la Amazonía Peruana (AGRAP).
+análisis también considera las opciones, las oportunidades para mejorar el diseño incorporar criterios de sostenibilidad.
+de valor de la carne de vacuno sostenible en la Amazonía peruana.
+
+La relación detallada de expertos entrevistados para este documento y la metodología para el desarrollo de las encuestas para los productores, realizada como parte del estudio
+"Análisis sobre el mercado potencial de Carne Bovina procedente de Madre de Dios" , puede ser encontrada en el Anexo I de este estudio.
+sector agrario analizados
+Agroideas
+Agroideas es un Programa del Ministerio de Agricultura que tiene por objetivo elevar la competitividad de pequeños y medianos productores agrarios, fomentando la asociatividad,
+así como la gestión y adopción de tecnología, mediante la entrega de recursos no reembolsables, a organizaciones de productores que presenten planes de negocios
+sostenibles. Este Programa fue creado en el año 2008 el marco del Decreto Legislativo
+N° 1077, que crea el Programa de Compensaciones para la Competitividad (Agroideas) y fue ampliado por tres años más a través de la Ley N° 30975. La operación de Agroideas
+está regulada por el Decreto Supremo N° 005-2020-MINAGRI, que aprueba el Reglamento del Decreto Legislativo N° 1077, la Ley N° 27444, Ley del Procedimiento Administrativo
+General; y la Resolución Ministerial N° 0128-2020-MINAGRI, que aprueba el Manual de
+Operaciones del Programa de Compensaciones para la Competitividad.
+Para poder acceder a Agroideas los productores deben estar registrados en la
+Superintendencia Nacional de Registros Públicos (Sunarp), contar con estatutos, RUC activo y habido, tener un padrón de socios actualizado, acreditar la propiedad de la tierra,
+tener un plan de negocios y disponer de una contrapartida cuyo porcentaje puede variar en
+Lazo, Jorge: et al, 2022 Análisis sobre el mercado potencial de Carne Bovina procedente de Madre de Dios / Jorge Lazo, Miguel De la
+Cruz, José Girón, Carlos Morales, Adriana Vilches, Israel Ortiz, Ana María Ramos. Lima, PE: Coalición por una Producción Sostenible (TFA),
+2022.
+
+a través de reembolsos, 2) gestión empresarial, que busca dotar a las organizaciones de productores, parcialmente, el costo del salario de un gerente, hasta por tres años; 3)
+maquinaria agrícola, equipos para post cosecha, procesamiento, transformación y control reconversión productiva.
+El incentivo de apoyo a la asociatividad permite el reembolso, por única vez, de los gastos de constitución de una organización de productores agropecuarios hasta por S/. 2,100 (0.5
+UIT). No requiere de contrapartida y está acotado a organizaciones que se hayan constituido dentro de los seis meses anteriores a la presentación de la solicitud de elegibilidad. Los
+gastos aplicables son: a) honorarios por asesoría legal, b) gastos notariales; y, c) gastos es de S/. 50,400 y va decreciendo hasta 30% del costo total en el tercer año.
+no reembolsable bienes y servicios necesarios para la adopción de tecnología. El aporte máximo de Agroideas por organización es de 300 UIT (S/.1 millón 260 mil) y está en función
+al número de socios que integran la organización, pudiendo llegar hasta S/.16,800 (4 en función al monto total del plan de negocios; siendo un 20% para planes menores a
+los S/525,000, 30% para planes entre los S/525,000 y S/1'201,200; y 40% para planes mayores a S/2'100,000.
+Finalmente, la línea de reconversión productiva busca promover el cambio o transformación voluntaria hacia una producción diferente a la actual, con el objetivo de innovar y agregar
+cadena productiva. Esta línea es la de mayor presupuesto, pero cuenta con las siguientes condiciones para los productores: a) acreditar la conducción del cultivo, mínimo 2 campañas
+de sembrado, b) contar con infraestructura productiva acondicionada para la ejecución del proyecto (carreteras, canales, entre otros), c) tener un buen nivel asociativo y una
+organización bien constituida y fortalecida, d) contar con calidad de agua acorde al cultivo a al nuevo cultivo, e) contar con condiciones físicas y químicas del suelo adecuadas al cultivo
+(se solicita análisis de suelos), e) contar con una alianza con una entidad auspiciadora o
+
+gestora de proyectos que acompañe en la gestión, ejecución y post proyecto; y f) contar con contrapartida ya sea por aporte individual, préstamo bancario o aporte de una entidad
+asociada.
+Es necesario precisar que cada proyecto de reconversión no podrá exceder de trescientas
+(300) hectáreas, y cada productor podrá participar hasta con un máximo de veinte (20) infraestructura productiva, entre otros; y los cultivos sujetos a reconversión productiva
+agropecuaria deberán ser sustituidos por cultivos de carácter permanente, sobre la base de potencialidades que ofrece el mercado interno o externo.
+Fondo Agroperú
+El Fondo Agroperú fue creado el 23 de febrero de 2009 a través del Decreto de Urgencia para brindar un soporte en situaciones de crisis, que afecten al sector agropecuario. El
+Ministerio de Agricultura y su ejecución se realiza siguiendo el procedimiento establecido en el Decreto de Urgencia.
+N° 30893. El objetivo de AgroPeru es promover el acceso a garantías para la cobertura agrarios organizados, bajo cualquier forma asociativa contemplada en la normatividad
+vigente, tales como cooperativas, asociaciones de productores, miembros de comunidades campesinas y nativas, organizaciones de usuarios de agua y similares. En ese sentido,
+3 DS N° 004-2020-Minagri).
+con una Tasa Efectiva Anual (TEA) de 3.5% hasta por tres (03) años, que pueden incluir un periodo de gracia de hasta doce (12) meses. El crédito es desembolsado en dos partidas y
+para poder acceder al crédito la organización de ganaderos o productores debe contar con documentación legal vigente, un padrón digital actualizado de los pequeños productores
+
+que desean acceder a esta modalidad de préstamo, y los miembros deben ser mayores de dieciocho (18) años hasta los setenta y cinco (75) años de edad. Es importante señalar
+que no es obligatorio contar con historial crediticio, y si en caso el productor lo tuviese deberá estar al día en sus pagos; además de ser propietario o posesionario del predio cuya
+De igual modo, el productor no deberá presentar deuda vencida con el Fondo AgroPeru, deberá demostrar que tiene un ingreso neto anual menor a doce unidades impositivas
+de acuerdo a la central de riesgos. Asimismo, y tal como describen los objetivos del Fondo
+AgroPeru, este incentivo está limitado a pequeños productores agrícolas asociados que trabajen máximo hasta 5 hectáreas en explotación. Para acceder al crédito los interesados
+El Fondo AgroPeru cuenta con las siguientes líneas de intervención: a) programa agrícola,
+b) programa pecuario, c) programa plantaciones forestales, d) programa agrícola para el desarrollo productivo de Madre de Dios, e) programa pecuario y silvopastoril para el desarrollo
+productivo de Madre de Dios, f) programa para acopio, transformación y comercialización camélidos sudamericanos, h) programa de renovación y rehabilitación de café, i) programa
+para ganadería. La cobertura de este fondo fue de 41,510 productores a nivel nacional y se ha proyectado en 62,400 productores para el 2022. Es importante precisar que, en el caso
+del programa pecuario para el desarrollo productivo de Madre de Dios, el crédito puede genético y engorde de ganado.
+
+3.1 Colombia y la transición hacia una ganadería baja en emisiones
+La ganadería en Colombia es una de las actividades agropecuarias más importantes a nivel nacional, debido a que 37.5 millones de hectáreas son usadas y ocupadas para
+actividades agropecuarias ganaderas (DANE, 2016). De igual forma, la ganadería aporta el 1.4% del Producto Interno Bruto (PIB) nacional, y el 21.8% del PIB agropecuario, lo que
+representa una de las carteras más importantes de los créditos del sector agropecuario.
+indica la importancia de este sistema productivo en Colombia . Además, el crédito ganadero
+4En Colombia la ganadería no está obligada a pagar tributos. El Gobierno Colombiano ha establecido una cuota de fomento aplicable
+03.
+LECCIONES APRENDIDAS EN EL
+DISEÑO DE IMPLEMENTACIÓN DE
+INSTRUMENTOS FINANCIEROS
+PARA LA GANADERÍA
+SOSTENIBLE COLOMBIANA
+
+Es importante señalar que en la última década Colombia ha incorporado en su agenda política, a través del Plan Nacional de Desarrollo (PND), fomentar la reconversión de
+sistemas productivos agrícolas, pesqueros y ganaderos hacia modelos sostenibles y climáticamente inteligentes. En materia de ganadería, esta estrategia ha incluido el
+escalamiento de los programas en curso sobre la base de la adopción de la política de
+Ganadería Sostenible.
+Igualmente, el Ministerio de Agricultura y Desarrollo Rural de Colombia (MADR), con apoyo de la Corporación Colombiana de Investigación Agropecuaria (Agrosavia), centros de
+investigación, gremios agropecuarios, entre otros, ha promovido el desarrollo de modelos productivos agropecuarios con oferta tecnológica y mejores técnicas.
+De esta forma, la reconversión sostenible de la ganadería en Colombia se ha orientado hacia acciones basadas en la naturaleza, incluyendo prácticas de manejo para el uso
+racional y climáticamente inteligente, junto a técnicas agroforestales de silvopastoreo.
+Este enfoque de manejo sostenible y promoción de arreglos silvopastoriles, resulta capaz de proveer servicios ecosistémicos y ambientales tales como: menores emisiones de
+gases de efecto de invernadero - GEI, captura de carbono, mayor retención de suelos, conservación de la biodiversidad, mejora del paisaje, entre otros; así como el aumento
+de la productividad y a su vez la generación de empleo estable. Es decir, la estrategia de una mejor rentabilidad del negocio a lo largo de la cadena de valor y estabilidad en los
+ingresos del productor de carne y de leche, mejorando así su calidad de vida y la de su familia.
+Según datos de Finagro, entre enero de 2019 y enero de 2021, se destinaron 45,027,057 millones de pesos (aproximadamente USD 13 millones) en el sector agropecuario, de los
+cuales el 18.27% correspondieron a créditos para ganadería de carne y de leche, es decir, un total de 8,227,535 millones de pesos (aproximadamente USD 2,3 millones) en los dos
+últimos años.
+
+Por ello, Colombia busca mejorar los indicadores ambientales frente a los Objetivos de
+Desarrollo Sostenible. Además, este objetivo es complementario a los compromisos internacionales asumidos por el Gobierno Colombiano de reducir las emisiones de
+GEI en 36 millones de tCO2eq, frenar la deforestación a 2022 con control territorial y oportunidades económicas, la conservación de 1.4 millones de hectáreas en áreas
+protegidas, entre otras acciones que buscan mitigar las fuentes de emisiones de GEI.
+Igualmente, se espera reducir la deforestación asociada a la potrerización, las emisiones de metano por fermentación entérica, y del óxido nitroso generado por el uso de abonos
+de síntesis química.
+De tal modo, Colombia ha aprobado la Resolución 000126 de 2022, que adopta los lineamientos de Política de Ganadería Bovina Sostenible- GBS 2022-2050. Estos
+lineamientos tienen como principal objetivo implementar la Política de Ganadería Bovina
+Sostenible 2022-2050, para disminuir los efectos negativos que genera la ganadería bovina, a través del abordaje de tres ejes estructurales, los cuales son: (i) sostenibilidad,
+que la actividad ganadera genera más del 18% del total de las emisiones del país.
+3.2. Incorporación de la sostenibilidad agropecuaria en Finagro
+El Fondo para el Financiamiento del Sector Agropecuario (Finagro) en Colombia, ha diseñado una línea especial de crédito (LEC) de Sostenibilidad Agropecuaria y Negocios
+Verdes, creada mediante la Resolución 5 de 2021, como parte de la oferta institucional del
+Ministerio de Agricultura y Desarrollo Rural (MADR) en materia de créditos de fomento con subsidio.
+animal, mediante el manejo sostenible de los recursos naturales a su disposición.
+en los sistemas de producción agrícola, de acuerdo con los objetivos de política pública en temas de preservación y conservación del medio ambiente. Finalmente, también fomenta
+el mejoramiento en el uso de los recursos hídricos y los sistemas de producción limpia.
+LEC, con el propósito de fomentar su participación e impulsar el enfoque de los negocios verdes en el sector ganadero, de acuerdo con el Consejo Nacional de Política Económica y
+Social (Conpes) 3934 "Política de Crecimiento Verde".
+
+Cercado eléctrico para división de potreros y aislamientos de áreas (postes, alambre, aisladores, herramientas, impulsor, paneles solares, y jornales para el montaje).
+Establecimiento de bancos forrajeros (compra de material vegetal/semilla, abonos orgánicos, jornales para siembra y mantenimiento).
+Insumos para producción de material vegetal (Viveros: bolsas, semilla, polisombra, abonos orgánicos, materiales, herramientas, mangueras y equipos de riego, y
+jornales).
+Establecimiento de arbustos, árboles forrajeros y/o maderables SSP en potrero, franjas o cercas vivas (material vegetal, abonos, y ahoyadores).
+Mano de obra, entre otros, emparejado con división de potreros, aislamientos, y mejoramiento de pasturas.
+hídrico.
+del programa de ganadería sostenible:
+mínimos requeridos para orientar la reconversión productiva sostenible de los predios
+ganaderos. Estas actividades además permiten: (i) la gestión de las áreas del predio con cercado eléctrico para orientar estrategias de conservación y la gestión de las áreas en
+respectiva captura de carbono; (ii) suplir los requerimientos nutricionales de los animales, a través de la oferta de alimento de los arreglos silvopastoriles; asimismo, permite mayor
+que permite la protección de fuentes hídricas, uso racional y controlar la contaminación por el vertimientos de excretas bovinas a las fuentes de agua.
+Para ampliar el alcance de la línea de crédito, Finagro ha mejorado las condiciones en la
+Verdes, con el propósito de incentivar su utilización, decisión que busca apalancar una mejor manera el cumplimiento de las metas en reconversión de ganadería sostenible. Es
+importante señalar, como lección aprendida, que, si se desea fortalecer líneas de crédito para las intervenciones de reconversión productiva sostenible y regenerativa, se requiere
+de la articulación del conocimiento técnico de ganadería regenerativa en los espacios
+
+3.3 Mejoras en las líneas de crédito de
+Bancolombia
+Dado que el subsector ganadero representa una oportunidad dentro del sector agropecuario, por su representatividad en la economía colombiana y la importancia que
+tiene en el uso de la tierra en el país, en el año 2020, Bancolombia, uno de los principales bancos colombianos, lanzó una línea de crédito para ganadería sostenible. El objetivo de
+Bancolombia fue convertirse en uno de los bancos líderes en apoyar al sector agropecuario en su transformación hacia la sostenibilidad, y ayudar al país en el logro de sus compromisos
+internacionales de Contribuciones Nacionales Determinadas frente a las emisiones de gases efecto invernadero.
+a Bancolombia en el desarrollo de un plan estratégico, que articula la asistencia técnica inversiones en herramientas de ganadería sostenible. De esta forma, se asegura que los
+ganaderos hagan una transición exitosa hacia sistemas de producción intensivos y más
+productivos. Este apoyo en AT, también busca cambiar la cultura ganadera del país de forma que, en el futuro, toda la ganadería se haga de manera más sostenible y con las
+adecuadas herramientas de manejo del predio para reducir las emisiones, aumentar la la resiliencia del sistema productivo a efectos externos como el cambio climático.
+compromisos del acuerdo Glasgow Financial Alliance for Net Zero (GFANZ), coalición global de la economía con el objetivo de cumplir el Acuerdo de París para evitar el aumento de
+la temperatura global a 1,5 grados centígrados. Para ello, promueve las inversiones en modelos comerciales con planes de transición a un futuro resiliente al clima y bajo en
+carbono.
+
+sistemas más productivos y respetando las áreas de bosques y cuerpos de agua. Las condiciones de la línea son:
+Siembra de árboles (árboles dispersos en potreros, cercas vivas, sistemas silvopastoriles intensivos).
+animal (convencional o eléctrica, con energía renovable o conectada a la red eléctrica).
+Acueductos ganaderos (bombas, tubería, tanques y reservorios, bebederos).
+Implementación de bancos de forraje e insumos para ensilaje, a partir de árboles con altos contenidos de proteína – no aplica el establecimiento de monocultivos de
+gramíneas.
+Periodo de gracia de capital: hasta 2 años.
+Plazo: hasta 84 meses.
+Amortización de capital: mensual, trimestral, semestral, anual y plan de pagos.
+Pagos de intereses: mensual, trimestral, semestral o anual.
+Tasas preferenciales (Agrosostenible): hasta 200 PB menos que la cartera ordinaria.
+Indexación: IBR.
+Compra de animales8.
+Retención de vientres.
+De igual modo, otros rubros de inversión asociados a los rubros sostenibles son:
+Asistencia Técnica.
+Renovación de pasturas7.
+Infraestructura pecuaria.
+Insumos requeridos para la implementación del sistema*
+8** Se contempla la compra de animales, con la condición que el cliente debe demostrar la línea base del número de animales y el área actual usada en pastoreo para calcular la carga animal, máximo el 50% del total del crédito (actividades 1, 2 ó 3).
+5PB = punto básico. Eso es igual a una centésima de parte (1/100). Eso quiere decir que 200PB es igual a 2% en la tasa
+6Índice Bancario de Referencia. Lo establece el Banco de la República de Colombia. Es el referente para los bancos, ejemplo en la actualidad IBR dice que la tasa efectiva es 10,3%, los bancos la utilizan como referente, cómo la base mínima para prestar, con esa base
+establecen cada banco a cuánto presta cómo tasa efectiva.
+7* Solo aplicable cuando se garantiza la inversión en conjunto con árboles dispersos, cercas vivas, SSPi y/o acueductos ganaderos
+(actividades 1, 2 ó 3).
+La línea de Bancolombia busca promover la conservación del medio ambiente por medio de
+
+Es importante señalar que la línea de crédito incorpora un análisis de riesgo en la fase pre crediticio del solicitante, el riesgo ambiental del crédito por el concepto de deforestación y
+y que se asocie a actividades de deforestación. Para ello, se emplea una herramienta que monitorea la deforestación de los predios y determina si los predios solicitantes del crédito
+de cero deforestaciones y la condición de estar dentro de la frontera agrícola, el banco determina la capacidad de endeudamiento del productor mediante la consulta en centrales
+de riesgo. Si el productor se encuentra en capacidad de endeudamiento y es sujeto de crédito, se procede a iniciar el acompañamiento de AT con la primera visita de campo, que
+destino del crédito.
+Cuando se haga en conjunto con árboles dispersos, cercas vivas, SSPi y/o acueductos ganaderos.
+Demostrar línea base de número de animales y área actual usada en pastoreo para calcular la carga animal.
+Para aumento de carga animal no podrá superar los siguientes rangos:
+Se incluirá dentro de los rubros de ganadería sostenible aplicables, infraestructuras sociales que mejoren el bienestar de los empleados (comedores, zonas de descanso,
+entre otros).
+1 a 2 animales/hectáreas en sistemas tradicionales extensivos en pastura.
+2 a 3 animales/hectáreas en sistemas de pastoreo racional, silvopastoriles no intensivos (cercas vivas, dispersos, bancos forraje). Si la situación actual es de
+pastoreo racional deberán adjuntar plan de rotación de potreros.
+3 a 5 animales/hectáreas en sistemas silvopastoriles intensivos.
+Asimismo, esa línea de crédito incorpora requisitos técnicos para garantizar los principios mínimos de la reconversión sostenible de la ganadería, como:
+
+3.4. Instrumento a la Transformación Productiva
+Sostenible (ITPS)
+El Instrumento a la Transformación Productiva Sostenible (ITPS), orientado al sector ganadero colombiano, diseñado en el marco del Programa Visión Amazonía, del Ministerio
+ganadería hacia una actividad más sostenible e incidir en la reducción de la deforestación, especialmente en áreas de alto valor ecosistémico, como la Región Amazónica.
+Este instrumento fue diseñado por Finagro, con apoyo del Green Growth Global Institute y de Earth Innovation Institute, en el marco de la Mesa Nacional de Mecanismos Financieros
+Agroambientales. El instrumento es una herramienta integral, la cual incluía una tasa de interés compensada, junto a un incentivo voluntario para liberación de áreas, asistencia
+enfoque de paisaje, un acompañamiento a la solicitud del crédito, un sistema de monitoreo la región.
+El ITPS se diseñó para apoyar la transformación bajo los siguientes objetivos: (i) proveer ganadera para zonas tropicales, a una tasa compensada; (ii) integrar un incentivo voluntario
+del bosque y "devolverle al suelo" su vocación forestal, bajo el entendido de que la inversión crédito y sus servicios complementarios.
+El piloto del ITPS fue implementado en el año 2020 en los departamentos de Caquetá la infraestructura pecuaria (división de potreros), mejoramiento de praderas y sistemas
+silvopastoriles no intensivos. Durante este piloto, se observó una tasa de rechazo del 35% y 38% créditos desembolsados para Guaviare, en el caso de Caquetá una tasa de rechazo
+del 52%, con 64 créditos desembolsados.
+
+Se redujo el riesgo de no colocación del crédito con la incorporación de los análisis ganaderos con experiencia en actividades de reconversión en otros proyectos que
+conocieran de las ventajas de las inversiones.
+La asignación de un coordinador en el terreno por cada departamento fue fundamental en la implementación del instrumento. Este coordinador debía tener conocimiento de
+la región, de los ganaderos y brindar el acompañamiento en el proceso de solicitud de créditos, junto al conocimiento en ganadería sostenible, lo que permitió el desembolso
+y que se llevara a cabo la inversión adecuadamente y en el momento indicado.
+Fue estratégico fortalecer los espacios para dar a conocer la línea de crédito a los funcionarios del Banco Agrario, puesto que el desconocimiento de las solicitudes del
+ITPS por parte de los funcionarios analistas de crédito generó demoras y rechazos de créditos.
+Se resalta la importancia del acompañamiento de la asistencia técnica, la cual debe inversión y seguimiento para evitar problemas con la solicitud del crédito.
+Se debe evitar la competencia entre líneas sostenibles, como el ITPS, y otras líneas del sector agropecuario, que también tienen tasas preferentes, para garantizar el
+impacto esperado y despertar el interés deseado en los ganaderos.
+Se observó un alto porcentaje de rechazo en pequeños ganaderos de la región de la Amazonía, debido a que los indicadores de productividad son bajos y no es viable
+la capacidad de endeudamiento para la adjudicación de los créditos; frente a este reto es importante contar con información oportuna sobre los costos de producción,
+El piloto de colocación y el escalamiento de nuevas líneas de crédito dejó importantes lecciones, entre las cuales resaltan:
+
+La Tabla No 01 muestra una comparación de las ventajas y desventajas de cada instrumento
+Como fondo, orienta políticas de alcance nacional y ha incorporado líneas especiales de
+requieren en ganadería sostenible.
+Finagro
+Bancolombia
+ITPS
+Depende de la gestión de los bancos de segundo piso, así como de sus capacidades técnicas,
+la gran mayoría de bancos de segundo piso no conocen los principios o prácticas de ganadería
+sostenible y no promueve la estrategia.
+Banca privada que conoce técnicamente las la reconversión sostenible y sugiere la asistencia
+técnica bajo un esquema propio de una línea de crédito Ganadería Sostenible.
+tasas de interés y plazos de amortización pertinentes para las inversiones.
+Abarca un segmento de productores de
+grande. Decide promover unas pocas estrategias
+Finagro a nivel interno, estrategias que son una oportunidad para incluir pequeños productores.
+No está expresamente ligada al acompañamiento de asistencia técnica especializada que oriente y
+garantice las inversiones e intervenciones de las prácticas regenerativas.
+Ventaja
+Instrumento
+Desventaja
+
+requieren inversiones de capital necesarias para hacer de los sistemas de producción de Dios considerando: a) las variables de producción ganadera promedio para la región
+Madre de Dios, b) las costos promedio para el modelo de ganadería cárnica de Madre de Dios, y c) las buenas prácticas de ganadería regenerativa propuestas por la Alianza
+por una Ganadería Regenerativa en la Amazonía Peruana (AGRAP) y las experiencias internacionales previamente descritas.
+Es importante señalar que este modelo permitirá tener una referencia adecuada sobre:
+a) los costos de producción de un modelo ganadero tradicional en la Amazonía peruana,
+b) los costos de las inversiones necesarias para adaptar el modelo tradicional ganadero públicos peruanos, d) las utilidades esperadas bajo el modelo de ganadería regenerativa,
+04.
+ANÁLISIS FINANCIERO DE LA
+GANADERÍA CÁRNICA EN
+MADRE DE DIOS
+
+4.1. Características generales del modelo
+La información descrita a continuación fue obtenida a través de encuestas con productores, como parte del estudio de mercado potencial para la carne regenerativa
+promovida por el Proyecto "Fomentando la ganadería libre de deforestación en Madre de
+Dios, Perú", y entrevistas con expertos y consultores (Anexo I). Todo ello permitió consolidar las características modales, en términos productivos, biofísicos y socioeconómicos y
+construir tablas de los costos de herramientas, materiales y equipos necesarios para las intervenciones y adaptados a la realidad de Madre de Dios. Cabe señalar que este
+modelo solo considera la venta de carne y no otras variables que conforman el costo del ganado.
+La producción ganadera en la región de Madre de Dios se caracteriza por sistemas de a los animales por un periodo de dos años y medio a tres años, hasta alcanzar un peso
+ganaderas de la región de Madre de Dios se caracterizan por un inventario promedio total de 70 a 71 animales. Con una estructura etaria de 28 hembras, las cuales mantienen la
+estructura del hato de los predios, junto a una tasa de natalidad del 60% (TN) e intervalos entre partos (IEP) de 510 días. Cabe indicar que para efectos de este modelo se consideró
+proyecta la estructura del inventario animal para un periodo de 7 años sin intervención o sin inversiones de mejoras de ganadería regenerativa.
+negocio en la región de Madre de Dios.
+
+Con base en las características técnicas de inventario e indicadores reproductivos promedio en los sistemas de producción de Madre de Dios, se consideró para el modelo un
+promedio que mantienen la estructura total del hato de 70 a 71 animales en total y consideran la venta de 15 a 16 animales.
+kilogramo de carcasa, para lo cual se estima un rendimiento promedio en canal del 50% para carcasa sobre el peso vivo del animal de los machos y hembras de 2,5 a 3 años.
+En el caso de animales de descarte, mayores de 5 años, se estima un valor de venta de
+S/9 el kilogramo de carcasa. Entonces, estas variables permiten calcular un valor de ventas netas o ingresos operacionales, considerando únicamente la venta de animales
+ganadera promedio de Madre de Dios, de S/28,244 por año (Tabla No 02).
+En cuanto al precio de venta, el modelo toma como referente un valor de S/11,7 por
+10Los precios de venta se estimaron utilizando referencias de expertos locales y los indicadores productivos de venta de animales expertos en el Anexo I.
+
+Manejo de Cerca Eléctrica, 0.8% en áreas de Cultivos agrícolas y 0.1% en infraestructura
+Leche
+S/ -
+Vacas De Desecho - Venta
+S/ 8,494
+Machos Desecho 0 - 1 Año - Venta
+Machos Desecho 1 - 2 Años - Venta
+Hembras Desecho 1 - 2 Años - Venta
+Machos Ceba 2-3 Años - Venta
+Hembras 2 - 3 Años - Venta
+Toros De Desecho / Ceba > 3 años (No) - Venta
+= Ingresos Operacionales / Ventas Netas
+Hembras Desecho 0 - 1 Año - Venta
+S/ -
+S/ -
+S/ -
+S/ 13,240
+S/ 6,510
+S/ -
+S/ 28,244
+S/ -
+Ingresos totales por venta de animales
+S/ 28.244
+Tabla No 02. Ingresos de un predio ganadero promedio en Madre de Dios.
+En cuanto a las condiciones de coberturas y usos del suelo en los predios ganaderos de la región de Madre de Dios, el modelo considera que en promedio los predios cuentan
+con 70 hectáreas, las cuales están distribuidas 55% en áreas de Pasturas de Manejo
+Tradicional, 38% en áreas con Bosques y Áreas de conservación, 6% en Pastura con
+
+ganaderos de la región de Madre de Dios
+En cuanto a los costos de producción promedio de los predios ganaderos de la región de
+Madre de Dios, utilizando como referencia entrevistas con expertos, se construyó una estructura de costos, gastos e ingresos de un predio promedio de la región.
+de cría.
+mano de obra directa , considerando el salario mínimo vital peruano, y jornales como
+11En la Amazonía peruana, los pequeños ganaderos con hatos menores a 200 animales dedican su tiempo a otras actividades dentro y reducir en S/6150.00 los costos; sin embargo para efectos de determinar el peor escenario para la viabilidad de los incentivos se
+propone simular un modelo en el que un productor con 80 animales solo se dedica a tiempo completo a la actividad ganadera.
+mano de obra indirecta de S/75 (Tabla No 03) . Es importante precisar que el modelo no
+12Mayor detalle sobre los costos utilizados pueden ser encontrados en la hoja de trabajo de Excel considerada en el Anexo II.
+
+Compra de animales
+S/ -
+COSTOS DIRECTOS
+S/ 7.049
+Sub Total Materiales Directos Variables
+Concentrado
+Suplementos (Fibras, Henos, Silos)
+Sub Total Materiales Directos Fijos
+Materiales mantenimiento de cercas corrales
+Abono (Correctivos, enmiendas, fertilizantes)
+Materiales, cercas y praderas
+Herbicidas, plaguicidas
+* MANO DE OBRA DIRECTA
+Mano de Obra Directa Variable (jornales)
+Mano de Obra Directa Fija (Mano de obra familiar)
+* COSTOS INDIRECTOS DE PRODUCCIÓN
+Sub Total Costos Indirectos Variables
+Brucelosis (2 veces al año hembras < 1 año)
+Carbón Sintomático (3 meses)
+Vermífugos (Ivermectina 1 ml 50 kg)
+Droga Veterinaria
+Transportes de productos
+Sub Total Costos Indirectos Fijos
+Desinfectantes, jabones, detergentes
+Mantenimiento de equipos
+Sales
+S/ 941
+S/ -
+S/ -
+S/ 6.108
+S/ 3.840
+S/ 1.080
+S/ 936
+S/ 252
+S/ 12.678
+S/ 378
+S/ 12.300
+S/ -
+S/ 1.614
+S/ 1.614
+S/ 55
+S/ 55
+S/ 842
+S/ 646
+S/ 16
+S/ -
+S/ -
+S/ -
+S/ 941
+Total Costo de Ventas
+S/ 21.341 ganadera promedio en la región de Madre de Dios
+
+mostrando que los mayores de estos están asociados a la mano de obra (56% del total) considerando, únicamente, un salario mínimo mensual y jornales eventuales, seguido
+de las actividades de manejo del pastoreo (28% del total) (mantenimiento de cercas y suministros agrícolas) y los costos indirectos variables por salud animal (7% del total).
+Respecto a variaciones anuales, es importante señalar que los precios de los insumos agrícolas tuvieron un incremento de más del 43% y otros del 60%, entre diciembre de
+2021 y enero de 2022; por lo que se incluyó esta variable en el modelo. Utilizando esta información como referencia, se pudo estimar un costo promedio de producción de S/9
+La información sobre los costos fue integrada con los precios promedio regionales de
+S/22,200 entre los siete primeros años, ingresos alrededor de los S/24,200 y S/26,200 durante el mismo periodo y brindar una utilidad antes de impuestos entre los S/3.729 a
+S/5.916 soles anuales.
+región de Madre de Dios.
+
+ingresos y utilidades por un periodo de siete años; lo que resulta clave para analizar la regenerativa.
+predio ganadero bajo un modelo tradicional en Madre de Dios13
+4.2.
+regenerativa
+Considerando que el objetivo de la ganadería regenerativa es generar la mayor cantidad de biomasa por unidad de área, acorde con la oferta ambiental y la capacidad de carga
+del paisaje, y recuperar áreas degradadas; se ha considerado en el costeo del modelo, las siguientes intervenciones mínimas de inversión para un modelo de ganadería regenerativa
+en la Amazonía peruana:
+13No se presentan las utilidades después de impuestos (UN) puesto que este modelo ha utilizado la referencia promedio de los ganaderos en Madre de Dios, los cuales no pagan impuestos.
+
+División de potreros, a través del uso de la cerca eléctrica (energía convencional, solar u otra).
+Barreras rompevientos (árboles sembrados en líneas, utilizando especies de varias alturas para cortar la velocidad de los vientos).
+Implementar prácticas agro-silviculturales, regenerativas y agroforestales en la forrajeros y sistemas silvopastoriles intensivos.
+Proveer y racionalizar el uso del agua en los predios, a través del uso de acueducto ganadero.
+Adoptar métodos de pastoreo racional a partir del aforo y la capacidad de carga, el análisis del agua y del suelo, así como de los análisis bromatológicos.
+Aislamiento de áreas naturales (coberturas, bosques, rondas de ríos y quebradas, nacimientos y zonas de recarga hídrica) y programa de restauración de áreas
+degradadas.
+Renovación de potreros y recuperación de praderas y suelos degradados a partir de la incorporación de especies nativas o naturalizadas en pro de su diversidad.
+propiedades y limitantes.
+Favorecer la cobertura de zonas vulnerables con especies nativas rastreras, arbustivas y arbóreas.
+Evitar actividades agropecuarias con impacto negativo para el suelo y la biodiversidad del predio.
+1.
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+9.
+11.
+10.
+Es importante señalar que estas intervenciones deben incluir también al personal técnico especializado, que permita orientar al ganadero en las acciones de intervención e inversión
+y la implementación de las buenas prácticas de sostenibilidad ambiental.
+La Tabla No 04 muestra los costos promedio de cada una de las buenas prácticas
+
+Pastura mejorada + Cerca E
+S/ 3,487
+Silvopastoriles No intensivos + Cerca E
+S/ 1,930
+Silvopastoriles Intensivos + Cerca E
+División de Potreros y acueducto ganadero
+Equipo de Cerca Eléctrica: Hectárea adicional (1 ha)
+Cercas Vivas (400 mt = 1 ha) + Seto Forrajero + Cerca E
+S/ 8,593
+S/ 1,430
+S/ 806
+S/ 6,833
+Intervención
+Costo unitario/hectárea
+Tabla No 04. Costos de inversión para la promoción del modelo de ganadería regenerativa en la región de Madre de Dios*
+Tal como puede observarse en la Tabla No 04, los mayores costos en la transición al modelo de ganadería regenerativa están vinculados a la implementación de sistemas
+silvopastoriles intensivos y cercas eléctricas, cuyo costo está alrededor de los S/8,593 por hectárea, seguido de la implementación de cercas vivas y eléctricas, cuyo costo está
+alrededor de laos S/5,754 y el establecimiento de pasturas mejoradas y cercos eléctricos, cuyo costo está alrededor de los S/3,487.
+De manera similar al análisis de costos; se obtuvo, a través de entrevistas con expertos locales, información sobre el impacto de las prácticas de ganadería regenerativa en la
+prácticas tiene un impacto diferente en el sistema productivo, siendo el uso de sistemas silvopastoriles el de mayor impacto (47.6%), seguido del mejoramiento de pasturas
+(16.6%), el uso de cercas eléctricas y acueductos ganaderos (12.4%), uso de cercas vivas
+(11.4%), y árboles dispersos en el potrero (5.2%). Es importante precisar que no todas las prácticas tienen un impacto inmediato en la productividad, siendo este el caso del uso
+de sistemas silvopastoriles, que demuestra un impacto gradual y su mejor rendimiento a partir del tercer año.
+Por ende, las intervenciones propuestas deben ser escalonadas, las cuales deben iniciar en la mejora de las pasturas y su manejo, división de potreros, acueducto ganadero,
+
+incorporación de árboles dispersos y cercas vivas. Finalmente, las últimas intervenciones que se deben incorporar son los SSPi, los Bancos Forrajeros y/o Setos Forrajeros.
+aumento total que va entre el 5.2 al 47.6% en la productividad (PEN/ha). En términos del incremento de las unidades de gran ganado (UGG) por hectárea, el impacto de las buenas
+prácticas se estima es de 1 UGG a 1,48 UGG por hectárea.
+del aprovechamiento agroforestal. A ello es posible sumar potenciales ingresos por la prestación de servicios ecosistémicos, que ofrecen las intervenciones, como la captura
+Fuente: Earth Innovation Institute, 2021 de carbono (CO2eq), que requiere estudios más detallados para poder ser incorporado
+14Capacidad de captura de CO2 equivalente por sistemas silvopastoriles y conservación de bosques colindantes.
+
+Considerando la información sobre los costos de la ganadería tradicional, las inversiones necesarias para la transición hacia la ganadería regenerativa, y los resultados respecto a
+AgroPerú y Agroideas.
+5.1.
+Análisis del potencial de AgroPerú de Desarrollo Agrario y Riego peruano, e implementado por Agrobanco, que busca impulsar
+pequeños productores organizados y brinda una Tasa Efectiva Anual (TEA) de 3.5% y un periodo de pago de hasta tres (03) años.
+ANÁLISIS DE DOS INCENTIVOS
+FINANCIEROS (AGROPERU Y
+AGROIDEAS PARA LA GANADERIA
+REGENERATIVA EN LA AMAZONÍA
+PERUANA
+05.
+
+El diseño de AgroPerú ha considerado diversas facilidades para los productores como:
+a) no ser necesario que el productor cuente con historial crediticio e incluir productores
+b) brindar un periodo de gracia de hasta doce (12) meses, lo que facilita que el productor pueda tener ganancias para iniciar el pago del crédito, y c) no limitarse a productores
+con predios titulados, permitiendo la inclusión de productores con predios reconocidos mediante una constancia de posesión.
+asociados, que trabajen máximo hasta 5 hectáreas en explotación (para el programa de desarrollo ganadero en Madre de Dios, en el caso del programa ganadero a nivel nacional
+no se cuenta con límite de área bajo producción), b) no tener retrasos en deudas con doce unidades impositivas tributarias (12 UIT o S/ 55,200.00).
+4,841 anuales, y S/403.41 mensuales fuera de impuestos, tal como puede observarse predio de Madre de Dios.
+
+siguientes inversiones para la transición hacia la ganadería regenerativa:
+Los resultados de este modelamiento pueden observarse en la Tabla No 05, en donde se límite de la intervención de Agrobanco, las variables productivas promedio de Madre de
+Dios, y las tasas de interés y condiciones de pago (3 años) propuestas para AgroPerú.
+Intervención del 20% del área de manejo tradicional de pastoreo continuo, a un pastoreo rotacional con cerco eléctrico y acueducto ganadero: implica la intervención
+reinversión de 3 años.
+Intervención del 20% del área de manejo tradicional de pastoreo continuo, a un pastoreo rotacional con mejoramiento de las pasturas: implica la intervención de 7
+reinversión de 6 años.
+Intervención del 20% del área de manejo tradicional de pastoreo continuo, a un pastoreo rotacional con cerco eléctrico, acueducto ganadero, cercos vivos y
+mejoramiento de pasturas: implica la intervención de 7 hectáreas con una inversión
+Existe la opción de hacer la intervención del 100% del área en pastoreo continuo, a un manejo rotacional con cerco eléctrico y acueducto ganadero. La intervención de
+inversión mayor a 7 años.
+Intervención de 2 hectáreas de pasturas de manejo tradicional a 2 hectáreas de
+Sistemas Silvopastoril Intensivo: implica la inversión total de S/17,186, equivalente
+Acompañamiento técnico especializado para garantizar la adecuada implementación del plan de intervención considerando un costo de alrededor de los S/ 6.000. Es
+importante aunar esfuerzos con múltiples actores para ofrecer acompañamiento técnico sin costo en los dos primeros años de intervenciones e inversiones.
+
+Intervención del 20%: pastoreo rotacional, cerco eléctrico y acueducto ganadero.
+Inversión: S/ 10,008
+Viable
+Viable
+No viable
+Viable
+No viable
+Viable
+No viable
+Viable
+Intervención del 20%: pastoreo rotacional, cerco eléctrico y mejoramiento de las pasturas.
+Inversión: S/ 24,406
+Intervención del 20%: pastoreo rotacional, cerco eléctrico, acueducto ganadero, cercos vivos y
+mejoramiento de pasturas.
+Inversión: S/47,921
+2 hectáreas de Sistemas Silvopastoril Intensivo.
+Inversión: S/17,186
+Escenario de Inversión
+Periodo de
+Tasa Interés (3.5%) de inversiones de ganadería regenerativa bajo las condiciones propuestas por
+AgroPerú y bajo los promedios productivos de Madre de Dios la ganadería regenerativa a una tasa del 3.5% requerirían un periodo de pago mayor de
+cuatro años.
+La reconversión del área de manejo convencional de pastoreo continuo o alterno (38
+ha) en un área de manejo racional, intensivo y rotacional con cerco eléctrico y sistema de acueducto ganadero requeriría una inversión cercana a los S/ 133,606, por lo que
+aun considerando un periodo de gracia de un año. Por ello, la primera recomendación es inversiones escalonadas en periodos de tiempos mayores a 7 años, lo que requiere un
+enfoque de planeación estratégica a mediano y largo plazo. Esta es una recomendación que debe ser tomada en cuenta, sobre todo, por los promotores de la iniciativa de
+ganadería regenerativa, toda vez que es clave que, indistintamente del incentivo, se conozca la capacidad de inversión de los productores y evitar que asuman compromisos
+que no pueden ser cumplidos.
+
+de caja positivos. Así se encontró que predios con un inventario animal igual o mayor a 29
+47,921(incluye intervenciones de mejoramiento de pasturas, cerco eléctrico, cerco vivo y acueducto ganadero), cumplir con el pago de una TEA de 3.5% y pagar el acompañamiento
+técnico. Otra alternativa, son estructuras promedio de 27 hembras adultas (escenario modelado), con una compra mínima de 6 machos destetados al año; lo que permitirá
+técnico.
+Es importante señalar que las intervenciones propuestas de ganadería regenerativa darían lugar a sistemas ganaderos con una carga animal de 2.5 a 3 UGG/ha. Asimismo,
+cabe resaltar que las inversiones en la mejora de pastos aumentan la productividad en el primer año. Asimismo, los sistemas silvopastoriles de baja densidad generan bajos
+incrementos de productividad y no retornan la inversión, aunque son las inversiones que generan mayores servicios ecosistémicos para la restauración de suelos y entornos
+naturales, biodiversidad, ambientes con temperaturas confortables para los animales, entre otros.
+En comparación a los modelos de baja densidad, los sistemas silvopastoriles intensivos generan los mayores rendimientos económicos, dada su expresión en la producción de
+biomasa y oferta de alimento de alta calidad nutricional para los bovinos. Su éxito depende de las especies forrajeras seleccionadas (pertinencia a la oferta ambiental) y su manejo;
+alcanzan su madurez a los 3 años y son sensibles a las prácticas de aprovechamiento, siendo importante que cuenten con acompañamiento técnico para un manejo adecuado,
+que garantice su sostenibilidad en el tiempo.
+La Tabla No 06 muestra un resumen de recomendaciones para mejorar las condiciones de AgroPerú, por cada intervención sugerida de ganadería regenerativa y las condiciones
+caja y en la TIR.
+
+Tabla No 06. Recomendaciones para mejorar AgroPerú con miras a facilitar la transición a la ganadería regenerativa en la Amazonía Peruana
+Mejoramiento o renovación de pasturas
++ Cerco eléctrico +
+Acueducto ganadero.
+Intervenciones para un monto igual a
+S/ 30,000
+(intervención del 20% del área en ganadería
+con mejoramiento o renovación de pasturas
++ Cerco eléctrico +
+Acueducto ganadero).
+de 27 hembras en cría
+(modelo promedio).
+de 27 hembras en cría
+(modelo promedio).
+Condiciones
+Condiciones
+AGROBANCO permite inversiones mayores.
+máximo total de S/ 14,800.
+Inversiones mayores a S/ 14,800 no son viables, los plazos deben ser mayores a 36 meses.
+Intervenciones mayores del 7% del área en ganadería no permite de caja y una TIR mayor al 8% (costo de oportunidad), la inversión
+máxima que puede hacer es de S/ 7,300: intervención de 3,5% del área en ganadería (1,5 hectáreas).
+Son viables con plazos iguales o mayores a 6 años.
+La inversión es viable con las condiciones de 36 meses; se estructuras de hato igual o mayor a 31 vacas adultas en cría,
+aunque la TIR es negativa.
+Para una TIR positiva en las actuales condiciones crediticias, los predios deben tener estructuras de hato igual o mayor de 42 vacas
+en cría, en el marco de un referente de un costo de oportunidad del 8%.
+Salvaguardas ambientales consideradas en AgroPerú
+Agrobanco y Midagri han considerado una salvaguarda para el programa AgroPerú, que alcanza a bosques primarios y secundarios. El formato considera que el incumplimiento del
+compromiso está sujeto a acciones penales y sanciones para quienes declaran actos que no corresponden a la verdad, bajo cualquiera de sus formas.
+de seguimiento a los compromisos de no deforestación operativos a pesar que el Minam y
+Agrobanco, suscribieron un convenio marco de cooperación interinstitucional para fortalecer reducción y la degradación de los bosques y privilegiar el aprovechamiento integral de sus
+recursos.
+
+5.2. Análisis del potencial de Agroideas
+Agroideas es un fondo concursable no reembolsable, que busca elevar la competitividad de pequeños y medianos productores agrarios, fomentando la asociatividad; gestión
+y adopción de tecnología, mediante la entrega de recursos no reembolsables a organizaciones de productores que presenten planes de negocios sostenibles.
+Agroideas es accesible sólo para productores organizados y requiere de una contrapartida y la presentación de un plan de negocios. Cabe precisar que Agroideas cuenta con cuatro
+a través de reembolsos los gastos elegibles asociados a la formalización, b) gestión empresarial, que busca dotar a las organizaciones de productores parcialmente el costo
+del salario de un gerente hasta por tres años; c) adopción de tecnología que puede post cosecha, procesamiento, transformación y control de calidad, insumos agrícolas,
+de viabilidad para estimar el pago del crédito pero si un planeamiento estratégico y una focalización adecuada para garantizar su rentabilidad. De ese modo, Agroideas es
+pueden ser altamente complementarias con AgroPerú.
+Considerando el bajo nivel de asociatividad de la ganadería bovina amazónica peruana, el programa de apoyo de la asociatividad puede ayudar a reducir las brechas de asociatividad,
+Este programa es clave, toda vez que una vez formalizadas las asociaciones es más remuneración de un gerente hasta por tres años y de manera decreciente. El monto máximo
+en el tercer año. Por ello, este programa es estratégico, porque fortalece la capacidad técnica de las asociaciones ganaderas y le permite contar con recursos humanos para
+
+15El paquete mínimo ideal es la intervención del 20% del área en pastos (8,5 hectáreas): intervención de mejoramiento o renovación de pasturas, cerco eléctrico, acueducto ganadero y 1 hectárea en cerco vivo + seto forrajero (400 metros lineales). Esto requiere una
+inversión de S/36,468 resultan los más prometedores para inversiones de reconversiones de la ganadería
+no reembolsable de 300 UIT (S/.1 millón 260 mil) y está en función al número de socios que la organización tiene, pudiendo llegar hasta S/.16,800 (4 UIT) por socio; siendo
+necesaria una contrapartida que varía en función al monto total del plan de negocios, siendo un 20% para planes menores a los S./. 525,000, 30% para planes entre los S/.
+525,000 y S/. 1,201,200; y 40% para planes mayores a S/. 2,100,000.
+la ganadería regenerativa. El monto disponible sólo permitiría implementar un conjunto de medidas básicas de ganadería regenerativa, como, por ejemplo: una intervención del 20%
+del área de manejo tradicional de pastoreo continuo, a un pastoreo rotacional con cerco eléctrico y acueducto ganadero (por S/ 10.008) o el cambio de 2 hectáreas de pasturas
+de manejo tradicional a 2 hectáreas de Sistemas Silvopastoril Intensivo (S/13.507) y un acompañamiento técnico entre S/ 6.000 y S/3,293.
+Debe considerarse que, si bien los recursos de Agroideas permiten implementar un conjunto parcial de medidas, el monto ideal para las inversiones de ganadería regenerativa
+en pastos (8,5 hectáreas) con inversiones para renovación de pasturas, incorporación del cerco eléctrico, acueducto ganadero y 400 metros de cerco vivo, asociado a un seto
+forrajero (con el condicionante de 42 vacas en cría, como se mencionó en la Tabla No 06).
+El escenario propuesto para la intervención mínima ideal de los predios de la región de
+Madre de Dios, intervención que alcance una TIR positiva mayor al 13%, permite ingresos entre los S/ 40,787 y S/ 43,393 con utilidades antes de impuestos entre S/ 18,968 y S/
+ascienden a S/ 36,468 por productor; monto que permite la intervención del 20% del áreas
+Finalmente, los incentivos para adopción de tecnologías y reconversión productiva
+
+adopción de tecnología, relacionados a las etapas de la cadena, desde la producción hasta la comercialización de la actividad pecuaria (insumos estratégicos para la
+instalación y/o manejo de cultivos y pastos, herramientas, equipos, maquinaria, vehículos para la mecanización, vehículos mayores para acopio y/o distribución de la producción,
+vehículos menores, infraestructura para almacenamiento, empaque y procesamiento, como asistencia técnica para la producción y transformación/procesamiento, gestión
+categorías de inversiones buscadas para la transición de ganadería regenerativa.
+Finalmente, la última línea evaluada es la de reconversión productiva, que busca promover el cambio o transformación voluntaria hacia una producción diferente a la actual. A
+diferencia de las otras líneas, este programa cuenta con condiciones particulares como :
+a) acreditar la conducción del cultivo, mínimo 2 campañas de sembrado, b) infraestructura productiva acondicionada, c) buen nivel asociativo y una organización constituida y
+fortalecida, d) calidad de agua y contar con balance hídrico positivo, e) condiciones físicas y químicas del suelo adecuadas al cultivo, f) alianzas con una entidad auspiciadora
+para el escenario de las intervenciones regenerativas
+16Instructivo para acceder al incentivo de adopción de tecnología aprobado en febrero del 2021.
+
+a demostrar que los productores cuentan con las condiciones físicas y organizacionales para realizar un cambio de cultivo o crianzas.
+Cabe indicar que, actualmente, este programa o línea considera a la reconversión productiva agropecuaria, como el cambio a crianzas (especies) o cultivos, por otros de mayor
+rentabilidad, buscando crear valor agregado, a través de innovaciones en las cadenas
+productivas. Por este motivo, no puede utilizarse para la transición o transformación del modelo de producción, perdiéndose una excelente oportunidad para incentivar la
+ganadería regenerativa. El monto máximo que puede aportar el Programa Agroideas por cada productor para la reconversión productiva es el equivalente a sesenta (60) UIT o
+S/276,000, teniendo en cuenta que este monto no podrá superar el 80% del monto total podrá exceder de trescientas (300) hectáreas y cada productor podrá participar con un
+máximo de veinte (20) hectáreas.
+o gestora de proyectos, que acompañe en la gestión, ejecución y post proyecto; y g) contar con contrapartida. Al respecto, se observa que los requisitos de esta línea están orientados
+
+6.1.
+Conclusiones
+La ganadería regenerativa es una alternativa para desarrollar una ganadería bovina sostenible en la Amazonía Peruana, que permita: a) incrementar la productividad por
+hectárea, considerando la capacidad adecuada de la tierra y conservando los suelos, b) de plantaciones y otros cultivos, c) contribuir a la adaptación y mitigación al cambio
+climático, así como la conservación de los bosques colindantes o remanentes en las y d) aportar al bienestar social, a través del empoderamiento de
+las mujeres ganaderas, como agentes económicos, y jóvenes para mantener el relevo generacional; el fortalecimiento de la seguridad alimentaria, la nutrición, el alivio de la
+pobreza, entre otros.
+Las buenas prácticas de ganadería regenerativa en Madre de Dios, han demostrado
+El uso de sistemas silvopastoriles, es la práctica de ganadería regenerativa de mayor impacto (47.6%), seguido del mejoramiento de pasturas (16.6%), el uso de cercas
+eléctricas y acueductos ganaderos (12.4%), el uso de cercas vivas (11.4%), y la siembra de árboles (5.2%).
+Las buenas prácticas ganaderas de la ganadería regenerativa descritas en este reporte, han sido probadas por ganaderos y la AGRAP en Madre de Dios, y pueden
+ser transferidas, considerando las adaptaciones pertinentes, a otras regiones de la
+Amazonía Peruana. Es importante señalar que durante las entrevistas realizadas se y Oxapampa, alianza entre la empresa MAFROX y ganaderos locales, que pueden
+retroalimentar y complementar la propuesta promovida en Madre de Dios; sobre todo
+CONCLUSIONES Y
+RECOMENDACIONES
+06.
+
+El Gobierno Peruano considera estratégico promover una transición hacia una ganadería sostenible en la Amazonía peruana, razón por la cual ha considerado la
+implementación de sistemas silvopastoriles, como una medida de mitigación de la
+Contribución Nacionalmente Determinada.
+para una ganadería sostenible y regenerativa. A nivel internacional resulta estratégico observar la experiencia colombiana, especialmente, la línea de ganadería sostenible
+de Bancolombia, la línea especial de crédito (LEC) de sostenibilidad agropecuaria y negocios verdes de Finagro e ITPS. Las lecciones aprendidas del diseño de
+asistencia técnica en el terreno para garantizar la adecuada implementación de las de crédito, cuyas prioridades no estén alineadas con el enfoque de sostenibilidad
+jurisdiccional; y c) escalonar las inversiones para la transición hacia la ganadería sostenibilidad agropecuaria y los negocios verdes, b) mejoras en las condiciones
+de la ganadería colombiana, c) salvaguardas para el respeto de áreas de bosques y prácticas del modelo silvopastoril sostenible (p.ej. asistencia técnica, renovación de
+pasturas, infraestructura, compra de animales, siembra de árboles, acueductos), e) integrar un incentivo voluntario para la liberación de pasturas para la regeneración
+natural y conservación de suelos; y f) la obligatoriedad de conservación de bosques remanentes.
+S/20,200 y S/22,200, durante los primeros siete años, ingresos alrededor de los
+S/24,200 y S/26,200, durante el mismo periodo y brindar una utilidad antes de impuestos entre los S/3,729 a S/5,916 soles anuales y S/498 mensuales.
+Cabe precisar que los costos han incorporado la mano de obra del ganadero (una remuneración mínima vital por mes).
+
+de producción ganaderos de Madre de Dios, y vistas las lecciones aprendidas de la para división de potreros y aislamientos de áreas (postes, alambre, aisladores,
+herramientas, impulsor, paneles solares, Jornales para el montaje), b) acueducto bancos forrajeros (compra de material vegetal/semilla, abonos orgánicos, jornales para
+siembra y mantenimiento), d) insumos para producción de material vegetal (viveros:
+bolsas, semilla, polisombra, abonos orgánicos, materiales, herramientas, mangueras y equipos de riego, jornales), e) siembra de arbustos, árboles forrajeros y/o maderables
+SSP en potrero, franjas o cercas vivas (material vegetal, abonos, ahoyadores, f) mano de obra, entre otros, emparejado con división de potreros, aislamientos, mejoramiento
+de pasturas, y g) acompañamiento técnico especializado.
+Los costos estimados para estas intervenciones en Madre de Dios son: a) pasturas mejoradas y cerca eléctrica (S/3,487 por hectárea), b) implementación de
+sistemas silvopastoriles no intensivos y cercas eléctricas (S/1,930 por hectárea), c) implementación de sistemas silvopastoriles intensivos y cercas eléctricas (S/8,793
+por hectárea), d) implementación de cercas vivas (400 mt = 1 ha) y cercas eléctricas
+(S/ 6,754 por hectárea), e) división de potreros y acueducto ganadero (S/1,430 por hectárea), y g) instalación del equipo de cerca eléctrica (por 1 hectárea adicional) (S/
+806 por hectárea).
+Las inversiones básicas necesarias para la transición a la ganadería regenerativa son superiores a las utilidades del sistema ganadero tradicional; por lo que es posible
+pequeños ganaderos con inventarios iguales o menores a 70 a 71 animales, de los cuales 28 son hembras con una tasa de natalidad del 60% (TN) e intervalos entre
+partos (IEP) de 510 días.
+El Ministerio de Desarrollo Agrario y Riego y Agrobanco han diseñado y están preferenciales, respectivamente, con un enorme potencial para facilitar la transición
+de la ganadería amazónica hacia la ganadería regenerativa y promover la actividad
+
+6.2. Recomendaciones madurez e integración de los efectos productivos de las intervenciones. AgroPerú
+considera una TEA de 3.5% a nivel nacional y para todas las cadenas agropecuarias;
+en Madre de Dios- se sugiere considerar periodos de amortización de 7 años, siempre y cuando, los ganaderos cuenten con las condiciones previstas en la Tabla No 6.
+Asimismo, con pagos de periodicidad de un año, puesto que los ingresos de los predios modales de la región están asociados a la venta de animales.
+Tanto Agroperú como Agroideas, deben articular con un acompañamiento técnico especializado y condicionado, en las fases de formulación e implementación del
+proyecto, de inversión para la adecuada ejecución de las buenas prácticas de ganadería regenerativa, y garantizar que los recursos asignados sean invertidos de forma efectiva.
+Si bien Agrobanco no cuenta con personal técnico especializado, considerando que las tasas de interés no cubren los gastos operaciones del banco, para realizar asistencia
+técnica en campo, se pueden realizar convenios con Gobiernos Regionales Amazónicos,
+AgroRural de Midagri o tercerizar estos servicios. Al igual, se debe contemplar la comunicación y divulgación para dar a conocer el incentivo: (i) promoción a través de
+espacios de sensibilización a la comunidad ganadera sobre las prácticas sostenibles y regenerativas, espacios que deben ser acompañados con procesos de demostración
+transición. Sin embargo, se requieren realizar algunos ajustes para mejorar su efectividad e impacto social, económico y ambiental.
+deberían ser analizados para conocer su potencial para promover la transición hacia la ganadería regenerativa. Estos incentivos son: el Fondo Concursable Procompite
+(implementado por el Ministerio de la Producción y los Gobiernos Regionales) y el y productores (ej. MAFROX).
+
+de método en predios referentes; y (ii) fortalecimiento y generación de capacidades a
+Se sugiere explorar la alternativa de integrar un incentivo voluntario para la liberación de pasturas, para la regeneración natural de bosques y conservación de suelos. Para
+tales efectos, se sugiere que los expertos de Midagri y Agrobanco puedan realizar un intercambio de experiencias a Colombia para conocer el impacto y mecanismo de
+operación de este incentivo.
+Agroideas es una excelente alternativa para aquellos ganaderos que no pueden acceder a un crédito, debido a que no cuentan con las condiciones mínimas para poder
+amortizarlos o presentan brechas (nivel de organización o capacidades gerenciales) para administrarlo debidamente.
+Las líneas de apoyo a la asociatividad y gestión empresarial son estratégicas para formalizar a las asociaciones de productores que no pueden acceder a AgroPerú, con la
+oportunidad de mejorar sus capacidades para manejar adecuadamente el crédito. De manera similar, la línea de adopción de tecnología puede permitir la implementación
+inicial de las innovaciones tecnológicas necesarias para incrementar los rendimientos
+AgroPerú.
+El Fondo AgroPerú puede ser un instrumento potente para lograr la reconversión ganadera sostenible y regenerativa a escala regional y amazónica, aunque presenta
+algunas barreras y oportunidades relacionadas a:
+Limitaciones estructurales de los productos crediticios.
+Resistencia al cambio, idiosincrasia como barrera para la adopción de los principios de reconversión en los productores.
+Complejidad en el proceso de solicitud de crédito.
+Articulación de mercado y cadenas de valor.
+
+o renovación de pasturas, incorporar un cerco eléctrico y realizar un acueducto ganadero intervenciones máximas de 3 hectáreas, debido a que el plazo de 36 meses junto al
+al 8% (costo de oportunidad), la inversión máxima que puede hacer es de S/ 7.300:
+intervención de 3,5% del área en ganadería (1,5 hectáreas).
+Es importante señalar que estas inversiones no deben superar un monto máximo líneas de ganadería regenerativa, mayores a S/ 14.800, no son viables y requieren
+plazos mayores a 36 meses. De igual modo, intervenciones mayores al 7% del área en implementar intervenciones para un monto igual a S/ 30,000 (intervención del 20%
+del área en ganadería con mejoramiento o renovación de pasturas + Cerco eléctrico con una TEA de 3.5% en plazos iguales o mayores a 6 años. Inversiones iguales a S/
+30,000 son viables con las condiciones de 36 meses y arrojan valores positivos en el
+Para una TIR positiva, en las actuales condiciones crediticias, los predios deben tener estructuras de hato igual o mayor de 42 vacas en cría, en el marco de un referente de
+un costo de oportunidad del 8%.
+para la compra de vientres o animales, bajo tasas de interés especiales, que permita condicionado a las inversiones de la reconversión sostenible y regenerativa de las
+áreas de los predios. Con el objetivo de evitar que el incentivo se convierta en perverso entornos naturales.
+
+Las inversiones en actividades como la restauración y protección de áreas estratégicas, la introducción de árboles dispersos en potrero, cercas vivas o barreras rompevientos,
+postergada a un segundo plano de priorización por parte de los ganaderos. Para apoyar la adopción de estas prácticas e inversiones, se requieren estrategias complementarias,
+que articule una línea de crédito junto al acceso a recursos públicos o, a través de la consolidación de mercados de carbono. Ello, en términos prospectivos, permitirá
+incentivar la liberación y/o restauración de áreas naturales estratégicas.
+son importantes para dinamizar las solicitudes de inversión y reconversión de los sistemas de producción ganaderos a modelos sostenibles y regenerativos, buscando
+Respecto al monitoreo y control de riesgos
+Se ha observado un importante esfuerzo de Agrobanco y Midagri por generar salvaguardas que eviten la deforestación y el cambio de uso de la tierra. Estos
+hasta el momento no se cuenta con un sistema de monitoreo de estos compromisos que el Perú cuenta con valiosos sistemas de monitoreo de la deforestación (a escala
+distrital, provincial, departamental, alertas tempranas, entre otros) como Geobosques,
+Agrobanco pueda evaluar el cumplimiento de este compromiso. En ese sentido, se sugiere considerar la experiencia del Acuerdo Cacao, Bosques y Diversidad para el
+De igual modo, se sugiere que AgroPerú considere montos de financiación mayores a
+
+Agrobanco. Memoria anual 2021. Lima: 2022; 170p.
+Barrantes R. y Glave M. Amazonía peruana y desarrollo económico /, eds. Lima, GRADE;
+IEP, 2014; 255 p.
+DANE. Encuesta Nacional Agropecuaria., (2016). Rescatado de: https://www.dane.gov.
+co/index.php/estadisticas-por-tema/agropecuario/encuesta-nacional-agropecuaria-ena
+Echevarría, M. Cincuenta años de investigación en alimentación del ganado con pastos en la Amazonía peruana Lima: 2020; 104 p.
+Gobierno Regional de Madre de Dios. Dirección Regional de Agricultura, Plan Estratégico
+Regional del Sector Agrario Madre de Dios 2008 – 2015
+Instituto Veterinario de Investigaciones Tropicales y de Altura. 1989b. Sistemas de producción amazónica. Segundo Informe. Instituto Veterinario de Investigaciones
+Tropicales y de Altura (IVITA). UNMSM.
+Ministerio de Desarrollo Agrario y Riego (Midagri). Instructivo para la atención de pedidos de reconversión productiva agropecuaria. Lima: 2020; 45 p.
+Ministerio de Desarrollo Agrario y Riego (Midagri). Estudio de línea base de la actividad ganadera en la Provincia de Tahuamanu y Tambopata; Madre de Dios - 2019; 130 p.
+Ministerio de Desarrollo Agrario y Riego (Midagri). Estudio de línea base de la actividad ganadera en la Provincia de Tahuamanu y Tambopata; Madre de Dios - 2019; 130 p.
+Leveau, C. 1991. Lineamientos avances y propuestas de investigaciones regionales de la
+selva. Universidad Nacional Agraria La Molina. Seminario Prioridades de Investigación en el Departamento de San Martín Tarapoto.
+REFERENCIAS
+BIBLIOGRÁFICAS
+07.
+
+Ortiz, J. Fernández M.A. Lecciones aprendidas y recomendaciones a partir de la implementación piloto del instrumento para la transformación productiva sostenible -
+ITPS de la ganadería en la Amazonía Colombiana. Finagro. GGI Earth Innovation Institute.
+2019. 37p.
+Riesco, A. 1990. Adoption of improved livestock production practices in the Peruvian
+Amazonian: An econometric analysis. Dissertation Ph.D. Iowa State University, Ames, USA.
+205p.
+Riesco, A, De la Torre, M.; Reyes, C.; Meini, G; Huaman, H.; García, M. 1982. Análisis exploratorio de los fundos de pequeños productores en la Amazonía región de Pucallpa,
+Boletín IVITA-CIID, Pucallpa. UNMSM.
+Ríos, a. J. Enfoques integrales de producción ganadera en la Amazonía Peruana. Prod.
+Anim. Vol. 15 (Supl. 1) 2007. 23p.
+Ríos, a. J., Valencia, ch. F., Muñoz, b. M. 2001. Relatoría de actividades de investigación en la Amazonía peruana. Junio 2001. Tingo María, Perú.
+Ríos, a. J., Valencia, ch. F., Muñoz, b. M. 2002. Sistemas de producción agropecuaria familiar como una alternativa a la producción cocalera en la Amazonía peruana. Tingo
+María, Perú.
+Ríos, a. J., Valencia, ch. F., Muñoz, b. M. 2003. Expansión y trayectoria de la ganadería en la Amazonía, Tingo María, Perú.
+World Wildlife Foundation (WWF). Manual de buenas prácticas de ganadería regenerativa en la Amazonía peruana. Volumen 1. 2022. 40p.
+
+ANEXO I
+Expertos entrevistados
+Nelson Gutierrez
+Karina Salas
+Priscila Pasco
+Juan Esteban Serna
+Daniel Coronel
+Jorge Lazo Zúñiga
+Miguel de la Cruz
+Ángela Michi Quijano
+Lucio Montalvo
+Analí Escalante
+Consultor independiente
+Coordinador de Agroideas en Madre de Dios luciomontalvo@gmail.com
+aescalante@Agroideas.gob.pe amichi@agrorural.gob.pe
+nelson.gutierrez@wwfperu.org karina.salas@wwfperu.org
+juesja71@gmail.com daniel@tropicalforestalliance.org
+jlazoz@esan.edu.pe mdelacruz@spdecodesarrollo.org
+Ethel Huamán Fuertes
+Carlos Yusa Talavera
+Paul Pacheco
+Renato Portillo
+Midagri
+Midagri
+MAFROX ehuaman@Midagri.gob.pe
+cyusa@Midagri.gob.pe polpacheco@frigomanu.com
+rportillo@mafrox.com
+Especialista Dirección General de Desarrollo Ganadero
+Especialista Dirección General de Desarrollo Ganadero
+Gerente
+Gerente Comercial y de
+Operaciones
+Coordinador del Paisaje
+Amazonía Sur y Asuntos Indígenas
+Consultora ganadería regenerativa
+Consultora ganadería regenerativa
+Coordinador para Perú
+Consultor Senior / Profesor
+Principal
+Presidente
+Jefe de la Unidad Zonal de
+Madre de Dios
+World Wildlife Fund Colombia
+Tropical Forest Alliance
+Sociedad Peruana de
+Ecodesarrollo Universidad
+ESAN
+Sociedad Peruana de
+Ecodesarrollo
+AgroRural
+CARGO
+NOMBRE
+INSTITUCIÓN
+CORREO ELECTRÓNICO
+ANEXOS
+08.
+
+De igual modo, este análisis utilizó como referencia las encuestas y entrevistas realizadas como parte del estudio "Análisis sobre el Mercado Potencial de Carne Bovina procedente
+de Madre de Dios", elaborado por la Sociedad Peruana de Ecodesarrollo y Earth Innovation
+Institute. Estas encuestas se realizaron a un grupo objetivo de ganaderos en Las Piedras,
+Tahuamanu, Tambopata e Iberia, que representan el promedio de criadores de la región.
+Esta muestra tuvo un tamaño de 30 encuestados y recogió información sobre capital humano/ salvaguarda social, características de la unidad productiva (fundo, predio),
+capital pecuario y prácticas de manejo de engorde, proceso de acopio y comercialización, salvaguardas ambientales, organización y participación, y conocimiento y aplicación de
+tecnología promovida.
+De igual modo, se recogieron los resultados de las entrevistas realizadas por el Ing. Jorge
+Lazo a la Sra. Verónica Cardozo, Josué Cardozo, Sandro Cardoso, José Luis Flores Cardozo y otros ganaderos de la zona de Iñapari.
+ANEXO II
+Estructura detallada de costos
+ANEXO III

@@ -22,7 +22,7 @@
 - **Conversión imágenes/OCR:** TBD (sugerido: pytesseract con `tesseract-ocr-spa`) — diferido a 2da iteración
 - **Conversión audio:** TBD (sugerido: faster-whisper) — diferido a 2da iteración
 - **Conversión video:** TBD (sugerido: ffmpeg-python + faster-whisper) — diferido a 2da iteración
-- **Limpieza:** TBD
+- **Limpieza:** ftfy (encoding) + `unicodedata` (NFC) + `re` (stdlib) — enfoque determinista por capas. Capa 1 implementada.
 - **Clasificación:** TBD
 - **Embeddings:** TBD (sentence-transformers, OpenAI, etc.)
 - **Grafos:** TBD (networkx, igraph)
@@ -50,6 +50,7 @@
 | Pydantic | 2.5.3 |
 | PyMuPDF | 1.24.0 |
 | python-docx | 1.1.0 |
+| ftfy | 6.2.3 |
 
 ## TBD (Por definir)
 
