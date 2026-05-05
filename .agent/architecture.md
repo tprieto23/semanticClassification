@@ -50,24 +50,39 @@ Documentos no estructurados → Conversión → Limpieza → Clasificación → 
 - Agente de IA para conversión
 - Metadata guardada en DB
 
-### 3. Limpieza (Objetivo 3) — Capas 1 + 2 + 3 (3a + 3b) implementadas
+### 3. Limpieza (Objetivo 3) — Capas 1 + 2 + 3 + 4 implementadas
 - Enfoque **determinista por capas** (no IA — ver `decisions.md` 2026-05-04)
 - Original (`data/processed/txt/`) se conserva intacto; resultado va a `data/processed/cleaned/`
 - **Capa 1 (universal):** ftfy + unicodedata NFC + control chars + colapsar espacios y saltos de línea + strip por línea
-- **Capa 2a (números de página):** elimina líneas que son solo números o "Página N" / "Page N" / "- N -"
-- **Capa 2b (headers/footers):** heurística combinada (frecuencia ≥ 3 + longitud 15-150 + sin puntuación interna + no minúscula inicial + no ítem de lista)
-- **Capa 2c (re-unión de oraciones partidas por columnas):** une N con N+1 si N no termina en `.?!:;` + N+1 empieza minúscula + N+1 no es ítem de lista + dentro del mismo párrafo
-- **Capa 3a (dot leaders):** elimina líneas con 5+ puntos consecutivos (`\.{5,}`)
-- **Capa 3b (bloques TOC al inicio):** detecta y elimina bloques en los primeros 15% del doc con ≥5 líneas y ≥70% numeradas (≤100 chars), incluyendo header `CONTENIDO/ÍNDICE` previo si aplica
-- **Skip Capa 2 y 3b** si documento < 200 líneas no vacías; Capa 3a aplica siempre
-- **Pendiente para próximas iteraciones de Capa 3:** créditos editoriales (Autores, Diseño, ISBN), portadas en MAYÚSCULAS, URLs/emails sueltos
+- **Capa 2 (estructural por estadística):**
+  - 2a: números de página
+  - 2b: headers/footers repetidos (con protección de >10 palabras para contenido narrativo)
+  - 2c: re-unión de oraciones partidas por columnas
+- **Capa 3 (estructural por patrón — TOCs):**
+  - 3a: dot leaders (5+ puntos consecutivos)
+  - 3b: bloques TOC numerados en primeros 15% del doc (incluye header `CONTENIDO/ÍNDICE`)
+- **Capa 4 (editorial por contenido):**
+  - 4a: URLs y emails (inline o línea completa)
+  - 4b: créditos editoriales (Autor:, Diseño:, ISBN, etc.) con extensión B1 (parar en 5 líneas sin keyword) en primeros 15% / últimos 5% del doc
+  - 4c: portadas con ≥4 líneas en MAYÚSCULAS en primeros 5% del doc
+  - 4d: secciones de agradecimientos (header explícito → próximo título)
+  - 4e: líneas de contacto/footers (teléfonos, direcciones, emails, footers con pipe)
+  - 4f: placeholders de MS Word (`Error! Bookmark not defined`, `Main Title Subtitle Description`, etc.) incluyendo multi-línea
+- **Skip si doc < 200 líneas:** Capa 2 entera + Capa 3b + Capa 4 (4b/4c/4d). Capa 3a, 4a, 4e, 4f aplican siempre.
 - Servicio: `src/services/cleaning.py`
 - Endpoint: `POST /documents/{id}/clean?dry_run=<bool>` (dry_run devuelve métricas sin escribir archivos ni actualizar DB)
 - Métricas guardadas en columnas de `documents` (`original_char_count`, `cleaned_char_count`, `reduction_percentage`, `cleaning_metadata` JSONB con detalle por capa)
 
-### 4. Clasificación (Objetivo 4)
-- Entidades: comunidades, instituciones, lugares, prácticas, infraestructuras, valores ecológicos, narrativas, actores, acciones
-- Clasificación: TBD
+### 4. Clasificación (Objetivo 4) — Fase 1: NER implementado
+- **Fase 1 (NER genérico):** spaCy (`es_core_news_sm` + `en_core_web_sm`) + `langdetect`
+  - Extrae entidades nombradas: PER, ORG, LOC, GPE, MISC, PRODUCT, EVENT, WORK_OF_ART
+  - Guarda etiquetas spaCy originales en `entities.category`
+  - Incluye contexto (±300 chars) y oración completa en metadata
+  - Filtros de falsos positivos estructurales (títulos/secciones)
+- **Fase 2 (pendiente):** mapear etiquetas spaCy → 9 categorías del proyecto
+- Entidades objetivo: comunidades, instituciones, lugares, prácticas, infraestructuras, valores ecológicos, narrativas, actores, acciones
+- Servicio: `src/services/ner.py`
+- Endpoint: `POST /documents/{id}/extract-entities`
 
 ### 5. Vectorización (Objetivo 5)
 - Representación vectorial de entidades
@@ -109,7 +124,8 @@ Documentos no estructurados → Conversión → Limpieza → Clasificación → 
 POST /documents             → data/raw/{id}/file.ext           → DB (status=raw)
 POST /documents/{id}/process→ data/processed/txt/{id}.txt      → DB (status=converted)
 POST /documents/{id}/clean  → data/processed/cleaned/{id}.txt  → DB (status=cleaned + métricas)
-[futuro] entities → vectors → relationships → graphs → metrics
+POST /documents/{id}/extract-entities → DB (status=processed + entities)
+[futuro] vectors → relationships → graphs → metrics
 ```
 
 **Endpoint batch (atajo upload+convert en un solo request):**
@@ -218,6 +234,7 @@ docker-compose restart
 - `GET /documents/{id}` → Ver detalle de documento
 - `POST /documents/{id}/process` → Procesar documento (conversión a TXT)
 - `POST /documents/batch` → Subir y procesar múltiples archivos en un solo request
+- `POST /documents/{id}/extract-entities` → Extraer entidades NER de un documento limpio
 - `GET /entities` → Listar entidades (con filtros por categoría y documento)
 
 ### Variables de entorno (.env)

@@ -2,6 +2,415 @@
 
 ## Última sesión
 
+**Fecha:** 2026-05-05 (sesión 14)
+
+**Trabajado en:**
+- Implementación de Fase 2 del NER: clasificación de entidades en 9 categorías del proyecto
+- Diseño de mapeo spaCy → categorías con reglas deterministas + heurísticas
+- Creación de servicio `src/services/entity_classifier.py`
+- Actualización del endpoint `/extract-entities` para usar clasificación
+- Pruebas de calidad sobre documento AGRAP
+- Actualización de `.agent/`
+
+**Resumen de la sesión:**
+
+### Decisiones del proyecto (definidas por la usuaria)
+
+1. **Entidades con múltiples categorías:** se guardan como entidades separadas con categorías distintas (Opción 1)
+2. **MISC no se descartan:** van a categoría temporal `MISC_Spacy` para revisión manual futura (Opción 3)
+3. **NARRATIVA y PRÁCTICA:** se dejan para método futuro (no NER)
+4. **Enfoque híbrido + modelos** (BERT, RoBERTa) a futuro
+
+### Implementación
+
+1. **`src/services/entity_classifier.py`:**
+   - 9 categorías del proyecto + `MISC_Spacy` temporal
+   - Mapeo base: ORG→[INSTITUCIÓN, COMUNIDAD], LOC→[LUGAR, INSTITUCIÓN], PER→[ACTOR, COMUNIDAD]
+   - 40+ patrones regex de keywords por categoría
+   - Protección contra falsos positivos de spaCy ("Según", "Además", "ganadería" como PER → MISC_Spacy)
+   - Exclusiones para evitar sobre-clasificación
+
+2. **`src/services/ner.py`:**
+   - `ExtractedEntity` ahora incluye `project_category`
+   - `extract_entities()` clasifica cada entidad tras extraerla
+
+3. **`src/api/main.py`:**
+   - Endpoint `/extract-entities` guarda `project_category` en `entities.category`
+   - Etiqueta spaCy original guardada en `metadata_.spacy_label`
+   - `by_label` en respuesta ahora muestra distribución por categorías del proyecto
+
+### Resultados de prueba (Documento AGRAP)
+
+| Categoría | Cantidad | % del total |
+|---|---|---|
+| MISC_Spacy | 150 | 33% |
+| INSTITUCIÓN | 148 | 33% |
+| LUGAR | 93 | 21% |
+| ACTOR | 39 | 9% |
+| COMUNIDAD | 8 | 2% |
+| PRÁCTICA | 7 | 2% |
+| NARRATIVA | 4 | 1% |
+
+**Calidad:**
+- ✅ Instituciones: WWF, TFA, Climate Group, Ministerio de Ambiente, ACOPAGRO (COMUNIDAD)
+- ✅ Lugares: Madre de Dios, Perú, Amazonía Peruana, San Martín
+- ✅ Actores: Jorge Sáenz Rabanal, Nelson Gutiérrez
+- ✅ Falsos positivos protegidos: "Según", "Además", "ganadería" → MISC_Spacy
+- ⚠️ ~33% a MISC_Spacy (esperado, requieren revisión manual)
+
+### Aprendizajes
+
+- **Las reglas de keywords funcionan para casos claros** (80% de ORG, LOC, PER) pero fallan con MISC
+- **MISC_Spacy es una categoría valiosa:** no es "basura", es "pendiente de clasificar"
+- **Nombres de personas como "Nelson Gutiérrez Carpio" funcionan bien con keywords explícitos**
+- **El contexto sigue siendo clave:** la misma entidad puede cambiar de categoría según el párrafo
+
+### Dataset completo generado
+
+Corpus completo (28 documentos): **14,812 entidades**
+
+| Categoría | Cantidad | % |
+|---|---|---|
+| LUGAR | 4,862 | 32.8% |
+| MISC_Spacy | 4,654 | 31.4% |
+| INSTITUCIÓN | 2,830 | 19.1% |
+| ACTOR | 1,621 | 10.9% |
+| NARRATIVA | 222 | 1.5% |
+| PRÁCTICA | 210 | 1.4% |
+| COMUNIDAD | 188 | 1.3% |
+| ACCIÓN | 176 | 1.2% |
+| INFRAESTRUCTURA | 41 | 0.3% |
+| VALOR_ECOLÓGICO | 8 | 0.1% |
+
+### Archivos generados para revisión manual
+
+- `data/processed/entities/_misc_spacy_FOR_REVIEW.csv` (200 entidades)
+- `data/processed/entities/_misc_spacy_filtered.json` (2,285 entidades únicas)
+- `data/processed/entities/_all_entities.json` (14,812 entidades)
+- `data/processed/entities/<doc_id>.json` (28 archivos por documento)
+
+### Discusiones clave con la usuaria
+
+1. **Entidades incompletas (spaCy corta nombres):**
+   - Ej: "Global Forest Watch" en vez de "Global Forest Watch Pro"
+   - Solución: columna `full_entity_name` en CSV para correcciones manuales
+   - Futuro: post-procesamiento automático o modelo custom
+
+2. **Stopwords/listas de filtrado:**
+   - Las listas SOLO sirven para evitar que spaCy etiquete palabras comunes como entidades
+   - Las palabras (conectores, adverbios) NUNCA se eliminan del texto ni del contexto
+   - Son CRÍTICAS para construir relaciones entre entidades ("WWF trabaja CON comunidades")
+
+### Pendiente para próxima sesión
+
+1. **Revisión manual de MISC_Spacy:** usuario revisa `_misc_spacy_FOR_REVIEW.csv` (200 entidades)
+   - Llenar `full_entity_name` si spaCy cortó la entidad
+   - Llenar `proposed_category` para entidades válidas
+   - Dejar vacío si no es entidad real
+2. **Entrenar modelo BERT/RoBERTa** con las clasificaciones manuales
+3. **Extracción de NARRATIVA y PRÁCTICA:** método alternativo (keyphrase extraction, topic modeling)
+4. **Aplicar correcciones manuales** al dataset completo
+
+---
+
+**Fecha:** 2026-05-05 (sesión 13)
+
+**Trabajado en:**
+- Refinamiento de Capa 4: implementación de sub-reglas 4e (contactos/footers) y 4f (placeholders)
+- Análisis programático del corpus para identificar patrones de contacto, direcciones y placeholders
+- Corrección de regex para placeholders multi-línea ("Error!\nReference source not found")
+- Re-procesamiento del corpus completo con las nuevas sub-reglas
+- Validación visual del Proforest Reporte
+- Actualización de `.agent/`
+
+**Resumen de la sesión:**
+
+### Problemas identificados en validación
+
+El Proforest Reporte (16.55% reducción) contenía ruido residual no capturado por Capas 1-4:
+1. **Footer repetido:** `Proforest Latinoamérica S.A.S.| +57 (602) 3966477 | latinoamerica@proforest.net | www.proforest.net` aparecía 11 veces
+2. **Líneas de contacto:** `T: +57 (602) 3966477`, `Oficina Regional Latinoamérica`, `Calle. 11 # 100-121 Of 203`
+3. **Placeholders de MS Word:** `Main Title Subtitle Description` (2 veces), `Error! Bookmark not defined` (inline), `Error! Reference source not found` (multi-línea)
+
+### Implementación
+
+1. **`src/services/cleaning.py`:**
+   - Nuevas regex: `PHONE_RE`, `CONTACT_PREFIX_RE`, `ADDRESS_RE`, `OFFICE_HEADER_RE`, `TEMPLATE_PLACEHOLDER_RE`, `TEMPLATE_LINE_RE`
+   - Nueva función `_is_contact_line()`: detecta 5 tipos de líneas de contacto con protección ≤150 chars
+   - Sub-regla 4e: elimina líneas de contacto/footers
+   - Sub-regla 4f: elimina placeholders inline, exactos, y multi-línea
+   - Métricas nuevas en `clean_text_layer4`: `contact_lines_removed`, `template_placeholders_removed`
+2. **`src/api/main.py`:** campos `contact_lines_removed` y `template_placeholders_removed` agregados a `CleanResponse` y endpoint `/clean`
+
+### Resultados del re-procesamiento (28 docs)
+
+| Métrica | Valor |
+|---|---|
+| Reducción promedio | 5.49% |
+| Líneas de contacto eliminadas | 23 |
+| Placeholders eliminados | 5 |
+| Documentos afectados por 4e/4f | 6/28 |
+
+**Documento top:** Proforest Reporte — 19 contactos + 5 placeholders eliminados.
+
+### Validación visual (Proforest Reporte)
+
+**✅ Antes del refinamiento:** footers de contacto aparecían en múltiples páginas, placeholders rompían oraciones.
+
+**✅ Después del refinamiento:**
+- Footers eliminados completamente
+- Placeholders eliminados (incluyendo multi-línea)
+- Contenido narrativo preservado ("Acerca de Proforest", "Introducción", "Cooperativa Agraria ACOPAGRO")
+- Línea que antes decía:
+  > "Resultados del análisis de riesgos usando Global Forest Watch ProError! Bookmark not defined."
+  
+  Ahora dice:
+  > "Resultados del análisis de riesgos usando Global Forest Watch Pro."
+
+### Problemas menores residuales
+
+- `E:` (línea con solo prefijo de email) queda residual cuando el email fue eliminado por 4a
+- `Campestre Towers |Cali| Colombia` — dirección parcial sin patrón postal explícito, se preserva
+- TOC roto en Proforest sigue presente (no es prioridad)
+
+### Pendiente para próxima sesión
+
+1. **Decidir si la limpieza está lista** para pasar al NER, o si hay más refinamientos que valga la pena
+2. **Correr NER sobre el corpus re-limpiado** (ahora con menos ruido residual)
+3. **Continuar con Fase 2 del NER:** mapeo a las 9 categorías del proyecto
+
+---
+
+**Fecha:** 2026-05-05 (sesión 12)
+
+**Trabajado en:**
+- Revisión manual de Capa 4 sobre los 3 documentos con mayor reducción del corpus
+- Identificación de bug crítico en Capa 2b: eliminaba contenido narrativo repetido en brochures/dípticos
+- Corrección de la heurística `_is_header_candidate` (proteger líneas con >10 palabras)
+- Re-procesamiento del corpus completo (28 documentos) con la corrección
+- Validación visual de los documentos corregidos
+- Actualización de `.agent/`
+
+**Resumen de la sesión:**
+
+### Bug crítico encontrado
+
+La validación manual mostró que el **Proforest Reporte** y el **DIPTICO-CPS-EARTHWORM** habían perdido párrafos enteros de contenido narrativo. Ejemplo del Proforest (antes de la corrección):
+
+```
+L18: Es posible obtener los productos básicos agrarios de una manera que responda a la creciente
+L21: Nos enfocamos en la base de producción y las cadenas de suministro de productos agropecuarios
+L27: Apoyamos a las empresas para que tomen medidas para abordar los riesgos ambientales y
+```
+
+Todas estas líneas se eliminaban porque:
+1. Aparecían ≥3 veces en el documento (formato brochure con páginas repetidas)
+2. Cumplían `_is_header_candidate`: longitud 15-150, sin puntuación interna, no empiezan minúscula
+
+### Corrección aplicada
+
+En `src/services/cleaning.py`, función `_is_header_candidate`:
+
+```python
+# Must not be a long sentence (>10 words) — likely narrative content
+# repeated across pages in brochures, not a structural header.
+if len(stripped.split()) > 10:
+    return False
+```
+
+### Resultados del re-procesamiento (28 docs)
+
+| Métrica | Antes | Después |
+|---|---|---|
+| Reducción promedio | 7.09% | **5.32%** |
+| Proforest Reporte | 16.44% | 16.55% (solo headers reales) |
+| DIPTICO-EARTHWORM | 14.78% | **7.49%** |
+| Guía AGRAP | 11.91% | 11.73% |
+
+El DIPTICO mejoró drásticamente porque casi la mitad de su reducción era contenido narrativo eliminado erróneamente.
+
+### Validación visual
+
+**DIPTICO (después):** ahora conserva los párrafos introductorios completos sobre la Coalición y Earthworm Foundation.
+
+**Proforest Reporte (después):** conserva las secciones "Acerca de Proforest", "Introducción", "Cooperativa Agraria ACOPAGRO LTDA" completas.
+
+### Trade-off aceptado
+
+Headers largos repetidos (>10 palabras) ya no se eliminan. Ejemplo en el DIPTICO:
+> "ENFOQUE DE ALTOS VALORES DE CONSERVACIÓN (AVC) Y ALTAS RESERVAS DE CARBONO (ARC)"
+
+Este título aparece en cada página del díptico y antes se eliminaba; ahora se preserva. Aceptado como trade-off conservador para no perder contenido narrativo.
+
+### Problemas residuales menores
+
+1. **Footers de contacto en Proforest:** "Proforest Latinoamérica S.A.S.| +57 (602) 3966477 | |" aparece varias veces y no se elimina (no cumple heurística de header por caracteres especiales).
+2. **TOC roto en Proforest:** la "Tabla de contenido" tiene formato atípico (números sueltos en líneas separadas) y Capa 3b no lo capturó completamente.
+3. **Placeholder en Proforest:** "Main Title Subtitle Description" — texto de template.
+
+### Aprendizajes
+
+- **La validación manual es indispensable.** Las métricas de reducción (%) no revelan si se eliminó ruido o contenido valioso. Solo la lectura visual lo detecta.
+- **Los documentos tipo brochure/díptico son un caso límite** para la heurística de frecuencia: el mismo texto narrativo aparece intencionalmente en múltiples páginas.
+- **La regla de ">10 palabras" es un buen proxy** para distinguir headers de contenido narrativo, pero no perfecta.
+
+### Pendiente para próxima sesión
+
+1. **Decidir si refinamos más Capa 4:** ¿vale la pena eliminar footers de contacto, placeholders, y TOC rotos? ¿O avanzamos al NER con la limpieza actual?
+2. **Correr NER sobre los 28 documentos re-limpiados** para ver si la calidad mejoró (menos falsos positivos de créditos editoriales).
+3. **Continuar con Fase 2 del NER:** mapeo a las 9 categorías del proyecto.
+
+---
+
+**Fecha:** 2026-05-05 (sesión 11)
+
+**Trabajado en:**
+- Inicio del Objetivo 4 (NER / Extracción de entidades)
+- Decisión de librería: spaCy con modelos monolingües (es_core_news_sm + en_core_web_sm) + langdetect
+- Implementación de servicio `src/services/ner.py` con detección de idioma, filtros de falsos positivos estructurales, extracción de contexto y oración
+- Creación de endpoint `POST /documents/{id}/extract-entities`
+- Pruebas con 3 documentos reales del corpus
+- Actualización de Dockerfile para descargar modelos spaCy
+- Actualización de `.agent/` (decisions.md, tasks.md, session.md)
+
+**Resumen de la sesión:**
+
+### Decisiones tomadas
+
+- **Fase 1 del NER:** extraer entidades con spaCy y guardar etiquetas originales (PER, ORG, LOC, GPE, MISC). El mapeo a las 9 categorías del proyecto se hará en Fase 2 tras evaluar calidad.
+- **Estrategia bilingüe:** `langdetect` para detectar idioma del documento, luego procesar con modelo spaCy correspondiente.
+- **Filtros de falsos positivos:** lista negra case-insensitive de palabras/frases estructurales (títulos de sección, encabezados) para no etiquetar estructura del documento como entidades.
+
+### Implementación
+
+1. **`requirements.txt`:** agregadas `spacy>=3.7.0` y `langdetect==1.0.9`.
+2. **`src/services/ner.py`:**
+   - `_ensure_model()`: carga modelo spaCy, descarga automáticamente si no existe.
+   - `detect_language()`: detecta idioma con fallback a 'es'.
+   - `extract_entities()`: procesa texto, extrae entidades de TARGET_LABELS, filtra falsos positivos estructurales, extrae contexto (±300 chars) y oración completa.
+   - `normalize_entity_name()`: normaliza para deduplicación (elimina artículos iniciales).
+3. **`src/api/main.py`:**
+   - Nuevo schema `ExtractEntityResponse`
+   - Nuevo schema `ExtractEntitiesSummary`
+   - Nuevo endpoint `POST /documents/{document_id}/extract-entities`
+   - Requiere status `cleaned` o `processed`
+   - Borra entidades previas del documento (idempotente)
+   - Actualiza `documents.status = 'processed'`
+   - Guarda en tabla `entities` con metadata JSONB
+4. **`Dockerfile`:** agregados `RUN python -m spacy download es_core_news_sm` y `en_core_web_sm`.
+
+### Resultados de prueba (3 documentos)
+
+| Documento | Idioma | Total | ORG | LOC | PER | MISC |
+|---|---|---:|---:|---:|---:|---:|
+| AGRAP Plan de Acción | es | 449 | 134 | 89 | 45 | 181 |
+| WWF UK PACT | es | 255 | 50 | 90 | 42 | 73 |
+| Coalición Producción Sostenible | es | 418 | 84 | 120 | 36 | 178 |
+
+### Calidad observada
+
+**✅ Correctas:**
+- Organizaciones: WWF, TFA, Climate Group, Earthworm Foundation, Gobierno de Reino Unido, NDPE
+- Lugares: Madre de Dios, Amazonía Peruana, América Latina, Perú
+- Personas: Nelson Gutiérrez Carpio, Maricarmen Brenis, David Parra, Carlos Roque
+
+**⚠️ Problemas:**
+- Falsos positivos de créditos editoriales residuales: "Editor", "Diseño" — Capa 4 no eliminó completamente todos los créditos.
+- Delimitación incorrecta en listas verticales: spaCy une múltiples nombres de personas como una sola entidad PER.
+- Texto adyacente incluido: "Amazonía Peruana La presente publicación" (LOC que incluye texto narrativo).
+- "Perú" clasificado como PER en algunos casos (error de spaCy).
+- "Además" clasificado como PER (error de spaCy).
+
+### Aprendizajes
+
+- **spaCy es rápido y funciona localmente**, pero el modelo `es_core_news_sm` tiene limitaciones con documentos estructurados (saltos de línea, listas).
+- **La calidad del NER depende fuertemente de la calidad de la limpieza**: los créditos editoriales residuales generan falsos positivos. Mejorar Capa 4 reduciría ruido en el NER.
+- **Filtrar falsos positivos estructurales ayuda**: la lista negra eliminó ~50 entidades inválidas (PLAN, CRÉDITOS, INTRODUCCIÓN, etc.) en el AGRAP.
+- **No forzar mapeo a categorías del proyecto en Fase 1 fue la decisión correcta**: las etiquetas spaCy son imperfectas; mapearlas ahora propagaría errores.
+
+### Pendiente para próxima sesión
+
+1. **Evaluar si refinamos la limpieza Capa 4** antes de seguir con NER (los créditos residuales generan ruido).
+2. **Fase 2 del NER:** diseñar mapeo spaCy → 9 categorías del proyecto (¿heurísticas? ¿clasificador?).
+3. **Post-procesamiento de entidades:** dividir entidades PER que contengan múltiples nombres; corregir "Perú"→LOC.
+4. **Probar con documento en inglés** del corpus para verificar modelo en_core_web_sm.
+5. **Correr NER sobre los 28 documentos** y hacer análisis agregado (top entidades, frecuencias).
+
+---
+
+**Fecha:** 2026-05-05 (sesión 10)
+
+**Trabajado en:**
+- Decisión arquitectónica: separar Capa 4 dedicada a "ruido editorial por contenido" (URLs/emails, créditos, portadas MAYÚSCULAS, agradecimientos)
+- Análisis programático del corpus para diseñar las 4 sub-reglas (4a, 4b, 4c, 4d) con datos
+- Implementación de Capa 4 con extensión B1 (refinada después de detectar agresividad excesiva en B inicial)
+- Validación con dry_run y comparación visual antes/después
+- Aplicación de Capa 1+2+2c+3+4 al corpus completo (28 documentos)
+- Actualización de la documentación `.agent/`
+
+**Resumen de la sesión:**
+
+### Estructura final del pipeline de limpieza
+
+- **Capa 1**: universal (encoding/espacios)
+- **Capa 2**: estructural por estadística (headers, páginas, oraciones)
+- **Capa 3**: estructural por patrón (TOCs)
+- **Capa 4**: editorial por contenido (URLs/emails, créditos, portadas, agradecimientos)
+
+### Análisis previo a codear
+
+Antes de implementar, análisis programático sobre los 28 archivos:
+- **4a:** 55 líneas-solo-URL en 13 archivos + 5 líneas-solo-email en 3 archivos + 250 URLs inline + 42 emails inline. Decisión: eliminar todos (Tania confirmó "en ningún momento las vamos a etiquetar").
+- **4b:** 149 líneas con keywords de crédito en 26/28 archivos, **PERO con falsos positivos** (la palabra "Producción" sola pesca contenido normal). Decisión: keyword debe ir seguida de `:` o `©`, eliminar bloques (no líneas individuales).
+- **4c:** 10/28 archivos tienen portadas con palabras MAYÚSCULAS partidas en líneas (`ACUERDO DE / ACCIÓN COLECTIVA / ...`).
+- **4d:** Solo 2/28 archivos con header `AGRADECIMIENTOS` explícito.
+
+### Iteración crítica: B → B1
+
+**B inicial fue demasiado agresivo.** En el Plan AGRAP eliminó 40 líneas, incluyendo:
+- ✅ Bloque puro de créditos (15 líneas: Autor:, Diseño:, etc.)
+- ❌ Lista de instituciones firmantes (`Ministerio de Ambiente`, `Mancomunidad Regional Amazónica`, `Proforest`, `Universidad Nacional Agraria...`) — son **actores territoriales reales** del análisis.
+
+**B1 refinada:** después del último keyword detectado, parar la extensión cuando aparezcan 5 líneas consecutivas sin nuevo keyword (no incluir esa 5ª línea). En el Plan AGRAP, B1 elimina 13 líneas (vs 40 con B), preservando las instituciones firmantes.
+
+**Trade-off aceptado:** quedan 4-5 líneas residuales después del bloque editorial puro (típicamente subtítulos como `AGRADECEMOS LA PARTICIPACIÓN DE:` + 3 líneas), antes del threshold de 5.
+
+### Implementación
+
+1. **`src/services/cleaning.py`:**
+   - Función `clean_text_layer4(text)` con 4 sub-reglas en orden: 4a → 4c → 4b → 4d
+   - Función `_renormalize()` al final: re-aplicar normalización de espacios y saltos (porque eliminar URLs inline puede dejar dobles espacios)
+   - Constantes explícitas (`CREDIT_FIRST_FRACTION=0.15`, `CREDIT_LAST_FRACTION=0.05`, `CREDIT_MIN_KEYWORDS_IN_BLOCK=2`, `CREDIT_MAX_NONKEYWORD_LINES=5`, etc.) para tuneo
+2. **`src/api/main.py`:** endpoint `/clean` ahora aplica Capa 1+2+2c+3+4 en cascada. `CleanResponse` ampliado con 9 nuevos campos (`urls_removed`, `emails_removed`, `credit_blocks_removed`, etc.).
+
+### Resultados sobre el corpus
+
+| Métrica | Capa 1+2+2c+3 | Capa 1+2+2c+3+4 (B1) |
+|---|---:|---:|
+| Reducción avg | 5.54% | **7.01%** |
+| Reducción max | 14.04% | **16.55%** |
+| URLs eliminadas | 0 | 305 |
+| Emails eliminados | 0 | 47 |
+| Líneas portada MAYÚSCULAS | 0 | 89 |
+| Líneas créditos | 0 | 62 |
+| Líneas agradecimientos | 0 | 45 |
+| Archivos donde la capa actuó | 6/28 (Capa 3) | 22/28 (Capa 4) |
+
+### Aprendizajes
+
+- **Validación visual antes/después es crítica para detectar agresividad excesiva**: B inicial pasó las heurísticas pero comió contenido valioso. Solo se vio al inspeccionar el resultado en el Plan AGRAP.
+- **El threshold "líneas sin keyword" es un control fino**: cambiar de "2 párrafos narrativos seguidos" a "5 líneas sin keyword" produjo el cambio de 40→13 líneas eliminadas en el Plan AGRAP.
+- **Dato del corpus > intuición**: encontrar 250 URLs inline + 7 archivos donde "ÍNDICE" no era TOC + falsos positivos en regex de créditos cambió las decisiones de diseño en cada caso.
+- **Re-normalización post-eliminación**: cuando se elimina contenido inline (URL/email), hay que re-aplicar normalización de espacios. Sin esto quedaba `consultar  más info` con doble espacio.
+
+### Pendiente para próxima sesión
+
+1. **Validación manual** de los 22 archivos donde Capa 4 actuó, especialmente los de mayor reducción (`Proforest Reporte` 16.55%, `DIPTICO-CPS-EARTHWORM` 14.34%, `Año de Referencia` 11.80%).
+2. **Decidir:** ¿avanzar al **Objetivo 4 (NER)** con la limpieza actual, o seguir refinando Capa 4 (los 4-5 líneas residuales tipo "AGRADECEMOS LA PARTICIPACIÓN DE:")?
+3. **Empezar a planear Objetivo 4 (NER)**: elección de librería (spaCy multilingüe?), categorías concretas para clasificación de entidades.
+
+---
+
 **Fecha:** 2026-05-04 (sesión 9)
 
 **Trabajado en:**
@@ -693,3 +1102,4 @@ AttributeError: module 'alembic.op' has no attribute 'create_extension'
 | 2026-05-04 (s7) | Análisis programático de patrones reales en el corpus (frecuencia de líneas, longitudes); diseño de heurística combinada para headers; implementación Capa 2 (2a páginas + 2b headers, NO 2c); modo `?dry_run=true` en endpoint `/clean`; validación dry-run sobre 5 archivos; aplicación Capa 1+2 al corpus (28 docs, avg 4.92% reducción, max 9.93%, 1,540 páginas + 899 headers eliminados) |
 | 2026-05-04 (s8) | Verificación en disco de que Capa 2 sí se aplicó (falsa alarma de usuaria); implementación Capa 2c (re-unión de oraciones partidas por columnas) con heurística que respeta listas verticales y nuevos párrafos; validación visual antes/después; aplicación Capa 1+2+2c al corpus (28 docs, **7,121 oraciones re-unidas**, mismas métricas de reducción porque 2c no quita caracteres) |
 | 2026-05-04 (s9) | Análisis programático de tipos de TOC en el corpus (3 tipos identificados, incluyendo trampa de palabra "Índice/Contenido" sin TOC real en 7 docs); implementación Capa 3 (3a dot leaders + 3b bloques TOC numerados al inicio con protección de "primeros 15%" + ≥5 líneas + ≥70% numeradas); validación dry_run con 0 falsos positivos; aplicación Capa 1+2+2c+3 al corpus (28 docs, avg 5.54% reducción, max 14.04%; +21 dot leaders + 5 bloques TOC + 122 líneas TOC eliminadas en 6/28 archivos) |
+| 2026-05-05 (s10) | Decisión arquitectónica: Capa 4 dedicada a ruido editorial por contenido (4a URLs/emails, 4b créditos, 4c portadas MAYÚSCULAS, 4d agradecimientos); análisis programático del corpus identificó falsos positivos en regex de créditos; implementación con extensión B inicial fue agresiva (40 líneas en Plan AGRAP, comió instituciones firmantes); refinamiento a B1 (parar tras 5 líneas sin keyword) bajó a 13 líneas preservando instituciones; aplicación Capa 1+2+2c+3+4 al corpus (28 docs, **avg 7.01% reducción, max 16.55%**; +305 URLs +47 emails +89 portada +62 créditos +45 agradecimientos en 22/28 archivos) |

@@ -37,9 +37,8 @@ DE LA AGRICULTURA FAMILIAR DE PRODUCCIÓN DE CACAO LIBRE DE
 DEFORESTACIÓN EN EL CONTEXTO DE LA EUDR.
 1 Giudice, R., & Guariguata, M. (2016). Las iniciativas de conservación de bosques en el Perú. Centro para la Investigación Forestal Internacional (CIFOR).
 2 Dipres. (2019). Serie Bibliográfica - Premio Nobel Economía 2019: Abhijit Banerjee, Esther Duflo y
-Michael Kremer. Biblioteca Digital Interna – Dipres. https://www.dipres.gob.cl/598/articles-196769_ recurso_1.pdf
+Michael Kremer. Biblioteca Digital Interna – Dipres. recurso_1.pdf
 3 Banco Mundial. (2020). El impacto de la COVID-19 en la reducción de la pobreza global (en itálica).
-https://www.worldbank.org.
 
 En el Perú, la producción de cacao se basa en tres variedades principales: 53,3% de la variedad Trinitario
 (Junín); 37,3% de Forastero amazónico (Cusco y Ayacucho); y 9,4% de Criollo (zona norte de San
@@ -65,10 +64,10 @@ productividad del sector agrario, especialmente en el caso del cacao en la Amazo
 incentivos para la productividad y rentabilidad, se requiere un entorno positivo de instrumentos de financiamiento, asistencia técnica y monitoreo de impacto.
 4 Lazo, J. (2023a, abril 10). Imaginemos un futuro diferente para la agricultura del Perú. Revista: Rumbo
 Económico.
-https://rumboeconomico.com/2023/04/10/imaginemos-un-futuro-diferente-para-la- agricultura-del-peru/
+agricultura-del-peru/
 5 Lazo, J. (2023b, junio 1). Los siete pecados capitales de la agricultura peruana. Revista: Rumbo Económico.
-https://rumboeconomico.com/2023/06/01/los-siete-pecados-capitales-de-la-agricultura-peruana/
-6 Lazo, J. (2023c, junio 9). Estrategias para mejorar la rentabilidad y sostenibilidad en la producción agrícola. Revista: Rumbo Económico. https://rumboeconomico.com/2023/06/09/estrategias-para-
+
+6 Lazo, J. (2023c, junio 9). Estrategias para mejorar la rentabilidad y sostenibilidad en la producción agrícola. Revista: Rumbo Económico.
 mejorar-la-rentabilidad-y-sostenibilidad-en-la-produccion-agricola/.
 7 MIDAGRI. (2023). Observatorio de Commodities - Cacao (Boletín 01). Ministerio de Desarrollo Agrario y Riego (MIDAGRI).
 8 MIDAGRI. (2023). Observatorio de Commodities - Cacao (Boletín 01). Ministerio de Desarrollo Agrario y Riego (MIDAGRI).
@@ -98,14 +97,14 @@ competitividad, si la cadena de valor no logra ser productiva y rentable.
 10 Yturrios, J. (202
 1). La heterogeneidad tecnológica en la producción de cacao y los ingresos de las familias cacaoteras en las regiones de desarrollo alternativo: Evidencias y retos para una producción
 sostenible y resiliente. Convención Nacional del Café y Cacao [Convención virtual].
-1 MIDAGRI. (2022). Decreto Supremo N.° 017-2022-MIDAGRI. https://cdn.www.gob.pe/uploads/ document/file/3877740/D.S.%20N%C2%B0%200017-2022-MIDAGRI.pdf?v=1669989352.
+1 MIDAGRI. (2022). Decreto Supremo N.° 017-2022-MIDAGRI. document/file/3877740/D.S.%20N%C2%B0%200017-2022-MIDAGRI.pdf?v=1669989352.
 2 MIDAGRI. (2022). El Plan Nacional para el Desarrollo de la Cadena de Valor de Cacao – Chocolate al
 2030.
-https://cdn.www.gob.pe/uploads/document/file/3900583/EXPOSICI%C3%93N%20
+
 DE%20MOTIVOS.pdf.pdf?v=1669989352.
 13 MIDAGRI. (2022). El Plan Nacional para el Desarrollo de la Cadena de Valor de Cacao – Chocolate al
 2030.
-https://cdn.www.gob.pe/uploads/document/file/3900583/EXPOSICI%C3%93N%20
+
 DE%20MOTIVOS.pdf.pdf?v=1669989352.
 
 En la figura 1 se puede apreciar que se ha incluido como productividad promedio para el Perú la estimación propuesta por Yturrios, en el que consigna una productividad de 560 kg/ha para el
@@ -117,7 +116,7 @@ parte de la producción mundial de cacao. Este proceso no solo amenaza los ecosi
 14 Yturrios, J. (202
 1). La heterogeneidad tecnológica en la producción de cacao y los ingresos de las familias cacaoteras en las regiones de desarrollo alternativo: Evidencias y retos para una producción
 sostenible y resiliente. Convención Nacional del Café y Cacao [Convención virtual].
-15 Elaborado por el autor a partir de estadísticas de FAO (2023).https://www.fao.org/statistics/es..
+15 Elaborado por el autor a partir de estadísticas de FAO (2023).
 16 Schroth, G; Läderach, P; Dempewolf, J; Philpott, S; Haggar, J; Eakin, H; Castillejos, T; Garcia Moreno, J;
 Soto Pinto, L; Hernandez, R; Eitzinger, A; Ramirez-Villegas, J. 2009. Towards a climate change adaptation strategy for coffee communities and ecosystems in the Sierra Madre de Chiapas, México. Mitigation and
 Adaptation Strategies for Global Change. 14(7):605-625.
@@ -179,7 +178,7 @@ de subsistencia (menos de 2 ha), realizan otras actividades para procurar sus in
 19 Elaborado por el autor a partir del estudio de familias productoras de la Alianza Cacao Perú (Yturrios,
 2020)
 20 Instituto Nacional de Estadística e Informática (INEI). (2022). Encuesta Nacional Agropecuaria 2022.
-https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/Lib1912/libro.pdf
+
 6.51
 6.91
 6.87
@@ -334,7 +333,7 @@ La productividad (rendimiento), depende de tres factores que se entrecruzan para
 AGRÍCOLA
 3.1. Factores que determinan la producción agrícola
 22 UN-FAO. (2015). Yield gap analysis of field crops, methods and case studies (Water Reports N°
-41).https://openknowledge.fao.org/server/api/core/bitstreams/bd44e093-8f41-4b99-875a-
+41).
 1387a1b1dd8d/content.
 
 2. Factores limitantes, se consideran a la disponibilidad del agua de riego y a la nutrición vegetal, esta última compuesta por los diferentes fertilizantes de origen orgánico y químico de los que disponen los
@@ -347,8 +346,8 @@ F. S., Hédl, R., Heinken, T., Hermy, M., Hommel, P., Jenkins, M. A., Kelly, D. 
 G., Naaf, T., Newman, M., Peterken, G., Petrík, P., Schultz, J., Sonnier, G., Van Calster, H., Waller, D. M.,
 Walther, G.-R., White, P. S., Woods, K. D., Wulf, M., Graae, B. J., & Verheyen, K. (2013). Microclimate moderates plant responses to macroclimate warming. Proceedings of the National Academy of Sciences
 of the United States of America, 1
-10(46), 18561–18565. https://doi.org/10.1073/pnas.131
-24 Elaborado por el autor del estudio, adaptado de UN-FAO (2015). Yield gap analysis of field crops, methods and case studies (Water Reports N° 41). https://openknowledge.fao.org/server/api/core/
+10(46), 18561–18565.
+24 Elaborado por el autor del estudio, adaptado de UN-FAO (2015). Yield gap analysis of field crops, methods and case studies (Water Reports N° 41).
 bitstreams/bd44e093-8f41-4b99-875a-1387a1b1dd8d/content.
 Figura 4. Factores que participan en la producción agrícola.24
 Genotipo accesible
@@ -418,12 +417,12 @@ La implementación de mejores prácticas agrícolas, como el uso de germoplasma 
 Figura 5. Pilares estratégicos que determinan la productividad.27
 27 Elaborado por el autor del estudio.
 28 Fritsche-Neto, R., & Borém, A. (Eds.). (2013). Plant breeding for abiotic stress tolerance. Springer.
-https://doi.org/10.1007/978-3-642-30553-5
+
 29 Canales, M. (2022). Proyecto: Cacao Nor Amazónico Sostenible. Programa SeCompetitivo de la
-Cooperación Suiza - SECO. https://www.cooperacionsuiza.pe/wp-content/uploads/2022/07/
+Cooperación Suiza - SECO.
 BROCHURE-CACAO-SECOMPETITIVO_final7.pdf.
 30 Canales, M. (2022). Proyecto: Cacao Nor Amazónico Sostenible. Programa SeCompetitivo de la
-Cooperación Suiza - SECO. https://www.cooperacionsuiza.pe/wp-content/uploads/2022/07/
+Cooperación Suiza - SECO.
 BROCHURE-CACAO-SECOMPETITIVO_final7.pdf.
 Riego tecnificado
 (Factor limitante)
@@ -455,11 +454,11 @@ los productores al reducir la calidad y el volumen de las cosechas30.
 33 Lastra, S., & Thomas, E. (Eds.). (2022). Catálogo de cacaos del Perú. Alianza Bioversity & CIAT. https:// cacaodiversity.org/wp-content/uploads/2023/02/Libro-de-Cacao-Peru-elegidos2.pdf.
 34 Rodríguez-Silva, L. G. ., Quintana-Fuentes, L. F. ., Coronado-Silva, R. A. ., García-Jerez, A. ., Báez-
 Daza, E. Y. ., & Agudelo-Castañeda, G. A. . (2023). Caracterización física y sensorial de 24 genotipos especiales de cacao Theobroma cacao. Revista U.D.C.A Actualidad & Divulgación Científica, 26(1).
-https://doi.org/10.3
+
 1910/rudca.v26.n1.2023.2410.
 35 Rodríguez-Silva, L. G. ., Quintana-Fuentes, L. F. ., Coronado-Silva, R. A. ., García-Jerez, A. ., Báez-
 Daza, E. Y. ., & Agudelo-Castañeda, G. A. . (2023). Caracterización física y sensorial de 24 genotipos especiales de cacao Theobroma cacao. Revista U.D.C.A Actualidad & Divulgación Científica, 26(1).
-https://doi.org/10.3
+
 1910/rudca.v26.n1.2023.2410.
 A pesar de estos retos, los esfuerzos locales han demostrado que la adopción de genotipos adecuados puede mejorar la rentabilidad de los productores al optimizar los rendimientos y reducir pérdidas. Por
 ejemplo, un estudio de Thomas Evert y Sphyros Lastra3
@@ -504,15 +503,15 @@ sin comprometer la estabilidad productiva de sus cultivos.
 
 4.2. Nutrición vegetal
 36 Alvarado, J., & Iturrios, J. (2017). Determinantes de la productividad en pequeños productores de cacao de las regiones de San Martín, Huánuco y Ucayali: una aproximación exploratoria al modelo
-tecnológico de productividad en estas regiones. ICCO.https://www.icco.org/wp-content/uploads/
+tecnológico de productividad en estas regiones. ICCO.
 T7.251DETERMINANTES-DE-LA-PRODUCTIVIDAD-EN-PEQUENOS-PRODUCTORES-DE-CACAO-DE-
 LAS-REGIONES-DE-SAN-MARTIN-HUANUCO-Y-UCAYALI-SMHU-UNA.pdf.
 37 Alvarado, J., & Iturrios, J. (2017). Determinantes de la productividad en pequeños productores de cacao de las regiones de San Martín, Huánuco y Ucayali: una aproximación exploratoria al modelo
-tecnológico de productividad en estas regiones. ICCO.https://www.icco.org/wp-content/uploads/
+tecnológico de productividad en estas regiones. ICCO.
 T7.251DETERMINANTES-DE-LA-PRODUCTIVIDAD-EN-PEQUENOS-PRODUCTORES-DE-CACAO-DE-
 LAS-REGIONES-DE-SAN-MARTIN-HUANUCO-Y-UCAYALI-SMHU-UNA.pdf.
 38 Alvarado, J., & Iturrios, J. (2017). Determinantes de la productividad en pequeños productores de cacao de las regiones de San Martín, Huánuco y Ucayali: una aproximación exploratoria al modelo
-tecnológico de productividad en estas regiones. ICCO.https://www.icco.org/wp-content/uploads/
+tecnológico de productividad en estas regiones. ICCO.
 T7.251DETERMINANTES-DE-LA-PRODUCTIVIDAD-EN-PEQUENOS-PRODUCTORES-DE-CACAO-DE-
 LAS-REGIONES-DE-SAN-MARTIN-HUANUCO-Y-UCAYALI-SMHU-UNA.pdf.
 La nutrición vegetal juega un papel fundamental en la productividad del cacao, ya que influye directamente en el crecimiento, desarrollo y rendimiento del cultivo. Se entiende por nutrición vegetal al
@@ -528,32 +527,32 @@ A medida que las plantas envejecen y los suelos pierden su fertilidad, será nec
 poda, abonamiento y fertilización que permitan devolver al suelo los nutrientes extraídos en cada
 cosecha38. El uso de sistemas agroforestales será clave en este proceso, combinando árboles de sombra con cultivos de cacao para optimizar la fertilidad del suelo y mantener un equilibrio climático adecuado.
 
-39 Instituto Nacional de Innovación Agraria (INIA). (2019). Manual de manejo agronómico del cultivo de cacao nativo en la región de Loreto. INIA. https://www.inia.gob.pe/wp-content/uploads/2019/1
+39 Instituto Nacional de Innovación Agraria (INIA). (2019). Manual de manejo agronómico del cultivo de cacao nativo en la región de Loreto. INIA.
 2/
 Manual_Manejo_CacaoNativo_compressed.pdf.
-40 Instituto Nacional de Innovación Agraria (INIA). (2019). Manual de manejo agronómico del cultivo de cacao nativo en la región de Loreto. INIA. https://www.inia.gob.pe/wp-content/uploads/2019/1
+40 Instituto Nacional de Innovación Agraria (INIA). (2019). Manual de manejo agronómico del cultivo de cacao nativo en la región de Loreto. INIA.
 2/
 Manual_Manejo_CacaoNativo_compressed.pdf
-41 Instituto Nacional de Innovación Agraria (INIA). (2019). Manual de manejo agronómico del cultivo de cacao nativo en la región de Loreto. INIA. https://www.inia.gob.pe/wp-content/uploads/2019/1
+41 Instituto Nacional de Innovación Agraria (INIA). (2019). Manual de manejo agronómico del cultivo de cacao nativo en la región de Loreto. INIA.
 2/
 Manual_Manejo_CacaoNativo_compressed.pdf
-42 Instituto Nacional de Innovación Agraria (INIA). (2019). Manual de manejo agronómico del cultivo de cacao nativo en la región de Loreto. INIA. https://www.inia.gob.pe/wp-content/uploads/2019/1
+42 Instituto Nacional de Innovación Agraria (INIA). (2019). Manual de manejo agronómico del cultivo de cacao nativo en la región de Loreto. INIA.
 2/
 Manual_Manejo_CacaoNativo_compressed.pdf
-43 Instituto Nacional de Innovación Agraria (INIA). (2019). Manual de manejo agronómico del cultivo de cacao nativo en la región de Loreto. INIA. https://www.inia.gob.pe/wp-content/uploads/2019/1
+43 Instituto Nacional de Innovación Agraria (INIA). (2019). Manual de manejo agronómico del cultivo de cacao nativo en la región de Loreto. INIA.
 2/
 Manual_Manejo_CacaoNativo_compressed.pdf
 44 Soto, E., Mendoza, P., & Aguilar, J. (2022). Manual de buenas prácticas agrícolas para el cultivo del
 cacao.
 IICA.
-https://repositorio.iica.int/bitstream/handle/1
+
 1324/21346/CDPE221
 18713e.
 pdf?sequence=1&isAllowed=y
 45 Soto, E., Mendoza, P., & Aguilar, J. (2022). Manual de buenas prácticas agrícolas para el cultivo del
 cacao.
 IICA.
-https://repositorio.iica.int/bitstream/handle/1
+
 1324/21346/CDPE221
 18713e.
 pdf?sequence=1&isAllowed=y
@@ -570,16 +569,16 @@ La colaboración entre los sectores público, privado y la cooperación internac
 agricultores responder a los desafíos del cambio climático, mejorar la resiliencia del cultivo y mantener la competitividad del cacao peruano en mercados internacionales.
 
 46 MINAGRI. (202
-1). Memoria anual del sector agrario y de riego 2020. https://www.midagri.gob.pe/ portal/images/pcm/202
+1). Memoria anual del sector agrario y de riego 2020. portal/images/pcm/202
 1/memoria-anual2020.pdf
 47 Red Agrícola. (2017). El riego tecnificado es un aliado para aumentar las producciones de cacao.
-https://redagricola.com/el-riego-tecnificado-es-un-aliado-para-aumentar-las-producciones-de- cacao/.
+cacao/.
 48 Red Agrícola. (2017). El riego tecnificado es un aliado para aumentar las producciones de cacao.
-https://redagricola.com/el-riego-tecnificado-es-un-aliado-para-aumentar-las-producciones-de- cacao/.
-49 Programa Nacional de Innovación Agraria. (2021). Manejo agronómico: Incremento de productividad del cultivo de cacao en San Martín. Gobierno del Perú. https://www.gob.pe/institucion/pnia/
+cacao/.
+49 Programa Nacional de Innovación Agraria. (2021). Manejo agronómico: Incremento de productividad del cultivo de cacao en San Martín. Gobierno del Perú.
 noticias/345354-manejo-agronomico-incremento-productividad-del-cultivo-de-cacao-en-san-martin.
 50 Programa Nacional de Innovación Agraria. (2021). Manejo agronómico: Incremento de productividad del cultivo de cacao en San Martín. Gobierno del Perú.
-https://www.gob.pe/institucion/pnia/noticias/345354-manejo-agronomico-incremento- productividad-del-cultivo-de-cacao-en-san-martin.
+productividad-del-cultivo-de-cacao-en-san-martin.
 51 Programa Nacional de Innovación Agraria. (2021). Manejo agronómico: Incremento de productividad del cultivo de cacao en San Martín. Gobierno del Perú.
 4.3. Riego tecnificado
 El riego tecnificado en el Perú ha experimentado avances significativos en las últimas décadas, pero aún enfrenta desafíos en términos de acceso, eficiencia y sostenibilidad. Según datos estadísticos del Anuario
@@ -596,9 +595,9 @@ Además, los sistemas de riego por goteo permiten la fertirrigación, integrando
 Manejo Agronómico del Cacao en San Martín49 confirma que la combinación de riego tecnificado con un manejo adecuado de plagas y fertilización aumentó la productividad en más del 80%50. En parcelas
 experimentales, el rendimiento pasó de 450 kg/ha a 838 kg/ha gracias a técnicas de abonamiento, fertirriego y podas sincronizadas, apoyadas por un sistema de bombeo eficiente51.
 
-https://www.gob.pe/institucion/pnia/noticias/345354-manejo-agronomico-incremento- productividad-del-cultivo-de-cacao-en-san-martin.
-52 Netafim. Cacao. https://www.netafim.com.mx/cultivos/cacao/.
-53 Lovatt, C. J. (2015). Fertilización de árboles perennes. INTAGRI. https://www.intagri.com/articulos/ frutales/fertilizacion-de-arboles-perennes
+productividad-del-cultivo-de-cacao-en-san-martin.
+52 Netafim. Cacao.
+53 Lovatt, C. J. (2015). Fertilización de árboles perennes. INTAGRI. frutales/fertilizacion-de-arboles-perennes
 54 Lazo, J. (202
 1). La palma aceitera en el Perú y la bioeconomía. SPDE. Lima. Perú.
 Para lograr una masificación efectiva y sostenible del riego tecnificado en el Perú, es fundamental brindar capacitación y asistencia técnica a los agricultores sobre prácticas adecuadas de riego y manejo eficiente
@@ -637,9 +636,8 @@ mercado, por lo que, entre pequeños y medianos productores, unos 306 mil tienen
 2022 previamente citada, el 46% del total, es decir, unos 552 mil productores de subsistencia, realiza otras actividades para obtener ingresos, no siendo la producción agrícola su actividad principal56. Ver
 tabla 1.
 55 Dipres. (2019). Serie Bibliográfica - Premio Nobel Economía 2019: Abhijit Banerjee, Esther Duflo y
-Michael Kremer. Biblioteca Digital Interna – Dipres. https://www.dipres.gob.cl/598/articles-196769_ recurso_1.pdf
+Michael Kremer. Biblioteca Digital Interna – Dipres. recurso_1.pdf
 56 Instituto Nacional de Estadística e Informática (INEI). (2022). Encuesta Nacional Agropecuaria 2022.
-https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/Lib1912/libro.pdf
 
 57 Elaborado por CAGC a partir de datos de la Superintendencia de Banca, Seguros y AFP (SBS).
 Tabla 1. Créditos en el sector agrario en el Perú57
@@ -801,7 +799,7 @@ Considerando una de las conclusiones a que llega el estudio cualitativo, que sol
 de producción, referida a los tres pilares estratégicos (el genotipo accesible de calidad (ecotipo), manejo de la nutrición vegetal y manejo del riego) en forma sostenible, sin causar deforestación; en lo posible
 asociados (mejora la capacidad de negociación); y que reciban asistencia técnica especializada, se propone la siguiente segmentación de productores (Figura 6).
 5.2. Propuesta de un modelo de financiamiento para productores de cacao
-58 MIDAGRI. (2022). Informe de gestión anual 2022. https://cdn.www.gob.pe/uploads/document/ file/5499466/4902591-informe-gestion-anual-2022-pliego-018-sse.pdf
+58 MIDAGRI. (2022). Informe de gestión anual 2022. file/5499466/4902591-informe-gestion-anual-2022-pliego-018-sse.pdf
 59 (Consorcio de Investigación Económica y Social (CIES). 2032). Microcréditos y Financiamiento
 Colaborativo en la Agricultura Peruana. Lima, Perú:
 
@@ -913,15 +911,15 @@ resiliencia ante los impactos ambientales y económicos.
 33(2), 237–253.
 63 Bouis, H. E. (2000). Improving human nutrition through agriculture: The role of international agricultural
 research. Food and Nutrition Bulletin, 2
-1(4). https://doi.org/10.1
+1(4).
 177/156482650002
 100441
 64 Gestión. (2023). Productores cafetaleros de San Martín recibieron fondos por venta de bonos de
-carbono. Gestión. https://gestion.pe/peru/productores-cafetaleros-de-san-martin-recibieron-fondos- por-venta-de-bonos-de-carbono-asombrate-noticia/
+carbono. Gestión. por-venta-de-bonos-de-carbono-asombrate-noticia/
 65 Gestión. (2023). Productores cafetaleros de San Martín recibieron fondos por venta de bonos de
-carbono. Gestión. https://gestion.pe/peru/productores-cafetaleros-de-san-martin-recibieron-fondos- por-venta-de-bonos-de-carbono-asombrate-noticia/
+carbono. Gestión. por-venta-de-bonos-de-carbono-asombrate-noticia/
 66 Gestión. (2023). Productores cafetaleros de San Martín recibieron fondos por venta de bonos de
-carbono. Gestión. https://gestion.pe/peru/productores-cafetaleros-de-san-martin-recibieron-fondos- por-venta-de-bonos-de-carbono-asombrate-noticia/
+carbono. Gestión. por-venta-de-bonos-de-carbono-asombrate-noticia/
 
 La asistencia técnica especializada, juega un papel fundamental en el desarrollo y la mejora de la producción de cacao, ofrece conocimientos especializados y brinda a los agricultores herramientas
 para enfrentar los desafíos productivos como el control de plagas y enfermedades, la mejora de la calidad del cacao y la comercialización. Además, la asistencia técnica permite a los agricultores
@@ -945,13 +943,13 @@ La integración de sistemas de información geográfica (GIS), facilita la visua
 Comunicación bidireccional a través de mensajes de texto, llamadas telefónicas y chat en línea conecta a los agricultores con los expertos en asistencia técnica, resolviendo problemas de manera
 remota y oportuna.
 67 FAO. (201
-1). Guía metodológica para el desarrollo de escuelas de campo. https://www.fao.org/ climatechange/303
+1). Guía metodológica para el desarrollo de escuelas de campo. climatechange/303
 15-069f5a40da3e46706f6936d2e99514e30.pdf
 68 FAO. (201
-1). Guía metodológica para el desarrollo de escuelas de campo. https://www.fao.org/ climatechange/303
+1). Guía metodológica para el desarrollo de escuelas de campo. climatechange/303
 15-069f5a40da3e46706f6936d2e99514e30.pdf
 69 FAO. (201
-1). Guía metodológica para el desarrollo de escuelas de campo. https://www.fao.org/ climatechange/303
+1). Guía metodológica para el desarrollo de escuelas de campo. climatechange/303
 15-069f5a40da3e46706f6936d2e99514e30.pdf
 
 5.3.3. Asistencia técnica a agricultores exitosos (ATAE)
@@ -1018,7 +1016,7 @@ intervenciones agrícolas. Varios estudios han destacado la importancia de segme
 71 Gutiérrez, O. A., & Sánchez, M. (2018). " Implementación de un plan de monitoreo para mejorar la productividad y rentabilidad en el cultivo de cacao en el departamento del Meta". Revista Colombiana
 de Ciencias Hortícolas
 72 FAO, & UPM. (202
-1). Metodología para el monitoreo y evaluación de buenas prácticas en agricultura para la adaptación al cambio climático y la gestión integral del riesgo de desastres. Panamá. https://doi.
+1). Metodología para el monitoreo y evaluación de buenas prácticas en agricultura para la adaptación al cambio climático y la gestión integral del riesgo de desastres. Panamá.
 org/10.4060/cb4486es
 
 Indicadores financieros: retorno de la inversión, tasa de interés, endeudamiento.
@@ -1094,7 +1092,7 @@ Actividad
 
 1. Arévalo, G. (2019). Factores de éxito en el financiamiento agrícola: una revisión de la literatura. Revista de la Facultad de Ciencias Económicas de la Universidad Nacional Mayor de San Marcos, 16(2), 21
 1.
-2. Banco Mundial (2020). El aumento de la productividad, el principal motor de reducción de la pobreza, corre peligro debido a las perturbaciones causadas por la COVID-19. https://www.bancomundial.org/
+2. Banco Mundial (2020). El aumento de la productividad, el principal motor de reducción de la pobreza, corre peligro debido a las perturbaciones causadas por la COVID-19.
 es/news/press-release/2020/07/14/productivity-growth-threatened-by-covid-19-disruptions
 3.
 Banco Mundial. (2020). Estudio sobre Modelos de Financiamiento Agrícola en Perú. Washington,
@@ -1104,7 +1102,7 @@ Ciencia e Ingeniería, 2(2), 1
 26-137.
 5. Centro de Investigación y Estudios Sociales (CIES). (2023). Microcréditos y Financiamiento Colaborativo en la Agricultura Peruana. Lima, Perú: CIES.
 6. Centro para la Investigación Forestal Internacional (CIFOR 2016). Las iniciativas de conservación de bosques en el Perú. Renzo Giudice Centro de Investigaciones para el Desarrollo, Universidad de Bonn
-Manuel R. Guariguata Centro para la Investigación Forestal Internacional (CIFOR) https://www.cifor- icraf.org/publications/pdf_files/OccPapers/OP-240.pdf
+Manuel R. Guariguata Centro para la Investigación Forestal Internacional (CIFOR) icraf.org/publications/pdf_files/OccPapers/OP-240.pdf
 7. Confederación Nacional de Productores Agropecuarios del Perú (CONVEAGRO). (2021). Fondos de
 Inversión para Agricultura Familiar: Experiencias y Lecciones Aprendidas. Lima, Perú: CONVEAGRO.
 8. Del Rosario, M., et al. (202
@@ -1117,9 +1115,9 @@ Nacional
 Agropecuaria
 (ENA)
 2023.
-https://rtc-cea.cepal.org/sites/default/ files/2023-10/presentacion-peru.pdf
+files/2023-10/presentacion-peru.pdf
 10. Esther, Duffo & Abhijit Banerjee, Nobel de Economía (2019). Serie Bibliográfica - Premio Nobel
-Economía 2019 Biblioteca Digital Interna – Dipres noviembre 2019 https://www.dipres.gob.cl/598/ articles-196769_recurso_1.pdf
+Economía 2019 Biblioteca Digital Interna – Dipres noviembre 2019 articles-196769_recurso_1.pdf
 1. Evert, T., Sphyros, L. y Zavaleta D. (2023). Catálogo de cacao de Perú. Bioversity International y
 MOCCA, Lima Perú.
 12. FAO. (2019). Planning Agricultural Activities: Considerations for Soil and Climate Conditions. Food and
@@ -1127,14 +1125,14 @@ Agriculture Organization of the United Nations.
 13. FAO. (2020). Guía para el monitoreo y evaluación de proyectos agrícolas. Organización de las
 Naciones Unidas para la Alimentación y la Agricultura.
 14. Figueroa, A. volumen XI/N°22 (1988). DESARROLLO AGRICOLA EN AMERICA LATINA:
-TEORIA Y POLITICAS. Universidad Católica, Lima. https://repositorio.pucp.edu.pe/index/bitstream/ handle/1
+TEORIA Y POLITICAS. Universidad Católica, Lima. handle/1
 23456789/46717/n_88.pdf?sequence=
 15. Franzel, S., Coe, R., & Cooper, P. J. M. (2014). Improving human nutrition through agriculture: The role of international agricultural research. Food Security, 6(4), 427–435.
 16. García, A., et al. (202
 1). Impacto de la Nutrición Vegetal en la Rentabilidad y Sostenibilidad de las
 Plantaciones de Cacao en Perú. Agronomía Tropical, 12(1), 20-35.
 17. Gómez, M., & Kwarteng, A. (2020). Cacao Irrigation Systems. In Encyclopedia of Cocoa and Cocoa
-Products (pp. 1-9). Springer, Cham. https://doi.org/10.1007/978-3-030-18028-7_59-1
+Products (pp. 1-9). Springer, Cham.
 7. BIBLIOGRAFÍA
 
 18. Gómez, M., et al. (2020). Efectos de la Nutrición Vegetal en la Resistencia a Enfermedades del Cacao en Perú. Journal of Agricultural Science, 10(3), 55-68.
@@ -1147,20 +1145,20 @@ Plantaciones de Cacao en la Selva Peruana. Agricultura Sostenible, 10(3), 70-85.
 21. Gutiérrez, O. A., & Sánchez, M. (2018). Implementación de un plan de monitoreo para mejorar la productividad y rentabilidad en el cultivo de cacao en el departamento del Meta. Revista Colombiana de
 Ciencias Hortícolas, 1
 2(3), 664-675.
-22. Hernández, A. (2023). Panorámica del Mercado del Cacao. https://www.informesdeexpertos.com/ informes/mercado-de-cacao
-https://www.inia.gob.pe/repositorio/bitstream/handle/inia/1885/
+22. Hernández, A. (2023). Panorámica del Mercado del Cacao. informes/mercado-de-cacao
+
 TES-3.pdf?sequence=1&isAllowed=y
 23. International Cocoa Organization – Boletín trimestral de estadísticas del Cacao (2023). Quarterly
 Bulletin of Cocoa Statistics Volume XLIII No. 1 Cocoa Year 2016/17 * International Cocoa Organization
-06 P. O. Box 6891 Abidjan 06 Côte d'Ivoire Website : http:\\www.icco.org https://camcafeperu.com.
+06 P. O. Box 6891 Abidjan 06 Côte d'Ivoire Website : http:\\
 pe/admin/recursos/publicaciones/Boletin-trimestra-estadisticas-cacao.pdf
 24. Lazo, J. (2023c, abril 10). Imaginemos un futuro diferente para la agricultura del Perú. Revista: Rumbo
 Económico.
-https://rumboeconomico.com/2023/04/10/imaginemos-un-futuro-diferente-para-la- agricultura-del-peru/
+agricultura-del-peru/
 25. Lazo, J. (2023 d, junio 1). Los siete pecados capitales de la agricultura peruana. Revista: Rumbo
 Económico.
-https://rumboeconomico.com/2023/06/01/los-siete-pecados-capitales-de-la- agricultura-peruana/
-26. Lazo, J. (2023e, junio 9). Estrategias para mejorar la rentabilidad y sostenibilidad en la producción agrícola. Revista: Rumbo Económico. https://rumboeconomico.com/2023/06/09/estrategias-para-
+agricultura-peruana/
+26. Lazo, J. (2023e, junio 9). Estrategias para mejorar la rentabilidad y sostenibilidad en la producción agrícola. Revista: Rumbo Económico.
 mejorar-la-rentabilidad-y-sostenibilidad-en-la-produccion-agricola/
 27. Ministerio de Agricultura y Riego (MINAGRI) del Perú. (2021). Informe de Gestión. Lima, Perú.
 28. Ministerio de Agricultura y Riego (MINAGRI) del Perú. (2022). Programa de Financiamiento para la
@@ -1169,9 +1167,9 @@ Inclusión Financiera Rural (FINCyR): Informe Anual de Gestión.
 Peruvian Cocoa Plantations. Lima, Perú.
 30. Ministerio de Desarrollo Agrario y Riego (MIDAGRI 2023). Observatorio de Commodities – Cacao.
 EDITADO POR: Ministerio de Desarrollo Agrario y Riego Dirección General de Políticas Agrarias / Dirección de
-Estudios https://cdn.www.gob.pe/uploads/document/file/5264502/%20Commodities%20
+Estudios
 Cacao%3A%20ene-mar%202023.pdf?v=1697059698
-31. Ministerio del Ambiente (MINAM 2014). https://www.minam.gob.pe/medios/prensa-escrita/ el-91-de-la-deforestacion-de-los-bosques-de-la-amazonia-se-da-por-la-agricultura-informal-la-
+31. Ministerio del Ambiente (MINAM 2014). el-91-de-la-deforestacion-de-los-bosques-de-la-amazonia-se-da-por-la-agricultura-informal-la-
 republica-17082017/
 32. Pagiola, S., Arcenas, A., & Platais, G. (2005). Can payments for environmental services help reduce poverty? An exploration of the issues and the evidence to date from Latin America. World Development,
 33(2), 237–253.
@@ -1179,7 +1177,7 @@ republica-17082017/
 33. Paul Rosenstein-Rodan. MIT Economics (2020). Teorías y conceptos de economía regional y estudios de caso. Primera edición, 2007 D.R. 2007, UNIVERSIDAD DE GUADALAJARA Centro Universitario de la
 Costa Av. Universidad de Guadalajara 203, Delegación Ixtapa 48280 Puerto Vallarta, Jalisco, México
 ISBN 978-970-27-1
-277-0 Impreso y hecho en México Printed and made in Mexico. http://biblioteca.
+277-0 Impreso y hecho en México Printed and made in Mexico.
 clacso.edu.ar/Mexico/cucosta-udeg/20170515050418/pdf_1
 190.pdf
 34. Pérez, R., et al. (202
@@ -1191,16 +1189,16 @@ Revista de Agricultura Tropical, 1
 Perú. Revista Científica del Cacao, 1
 1(2), 30-45.
 36. Quarterly Bulletin of Cocoa Statistics, Vol. XLIX, N° 4, Cocoa year 2022/23. November 2023
-Quarterly Bulletin of Cocoa Statistics. https://www.icco.org/november-2023-quarterly-bulletin-of- cocoa-statistics/
+Quarterly Bulletin of Cocoa Statistics. cocoa-statistics/
 37. Rapparini, F., & Peñaloza, E. (2017). Cacao de Aroma del Perú: 10 Años de Investigación. Instituto de
-Investigación de la Amazonía Peruana (IIAP). Disponible en: https://www.iiap.gob.pe/publicaciones/ cacao-de-aroma-del-peru-10-anos-de-investigacion/
-38. Revista Scientific Reports. 14, Article number: 2972 (2024). https://www.dw.com/ es/no-fue-en-m%C3%A9xico-estudio-sit%C3%BAa-el-complejo-origen-del-cacao-en-
+Investigación de la Amazonía Peruana (IIAP). Disponible en: cacao-de-aroma-del-peru-10-anos-de-investigacion/
+38. Revista Scientific Reports. 14, Article number: 2972 (2024). es/no-fue-en-m%C3%A9xico-estudio-sit%C3%BAa-el-complejo-origen-del-cacao-en-
 sudam%C3%A9rica/a-68475174
 39. Robert Solow, Nobel de Economía (1987). ¿Qué es el modelo de Solow de crecimiento económico?
-https://www.bbva.com/es/economia-y-finanzas/consiste-modelo-crecimiento-economico-solow/
+
 40. Schroth, G., Läderach, P., Dempewolf, J., Philpott, S., Haggar, J., Eakin, H., & Castillejos, T. (2009).
 Towards a climate change adaptation strategy for coffee
-41. Singh, D., & Kumar, A. (2017). Importance of Plant Breeding in Crop Improvement. In Plant Breeding for Abiotic Stress Tolerance (pp. 1-16). Springer, Singapore. https://doi.org/10.1007/978-981-10-
+41. Singh, D., & Kumar, A. (2017). Importance of Plant Breeding in Crop Improvement. In Plant Breeding for Abiotic Stress Tolerance (pp. 1-16). Springer, Singapore.
 5254-1_1
 42. Smith, J., et al. (202
 1). Strategic Management in Agriculture: Key Pillars for Success. Agricultural

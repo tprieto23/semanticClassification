@@ -88,8 +88,8 @@ En este contexto, la Alianza de Bioversity International y el Centro Internacion
 (CIAT), en el marco del proyecto Sustainable Amazon
 Businesses (SAB) para abordar las causas de la deforestación financiado por IKI e implementado
 en coordinación con MINAM y MIDAGRI, la Coalición
-1 En el marco del Grupo de Trabajo de los Gobernadores por el Clima y los Bosques (GCF-TF): https://www.gcftf.org/
-2 Amazonas, Loreto, Ucayali y San Martín cuentan con ERDRBE aprobadas y publicadas. Las estrategias de Madre de Dios y Huánuco son diseñadas. Los documentos finales se pueden acceder aquí: https://drive.google.com/drive/folders/1v1bvF9FeOWJhPRv_tvHaPycmQ23bcFiE
+1 En el marco del Grupo de Trabajo de los Gobernadores por el Clima y los Bosques (GCF-TF):
+2 Amazonas, Loreto, Ucayali y San Martín cuentan con ERDRBE aprobadas y publicadas. Las estrategias de Madre de Dios y Huánuco son diseñadas. Los documentos finales se pueden acceder aquí:
 3 Del Pozo PL. 2022. Análisis del año de referencia para los compromisos sobre la producción libre de deforestación en la Amazonía peruana.
 4 Talleres de validación de la Nota Técnica, sobre año de referencia de deforestación, para acuerdos voluntarios en Perú (19 de abril y 24 de mayo de 2022).
 Instituciones representadas: Coalición por una Producción Sostenible (CPS), Tropical Forest Alliance, Solidaridad, Alianza de Bioversity International y el CIAT, Earth
@@ -97,6 +97,7 @@ Innovation Institute, Alianza Cacao Perú, Servicio Nacional Forestal y de Fauna
 Promoción del Chocolate Peruano, Cámara Peruana de Café y Cacao / Cacaosuyo, Junta Nacional de Palma Aceitera del Perú / Comité Central de Palmicultores de
 Ucayali, Grupo Palmas, Junta Nacional del Café.
 
+Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana
 Sin embargo, la deforestación y los efectos posteriores al cambio climático están alterando el
 ecosistema amazónico. Se estima que, durante los años 2001-2020, la Amazonía peruana ha perdido
 más de 8 millones hectáreas de bosques húmedos tropicales; más de 5 millones de hectáreas, en el
@@ -155,7 +156,7 @@ libre de deforestación, es contar con un sistema de monitoreo y trazabilidad de
 parte, permita verificar que los cultivos no originan deforestación.5 (ver Cuadro 3: Resumen de las
 principales opciones de incentivos y propuestos por los entrevistados, para catalizar los compromisos de
 deforestación voluntarios y buscados por la Coalición por una Producción Sostenible-CPS).
-5 Ver para palma: https://hdl.handle.net/10568/109750 y para cacao: https://hdl.handle.net/10568/109751
+5 Ver para palma: y para cacao:
 Elaboración propia con base en el informe "Alianza Colombia TFA (2021) Cero deforestación en Colombia: ABC de las cadenas cero deforestación de palma, cacao, carne y leche en Colombia.
 Alcance de la propuesta: ¿para qué y qué no es?
 Mecanismo de control legal sobre empresas y asociaciones agropecuarias.
@@ -177,6 +178,7 @@ Propuestas para un año de referencia
 Para qué es
 Qué no es
 
+Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana
 • 2014: año de referencia para la Roundtable on
 Sustainable Palm Oil (RSPO), la cual es el estándar global para palma aceitera sostenible. Este año
 también enfrenta el reto de contar con información espacial de alta resolución; además, no permite
@@ -240,8 +242,8 @@ empresas la oportunidad de forjar nuevas relaciones comerciales y desarrollar co
 CUADRO 4.
 Alternativas de años de referencia para los compromisos voluntarios de producción libre de deforestación 1
 1 Del Pozo PL. 2022. Análisis del año de referencia para los compromisos sobre la producción libre de deforestación en la Amazonía peruana.
-2 FAO (2015), Situación de los bosques del mundo 2005, https://www.fao.org/3/y5574s/y5574s.pdf
-3 De Accountability Framework: https://accountability-framework.org/wp-content/uploads/2020/06/Definiciones-v2.1.pdf
+2 FAO (2015), Situación de los bosques del mundo 2005,
+3 De Accountability Framework:
 4 CPS (2018), Hoja de ruta: hacia la consolidación de una Coalición por una Producción Sostenible.
 
 Ventajas
@@ -325,6 +327,7 @@ Salvaguardas
 • En el caso de deforestación legal considerar criterios de compensación
 • Tener en cuenta la gradualidad y la mejora progresiva con diferentes niveles de compromiso (por ejemplo, el sistema de estrellas de la huella de carbono)
 
+Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana
 La propuesta año de referencia debe permitir la incorporación a una mayor cantidad de productores
 y, por lo tanto, a los bosques remanentes en sus parcelas y áreas no categorizadas colindantes, bajo
 compromisos de conservación de bosques. Por ello, una propuesta de 2020 que es la más factible,
@@ -383,6 +386,7 @@ de cacao, café, palma aceitera y ganadería – que promueve la CPS y proyectos
 esta como el proyecto IKI SAB – pueden ayudar
 CIAT/NPalmer
 
+Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana
 Próximos pasos
 • Si bien existe una base importante y representativa de actores que estaría de acuerdo con el 31 de
 diciembre del 2020 como año de referencia, se requiere continuar con los diálogos para fortalecer
@@ -407,29 +411,3 @@ modelos de negocios.
 del proyecto SAB deben traducirse en acciones que permitan el desarrollo de nuevos modelos en el
 marco de la CPS.
 CIAT/JL Urrea
-
-Agradecimientos
-El presente documento ha sido elaborado por la Alianza de Bioversity International y el CIAT, bajo el liderazgo del área de Paisajes Multifuncionales, en el marco del proyecto "Modelos de negocios para abordar los motores de
-la deforestación en el Perú" o Sustainable Amazon Businesses, financiado por la Iniciativa Climática Internacional
-(IKI) del Ministerio Federal de Medio Ambiente, Conservación de la Naturaleza y Seguridad Nuclear de Alemania, y a solicitud de la Coalición por una Producción Sostenible (CPS) y el Acuerdo Cacao, Bosque y Diversidad, con la
-valiosa contribución de múltiples actores del sector público, privado y de la sociedad civil peruana.
-Cita correcta
-Del Pozo PL; Ivanova Y; Coronel D; Tristán MC; Muñoz F; Quintero M. 2022. Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana.
-Políticas en Síntesis No. 76. Centro Internacional de Agricultura Tropical (CIAT). Cali, Colombia. 12 p.
-La Alianza de Bioversity International y el Centro Internacional de Agricultura Tropical (CIAT) es parte de CGIAR, un consorcio mundial de investigación para un futuro sin hambre.
-www.cgiar.org https://alliancebioversityciat.org
-Referencias
-Alianza Colombia TFA. 2021. Cero deforestación en Colombia: ABC de las cadenas cero deforestación de palma, cacao, carne y leche en Colombia, https://bit.ly/3cJf6cP
-Del Pozo PL. 2022. Análisis del año de referencia para los compromisos sobre la producción libre de deforestación en la Amazonía peruana.
-FAO. 2020. El estado de los bosques en el mundo https://www.fao.org/3/ca8642es/CA8642ES.pdf
-MINAM. 2020. Programa Nacional de Conservación de Bosques para la Mitigación del Cambio Climático https://www.gob.pe/bosques
-Acerca de los autores
-Patricia Luna Del Pozo: Consultora, autora del reporte preliminar Análisis del año de referencia para los compromisos sobre la producción libre de deforestación en la Amazonía peruana. pluna@earthinnovation.org
-Yovita Ivanova: Senior Manager y Coordinadora del proyecto Sustainable Amazon Businesses (SAB), Alianza de
-Bioversity International y el CIAT. y.ivanova@cgiar.org
-Daniel Coronel: Coordinador de TFA para Perú. daniel@tropicalforestalliance.org
-María Claudia Tristán: Consultora. Parte del equipo del proyecto SAB. ciat-perusab@cgiar.org
-Fabiola Muñoz: Directora de la Coalición por una Producción Sostenible (CPS).
-fabiola.munoz@produccionsostenible.org.pe
-Marcela Quintero: Directora del área de investigación en Paisajes Multifuncionales, Alianza de Bioversity
-International y el CIAT. m.quintero@cgiar.org https://sustainableamazonbusinesses.org/

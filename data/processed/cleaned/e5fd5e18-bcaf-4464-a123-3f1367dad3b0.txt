@@ -1,11 +1,10 @@
-GUÍA TÉCNICA
-PARA EL MONITOREO
-DE LA DEFORESTACIÓN
-A NIVEL DE EMPRESAS
-Y ASOCIACIONES
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Uso y aplicación de Global
 Forest Watch Pro
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
+I. INTRODUCCIÓN
 La agroindustria está considerada como una de las actividades más relevantes en la economía, comprende distintas etapas que van desde la producción hasta la comercialización al consumidor final.
 Dentro de los eslabones de la cadena, distinguimos tres fases principales como la adquisición de insumos, la transformación y la comercialización, que se encuentran vinculados al ecosistema y medio ambiente,
 asociando en muchos de los casos con la degradación y deforestación.
@@ -21,8 +20,9 @@ del sector agrario en la Amazonia peruana comprometidas con la sostenibilidad am
 Además, la presente guía forma parte de los instrumentos con cuales las empresas del sector agrario de la amazonia peruana deben de contar en preparación ante las regulaciones internacionales sobre una
 producción libre de deforestación. Especialmente el reciente reglamento de la Unión Europea (EUDR) que prohíbe la importación de materias primas y productos derivados asociados a la deforestación y la
 degradación forestal y establece como un requisito obligatorio la georreferencia del lugar donde se han producido las materias primas y el monitoreo de cobertura.
-1https://sustainableamazonbusinesses.org/
+1
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 II. CONOCIMIENTOS Y PASOS PREVIOS
 GFW Pro emplea rigurosos protocolos de seguridad como requisitos de contraseña y códigos de verificación para el ingreso. Después de 4 horas de inactividad, la sesión se cerrará de forma automática
 en su perfil. La plataforma es compatible con el navegador Google Chrome y lo recomendable es contar con una conexión a internet mínimo de 100 MBPS.
@@ -40,8 +40,8 @@ Mostrar lat/long: Universal Transversal de Mercator.
 Unidades de Medida: Metros, kilómetros.
 Terreno: Exagerar elevación 2.
 Para descargar e instalar Google Earth Pro, ingrese al siguiente enlace:
-https://www.google.com/intl/es/earth/download/gep/agree.html.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 III. CREACIÓN Y GESTIÓN DE CUENTAS
 Convertir un archivo KML a Shapefile con QGIS
 Abrir QGIS. En la barra de menú seleccionar: Capa – Añadir capa – Añadir capa vectorial. En fuente ubicar la carpeta donde se encuentra almacenado el archivo KML, clic en Abrir – Añadir y
@@ -51,7 +51,7 @@ Para reproyectar el archivo KML, seleccionamos en la barra de menu: Procesos –
 – Vector general – Reproyectar capa. Pulsamos clic en el botón Seleccionar SCR. Escribimos epsg
 32718, seleccionamos la opción EPSG:32718 – WGS 84 / UTM zone 18S, clic en Ejecutar y Cerrar.
 2.
-Desde el Google Chrome, digitamos la siguiente dirección web https://pro.globalforestwatch.org/.
+Desde el Google Chrome, digitamos la siguiente dirección web
 También podemos escribir Global Forest Watch Pro en el buscador de Google. Desde la web de
 GFW Pro, seleccionamos "Idioma Español (México)".
 1.
@@ -72,8 +72,8 @@ Para agregar campos en la tabla de atributos de la capa Shapefile, clic derecho 
 edición y guardar.
 4.
 Para descargar e instalar QGIS ingrese al enlace:
-https://qgis.org/es/site/forusers/download.html.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Gestión de una cuenta
 Iniciar sesión con GFW Pro. En el menú seleccionamos Perfil. Si la cuenta tiene el nivel de Administrador, podrá editar toda la información.
 1.
@@ -103,6 +103,7 @@ Para gestionar una cuenta debe contar con el nivel de Administrador en la plataf
 - Clic en el nombre del usuario y en el extremo inferior derecho de la página de perfil del "nuevo usuario", pulsar el botón Activar para habilitar la cuenta.
 - GFW Pro enviará un correo electrónico al "nuevo usuario" con las instrucciones para iniciar sesión.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 El Administrador debe crear las Listas en la plataforma.
 1.
 El Administrador deberá realizar la carga de la base de datos que contiene los polígonos de los predios o cultivos.
@@ -112,17 +113,18 @@ Cuando un usuario agregue nuevas áreas o polígonos, deberá tener cuidado en n
 Para desactivar una cuenta de empresa:
 6.
 - El administrador de cuenta deberá enviar una solicitud formal mediante correo electrónico a:
-gfwprosupport@wri.org.
+.
 - Un superadministrador de GFW Pro responderá dentro de los dos días hábiles posteriores con una plantilla de correo electrónico.
 - El administrador de cuenta debe completar la plantilla de correo y enviarla a gwfprosupport@wri.
 org para confirmar su solicitud.
-- Para poder acceder a los usuarios y datos, el administrador de cuenta anterior deberá enviar un correo electrónico a gfwprosupport@wri.org para solicitar la reactivación de forma manual.
+- Para poder acceder a los usuarios y datos, el administrador de cuenta anterior deberá enviar un correo electrónico a para solicitar la reactivación de forma manual.
 IV. CARGA Y GESTIÓN DE POLÍGONOS ÁREAS Y LISTAS
 La estructura de GFW Pro se basa en Áreas y Listas. Las Áreas son las zonas de interés del usuario. Las
 Listas son el conjunto de Áreas. En la página se muestra las listas de áreas gestionadas por GFW Pro.
 Es importante precisar que, cuando trabaje con varios usuarios, al momento de crear "nuevas Listas" no debe duplicar los nombres, pues generará errores de carga en el GFW Pro. Lo recomendable es trabajar
 bajo el siguiente esquema:
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Agregar un Área (polígono) mediante dibujo en el mapa de GFW Pro
 Clic en AGREGAR ÁREAS.
 Clic en AGREGAR UN ÁREA y CONTINUAR.
@@ -158,6 +160,7 @@ Sector 3
 Sector 2
 Sector 3
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 En la sección Área seleccionamos Dibujar una forma. En el mapa, ubicamos la zona de interés. (Con la ayuda del mouse nos desplazamos, acercamos y alejamos).
 5.
 Clic en COMENZAR A DIBUJAR. Doble clic para terminar de dibujar. Si quiere dibujar nuevamente, haga clic en el botón VOLVER A DIBUJAR. Clic en GUARDAR COMO. Clic en DE ACUERDO y
@@ -188,6 +191,7 @@ GFW Pro
 Para agregar varias Áreas mediante un archivo Shapefile, deberá tener los datos guardados en el formato y plantilla respectiva. Los archivos Shapefile no debe pesar más de 5 Mb, ni tener más de 1,500
 áreas. GFW Pro sólo acepta archivos del tipo puntos o polígonos.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Clic en AGREGAR AREAS - CARGAR VARIAS ÁREAS - CONTINUAR.
 3.
 Seleccionar Tipo – Materias primas, marcar Plantación de palma aceitera luego clic en SIGUIENTE.
@@ -210,6 +214,7 @@ Una vez que el archivo Shapefile este completo de acuerdo a lo especificado, se 
 2.
 palmoilgeneric_template_polygon.zip
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Para editar información de los polígonos, seleccionamos la Lista de interés.
 1.
 Clic en el casillero de la fila del área (registro) que queremos editar.
@@ -228,6 +233,7 @@ V. GESTIÓN DE LA INFORMACIÓN Y REPORTES
 En la parte superior se encuentran las LISTAS DE GLOBAL FOREST WATCH, recursos y datos disponibles a nivel mundial.
 Podemos visualizar también MIS AREAS, que contiene MIS LISTAS con las áreas (polígonos) cargadas en GFW Pro.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Listas establecidas de Global Forest Watch Pro
 - ÁREAS ADMINISTRATIVAS:
 - CONCESIONES DE PALMA ACEITERA:
@@ -249,6 +255,7 @@ Concesiones de aceite de palma certificadas por la Mesa Redonda sobre aceite de 
 Ecuador, Gabón, Ghana, Guatemala, Honduras, Indonesia, Liberia, Madagascar, Malaysia, México,
 Nigeria, Papua Nueva Guinea, Perú, Sierra Leona, Islas Salomón, Sri Lanka, Tailandia, Togo.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Análisis de áreas y listas de los cambios forestales
 El análisis de cambios forestales muestra donde hubo pérdida de cobertura arbórea y destaca las que ocurrieron en cuatro zonas sensibles (Bosque primario, Áreas protegidas, Turba y Paisaje forestal intacto).
 Seleccionamos la Lista de interés.
@@ -267,6 +274,7 @@ A.
 Analizando solo un área (polígono) de la lista. Clic en la casilla de verificación del registro o área de interés.
 B.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 En ATRIBUTOS DE LA LISTA, contamos con la siguiente información:
 - TOTAL DE HECTÁREAS:
 Muestra el total de hectáreas del área (polígono) seleccionado, es decir de 8 ha.
@@ -285,6 +293,7 @@ Para el presente ejercicio, el área seleccionada no está en un área protegida
 Indica la pérdida de cobertura arbórea detectada en paisajes forestales intactos; es decir, paisajes lo suficientemente grandes para retener toda la biodiversidad nativa y que no mostraron signos de
 alteración humana significativa a partir de 2013.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 - INFORME:
 - DESCARGAR:
 - VOLUMEN EN TONELADAS:
@@ -302,6 +311,7 @@ Nombre de la refinería asociada a la parcela seleccionada. (Dato que se mostrar
 Al extremo derecho se encuentra el mapa con la localización del área (polígono) seleccionado, que puede ampliarse, reducirse y desplazarse.
 Podemos generar reportes o descargar información con las siguientes opciones:
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Desplazándonos hacia abajo, ubicamos la sección AREAS SENSIBLES, con la información sobre la tendencia anual (Año 2001 al 202
 1), sobre la PÉRDIDA DE BOSQUES.
 PÉRDIDA TODOS LOS AÑOS (HA)
@@ -309,6 +319,7 @@ En las cuatro áreas forestales sensibles reconocidas internacionalmente por su 
 (Bosque primario, Áreas protegidas, Turba y Paisaje forestal intacto). Disponemos de la tabla estadística con los datos en hectáreas y porcentajes de la pérdida acumulada de la cobertura arbórea (2001 al
 1). Estas capas de información estarán disponibles siempre y cuando involucren al área seleccionada.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Estos datos pueden ayudar a determinar cuándo y cuánto se afectaron las áreas sensibles a fin que las empresas o asociaciones puedan gestionar sus políticas de sostenibilidad con el monitoreo de la
 deforestación y demostrar su cumplimiento.
 PORCENTAJE DE LA PÉRDIDA DE ÁREA HISTÓRICA
@@ -321,6 +332,7 @@ al 202
 1. Se puede ajustar y personalizar el gráfico seleccionando una categoría, haciendo clic en el casillero correspondiente a las capas disponibles.
 Podemos utilizar el control de tiempo situado debajo del gráfico, para cambiar los años. La información puede descargarse en archivo de hoja de cálculo para elaborar reportes estadísticos.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Análisis de Riesgo de Commodity
 GFW Pro dispone de esta opción solo para la cadena de valor de Palma Aceitera.
 El análisis de Riesgo de commodity muestra la exposición de una industria o planta extractora de aceite de palma asociado con la deforestación, a fin de priorizar monitoreo y evaluación en la cadena de
@@ -346,6 +358,7 @@ En la pestaña AREAS, clic en el botón AGREGAR AREAS. Seleccionar CARGAR VARIAS
 -
 CommoditiesPalmOilGenericLocationTypeTemplate.xlsx
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 GFW Pro va a procesar la información por unos minutos, lo cual va a depender de la cantidad de datos de la plantilla. Cuando éste listo, GFW Pro enviará aviso a nuestro correo electrónico.
 Debemos refrescar la página de GFW Pro.
 9.
@@ -370,6 +383,7 @@ Clic en el botón ENVIAR. El sistema procesará la información por unos segundo
 precionamos el botón DE ACUERDO.
 8.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Para analizar con mayor detalle, seleccionamos la planta extractora y pulsamos clic en el botón
 DIAGNOSTICO. Una nueva ventana muestra información sobre el ESTADO HISTÓRICO DEL SITIO.
 Como línea de base al año 2000 tenemos la siguiente información:
@@ -405,6 +419,7 @@ Refinerías asociadas
 -
 -
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 En el extremo derecho vemos el HISTORIAL DE PRIORIDAD DE MOLINO EXTRACTOR (AMENAZA
 + VALOR), que muestra la tendencia de este lugar a través de los años comparando los niveles de prioridad sea bajo, medio y alto. Este análisis evalúa cómo el nivel general de prioridad de la planta de
 producción seleccionada ha cambiado con el tiempo, ofreciendo información si el nivel de riesgo de la planta asociada a la deforestación, está aumentando o disminuyendo.
@@ -421,6 +436,7 @@ con impactos relacionados a la deforestación producida en el pasado (1. Defores
 protegidas).
 5.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 A la derecha podemos observar las TENDENCIA EN DEFORESTACION, gráfico que muestra la cantidad de deforestación anual dentro del radio de abastecimiento de 50 km de la planta de producción de
 aceite de palma a partir del año 2002 al 2021.
 Las secciones cuentan con la opción de desplegar mayor información y descarga de los datos en hoja de cálculo, para realizar análisis personalizados.
@@ -431,6 +447,7 @@ Para ver la ubicación de la planta de producción, hacemos clic en el recuadro 
 principal de GFW Pro.
 1.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 VI. VISUALIZACIÓN DEL MAPA EN GFW PRO
 GFW Pro permite la visualización de la información a través del mapa a través de tres formas:
 - PRIMERO:
@@ -447,6 +464,7 @@ plantaciones dentro de una amplia gama de densidades. "Pérdida" indica la retir
 mecánica, incendios, enfermedades o daños por tormentas. Como tal, la "pérdida" no equivale a la deforestación.
 2.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 - Pérdida de cobertura arbórea:
 Identifica áreas de pérdida bruta de cobertura arbórea, con una resolución de 30 x 30 metros.
 - Ganancia de cobertura arbórea:
@@ -471,6 +489,7 @@ Para la información, activar y desactivar las capas de información, utilizamos
 GLOBALES.
 2.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 - Turba global:
 Muestra las ubicaciones de las turberas a escala global. La resolución y la escala varía según la fuente.
 - Densidad de biomasa leñosa viva en el suelo:
@@ -495,6 +514,7 @@ Este conjunto de datos traza un mapa de la extensión de los bosques primarios e
 y brindan una multitud de servicios ecosistémicos, lo que los hace cruciales para monitorear la planificación nacional del uso de la tierra y la contabilidad del carbono. Resolución 30 x 30 metros.
 ALERTAS DE INCENDIOS
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 - Soya en el bioma del Cerrado:
 Muestra los cultivos de soya en la eco región del Cerrado en Brasil. Cosecha 2013 / 2014, 30 metros de resolución.
 - Lista universal de plantas de producción:
@@ -517,9 +537,11 @@ Muestra los límites de las concesiones de las empresas miembro de la RSPO, incl
 miembros de RSPO.
 CONCESIONES
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Para cambiar el mapa base de GFW Pro, clic en la pestaña con el símbolo Basemap, situado en el panel derecho de la ventana principal. Se desplaza una lista con los siguientes mapas base disponibles:
 CAMBIAR EL MAPA BASE
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 Open Street Map (Mapa de calles) mapa que se obtiene de forma colectiva y se publica con
 una licencia de contenido abierto.
 MAPA DE CALLES
@@ -547,6 +569,7 @@ atmósfera", o las más libres de nubes, con una resolución de 30 metros.
 LANDSAT
 LISTA DE CAPAS DISPONIBLES:
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 REALIZAR ANÁLISIS EN EL MAPA DE GFW PRO
 Podemos analizar la información de las áreas y polígonos de parcelas y cultivos, empleando los siguientes métodos:
 1. Primer método:
@@ -560,6 +583,7 @@ de 5 metros de resolución se actualizan mensualmente y están disponibles para 
 trópicos.
 PLANET
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 4. Cuarto método:
 En DIAGNOSTICO, haga clic en la ventana donde se encuentra localizado la el área de interés. Clic en un área de interés en el mapa y clic en el botón ANALYZE (Analizar), para ver los resultados en el
 panel ubicado en el extremo derecho de la ventana principal.
@@ -571,6 +595,7 @@ Clic en la pestaña PAIS O REGION situado en el panel de Análisis ubicado en el
 en SELECCIONAR ESTADO / PROVINCIA, para el presente ejercicio elegimos Ucayali. Clic en
 ANALIZAR.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 USO DEL DASHBOARD – TABLERO DE ALERTAS DE DEFORESTACIÓN E INCENDIOS
 FORESTALES DE GFW PRO
 GFW Pro permite utilizar las alertas de deforestación e incendios forestales, en el contexto de los datos de los usuarios e identificar rápidamente áreas involucradas.
@@ -594,6 +619,7 @@ Las alertas pueden utilizarse de dos formas:
 2.
 Se puede utilizar control de tiempo, para cambiar los años (2001 al 2021) según el tipo de análisis temporal a realizar.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 En la ventana principal de Dashboard vemos el circulo que representa la ubicación general de las áreas que la integran. En la parte inferior vemos el tamaño de los círculos en la leyenda que
 representa el número de áreas. El tamaño de los círculos de alerta muestra cuántas áreas hay en un área determinada en relación con el resto de la lista. El color de los círculos de alerta comprende a la
 densidad de alertas que se encuentran en o alrededor de un área. Verde: Sin alertas o baja densidad de alertas. Amarillo: Densidad de alerta mediana. Anaranjado: Densidad de alerta alta.
@@ -612,12 +638,14 @@ Muestra el porcentaje de la cantidad total de áreas en su lista con alertas.
 - Alertas:
 Cuenta la cantidad de alertas que aparecen en las áreas de su lista.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 El gráfico de barras situado en el extremo inferior derecho, muestra las alertas ocurridas y el período de tiempo seleccionado.
 Clic en los círculos de alerta para acercar a los diferentes niveles de acercamiento disponibles.
 6.
 Nivel final: Acercamiento por Sub Estado, muestra cada alerta individual con su propio círculo.
 7.
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 VII. BIBLIOGRAFÍA
 Guía del usuario – Global Forest Watch Pro 2020.
 Video tutorial Introducción a GFW Pro: Aceite de Palma 2020.
@@ -626,16 +654,18 @@ Elaboración propia.
 -
 -
 
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO
 ACERCA DE LOS AUTORES
 Augusto Rafael De Los Ríos Dantas:
 Yovita Ivanova:
 Daniel Coronel:
 Jose Sanchez:
 Consultor, autor del reporte preliminar Guía Técnica: Uso y
-Aplicación del GFW Pro (2020). rafadlrios@hotmail.com
+Aplicación del GFW Pro (2020).
 Senior Manager (Alianza Bioversity-CIAT).
-Y.ivanova@cgiar.org
+
 Coordinador (Tropical Forest Alliance - Peru).
-daniel@tropicalforestalliance.org
+
 Asociado de Investigación Senior (Alianza Bioversity-CIAT).
-j.g.sanchez@cgiar.org
+
+Guía técnica para el monitoreo de la deforestacion a nivel de empresas y asociaciones | USO Y APLICACIÓN DE GFW - PRO

@@ -270,7 +270,7 @@ Desechos; 0.40;
 Gráfico 1
 2 Perú: Evolución de las exportaciones de cacao en grano y derivados por producto 2017-2021 (Millones de US$)
 Fuente: International Trade Center – Trade statistics
-Fuente: https://www.investing.com/commodities/us-cocoa
+Fuente:
 Las exportaciones peruanas de cacao han crecido a un ritmo de 6.2% anual en los últimos cinco años, es decir más rápido que el promedio mundial (4.5%). Las exportaciones de cacao en grano sólo crecieron
 en 1% en promedio, frente al importante crecimiento de los derivados (13.7% promedio anual). Los derivados que más han crecido son la pasta (33% anual), y los chocolates (16%). La participación de los
 productos procesados creció sostenidamente en los últimos 5 años, pasando del 37% en 2017 al 49% del valor de las exportaciones en 202
@@ -305,7 +305,7 @@ oferta. Finalmente, oferta y la demanda empiezan a ajustarse mejor, con ciclos d
 1.
 El precio promedio de largo plazo (1973 a 2022) ha sido de 1,985 dólares, mientras que el de los últimos 10 años ha sido superior (2,545 dólares). Los precios de los últimos 5 años están por encima del
 promedio de largo plazo, y alrededor o por debajo del promedio de la década.
-Fuente: https://www.investing.com/commodities/us-cocoa
+Fuente:
 Gráfico 14 Futuros CACAO USA: Precio Promedio Mensual 2012 octubre 2022
 1 Entrevista José Yturrios, Director de la Alianza Cacao Perú, julio 2022
 4,000
@@ -392,7 +392,7 @@ En su posición, el Parlamento Europeo también requiere que las empresas verifi
 específicos a las instituciones financieras para garantizar que sus actividades no contribuyen a la deforestación. (Noticias Parlamento Europeo, 2022)
 
 Tabla 1 Principales regulaciones internacionales sobre deforestación importada
-Extracto de Luna, et Al (2022) https://alliancebioversityciat.org/ sites/default/files/documents/anexo-cuadro-5.pdf
+Extracto de Luna, et Al (2022) sites/default/files/documents/anexo-cuadro-5.pdf
 Los principales desafíos para la sostenibilidad de cadena peruana del cacao están relacionados con los desafíos globales que enfrenta el sector cacaotero. A continuación, presentamos los principales que
 están relacionados con: la atención de la creciente demanda mundial sin deforestar, la necesidad de una mayor trazabilidad y de ir más allá de la certificación, y finalmente, la necesidad de colaborar para
 generar un entorno propicio para la producción sostenible.
@@ -521,7 +521,7 @@ por departamento.
 1 de julio de 2022.
 5 Entrevista a José Yturrios, Director de la Alianza Cacao Perú, 1
 1 de julio de 2022.
-6 https://ppa.midagri.gob.pe/index.php
+6
 
 Mapa 1 Perú: Producción de Cacao por Región (2021)
 Fuente: MIDAGRI-SISAGRI. Elaboración Propia
@@ -768,7 +768,7 @@ financiamiento y las cooperativas habilitadoras, y esta columna vertebral propor
 Trabajo Infantil (CLMRS, en inglés) y Asociaciones Comunitarias de Ahorro y Préstamo (VSLA, en inglés)) pueden ser implementadas. Sin embargo, la relevancia de los estándares de certificación, que
 durante mucho tiempo aparecían como la única herramienta disponible para lograr la sostenibilidad, ha ido disminuyendo en el tiempo (Fountain, A. C., & Huetz-Adams, F. 2020).
 Símbolo de Pequeños Productores (SPP):
-1 https://standardsmap.org/es/identify
+1
 Gráfico 37 Mundo: Área Certificada de cacao 2008-2019
 
 El ITC también difunde información sobre el estado de los mercados sostenibles12. Para el caso del Cacao, informa que el área certificada globalmente para 2019 fue de un mínimo de 2.5 millones de hectáreas,
@@ -777,11 +777,11 @@ Mientras que el área mínima certificada creció 53.2% entre 2015 y 2019, tuvo 
 2 The State of Sustainable Markets 2021
 Gráfico 38 Mundo: Área Certificada de cacao por certificación 2015-2019
 
-13 CBI (April 20, 2020). The bittersweet impact of COVID-19 on the cocoa and chocolate market. https://www.cbi.eu/news/bittersweet-impact-covid-19- cocoa-chocolate-market
+13 CBI (April 20, 2020). The bittersweet impact of COVID-19 on the cocoa and chocolate market. cocoa-chocolate-market
 14 CBI (November 1
-1, 2020). What is the demand for cocoa on the European market? https://www.cbi.eu/market-information/cocoa/trade-statistics
-15 CBI (April 20, 2020). The bittersweet impact of COVID-19 on the cocoa and chocolate market. https://www.cbi.eu/news/bittersweet-impact-covid-19- cocoa-chocolate-market
-16 CBI (September 7, 2020). The European market potential for certified cocoa https://www.cbi.eu/market-information/cocoa-cocoa-products/certified- cocoa/market-potential
+1, 2020). What is the demand for cocoa on the European market?
+15 CBI (April 20, 2020). The bittersweet impact of COVID-19 on the cocoa and chocolate market. cocoa-chocolate-market
+16 CBI (September 7, 2020). The European market potential for certified cocoa cocoa/market-potential
 La mayor área certificada correspondió a UTZ con 2.5 millones de hectáreas, mientras que el mayor crecimiento lo tuvo Fairtrade con un crecimiento de 140.8% entre 2015 y2019, con 1.4 millón de
 hectáreas en total.
 ITC (202
@@ -892,9 +892,9 @@ servicios públicos cómo privados.
 Los modelos productivos sostenibles deben considerar aspectos cómo la intensificación, sistemas agroforestales y restauración de suelos degradados.
 Generar consensos multiactor alrededor de temas cómo una definición clara de atributos de libre deforestación; el año de referencia contra el cual se mide los avances de la deforestación; y las
 regulaciones o incentivos para promover el enfoque; y los compromisos del conjunto de la cadena productiva.
-17 Del Pozo, P.; Ivanova, Y.; Tristán, M.C.; Quintero, M.; Muñoz, F. (2022) https://cgspace.cgiar.org/handle/10568/1
-18 https://produccionsostenible.org.pe/grupos-de-trabajo/cacao/#1banner
-19 https://produccionsostenible.org.pe/actualidad/acuerdo-cacao-bosques-y-diversidad-impulsa-produccion-responsable-de-cacao-peruano- para-ingresar-a-mercados-europeos/
+17 Del Pozo, P.; Ivanova, Y.; Tristán, M.C.; Quintero, M.; Muñoz, F. (2022)
+18
+19 para-ingresar-a-mercados-europeos/
 
 Políticas públicas
 Acuerdos multiactor
@@ -1124,7 +1124,7 @@ Millones.
 ABREVIACIONES
 
 Alianza Bioversity – Ciat (2022). Nota Técnica sobre año de referencia de deforestación para acuerdos voluntarios en Perú. Resumen Taller de Validación del 19 de abril 2022.
-Anker Research Network and Global Living Wage Coalition. (2020). Valor de referencia Anker para el ingreso digno Peru rural 2020. https://www.globallivingwage.org/wp-content/uploads/2020/1
+Anker Research Network and Global Living Wage Coalition. (2020). Valor de referencia Anker para el ingreso digno Peru rural 2020.
 1/
 Rural-Peru-LI-Reference-Value_ES-FINAL.pdf
 Blaufelder, C., Levy, C., Mannion, P., & Pinner, D. (2021). A blueprint for scaling voluntary carbon markets to meet the climate challenge. McKinsey & Company.
@@ -1134,15 +1134,15 @@ Castro-Nunez, A., Charry, A., Castro-Llanos, F., Sylvester, J., & Bax, V. (2020)
 sector. Applied Geography (Sevenoaks, England), 1
 23(102280), 102280.
 CBI (2020a). The bittersweet impact of COVID-19 on the cocoa and chocolate market. April 20, 2020.
-https://www.cbi.eu/news/bittersweet-impact-covid-19-cocoa-chocolate-market
+
 CBI (2020b). The European market potential for certified cocoa. September 7, 2020.
-https://www.cbi.eu/market-information/cocoa-cocoa-products/certified-cocoa/market-potential
+
 CBI (2020c). What is the demand for cocoa on the European market? November 1
-1, 2020. https:// www.cbi.eu/market-information/cocoa/trade-statistics
+1, 2020. https://
 CBI (202
 1). Which trends offer opportunities or pose threats on the European cocoa market? Ministry of
 Foreign Affairs. 07 December 202
-1. https://www.cbi.eu/market-information/cocoa/trends
+1.
 Ceccarelli, V., Fremout, T., Zavaleta, D., Lastra, S., Imán Correa, S., Arévalo-Gardini, E., Rodriguez, C.
 A., Cruz Hilacondo, W., & Thomas, E. (2021). Climate change impact on cultivated and wild cacao in
 Peru and the search of climate change‐tolerant genotypes. Diversity & Distributions, 27(8), 1462–1476.
@@ -1153,18 +1153,18 @@ Comisión Europea. (2019). Intensificar la actuación de la UE para proteger y r
 Comisión Europea (202
 1) Propuesta de REGLAMENTO DEL PARLAMENTO EUROPEO Y DEL
 CONSEJO relativo a la comercialización en el mercado de la Unión y a la exportación desde la Unión de determinadas materias primas y productos derivados asociados a la deforestación y la degradación
-forestal y por el que se deroga el Reglamento (UE) n.º 995/2010 https://eur-lex.europa.eu/resource.html?uri=cellar:b42e6f40-4878-11ec-91ac-
+forestal y por el que se deroga el Reglamento (UE) n.º 995/2010
 01aa75ed71a1.0022.02/DOC_1&format=PDF de Sousa, K., van Zonneveld, M., Holmgren, M., Kindt, R., & Ordoñez, J. C. (2019). The future of coffee
 and cocoa agroforestry in a warmer Mesoamerica. Scientific Reports, 9(1), 8828.
 Decreto Supremo Nº 018-2015-MINAGRI, Decreto Supremo que aprueba el Reglamento para la
-Gestión Forestal. (2015). Obtenido de https://www.osinfor.gob.pe/wp-content/uploads/2016/05/ reglamento-para-la-gestion-forestal-reglamento-para-la-gest-decreto-supremo-ns-018-al-021-2015-
+Gestión Forestal. (2015). Obtenido de reglamento-para-la-gestion-forestal-reglamento-para-la-gest-decreto-supremo-ns-018-al-021-2015-
 REFERENCIAS
 
 minagri-1
 293975-1.pdf
 Del Pozo, P.; Ivanova, Y.; Tristán, M.C.; Quintero, M.; Muñoz, F. (2022) Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana.
 Políticas en Síntesis No. 76. Cali (Colombia): Centro Internacional de Agricultura Tropical (CIAT). 12 p.
-Permanent link to cite or share this item: https://hdl.handle.net/10568/121
+Permanent link to cite or share this item:
 Fountain, A. C., & Huetz-Adams, F. (2018). Barómetro del Cacao. ABVV/Horval, Be Slavery Free, the
 European Federation of Food, Agriculture and Tourism Trade Unions (EFFAT), FNV/Mondiaal FNV,
 Fern, Green America, Hivos, Inkota Netzwerk, International Labor Rights Forum, Mighty Earth, Oxfam
@@ -1174,7 +1174,7 @@ Free, Federación Europea de Sindicatos de los sectores de la Alimentación, la 
 (EFFAT), Fair World Project, Fern, Green America, Hivos, INKOTA-netzwerk, el Foro Internacional de
 Derechos Laborales, Mighty Earth, Oxfam America, Oxfam Belgium, Rikolto, Solidaridad, Instituto de
 Investigación Südwind, Tropenbos Internacional.
-https://voicenetwork.cc/wp-content/uploads/2021/04/2020-Baro%cc%81metro-del-Cacao-ES.
+
 pdf
 Furumo, P. R., & Lambin, E. F. (2020). Scaling up zero-deforestation initiatives through public-private partnerships: A look inside post-conflict Colombia. Global Environmental Change: Human and Policy
 Dimensions, 62(102055), 102055.
@@ -1182,17 +1182,17 @@ Garrett, R. D., Levy, S., Carlson, K. M., Gardner, T. A., Godar, J., Clapp, J., 
 L. L., Rivero, R., Rueda, X., … Villoria, N. (2019). Criteria for effective zero-deforestation commitments.
 Global Environmental Change: Human and Policy Dimensions, 54, 135–147.
 Global Living Wage Coalition. (202
-1). Living income. Global Living Wage Coalition. https://www.
+1). Living income. Global Living Wage Coalition.
 globallivingwage.org/about/living-income/
 Hajek, F., La Cruz, G., Menton, M., Bustamante, M., Kowler, L., & Amezaga, A. (2017). The potential to enhance deforestation free agriculture and forestry investments in the Peruvian Amazon. Solidaridad;
-Nature Services Peru; SEED. Obtenido de https://www.solidaridadsouthamerica.org/cacao/the- potential-to-enhance-deforestation-free-agriculture-and-forestry-investments-in-the-peruvian-amazon/
+Nature Services Peru; SEED. Obtenido de potential-to-enhance-deforestation-free-agriculture-and-forestry-investments-in-the-peruvian-amazon/
 IDH. (2020). The urgency of action to tackle tropical deforestation.
 INEI, I. N. (2013). Resultados Definitivos: IV Censo Nacional Agropecuario - 201
 2.
 Ingram, V., Behagel, J., Mammadova, A., & Verschuur, X. (2020). The outcomes of deforestation-free commodity value chain approaches.
 INIA. (2019). Sistematización de los subproyectos de cacao financiados por el instituto nacional de innovación agraria a través del programa nacional de innovación agraria.
 International Trade Center (202
-1) The State of Sustainable Markets 2021 https://digital.intracen.org/state-sustainable-markets-2021/state-of-sustainable-markets-2021/
+1) The State of Sustainable Markets 2021
 IPCC. (202
 1). Summary for Policymakers. In Masson-Delmotte, V., P. Zhai, A. Pirani, S. L. Connors, C. Péan,
 S. Berger, N. Caud, Y. Chen, L. Goldfarb, M. I. Gomis, M. Huang, K. Leitzell, E. Lonnoy, J.B.R. Matthews,
@@ -1201,7 +1201,7 @@ T. K. Maycock, T. Waterfield, O. Yelekçi, R. Yu and B. Zhou (Ed.), Climate Chan
 Science Basis. Contribution of Working Group I to the Sixth Assessment Report of the Intergovernmental
 
 Panel on Climate Change. Cambridge University Press.
-https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_SPM.pdf https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WG1_SPM_Spanish.pdf
+
 Ivanova, Y., Tristán, M. C., Romero, M., Charry, A., Lema, S., Choy, J. S., Vélez, A., Castro, A., & Quintero,
 M. (2020). Hacia una cadena de cacao y chocolate libre de deforestación y baja en emisiones de gases de efecto invernadero en la región Ucayali. Centro Internacional de Agricultura Tropical (CIAT).
 Kroeger, A., Bakhtary, H., Haupt, F., & Streck, C. (2017). Eliminating Deforestation from the Cocoa Supply
@@ -1218,49 +1218,48 @@ Ministerio de Agricultura y Riego [MINAGRI]. (2018). Plan Nacional de Acción de
 2030. Lima.
 Ministerio del Ambiente. (2010). Plan de Acción de Adaptación y Mitigación frente al Cambio Climático.
 Obtenido de
-https://sinia.minam.gob.pe/documentos/plan-accion-adaptacion-mitigacion-frente- cambio-climatico
+cambio-climatico
 Ministerio del Ambiente. (2010). Plan de Acción de Adaptación y Mitigación frente al Cambio Climático.
-Ministerio del Ambiente. (2015). Estrategia Nacional ante el Cambio Climático. Obtenido de http:// www.minam.gob.pe/wp-content/uploads/2015/09/ENCC-FINAL-250915-web.pdf
+Ministerio del Ambiente. (2015). Estrategia Nacional ante el Cambio Climático. Obtenido de http://
 Ministerio del Ambiente. (2016). La Conservación de Bosques en El Perú (201
 1-2016) Conservando los bosques en un contexto de cambio climático como aporte al crecimiento verde. Obtenido de http://
-www.bosques.gob.pe/archivo/c1
+
 2cf6_1
 1-La-conservacin-de-bosques-en-el-Per.pdf
-Ministerio del Ambiente. (2016a). Estrategia Nacional sobre Bosques y Cambio Climático. Obtenido de http://www.bosques.gob.pe/archivo/ff3f54_ESTRATEGIACAMBIOCLIMATICO2016_ok.pdf
+Ministerio del Ambiente. (2016a). Estrategia Nacional sobre Bosques y Cambio Climático. Obtenido de
 Ministerio del Ambiente. (202
 1). Estrategia de Intervención del Programa Nacional de Conservación de
 Bosques para la Mitigación del Cambio Climático al 2030.
 Noticias Parlamento Europeo (2022) Cambio climático: nuevas reglas para ayudar a limitar la deforestación mundial (13-09-2022 - 1
-2:50) https://www.europarl.europa.eu/news/es/press-room/20220909IPR40140/cambio-climatico-
+2:50)
 nuevas-reglas-para-ayudar-a-limitar-la-deforestacion-mundial?xtor=AD-78-[Social_share_buttons]-
 [linkedin]-[en]-[news]-[pressroom]-[deforestation-regulation]
 Orozco-Aguilar, L., López-Sampson, A., Leandro-Muñoz, M. E., Robiglio, V., Reyes, M., Bordeaux, M.,
 Sepúlveda, N., & Somarriba, E. (202
 1). Elucidating pathways and discourses linking cocoa cultivation to deforestation, reforestation, and tree cover change in Nicaragua and Peru. Frontiers in Sustainable Food
-Systems, 5. https://doi.org/10.3389/fsufs.2021.635779
+Systems, 5.
 Pendrill, F., Persson, U. M., & Kastner, T. (2020). Deforestation risk embodied in production and
 
 consumption of agricultural and forestry commodities 2005-2017 [Data set]. Zenodo.
 Robiglio, V., Baca, M., Donovan, J., Bunn, C., Reyes, M., Gonzáles, D., & Sánchez, C. (2017). Impacto del cambio climático sobre la cadena de valor del café en el Perú. Lima, Perú y Cali, Colombia: ICRAF
-Oficina Regional para América Latina & CIAT Centro Internacional de Agricultura Tropical.
 Robiglio, V., Reyes Acevedo, M., & Castro Simauchi, E. (2015). Diagnóstico de los productores familiares en la Amazonía Peruana. Lima: ICRAF Oficina Regional para América Latina. Por encargo de GGGI &
-DIE. Obtenido de https://www.worldagroforestry.org/sites/default/files/outputs/Diagnostico-de-los- productores-familiares-en-la-Amazonia-peruana-.compressed.pdf
+DIE. Obtenido de productores-familiares-en-la-Amazonia-peruana-.compressed.pdf
 Sachs, J. D., Cordes, K., Rising, J., Toledano, P., & Maennling, N. (2019). Ensuring Economic Viability and
 Sustainability of Coffee Production. Columbia Center on Sustainable Investment.
 Schmitz, H., & Shapiro, H.-Y. (201
 2). The future of chocolate. Scientific American, 306(2), 60–65.
-Stockholm Resilience Centre. (2015). ¿Qué es la resiliencia? Una introducción a la investigación sobre el sistema socio-ecológico. Obtenido de https://applyingresilience.org/wp-content/uploads/
+Stockholm Resilience Centre. (2015). ¿Qué es la resiliencia? Una introducción a la investigación sobre el sistema socio-ecológico. Obtenido de
 sites/2/2016/04/What_is_resilience_SP_aktiv.pdf
 TechnoServe. (2015). Building a Sustainable and Competitive Cocoa Value Chain in Peru. A Case Study of the Economic Development Alliance Program for San Martín, Huánuco, and Ucayali 2010 – 2015.
 The Living Income Community of Practice. (2020). The concept. The Living Income Community of Practice.
-https://www.living-income.com/the-concept
+
 Wolfs Company. (202
 1). Análisis de escenarios focalizado para la cadena de valor del cacao en Perú.
 Targeted Scenario Analysis (TSA).
 Yturrios, J. (202
 1) La heterogeneidad tecnológica en la producción de cacao y los ingresos de las familias cacaoteras en las regiones de Desarrollo Alternativo. Presentación en la 23 Convención Nacional del
 Café y Cacao.
-https://camcafeperu.com.pe/admin/recursos/publicaciones/Presentaciones%2023CNC%20-%20
+
 1_compressed.pdf
 Yturrios, J. (2022) ¿Cuáles son los principales retos del cacao y el chocolate peruanos en los próximos
 10 años? Presentación en la 24 Convención Nacional del Café y Cacao.
