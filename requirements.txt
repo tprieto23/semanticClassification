@@ -20,3 +20,7 @@ python-docx==1.1.0
 
 # Limpieza de textos (Objetivo 3)
 ftfy==6.2.3
+
+# NER / Extracción de entidades (Objetivo 4)
+spacy>=3.7.0
+langdetect==1.0.9

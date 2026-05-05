@@ -23,13 +23,14 @@
 - [ ] **Diferido a 2da iteración:** transcripción para audio (faster-whisper)
 - [ ] **Diferido a 2da iteración:** procesamiento de video (ffmpeg + faster-whisper)
 
-### Objetivo 3: Filtrar, limpiar y depurar textos ✅ CAPAS 1 + 2 + 3 (3a + 3b) COMPLETADAS
+### Objetivo 3: Filtrar, limpiar y depurar textos ✅ CAPAS 1 + 2 + 3 + 4 COMPLETADAS (con correcciones 2026-05-05)
 - [x] Definir tipos de ruido a eliminar (encoding, espacios, saltos de línea, headers/footers, créditos editoriales)
 - [x] Definir qué conservar sí o sí (mayúsculas, acentos, stopwords, conectores, palabras cortas)
 - [x] Decidir enfoque determinista (no IA) — ver `decisions.md` 2026-05-04
 - [x] **Capa 1 (universal):** ftfy + unicodedata NFC + remover control chars + colapsar espacios + colapsar 3+ saltos de línea + strip por línea
 - [x] **Capa 2a (números de página):** detectar y eliminar líneas tipo "23", "Página 5", "- 12 -"
 - [x] **Capa 2b (headers/footers repetidos):** heurística combinada (frecuencia ≥ 3 + longitud 15-150 + sin puntuación interna + no empieza minúscula + no es ítem de lista)
+- [x] **CORRECCIÓN 2026-05-05:** proteger líneas con >10 palabras (eran contenido narrativo en brochures, no headers)
 - [x] **Capa 2c (re-unión de oraciones partidas por columnas):** une línea N con N+1 si N no termina en `.?!:;` + N+1 empieza con minúscula + N+1 no es ítem de lista + ambas dentro del mismo párrafo
 - [x] **Skip de Capa 2** (2a, 2b y 2c) si documento tiene < 200 líneas no vacías (no estadísticamente confiable en docs cortos)
 - [x] Servicio `src/services/cleaning.py` con `clean_text_layer1()`, `clean_text_layer2()` y `clean_text_layer2c()`
@@ -39,14 +40,32 @@
 - [x] **Capa 3a (dot leaders):** eliminar líneas con 5+ puntos consecutivos (TOCs tipo "Título ........... 5")
 - [x] **Capa 3b (bloques TOC numerados):** detectar y eliminar bloques en los primeros 15% del doc con ≥5 líneas consecutivas y ≥70% numeradas, incluido header `CONTENIDO/ÍNDICE` previo
 - [x] 28 documentos re-limpiados con Capa 1+2+3 (avg reducción **5.54%**, max 14.04%; 21 dot leaders + 5 bloques TOC + 122 líneas TOC eliminadas en 6/28 archivos; 0 falsos positivos)
-- [ ] **Capa 3 — iteraciones siguientes (pendiente):** eliminar bloques de créditos editoriales (Autor:, Diseño:, ISBN, Primera Edición), títulos de portada con palabras en MAYÚSCULAS partidas en líneas, URLs/emails sueltos
+- [x] **Capa 4a (URLs y emails):** eliminar todos los `https?://`, `www....`, `x@y.z` (inline o línea completa)
+- [x] **Capa 4b (créditos editoriales con extensión B1):** detectar bloques al inicio/final con ≥2 keywords cercanas (Autor:, Diseño:, ISBN, etc.); extender hasta 5 líneas consecutivas sin keyword o párrafo narrativo
+- [x] **Capa 4c (portadas en MAYÚSCULAS):** detectar bloques de ≥4 líneas consecutivas en MAYÚSCULAS en primeros 5% del doc
+- [x] **Capa 4d (agradecimientos):** detectar header `AGRADECIMIENTOS`/`ACKNOWLEDGEMENTS`/`RECONOCIMIENTOS` y eliminar hasta el próximo título de sección
+- [x] **Capa 4e (contactos/footers):** eliminar líneas de contacto (teléfonos, direcciones, emails, footers con pipe)
+- [x] **Capa 4f (placeholders):** eliminar placeholders de MS Word (`Error! Bookmark not defined`, `Main Title Subtitle Description`, etc.) incluyendo multi-línea
+- [x] 28 documentos re-limpiados con Capa 1+2+3+4 (avg reducción **5.49%**; 23 líneas de contacto + 5 placeholders + 312 URLs + 48 emails + 89 portada + 62 créditos + 45 agradecimientos eliminados en 22/28 archivos)
+- [x] **RE-PROCESAMIENTO 2026-05-05:** corrección de bug crítico en Capa 2b + re-limpieza de todo el corpus
+- [x] **Validación manual:** 3 documentos top-reducción revisados, bug crítico encontrado y corregido
+- [ ] **Validación manual pendiente:** revisar los otros documentos donde Capa 4 actuó
 
-### Objetivo 4: Clasificar entidades relevantes ⏳ TBD
-- [ ] Definir lista completa de categorías
-- [ ] Decidir si entidad puede tener múltiples categorías
-- [ ] Decidir si clasificación es por documento o global
-- [ ] Implementar clasificación (IA/reglas)
-- [ ] Definir metadata de cada entidad
+### Objetivo 4: Clasificar entidades relevantes 🚧 EN PROGRESO (Fase 2 implementada)
+- [x] Definir lista completa de categorías (9 categorías en methodology.md)
+- [x] **Decisión:** entidad puede tener múltiples categorías → se guardan como entidades separadas
+- [x] **Decisión:** clasificación es por aparición (contexto específico)
+- [x] **Fase 1:** Implementar extracción NER con spaCy (es_core_news_sm + en_core_web_sm)
+- [x] **Fase 1:** Crear endpoint `POST /documents/{id}/extract-entities`
+- [x] **Fase 2:** Servicio `src/services/entity_classifier.py` con mapeo spaCy → 9 categorías
+- [x] **Fase 2:** Reglas de keywords por categoría (40+ patrones) + protección contra falsos positivos
+- [x] **Fase 2:** Categoría temporal `MISC_Spacy` para entidades no clasificables automáticamente
+- [x] **Fase 2:** Endpoint actualizado guarda `project_category` en DB, `spacy_label` en metadata
+- [x] **Fase 1:** Definir metadata de cada entidad (contexto, oración, posición, idioma, source_ner)
+- [ ] **Fase 3:** Revisión manual de MISC_Spacy para entrenar modelo BERT/RoBERTa
+- [ ] **Fase 3:** Implementar extracción de NARRATIVA y PRÁCTICA (método alternativo a NER)
+- [ ] Evaluar calidad del NER sobre corpus completo (28 docs)
+- [ ] Iterar filtros de falsos positivos estructurales
 
 ### Objetivo 5: Representar entidades mediante vectores ⏳ TBD
 - [ ] Seleccionar modelo de embeddings
@@ -107,8 +126,12 @@
 
 ## En progreso
 
-- Validación manual de los 28 archivos limpiados con Capa 1+2+3 (especialmente los 6 con TOC eliminado)
-- Decisión sobre próximas iteraciones de Capa 3 (créditos editoriales, portadas en MAYÚSCULAS, URLs/emails)
+- Validación manual de los 28 archivos limpiados con Capa 1+2+3+4 (especialmente los 22 donde Capa 4 actuó)
+  - ✅ 3 documentos top-reducción validados (Proforest, DIPTICO, Guía AGRAP)
+  - ✅ Bug crítico en Capa 2b encontrado y corregido (contenido narrativo eliminado)
+  - ✅ Corpus re-procesado con corrección (avg reducción ahora 5.32%)
+  - ⏳ 19 documentos restantes por validar
+- Decidir si avanzar a Objetivo 4 (NER) o seguir refinando limpieza
 
 ## Completadas
 
@@ -128,18 +151,19 @@
 - [x] Pipeline upload → procesar probado end-to-end con PDF y DOCX
 - [x] Pruebas manuales desde Postman con 5 archivos reales del corpus
 - [x] Endpoint `POST /documents/batch` para subida y procesamiento múltiple
-- [x] Servicio `src/services/cleaning.py` (Capa 1 + 2 + 2c + 3a + 3b)
+- [x] Servicio `src/services/cleaning.py` (Capa 1 + 2 + 2c + 3a + 3b + 4a + 4b + 4c + 4d)
 - [x] Endpoint `POST /documents/{id}/clean` con métricas en DB y soporte `?dry_run=true`
 - [x] Migración Alembic `1e6e4c60daa8` aplicada (4 columnas nuevas en `documents`)
 - [x] 28 documentos del corpus limpiados con Capa 1 (avg 1.57%)
 - [x] 28 documentos re-limpiados con Capa 1+2 (avg 4.92%, 1,540 páginas + 899 headers eliminados)
 - [x] 28 documentos re-limpiados con Capa 1+2+2c (mismo % reducción + **7,121 oraciones re-unidas**)
 - [x] 28 documentos re-limpiados con Capa 1+2+2c+3 (avg 5.54%, max 14.04%; +21 dot leaders + 122 líneas TOC eliminadas)
+- [x] 28 documentos re-limpiados con Capa 1+2+3+4 (avg 7.01%, max 16.55%; +305 URLs + 47 emails + 89 portada + 62 créditos + 45 agradecimientos)
 
 ## Próximos pasos
 
-1. **Validar manualmente** 2-3 archivos limpios con Capa 1+2+3 (sobre todo los que tuvieron TOC eliminado: `Análisis Instrumentos Financieros` 34 líneas TOC, `DIPTICO-CPS-EARTHWORM` 33 líneas, `Proforest Reporte` 21 dot leaders).
-2. **Capa 3 — iteraciones siguientes:**
+1. **Validar manualmente** 2-3 archivos limpios con Capa 1+2+3+4 (sobre todo los de mayor reducción: `Proforest Reporte` 16.55%, `DIPTICO-CPS-EARTHWORM` 14.34%, `Año de Referencia` 11.80%).
+2. **Iteraciones futuras de Capa 4 (si fuera necesario):**
    - Detección de bloques de créditos al inicio/final que no fueron capturados por Capa 2 (heurísticas de "Autor:", "Diseño:", "ISBN", "Primera Edición")
    - Eliminación de URLs y emails sueltos
 4. **Objetivo 4 (NER):** decidir librería (spaCy multilingüe? modelo dedicado?) y empezar clasificación de entidades. Considerar que el corpus es bilingüe (español + inglés).

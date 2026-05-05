@@ -22,7 +22,12 @@ from src.services.cleaning import (
     clean_text_layer2,
     clean_text_layer2c,
     clean_text_layer3,
+    clean_text_layer4,
     save_cleaned_text,
+)
+from src.services.ner import (
+    extract_entities,
+    normalize_entity_name,
 )
 
 
@@ -97,6 +102,17 @@ class CleanResponse(BaseModel):
     toc_blocks_removed: int = 0
     toc_lines_removed: int = 0
     skipped_layer3b_short_doc: bool = False
+    urls_removed: int = 0
+    emails_removed: int = 0
+    uppercase_cover_blocks_removed: int = 0
+    uppercase_cover_lines_removed: int = 0
+    credit_blocks_removed: int = 0
+    credit_lines_removed: int = 0
+    acknowledgments_blocks_removed: int = 0
+    acknowledgments_lines_removed: int = 0
+    skipped_layer4_short_doc: bool = False
+    contact_lines_removed: int = 0
+    template_placeholders_removed: int = 0
 
 
 class BatchUploadResponse(BaseModel):
@@ -108,6 +124,30 @@ class BatchUploadResponse(BaseModel):
     txt_path: Optional[str] = None
     char_count: Optional[int] = None
     error: Optional[str] = None
+
+
+class ExtractEntityResponse(BaseModel):
+    id: uuid.UUID
+    document_id: uuid.UUID
+    category: str
+    text: str
+    normalized_text: Optional[str]
+    context: Optional[str]
+    position_start: Optional[int]
+    position_end: Optional[int]
+    confidence: Optional[float]
+
+    class Config:
+        from_attributes = True
+
+
+class ExtractEntitiesSummary(BaseModel):
+    document_id: uuid.UUID
+    status: str
+    lang: str
+    total_extracted: int
+    by_label: dict
+    entities: List[ExtractEntityResponse]
 
 
 @app.get("/")
@@ -371,7 +411,8 @@ def clean_document(
         text_after_l1, l1_metrics = clean_text_layer1(original_text)
         text_after_l2, l2_metrics = clean_text_layer2(text_after_l1)
         text_after_l2c, l2c_metrics = clean_text_layer2c(text_after_l2)
-        final_text, l3_metrics = clean_text_layer3(text_after_l2c)
+        text_after_l3, l3_metrics = clean_text_layer3(text_after_l2c)
+        final_text, l4_metrics = clean_text_layer4(text_after_l3)
     except Exception as e:
         if not dry_run:
             document.status = "failed"
@@ -388,6 +429,7 @@ def clean_document(
         "layer2": l2_metrics,
         "layer2c": l2c_metrics,
         "layer3": l3_metrics,
+        "layer4": l4_metrics,
     }
 
     cleaned_path = CLEANED_DIR / f"{document_id}.txt"
@@ -411,6 +453,17 @@ def clean_document(
             toc_blocks_removed=l3_metrics["toc_blocks_removed"],
             toc_lines_removed=l3_metrics["toc_lines_removed"],
             skipped_layer3b_short_doc=l3_metrics["skipped_layer3b_short_doc"],
+            urls_removed=l4_metrics["urls_removed"],
+            emails_removed=l4_metrics["emails_removed"],
+            uppercase_cover_blocks_removed=l4_metrics["uppercase_cover_blocks_removed"],
+            uppercase_cover_lines_removed=l4_metrics["uppercase_cover_lines_removed"],
+            credit_blocks_removed=l4_metrics["credit_blocks_removed"],
+            credit_lines_removed=l4_metrics["credit_lines_removed"],
+            acknowledgments_blocks_removed=l4_metrics["acknowledgments_blocks_removed"],
+            acknowledgments_lines_removed=l4_metrics["acknowledgments_lines_removed"],
+            skipped_layer4_short_doc=l4_metrics["skipped_layer4_short_doc"],
+            contact_lines_removed=l4_metrics["contact_lines_removed"],
+            template_placeholders_removed=l4_metrics["template_placeholders_removed"],
         )
 
     save_cleaned_text(final_text, str(cleaned_path))
@@ -441,6 +494,17 @@ def clean_document(
         toc_blocks_removed=l3_metrics["toc_blocks_removed"],
         toc_lines_removed=l3_metrics["toc_lines_removed"],
         skipped_layer3b_short_doc=l3_metrics["skipped_layer3b_short_doc"],
+        urls_removed=l4_metrics["urls_removed"],
+        emails_removed=l4_metrics["emails_removed"],
+        uppercase_cover_blocks_removed=l4_metrics["uppercase_cover_blocks_removed"],
+        uppercase_cover_lines_removed=l4_metrics["uppercase_cover_lines_removed"],
+        credit_blocks_removed=l4_metrics["credit_blocks_removed"],
+        credit_lines_removed=l4_metrics["credit_lines_removed"],
+        acknowledgments_blocks_removed=l4_metrics["acknowledgments_blocks_removed"],
+        acknowledgments_lines_removed=l4_metrics["acknowledgments_lines_removed"],
+        skipped_layer4_short_doc=l4_metrics["skipped_layer4_short_doc"],
+        contact_lines_removed=l4_metrics["contact_lines_removed"],
+        template_placeholders_removed=l4_metrics["template_placeholders_removed"],
     )
 
 
@@ -456,3 +520,94 @@ def list_entities(
     if document_id:
         query = query.filter(Entity.document_id == document_id)
     return query.all()
+
+
+@app.post("/documents/{document_id}/extract-entities", response_model=ExtractEntitiesSummary)
+def extract_document_entities(
+    document_id: uuid.UUID,
+    db: Session = Depends(get_db),
+):
+    document = db.query(Document).filter(Document.id == document_id).first()
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    cleaned_path = CLEANED_DIR / f"{document_id}.txt"
+    if not cleaned_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Cleaned text not found at {cleaned_path}. Run /clean first.",
+        )
+
+    if document.status not in ("cleaned", "processed"):
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                f"Document must be in 'cleaned' or 'processed' status to extract entities, "
+                f"current: '{document.status}'"
+            ),
+        )
+
+    text = cleaned_path.read_text(encoding="utf-8")
+
+    try:
+        extracted, lang = extract_entities(text, str(document_id))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"NER extraction failed: {e}")
+
+    # Borrar entidades previas de este documento (re-extracción idempotente)
+    db.query(Entity).filter(Entity.document_id == document_id).delete()
+
+    by_category: dict = {}
+    entity_responses = []
+
+    for ent in extracted:
+        by_category[ent.project_category] = by_category.get(ent.project_category, 0) + 1
+
+        normalized = normalize_entity_name(ent.text)
+
+        db_entity = Entity(
+            id=uuid.uuid4(),
+            document_id=document_id,
+            category=ent.project_category,  # Fase 2: categoría del proyecto
+            text=ent.text,
+            normalized_text=normalized,
+            context=ent.context,
+            position_start=ent.start,
+            position_end=ent.end,
+            confidence=None,  # spaCy no da confidence por defecto
+            metadata_={
+                "lang": lang,
+                "sentence": ent.sentence,
+                "source_ner": "spacy",
+                "spacy_label": ent.label,
+            },
+        )
+        db.add(db_entity)
+        db.flush()  # para obtener el id
+
+        entity_responses.append(
+            ExtractEntityResponse(
+                id=db_entity.id,
+                document_id=db_entity.document_id,
+                category=db_entity.category,
+                text=db_entity.text,
+                normalized_text=db_entity.normalized_text,
+                context=db_entity.context,
+                position_start=db_entity.position_start,
+                position_end=db_entity.position_end,
+                confidence=db_entity.confidence,
+            )
+        )
+
+    document.status = "processed"
+    db.commit()
+    db.refresh(document)
+
+    return ExtractEntitiesSummary(
+        document_id=document_id,
+        status=document.status,
+        lang=lang,
+        total_extracted=len(extracted),
+        by_label=by_category,
+        entities=entity_responses,
+    )

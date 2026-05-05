@@ -13,17 +13,6 @@ Llamado a una acción colectiva
 Referencias bibliográficas
 Índice
 
-Autores:
-Marjoleine Motz- Consultora Senior, Fair & Sustainable Consulting
-Bruno Paino- Consultor Senior
-Revisión técnica:
-Ada Lis Rosell - Gerente de País para Perú, Solidaridad
-Ana Luisa Mendoza - Gerente de Negocios Sostenibles, Conservación Internacional
-Angelica Fort - Gerente de Acuerdos Sectoriales para la Producción Sostenible , Solidaridad
-Bruno Montesinos- Gerente de Café y Cacao Sostenible, Conservación Internacional
-Daniel Coronel - Coordinador para Perú, Tropical Forest Alliance
-Gert van der Bijl - Senior EU Policy Advisor,Solidaridad
-Gustavo Suarez de Freitas - Coordinador del Programa Perú, Earth Innovation Institute
 Ivo Encomenderos - Gerente de Alianzas Público Privadas para la Alianza Empresarial por la
 Amazonía, Conservación Internacional
 Patricia Luna - Investigadora Senior, Earth Innovation Institute
@@ -39,10 +28,11 @@ Fue desarrollado bajo el marco del Acuerdo Cacao, Bosques y Diversidad, un acuer
 peruano basado en calidad, diversidad de atributos de origen y su potencial restaurativo y de libre deforestación.
 ACLARACIÓN
 Encuentre este documento en formato virtual en:
-www.produccionsostenible.org.pe
+
 Agradecimientos especiales por su contribución institucional a:
 Este estudio fue posible gracias al respaldo de:
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 El objetivo específico es identificar la necesidad, alcance y oportunidades para el desarrollo competitivo de cadenas
 productivas de café y cacao libres de deforestación bajo este nuevo contexto, con un enfoque integral que involucre tanto al
 sector privado como al sector público, además de trazar una propuesta para la acción colectiva que
@@ -66,6 +56,7 @@ de número medio de empleados durante el ejercicio 50.
 20 000 000 EUR, ii) importe neto del volumen de negocios: 40 000 000 EUR, y iii) número medio de empleados durante el ejercicio
 250.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 En junio de 2023 la Unión Europea (UE) aprobó el Reglamento sobre Productos Libres de Defores- tación (EUDR) que busca reducir el riesgo de que productos y cadenas de suministro asociados
 con la deforestación y degradación forestal ingresen o salgan del mercado de la UE. A partir del
 30 de diciembre de 2024 se impondrán obligaciones clave a las grandes empresas, y a partir de junio de 2025 a las pequeñas y medianas empresas2. El reglamento abarca siete productos3 que
@@ -90,6 +81,7 @@ de acuerdo con las leyes del país productor.
 3 Las cadenas incluidas son cacao (cacao en polvo y chocolate, entre otros), café, madera (muebles y papel impreso, entre otros), aceite de palma, ganado vacuno (carne y cuero, entre otros), caucho y soya.
 4 Según la definición del EUDR, un operador es cualquier persona natural o jurídica que, durante una actividad comercial, coloca productos relevantes en el mercado o los exporta.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 La diligencia debida consta de hasta tres pasos:
 • Descripción precisa del producto, cantidad, país de producción, así como informa- ción detallada del proveedor y comprador.
 • Geolocalización de todas las parcelas de origen de los productos, proporcionando coordenadas geográficas, fechas de producción, pruebas de no deforestación y
@@ -121,6 +113,7 @@ Fuente: Artículo 2, definiciones EUDR.
 9 La EUDR considera muchos tipos de sanciones: i) multas, ii) confiscación de bienes, iii) confiscación de ingresos por comercio de bienes objeto de incumplimiento, iv) exclusión de financiación y compras públicas en la UE, v) prohibición de ingreso al mercado de
 la UE, y v) prohibición de uso de procedimiento simplificado Artículo 25, sanciones.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 En 2022, las exportaciones peruanas alcanzaron 63 193 mil millones de dólares, de los cuales los productos agrícolas representaron 9807 mil millones de dólares (16%)10. De ese total, el café tuvo
 un valor de 1234 mil millones de dólares, mientras que las exportaciones de cacao —incluyendo granos, polvo, manteca y derivados— fueron de 326 millones de dólares11.
 
@@ -136,12 +129,13 @@ En 202
 1, Perú exportó a la UE
 6,5 mil millones de euros
 (0,3% de las importaciones totales de la UE)
-10_https://www.gob.pe/institucion/embajada-del-peru-en-brasilnoticias/72
+10_
 1-peru-fortalece-su-posicion-de-comercio-exterio r-con-exportaciones-record-en-2022
-11_https://www.trademap.org/Country_SelProductCountry_TS.aspx?nvpm=3%7c604%7c%7c%7c%7c18%7c%7c%7c2%7c1%7
+11_
 1%7c2%7c2%7c1%7c2%7c1%7c1%7c1
-12_https://www.eeas.europa.eu/peru/european-union-and-peru_en?s=162#4456
+12_
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 Perú es el cuarto país con mayor superficie de bosques tropicales del mundo y el segundo con mayor extensión de bosques amazónicos después de Brasil. Con una extensión de aproximada-
 mente 78,2 millones de hectáreas, el bioma de la Amazonía peruana abarca el 60,9% de la superficie del país. De acuerdo con el mapa de uso agrario, se estima que, del total deforestado,
 alrededor de 1,5 MM de hectáreas se encuentran bajo uso agropecuario13.
@@ -164,13 +158,14 @@ expansión agrícola14 que avanza sobre nuevas áreas con bosques.
 13 Hajek et al., 2017. The potential to enhance deforestation free agriculture and forestry investments in the Peruvian Amazon.
 14 Cultivos como café, cacao, coca, palma, pasto para ganadería, y cultivos semipermanentes en regiones como San Martín,
 Amazonas y Ucayali.
-15 https://geobosques.minam.gob.pe/geobosque/view/perdida.php
-16 MINAM y SERFOR 2015. Memoria Descriptiva del Mapa de Bosque y No Bosque https://www.gob.pe/institucion/bosques/informes-publicaci nes/31
+15
+16 MINAM y SERFOR 2015. Memoria Descriptiva del Mapa de Bosque y No Bosque nes/31
 19840-memoria-descriptiva-del-mapa-de-bosque-no-bos- que-ano-2000-y-mapa-de-perdida-de-los-bosques-humedos-amazonicos-del-peru-2000-201
 1 Amazonas y Ucayali.
 
 Marco legal, políticas nacionales
-y gobernanza se asentó en tierras con limitaciones para la producción intensiva, y que requerían de insumos y
+y gobernanza
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao se asentó en tierras con limitaciones para la producción intensiva, y que requerían de insumos y
 tecnología para no degradarse, lo que demanda capital financiero. En este sentido, las prácticas convencionales aplicadas por los colonos, en muchos casos resultaron y resultan insuficientes para
 evitar la degradación de los suelos y ello explica, en buena medida, la permanente expansión de la superficie deforestada con fines agropecuarios y la alta proporción de tierras sin uso.
 En los últimos años se han logrado importantes avances en materia de regulación y de gestión en los sectores agrícola, forestal y ambiental con el fin de fortalecer la gestión del capital natural y los
@@ -188,7 +183,8 @@ El conjunto de economías ilegales como el cultivo de coca, la minería informal
 de lo exigido por el EUDR. En ese sentido, resulta urgente prestar atención a este tema, así como
 17 Hajek et al., 2017. The potential to enhance deforestation free agriculture and forestry investments in the Peruvian Amazon.
 
-a las regulaciones de la Ley Forestal y de Fauna Silvestre relacionadas con cambio de uso del suelo, derechos en zonas forestales, definición de bosques secundarios; entre otras relevantes.
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao a las regulaciones de la Ley Forestal y de Fauna Silvestre relacionadas con cambio de uso del
+suelo, derechos en zonas forestales, definición de bosques secundarios; entre otras relevantes.
 La normatividad peruana relativa a derechos sobre la tierra es compleja y muy particular.
 Recoge mandatos de la Constitución Política del Perú, la Ley Orgánica para el Aprovechamiento
 Sostenible de los Recursos Naturales, la Ley Forestal y de Fauna Silvestre, el Reglamento de Ges- tión Ambiental del Sector Agrario y el Reglamento de Clasificación de Tierras por su Capacidad
@@ -211,6 +207,7 @@ Se estima en más de 120 000 las familias productoras que requieren de este inst
 han permitido contar, luego de 9 años, con alrededor de 500 tierras familiares formalizadas lo que es absolutamente insuficiente para la demanda existente.
 Parte de estas limitaciones responden a la necesidad de aplicación del regla- mento de CTCUM y de contar con zonificación forestal aprobada.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 Para no quedar excluidos del mercado europeo se requiere realizar, a la brevedad, ajustes en el marco legal para promover la formalización de los productores, lo cual es también uno de los
 elementos necesarios para la sostenibilidad de las cadenas de café y cacao. Es importante señalar que estos arreglos deben darse en el marco de un proceso transparente de diálogo a nivel nacio-
 nal, con especial énfasis en la Amazonia peruana, y considerando la diversidad de escenarios y tipología de casos de productores agropecuarios amazónicos con la participación de las asocia-
@@ -227,6 +224,7 @@ ya que actualmente existen en el país diversas herramientas de monitoreo sateli
 En suma, se requieren mejoras relevantes para poder cumplir con la escala, periodicidad y defini- ciones requeridas por el reglamento de la UE. En términos de gobernanza, no se tiene claridad
 acerca de cuál será la autoridad responsable del monitoreo a escala de fincas, en particular en el caso de las propiedades privadas.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 Impulsados por la creciente demanda global de productos orgánicos en las últimas décadas, los sectores de café y cacao han logrado exportaciones significativas a mercados diferenciales, espe-
 cialmente hacia la Unión Europea. En 2022, las exportaciones totales de café y cacao hacia este mercado representaron el 51% y el 29% del valor total de las exportaciones, respectivamente.
 Aunque el café es el cultivo más importante en la Amazonía en términos de número de agricultores e ingresos generados, el cacao ha venido posicionándose como una de las cadenas agroexporta-
@@ -243,6 +241,7 @@ bles. La producción de café y cacao constituye su principal fuente de ingresos
 riesgoso que es susceptible a condiciones de precios volátiles, factores climáticos (cambio
 climático), y plagas y enfermedades.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 De los 223 mil caficultores, más del 80% son pequeños y conducen entre 1 ha y 5
 hectáreas. Sólo un 30% de ellos está asociado principalmente en cooperativas.
 En el 2022 se exportó 245 mil toneladas de café, con un valor FOB de 1 200 millones de
@@ -316,11 +315,13 @@ de diálogo para construir una hoja de ruta para la transición de la producció
 Este proceso fue facilitado por el proyecto Amazon Innovatech19 y se dio como respuesta al desafío de una débil articulación, cooperación y coordinación regional frente a las brechas de seguridad
 jurídica, de sanidad, asociatividad, trazabilidad, posicionamiento y sostenibilidad que enfrentan las cadenas de cacao, café y palma aceitera en la región, además de las nuevas demandas del
 mercado internacional relativas a producción libre de deforestación.
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 19 Proyecto que lidera Solidaridad con fondos de UK PACT y que tiene como socios a Earth Innovation Institute y a la Central de
 Cooperativas Agrarias Cacao Aroma de Tocache (CECAT).
 
 Como resultado de este proceso se elaboró una hoja de ruta que identifica los principales cuellos de botella y desafíos que enfrentará la región para la transición hacia una agricultura libre de defo-
 restación. La hoja de ruta también propone una serie de acciones que deben ser implementadas a nivel regional, nacional e internacional para facilitar esta transición.
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 Los principales hallazgos de este proceso de diálogo fueron los siguientes:
 • La transición hacia una agricultura libre de deforestación requiere de un enfoque integral que aborde las brechas de seguridad jurídica, sanidad, asociatividad, trazabilidad, posiciona-
 miento y sostenibilidad.
@@ -331,6 +332,7 @@ En ese sentido, la Dirección Regional de Agricultura San Martín (DRASAM), ha i
 sin deforestación que considera un enfoque multisectorial, multinivel y multiactor, y que busca apor- tar al cierre de las brechas de competitividad territorial. Este programa también contribuirá a la
 implementación de la hoja de ruta para facilitar la adaptación de los productores sanmartinenses a las nuevas tendencias de mercado sobre la demanda de productos libres de deforestación.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 Monitoreo y trazabilidad de
 la deforestación en Perú
 Al establecer la diligencia debida obligatoria a las empresas que importen o produzcan productos y subproductos agropecuarios libres de deforestación destinados al mercado europeo, el EUDR ha
@@ -358,7 +360,7 @@ los productos pertinentes que contengan madera o hayan sido elaborados con mader
 
 22 Capacidad de rastrear cualquier producto o subproducto a través de todas las etapas de producción, transformación y distribución en una cadena de suministros.
 
-sus parcelas a nivel nacional. Cuenta con la mayoría de variables de información solicitadas por el
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao sus parcelas a nivel nacional. Cuenta con la mayoría de variables de información solicitadas por el
 EUDR, y aquellas que no contempla podrían ser incorporadas por el MIDAGRI si logra concertar los esfuerzos de los gobiernos regionales, municipios, la Comisión Nacional para el Desarrollo y
 Vida sin Drogas (DEVIDA), el Servicio Nacional Forestal y de Fauna Silvestre (SERFOR), gremios, empresas, organizaciones de la sociedad civil y otros actores clave para retroalimentar el padrón
 y articular las bases de datos existentes en la Amazonía. Para ello, se deberá evaluar la posibilidad de elaborar mandatos legales para retroalimentar el Padrón de Productores Agrarios en los diferen-
@@ -412,6 +414,7 @@ más de diez herramientas privadas y proveedores internacionales de servicios pa
 debida diligencia del EUDR. Estas herramientas y proveedores cuentan con sus propios protocolos y
 fuentes de información adaptados a las necesida- des del reglamento de la UE y brindan soluciones
 7.
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 
 tecnológicas para superar la falta de información, como los polígonos georreferenciados de las parcelas de los productores. Las soluciones buscan reducir el riesgo en la toma de decisiones de
 compra en zonas con altas tasas de pérdida de cobertura forestal y, por ende, aminorar el riesgo de potenciales sanciones. Si bien algunas de estas soluciones ayudan a reducir los riesgos de compras
@@ -419,6 +422,7 @@ y permiten detectar la pérdida de cobertura a través metodologías indirectas,
 peruanos, toda vez que frente a la presencia de eventos de pérdida de bosques colindantes o falta de información precisa de sus parcelas los reportes de estas herramientas serán negativos y podrían
 limitar sus opciones de acceso al mercado. Cabe señalar que estas herramientas ya están operativas y cuentan con contratos firmados con las principales corporaciones agroalimentarias; razón por la
 cual es imperante que el gobierno peruano pueda facilitar información precisa sobre los productores peruanos y los bosques a estos proveedores.
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 
 Si bien los sectores de café y cacao actualmente no se encuentran pre-
 parados para mantener las exporta- ciones a la Unión Europea bajo las
@@ -427,6 +431,7 @@ públicos y privados involucrados que podría no sólo mantener las exportacione
 sectores a este importante mercado, sino que incluso podría aumentarlas en los años venide-
 ros. En esa línea, los sectores estarían también preparados para las regulaciones de otros
 países como Estados Unidos y el Reino Unido.
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 Llamado a una acción colectiva
 Para lograrlo, es necesario que el sector agrario peruano experimente una acelerada y sostenible transformación hacia la competitividad y la sostenibilidad de la mano con la productividad. Esto es
 fundamental para poder cumplir con las nuevas exigencias de los mercados como el mercado a la
@@ -440,6 +445,7 @@ la cooperación internacional y el sector privado para ofrecer incentivos a los 
 En el corto plazo es urgente y necesario trabajar de manera conjunta para demostrar la no defores- tación y el cumplimiento de los demás requisitos de la normativa de la UE. Esto implica el levanta-
 miento de información, el monitoreo y la trazabilidad.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 Se deberá trabajar hacia:
 Aumentar la productividad bajo modelos de sistemas agroforestales y acceso a servicios
 Es necesario promover un aumento de la productividad de las cadenas de café y cacao. De no lograrse esta mejora con las áreas actualmente cultivadas, es probable que los productores se
@@ -461,6 +467,7 @@ Esto incluye una comunicación eficaz sobre la producción que es libre de defor
 acceso, provisión de internet de calidad y servicios básicos como educación, salud, energía sostenible y otras actividades productivas que eviten la migración hacia las ciudades.
 1.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 Facilitar la formalización de los productores sobre la tenencia de la tierra
 El sector público debe comprometerse a mejorar la situación legal de la tenencia de la tierra de los productores, ya sea a través de títulos de propiedad u otros mecanismos que otorgan dere-
 chos de uso cuando la titulación está legalmente limitada, como los contratos de cesión en uso para sistemas agroforestales previstos en la legislación forestal en zonas de tratamiento especial.
@@ -486,6 +493,7 @@ nales a cargo de su implementación, la articulación de los sistemas de catastr
 marcha el proceso. El claro liderazgo del MIDAGRI es fundamental.
 2.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 También es importante apoyar a los gobiernos regionales en el otorgamiento de los contratos
 CCUSAF, lo que requiere dar a conocer esta modalidad e identificar las áreas adecuadas para su aplicación. Asimismo, es fundamental fortalecer los sistemas de monitoreo, control, vigilancia y
 fiscalización de la legislación forestal, de manera que se garantice su correcta implementación y gestión. Esto incluye el control de la deforestación, el cambio de uso de la tierra, el establecimiento
@@ -512,6 +520,7 @@ Sin datos confiables es difícil desarrollar las intervenciones apropiadas, gest
 información actualizada sobre la superficie de café y cacao, su ubicación, el número de familias productoras y el efecto de sus prácticas sobre la pérdida de bosque.
 3.
 
+Estudio de impacto de la regulación europea de no deforestación en cadenas de valor del café y cacao
 Mejorar la comunicación sobre el reglamento de la UE y las diversas acciones que los sectores de café y cacao vienen realizando
 Las entrevistas realizadas a productores para este estudio evidenciaron una situación de descono- cimiento sobre las implicancias del EUDR. Por lo tanto, es importante difundir información práctica
 sobre la nueva regulación, tanto al sector público como al sector privado. Es indispensable una mayor difusión sobre la legislación y la importancia de los bosques, priorizando las zonas más
@@ -543,7 +552,7 @@ evitando así el incremento de la pobreza y la deforestación, y su incidencia e
 (Eds.), El Estado de Sostenibilidad Jurisdiccional. San Francisco, CA: EII; Bogor, Indonesia: CIFOR; Boulder, CO:
 GCF-TF
 •European Coffee Report 2022-2023; European Coffee Federation
-•FAO. 2020. Evaluación de los recursos forestales mundiales 2020 https://www.fao.org/3/ca9825es/- ca9825es.pdf
+•FAO. 2020. Evaluación de los recursos forestales mundiales 2020 ca9825es.pdf
 •Fair Trade Advocacy Office, Fern, IUCN NL, Solidaridad and Tropenbos International. (202
 1) Including smallhol- ders in EU action to protect and restore the world's forests. Briefing paper. The Netherlands.
 •Fairtrade International website
@@ -569,7 +578,7 @@ Centro Internacional de Agricultura Tropical, Cali, Colombia.
 •Wedeux, B., & Schulmeiser, A. (202
 1). Stepping up. The continuing impact of EU consumption on nature worldwide.
 •WUR (2022) presentation at ICC meeting Bogota, Deforestation in coffee supply chains
-•Plataforma del Estado Peruano (www.gob.pe)
+•Plataforma del Estado Peruano (
 Resolución Ministerial 0547-2014-MINAGRI
 MINCETUR Cacao in Peru
 MINAGRI (2020) Plan Nacional pare el Desarrollo de la Cadena de Valor de Cacao-Chocolate al 2030

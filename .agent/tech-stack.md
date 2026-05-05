@@ -23,7 +23,9 @@
 - **Conversión audio:** TBD (sugerido: faster-whisper) — diferido a 2da iteración
 - **Conversión video:** TBD (sugerido: ffmpeg-python + faster-whisper) — diferido a 2da iteración
 - **Limpieza:** ftfy (encoding) + `unicodedata` (NFC) + `re` (stdlib) — enfoque determinista por capas. Capa 1 implementada.
-- **Clasificación:** TBD
+- **NER/Extracción de entidades:** spaCy (`es_core_news_sm`, `en_core_web_sm`) + langdetect
+- **NER/Extracción de entidades:** spaCy (`es_core_news_sm`, `en_core_web_sm`) + langdetect
+- **Clasificación de entidades:** Reglas deterministas con keywords (Fase 2). Futuro: BERT/RoBERTa
 - **Embeddings:** TBD (sentence-transformers, OpenAI, etc.)
 - **Grafos:** TBD (networkx, igraph)
 
@@ -51,6 +53,8 @@
 | PyMuPDF | 1.24.0 |
 | python-docx | 1.1.0 |
 | ftfy | 6.2.3 |
+| spacy | >=3.7.0 |
+| langdetect | 1.0.9 |
 
 ## TBD (Por definir)
 

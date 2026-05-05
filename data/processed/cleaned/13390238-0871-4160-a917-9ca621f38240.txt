@@ -1,9 +1,3 @@
-EL REGLAMENTO
-SOBRE LA DE-
-FORESTACIÓN DE
-LA UE ANÁLISIS
-MARZO 2023
-DUNCAN BRACK
 1 Introducción y antecedentes
 1.1 Antecedentes y proceso
 Cobertura: materias primas y empresas
@@ -20,6 +14,7 @@ Cooperación con otros países
 Revisiones
 Aerial view of the Amazon Rainforest, near Manaus, the capital of the Brazilian state of Amazonas. Brazil. Photo by Neil Palmer/CIAT
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 1. Introducción y antecedentes
 El 6 de diciembre de 2022, se alcanzó un acuerdo en el proceso legislativo de la UE sobre la versión final del Reglamento de la UE relativo a la deforestación (para darle su nombre completo, el Reglamento del
 Parlamento Europeo y del Consejo relativo a la comercialización en el mercado de la Unión y a la exportación desde la Unión de determinadas materias primas y productos derivados asociados a la deforestación y la
@@ -43,13 +38,14 @@ deforestación;
 La opción finalmente elegida fue la número 2. A la hora de diseñar el Reglamento, la Comisión se inspiró claramente en el diseño y la aplicación del Reglamento de la madera de la UE (EUTR), que entró plenamente
 en vigor en 201
 3 y que incluye tanto una prohibición del mercado como una obligación de diligencia debida para tratar de excluir del mercado de la UE la madera y los productos derivados procedentes de la tala ilegal4.
-1 COM(2021) 706 final, disponible en https://ec.europa.eu/environment/publications/proposal-regulation-deforestation-free-products_en.
+1 COM(2021) 706 final, disponible en
 2 Comunicación de la Comisión al Parlamento Europeo, al Consejo, al Comité Económico y Social Europeo y al Comité de las Regiones: Intensificar la actuación de la UE para proteger y restaurar los bosques del mundo (COM(201
 9) 352 final, julio de 201
 9).
-3 También disponible en https://ec.europa.eu/environment/publications/proposal-regulation-deforestation-free-products_en.
+3 También disponible en
 4 Reglamento (UE) No 995/2010 del Parlamento Europeo y del Consejo de 20 de octubre de 2010 por el que se establecen las obligaciones de los agentes que comercializan madera y productos de la madera.
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 La Comisión también se basó en un proyecto de reglamento sobre deforestación propuesto por el Parlamento
 Europeo en octubre de 2020.5
 La propuesta de reglamento fue debatida por el Consejo y el Parlamento Europeo durante 2022. El 6 de diciembre de 2022 se alcanzó un acuerdo en el proceso de "diálogo a tres bandas" entre el Consejo, el
@@ -61,8 +57,9 @@ reglamento entrará en vigor 20 días después de su publicación en el Diario O
 debería empezar a aplicarse en su totalidad a partir de finales de 2024.
 5 Resolución del Parlamento Europeo, de 22 de octubre de 2020, con recomendaciones destinadas a la Comisión sobre un marco jurídico de la UE para detener e invertir la deforestación mundial provocada por la UE (2020/2006(INL)). El Parlamento no tiene derecho a iniciar la legislación - ese poder está reservado a la
 Comisión - pero puede presentar propuestas.
-6 https://data.consilium.europa.eu/doc/document/ST-16298-2022-INIT/en/pdf.
+6
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 2. Cobertura: materias primas y empresas
 Los productos básicos contemplados se enumeran en el Artículo 1 del reglamento: ganado, cacao, café, palma aceitera, caucho, soja y madera. Los productos concretos se especifican con más detalle en el Anexo
 I, donde se identifican mediante sus códigos aduaneros NC. Incluyen varios productos semielaborados y procesados, como el chocolate y el cuero. El reglamento sustituye al EUTR, por lo que incluye todos los
@@ -89,6 +86,7 @@ a sus clientes y de hacerlo sólo cuando concluyeran que no había más que un r
 aceptó, pero el Reglamento exige a la Comisión que elabore una evaluación de impacto y una propuesta (si
 procede) para ampliar las obligaciones de diligencia debida a las entidades financieras (Artículo 32(3a)).
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 3. Criterios
 Los criterios en los que se basan la prohibición y las obligaciones de diligencia debida se dividen en dos categorías.
 3.1 Libre de deforestación
@@ -114,8 +112,8 @@ también a otros ecosistemas críticos, como pastizales y humedales, con el obje
 y explicó en una reunión de partes interesadas poco después de la publicación que simplemente se habían quedado sin tiempo para trabajar en las implicaciones y definiciones necesarias (sobre las cuales, a diferencia
 de "bosques", hay poco consenso internacional). El cronograma de revisiones del reglamento que llevará a
 
-cabo la Comisión incluye la consideración de su extensión a "otras tierras boscosas" (por el momento esto solo es relevante para la degradación forestal) (Artículo 32(1)), a más tardar un año después de la entrada
-en vigor, y a otros ecosistemas naturales (Artículo 32(2)), a más tardar dos años después.
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023) cabo la Comisión incluye la consideración de su extensión a "otras tierras boscosas" (por el momento esto
+solo es relevante para la degradación forestal) (Artículo 32(1)), a más tardar un año después de la entrada en vigor, y a otros ecosistemas naturales (Artículo 32(2)), a más tardar dos años después.
 3.2 Legales
 El segundo conjunto de criterios es que los productos colocados en el mercado de la UE o exportados del mismo deben "haber sido producidos de conformidad con la legislación pertinente del país de producción"
 (Artículo 3(b)). La definición de legalidad se amplió significativamente durante el proceso legislativo y es: "las leyes aplicables en el país de producción relativas al estado legal del área de producción en términos de:
@@ -144,6 +142,7 @@ grado de deforestación, que (al menos en teoría) puede comprobarse mediante im
 2.2.2016: Documento de orientación para el Reglamento de la UE relativo a la madera (C(2016) 755 final).
 8 Para una discusión más extensa, consulte Duncan Brack y Saskia Ozinga, Enforcing Due Diligence Legislation "Plus" (Fern, octubre de 2020).
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 4. Obligaciones de diligencia debida
 4.1 Diligencia debida por parte de los operadores
 El reglamento impone a los "operadores" (empresas que primero colocan los productos enumerados en el mercado de la UE) la obligación de ejercer la diligencia debida para garantizar el cumplimiento de los
@@ -171,9 +170,10 @@ declaración de diligencia debida, deben asegurarse de que se ejerció la dilige
 Los operadores están obligados a presentar una "declaración de diligencia debida" antes de comercializar o exportar los productos, en la que declaren que los productos cumplen los criterios o, al menos, que existe
 un riesgo insignificante de que no los cumplan (Artículo 4(2 y 3)). La declaración debe confirmar que se ha
 
-actuado con la diligencia debida y que no se ha detectado ningún riesgo o que éste es insignificante. Debe contener la información establecida en el Anexo II del reglamento, que incluye datos sobre la empresa y los
-productos, así como el país de producción y todos los terrenos de producción, incluidas las coordenadas de geolocalización, latitud y longitud. Estas declaraciones se inscribirán en un registro que estará a disposición
-de los organismos de control ("autoridades competentes") de los Estados miembros de la UE y, de forma anonimizada, del público (Artículo 31).
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023) actuado con la diligencia debida y que no se ha detectado ningún riesgo o que éste es insignificante. Debe
+contener la información establecida en el Anexo II del reglamento, que incluye datos sobre la empresa y los productos, así como el país de producción y todos los terrenos de producción, incluidas las coordenadas de
+geolocalización, latitud y longitud. Estas declaraciones se inscribirán en un registro que estará a disposición de los organismos de control ("autoridades competentes") de los Estados miembros de la UE y, de forma
+anonimizada, del público (Artículo 31).
 El requisito de datos de geolocalización incluidos en la etapa de recopilación de información del proceso dio lugar probablemente a más debate que cualquier otro tema entre las partes interesadas después de la
 publicación del reglamento propuesto. La regulación final incluye una definición completa:
 
@@ -198,6 +198,7 @@ productos y a quién se los vende, y detalles de las declaraciones de diligencia
 (Artículo 4a). Si el comerciante es una PYME, este es su único requisito (aparte de informar a las autoridades competentes si se dispone de nueva información sobre cualquier incumplimiento de sus productos). Los
 comerciantes que son más grandes que las PYME están sujetos exactamente a los mismos requisitos de diligencia debida que los operadores, incluida la obligación de presentar declaraciones de diligencia debida.
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 4.3 Informes y orientación
 Los operadores y los comerciantes que no son PYME deben contar con un sistema de diligencia debida que aplique los procedimientos establecidos anteriormente y revisarlo al menos una vez al año (Artículo 1
 1(1)).
@@ -215,6 +216,7 @@ UE), que incorpora un enfoque mucho más amplio de la diligencia debida, no espe
 El reglamento también incluye una disposición para que la Comisión brinde orientación a los operadores en el cumplimiento de sus requisitos (Artículo 1
 3a(1)). Si esto sucede y en qué forma, está resultando de gran interés para las empresas.
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 5. Sistema de evaluación comparativa
 El "sistema de evaluación comparativa" del reglamento es otra innovación importante (Artículo 27). En el
 EUTR no se incluía ninguna disposición de este tipo, aunque consultorías y otras organizaciones elaboraban evaluaciones de riesgo no oficiales de los países de origen para uso de las empresas madereras.
@@ -232,6 +234,7 @@ Como ya se ha señalado, las empresas que se abastezcan de productos procedentes
 recopilación de información del procedimiento de diligencia debida y no el análisis de riesgos ni las medidas de mitigación de riesgos. Las empresas que se abastezcan de productos procedentes de países de alto riesgo
 no se enfrentarán a ningún requisito adicional, pero estarán sujetas a una mayor frecuencia de controles por parte de las autoridades competentes (véase más adelante).
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 6. Autoridades competentes y cumplimiento
 TEl Reglamento establece con cierto detalle las obligaciones de las autoridades competentes de los Estados miembros de llevar a cabo controles para determinar si las empresas cumplen sus obligaciones (Artículo 14).
 La variación en los niveles de aplicación del EUTR entre los Estados miembros, y en los niveles de sanciones, ha sido uno de sus principales puntos débiles; aunque existen límites a lo que la legislación de la UE puede
@@ -257,6 +260,7 @@ el incumplimiento. El Reglamento también exige a los Estados miembros que estab
 y exclusión temporal de los procesos de contratación pública, aunque, como se ha señalado, se trata de un ámbito de competencia de los Estados miembros. La legislación de la UE no puede determinar exactamente
 cuáles serán las sanciones en cada Estado miembro.
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 El Reglamento también incluye, al igual que el EUTR, una disposición sobre "preocupaciones justificadas" que permite poner en conocimiento de las autoridades competentes de los Estados miembros información sobre
 incumplimientos, por ejemplo, a través de ONG (Artículo 29). Si quienes plantean los problemas, o cualquier otra persona con un interés suficiente, no están satisfechos con las medidas adoptadas por la autoridad, tienen
 derecho a acudir a un tribunal o a otro organismo competente (Artículo 30).
@@ -264,6 +268,7 @@ Una vez al año, las autoridades competentes deben informar al público y a la C
 por las empresas que incumplan la normativa (Artículo 19). La Comisión utilizará los informes para elaborar un informe anual sobre la aplicación de la normativa. A más tardar cinco años después de la entrada en vigor, se
 revisará la eficacia de los controles para prevenir el incumplimiento.
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 7. Cooperación con otros países
 Se reconoce ampliamente que las acciones del lado de la demanda por sí solas, como el Reglamento de
 Deforestación, no son suficientes para abordar el reto global de la deforestación. Muchas organizaciones, entre ellas el TFA, han pedido una "combinación inteligente" de medidas, que incluya acciones sobre el
@@ -278,6 +283,7 @@ La actuación de la propia UE, y no de otros grandes países consumidores como C
 Japón, tendrá un impacto limitado. El Reglamento incluye la obligación de que la Comisión participe en debates internacionales bilaterales y multilaterales (por ejemplo, en el marco de las convenciones sobre biodiversidad y
 cambio climático, la ONU, la FAO, la OMC, etc.) sobre políticas y acciones para detener la deforestación y la degradación forestal, incluido el diálogo y la cooperación con otros grandes países consumidores.
 
+El Reglamento sobre la Deforestación de la UE – análisis (Marzo 2023)
 8. Revisiones
 Como es habitual en la legislación de la UE, el reglamento contiene compromisos para realizar una serie de revisiones de sus disposiciones; la mayoría se han mencionado anteriormente (Artículo 32):
 • A más tardar un año después de la entrada en vigor del reglamento: evaluación de impacto y propuesta

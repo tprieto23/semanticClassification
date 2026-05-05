@@ -39,6 +39,84 @@ TOC_MIN_BLOCK_LINES = 5
 TOC_MIN_NUMBERED_RATIO = 0.7
 TOC_MAX_LINE_LENGTH = 100
 
+URL_RE = re.compile(r"https?://\S+|www\.\S+", re.IGNORECASE)
+EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+
+CREDIT_KEYWORD_RE = re.compile(
+    r"^(?:"
+    r"Autor(?:es|as|a)?"
+    r"|Diseño"
+    r"|Editor(?:ial|es)?"
+    r"|Edita"
+    r"|Edici[óo]n"
+    r"|ISBN"
+    r"|Coordinaci[óo]n(?:\s+t[ée]cnica)?"
+    r"|Revisi[óo]n(?:\s+t[ée]cnica)?"
+    r"|Cr[ée]dito[s]?"
+    r"|Fotograf[íi]a"
+    r"|Ilustraci[óo]n"
+    r"|Citar\s+como"
+    r"|C[óo]mo\s+citar"
+    r"|Equipo(?:\s+t[ée]cnico)?"
+    r"|Maquetaci[óo]n"
+    r"|Impresi[óo]n"
+    r"|Imprenta"
+    r"|Dep[óo]sito\s+legal"
+    r"|Primera\s+[Ee]dici[óo]n"
+    r"|Hecho\s+el\s+[Dd]ep[óo]sito"
+    r"|Seguimiento(?:\s+t[ée]cnico)?"
+    r"|Editado\s+por"
+    r"|Producido\s+por"
+    r"|Publicado\s+por"
+    r")\s*[:©]",
+    re.IGNORECASE,
+)
+CREDIT_BARE_HEADER_RE = re.compile(
+    r"^(?:CR[ÉE]DITOS|AUTORES|AUTORAS|EQUIPO\s+T[ÉE]CNICO|EDITORIAL)\s*$",
+    re.IGNORECASE,
+)
+ACKNOWLEDGMENTS_RE = re.compile(
+    r"^\s*(?:AGRADECIMIENTOS?|ACKNOWLEDG[EM]ENTS?|RECONOCIMIENTOS?)\s*$",
+    re.IGNORECASE,
+)
+
+# 4e: Contact / footer lines
+PHONE_RE = re.compile(r"\+\d{1,3}\s*[\(\)\d\s\-]{5,25}")
+CONTACT_PREFIX_RE = re.compile(
+    r"^(?:T[\s:]?[:.]?|Tel[\s:]?[:.]?|E[\s:]?[:.]?|Email[\s:]?[:.]?|Contacto[\s:]?[:.])",
+    re.IGNORECASE,
+)
+ADDRESS_RE = re.compile(
+    r"(?:Calle|Av\.?|Avenida|Jr\.|Jirón)\s*[.\w\s]+#\s*\d+|Of\.?\s*\d+|Oficina\s+\d+",
+    re.IGNORECASE,
+)
+OFFICE_HEADER_RE = re.compile(
+    r"^Oficina\s+(?:Regional|Central)\b",
+    re.IGNORECASE,
+)
+
+# 4f: Template placeholders
+TEMPLATE_PLACEHOLDER_RE = re.compile(
+    r"Error!\s+(?:Bookmark|Reference\s+source)\s+not\s+(?:defined|found)",
+    re.IGNORECASE,
+)
+TEMPLATE_LINE_RE = re.compile(
+    r"^(?:Main\s+Title\s+Subtitle\s+Description|Click\s+here\s+to\s+enter\s+text)\s*$",
+    re.IGNORECASE,
+)
+
+UPPERCASE_COVER_FIRST_FRACTION = 0.05
+UPPERCASE_COVER_MIN_BLOCK = 4
+CREDIT_FIRST_FRACTION = 0.15
+CREDIT_LAST_FRACTION = 0.05
+CREDIT_MIN_KEYWORDS_IN_BLOCK = 2
+CREDIT_MAX_GAP_LINES = 3
+CREDIT_EXTENSION_MAX_LINES = 50
+CREDIT_MAX_NONKEYWORD_LINES = 5
+CREDIT_NARRATIVE_MIN_CHARS = 120
+CREDIT_NARRATIVE_MIN_PERIODS = 2
+ACKNOWLEDGMENTS_MAX_BLOCK_LINES = 50
+
 
 class CleaningError(RuntimeError):
     pass
@@ -150,6 +228,10 @@ def _is_header_candidate(line: str) -> bool:
         return False
     # Must not be a list item like "a)", "1.", "I."
     if LIST_PREFIX_RE.match(stripped):
+        return False
+    # Must not be a long sentence (>10 words) — likely narrative content
+    # repeated across pages in brochures, not a structural header.
+    if len(stripped.split()) > 10:
         return False
     return True
 
@@ -374,6 +456,330 @@ def clean_text_layer3(text: str) -> tuple[str, dict]:
     cleaned_text = re.sub(r"\n{3,}", "\n\n", cleaned_text)
 
     return cleaned_text, metrics
+
+
+def _is_uppercase_cover_line(line: str) -> bool:
+    """A line qualifies as part of an uppercase cover block."""
+    stripped = line.strip()
+    if not stripped or len(stripped) < 2:
+        return False
+    letters = "".join(c for c in stripped if c.isalpha())
+    if len(letters) < 2:
+        return False
+    return letters == letters.upper()
+
+
+def _is_credit_line(line: str) -> bool:
+    stripped = line.strip()
+    if CREDIT_KEYWORD_RE.match(stripped):
+        return True
+    if CREDIT_BARE_HEADER_RE.match(stripped):
+        return True
+    return False
+
+
+def _is_narrative_paragraph(line: str) -> bool:
+    """A line is clearly narrative content (not a credit) if it's long and has multiple sentences."""
+    stripped = line.strip()
+    if len(stripped) < CREDIT_NARRATIVE_MIN_CHARS:
+        return False
+    # Count period-like sentence enders
+    return stripped.count(".") >= CREDIT_NARRATIVE_MIN_PERIODS
+
+
+def _is_contact_line(line: str) -> bool:
+    """Detect if a line is a contact/footer line (phone, address, email).
+
+    Conservative: only flags short lines that are predominantly contact info.
+    """
+    stripped = line.strip()
+    if not stripped or len(stripped) > 150:
+        return False
+
+    has_phone = bool(PHONE_RE.search(stripped))
+    has_email = bool(EMAIL_RE.search(stripped))
+    has_address = bool(ADDRESS_RE.search(stripped))
+    has_contact_prefix = bool(CONTACT_PREFIX_RE.match(stripped))
+    has_office_header = bool(OFFICE_HEADER_RE.match(stripped))
+    has_pipe = "|" in stripped
+
+    # Case 1: explicit contact prefix + phone/email
+    if has_contact_prefix and (has_phone or has_email):
+        return True
+
+    # Case 2: office header line (standalone)
+    if has_office_header:
+        return True
+
+    # Case 3: address line with street + number + office
+    if has_address:
+        return True
+
+    # Case 4: short line with pipe + phone (typical footer: "Org | +1 234 | email")
+    if has_pipe and has_phone:
+        return True
+
+    # Case 5: short line that is mostly just a phone number
+    if has_phone and len(stripped) < 40:
+        return True
+
+    return False
+
+
+def clean_text_layer4(text: str) -> tuple[str, dict]:
+    """Apply Layer 4 editorial cleaning.
+
+    Sub-rules in order:
+      4a. Remove URLs and emails (anywhere in text — inline or whole-line)
+      4c. Remove uppercase cover blocks at start (first 5%) — ≥4 consecutive UPPERCASE lines
+      4b. Remove credit blocks at start (first 15%) or end (last 5%) —
+          ≥2 credit-keyword lines within ≤3 lines of each other
+      4d. Remove acknowledgments sections — explicit header to next section title
+      4e. Remove contact/footer lines (phone, address, email prefixes)
+      4f. Remove template placeholders (Error! Bookmark not defined, etc.)
+      Final: re-normalize whitespace and collapse 3+ newlines
+
+    4a/4e/4f apply always. 4b/4c/4d skipped if doc < SHORT_DOC_LINE_THRESHOLD lines.
+
+    Returns:
+        (cleaned_text, metrics_dict)
+    """
+    lines = text.split("\n")
+    metrics: dict = {
+        "urls_removed": 0,
+        "emails_removed": 0,
+        "uppercase_cover_blocks_removed": 0,
+        "uppercase_cover_lines_removed": 0,
+        "credit_blocks_removed": 0,
+        "credit_lines_removed": 0,
+        "acknowledgments_blocks_removed": 0,
+        "acknowledgments_lines_removed": 0,
+        "contact_lines_removed": 0,
+        "template_placeholders_removed": 0,
+        "skipped_layer4_short_doc": False,
+    }
+
+    # 4a: URLs y emails (always)
+    for i, line in enumerate(lines):
+        urls = URL_RE.findall(line)
+        emails = EMAIL_RE.findall(line)
+        if urls:
+            metrics["urls_removed"] += len(urls)
+            line = URL_RE.sub("", line)
+        if emails:
+            metrics["emails_removed"] += len(emails)
+            line = EMAIL_RE.sub("", line)
+        lines[i] = line
+
+    non_empty_count = sum(1 for line in lines if line.strip())
+    if non_empty_count < SHORT_DOC_LINE_THRESHOLD:
+        metrics["skipped_layer4_short_doc"] = True
+        result = _renormalize(lines)
+        return result, metrics
+
+    indices_to_remove: set[int] = set()
+
+    # 4c: Uppercase cover blocks (first 5% of doc)
+    cutoff_5pct = max(int(len(lines) * UPPERCASE_COVER_FIRST_FRACTION), UPPERCASE_COVER_MIN_BLOCK + 5)
+    i = 0
+    while i < cutoff_5pct:
+        if not _is_uppercase_cover_line(lines[i]):
+            i += 1
+            continue
+        block_indices = [i]
+        consecutive_empty = 0
+        j = i + 1
+        while j < min(cutoff_5pct + 10, len(lines)):
+            stripped = lines[j].strip()
+            if not stripped:
+                consecutive_empty += 1
+                if consecutive_empty > 1:
+                    break
+                block_indices.append(j)
+                j += 1
+                continue
+            consecutive_empty = 0
+            if not _is_uppercase_cover_line(lines[j]):
+                break
+            block_indices.append(j)
+            j += 1
+        block_non_empty = [lines[idx] for idx in block_indices if lines[idx].strip()]
+        if len(block_non_empty) >= UPPERCASE_COVER_MIN_BLOCK:
+            for idx in block_indices:
+                indices_to_remove.add(idx)
+            metrics["uppercase_cover_blocks_removed"] += 1
+            metrics["uppercase_cover_lines_removed"] += len(block_non_empty)
+        i = j
+
+    # 4b: Credit blocks at start (first 15%) and end (last 5%)
+    cutoff_start = int(len(lines) * CREDIT_FIRST_FRACTION)
+    cutoff_end_start = int(len(lines) * (1 - CREDIT_LAST_FRACTION))
+
+    def _detect_credit_blocks(scan_start: int, scan_end: int) -> None:
+        i = scan_start
+        while i < scan_end:
+            if i in indices_to_remove or not _is_credit_line(lines[i]):
+                i += 1
+                continue
+            # Phase A — detect core block (≥2 keywords within CREDIT_MAX_GAP_LINES)
+            block_start = i
+            keyword_count = 1
+            last_keyword_idx = i
+            block_end = i
+            j = i + 1
+            while j < min(scan_end, i + 80):
+                if j in indices_to_remove:
+                    j += 1
+                    continue
+                stripped = lines[j].strip()
+                if not stripped:
+                    block_end = j
+                    j += 1
+                    continue
+                if _is_credit_line(lines[j]):
+                    keyword_count += 1
+                    last_keyword_idx = j
+                    block_end = j
+                    j += 1
+                    continue
+                if j - last_keyword_idx <= CREDIT_MAX_GAP_LINES:
+                    block_end = j
+                    j += 1
+                    continue
+                break
+            if keyword_count < CREDIT_MIN_KEYWORDS_IN_BLOCK:
+                i = block_end + 1
+                continue
+            # Phase B — extend block forward through credit-like lines
+            # Stop when we see CREDIT_MAX_NONKEYWORD_LINES consecutive lines without
+            # a credit keyword, OR a section title, OR a narrative paragraph
+            non_keyword_streak = 0
+            k = block_end + 1
+            extension_limit = min(scan_end, block_end + 1 + CREDIT_EXTENSION_MAX_LINES)
+            while k < extension_limit:
+                if k in indices_to_remove:
+                    k += 1
+                    continue
+                stripped = lines[k].strip()
+                if not stripped:
+                    block_end = k
+                    k += 1
+                    continue
+                if NUMBERED_LINE_RE.match(stripped) or ACKNOWLEDGMENTS_RE.match(stripped):
+                    break
+                if _is_narrative_paragraph(lines[k]):
+                    break
+                if _is_credit_line(lines[k]):
+                    non_keyword_streak = 0
+                    block_end = k
+                    k += 1
+                    continue
+                non_keyword_streak += 1
+                if non_keyword_streak >= CREDIT_MAX_NONKEYWORD_LINES:
+                    break
+                block_end = k
+                k += 1
+            lines_in_block = 0
+            for idx in range(block_start, block_end + 1):
+                if idx not in indices_to_remove and lines[idx].strip():
+                    lines_in_block += 1
+                indices_to_remove.add(idx)
+            metrics["credit_blocks_removed"] += 1
+            metrics["credit_lines_removed"] += lines_in_block
+            i = block_end + 1
+
+    _detect_credit_blocks(0, cutoff_start)
+    _detect_credit_blocks(cutoff_end_start, len(lines))
+
+    # 4d: Acknowledgments
+    for idx_header in range(len(lines)):
+        if idx_header in indices_to_remove:
+            continue
+        if not ACKNOWLEDGMENTS_RE.match(lines[idx_header].strip()):
+            continue
+        j = idx_header + 1
+        while j < len(lines) and j - idx_header < ACKNOWLEDGMENTS_MAX_BLOCK_LINES:
+            stripped = lines[j].strip()
+            if not stripped:
+                j += 1
+                continue
+            if _is_uppercase_cover_line(lines[j]) and len(stripped) > 5:
+                break
+            if NUMBERED_LINE_RE.match(stripped):
+                break
+            j += 1
+        lines_in_block = 0
+        for idx in range(idx_header, j):
+            if idx not in indices_to_remove and lines[idx].strip():
+                lines_in_block += 1
+            indices_to_remove.add(idx)
+        metrics["acknowledgments_blocks_removed"] += 1
+        metrics["acknowledgments_lines_removed"] += lines_in_block
+
+    # 4e: Contact/footer lines (always — short standalone contact info)
+    for i, line in enumerate(lines):
+        if i in indices_to_remove:
+            continue
+        if _is_contact_line(line):
+            indices_to_remove.add(i)
+            metrics["contact_lines_removed"] += 1
+
+    # 4f: Template placeholders (always)
+    i = 0
+    while i < len(lines):
+        if i in indices_to_remove:
+            i += 1
+            continue
+        stripped = lines[i].strip()
+
+        # Remove exact template lines
+        if TEMPLATE_LINE_RE.match(stripped):
+            indices_to_remove.add(i)
+            metrics["template_placeholders_removed"] += 1
+            i += 1
+            continue
+
+        # Remove inline single-line placeholders
+        if TEMPLATE_PLACEHOLDER_RE.search(lines[i]):
+            lines[i] = TEMPLATE_PLACEHOLDER_RE.sub("", lines[i])
+            metrics["template_placeholders_removed"] += 1
+            i += 1
+            continue
+
+        # Handle multi-line placeholders: "Error!\nReference source not found."
+        if "Error!" in lines[i] and i + 1 < len(lines):
+            combined = lines[i].strip() + " " + lines[i + 1].strip()
+            if TEMPLATE_PLACEHOLDER_RE.search(combined):
+                # Remove the placeholder text from both lines
+                lines[i] = lines[i].replace("Error!", "").strip()
+                lines[i + 1] = re.sub(
+                    r"(?:Bookmark|Reference\s+source)\s+not\s+(?:defined|found)\.?",
+                    "",
+                    lines[i + 1],
+                    flags=re.IGNORECASE,
+                ).strip()
+                metrics["template_placeholders_removed"] += 1
+                # Mark next line for removal if now empty
+                if not lines[i + 1].strip():
+                    indices_to_remove.add(i + 1)
+                if not lines[i].strip():
+                    indices_to_remove.add(i)
+        i += 1
+
+    final_lines = [
+        line for idx, line in enumerate(lines) if idx not in indices_to_remove
+    ]
+    result = _renormalize(final_lines)
+    return result, metrics
+
+
+def _renormalize(lines: list[str]) -> str:
+    """After Layer 4 removals, clean up double spaces and excess newlines."""
+    text = "\n".join(lines)
+    text = re.sub(r"[ \t]+", " ", text)
+    text = "\n".join(line.strip() for line in text.split("\n"))
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text
 
 
 def save_cleaned_text(text: str, output_path: str) -> None:
