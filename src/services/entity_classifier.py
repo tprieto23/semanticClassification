@@ -78,6 +78,13 @@ KEYWORD_RULES = {
         r"\bCoalición\s+por\s+una\s+Producción\s+Sostenible\b",
         r"\bAlianza\s+por\s+una\s+Ganadería\s+Regenerativa\b",
         r"\bAGRAP\b",
+        # Añadidos tras revisión manual
+        r"\bTropical\s+Forest\s+Alliance\b",
+        r"\bThe\s+Nature\s+Conservancy\b", r"\bTNC\b",
+        r"\bMINAM\b", r"\bMinam\b",
+        r"\bSolidaridad\s+Network\b",
+        r"\bCooperativa\s+Agraria\s+CP\s+Cacao\b",
+        r"\bLandScale\b",
     ],
     # LUGAR
     "LUGAR": [
@@ -130,6 +137,16 @@ KEYWORD_RULES = {
         r"\bdespojo\b", r"\bconservación\b", r"\bsostenibilidad\b",
         r"\bdeforestación\b", r"\bno\s+deforestación\b",
         r"\bcambio\s+climático\b", r"\bproducción\s+sostenible\b",
+        # Añadidos tras revisión manual
+        r"\bPlan\s+Nacional\s+para\s+el\s+Desarrollo\s+de\s+la\s+Cadena\s+de\s+Valor\s+de\s+Cacao\b",
+        r"\bPolítica\s+Nacional\s+Forestal\b",
+        r"\bLey\s+Forestal\b",
+        r"\bRevolución\s+Productiva\b",
+        r"\bBosques\s+conservados\s+y\s+restaurados\b",
+        r"\bFomento\s+de\s+la\s+ganadería\b",
+        r"\bGanadería\s+Sostenible\b",
+        r"\bProducción\s+Sostenible\b",
+        r"\bAgroPerú\s+y\s+Agroideas\b",
     ],
     # ACCIÓN
     "ACCIÓN": [
@@ -170,11 +187,19 @@ def classify_entity(text: str, spacy_label: str, context: str = "") -> str:
     # -------------------------------------------------------------------------
     # Paso 0: Protección contra falsos positivos de spaCy
     # -------------------------------------------------------------------------
-    # Palabras comunes que spaCy etiqueta mal como PER
-    if spacy_label == "PER" and text_lower in {
+    # Palabras comunes que spaCy etiqueta mal
+    COMMON_FALSE_POSITIVES = {
         "según", "además", "segun", "ganadería", "ganaderia",
         "amazónico", "amazonico", "peruano", "peruana",
-    }:
+        "madre", "dios", "uso", "potencial", "bovina",
+        "por otro lado", "sin embargo", "de igual modo",
+        "a continuación", "en cuanto a", "al respecto",
+        "por un lado", "por lo tanto", "de igual manera",
+        "así mismo", "asimismo", "no obstante",
+        "con fines de", "a través de", "en función de",
+        "con el objetivo de", "con el fin de",
+    }
+    if text_lower in COMMON_FALSE_POSITIVES:
         return "MISC_Spacy"
 
     # -------------------------------------------------------------------------

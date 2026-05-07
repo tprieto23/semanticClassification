@@ -2,6 +2,78 @@
 
 ## Última sesión
 
+**Fecha:** 2026-05-06 (sesión 15)
+
+**Trabajado en:**
+- Aplicar correcciones manuales del CSV revisado por la usuaria al dataset completo
+- Mejorar clasificador con nuevas reglas y protecciones contra falsos positivos
+- Entrenar modelo de embeddings (iteración 1) con sentence-transformers
+- Actualización de `.agent/`
+
+**Resumen de la sesión:**
+
+### Dataset corregido
+
+1. **Revisión manual completada:** La usuaria revisó el CSV `_misc_spacy_for_review - _misc_spacy_for_review.csv` con 200 entidades.
+2. **Script `apply_corrections.py`:**
+   - Carga correcciones manuales del CSV
+   - Descarta 170 textos únicos marcados como "No es entidad" (1,131 ocurrencias eliminadas)
+   - Aplica 354 correcciones manuales (cambio de nombre + categoría)
+   - Aplica normalizaciones globales automáticas (Solidaridad → Solidaridad Network, Alianza Ganadería → AGRAP, etc.)
+   - Genera `_all_entities_corrected.json` (13,681 entidades) y `_entities_for_embeddings.json` (6,510 únicas)
+
+3. **Distribución después de correcciones:**
+
+| Categoría | Cantidad | % |
+|---|---|---|
+| LUGAR | 4,639 | 33.9% |
+| MISC_Spacy | 3,516 | 25.7% |
+| INSTITUCIÓN | 2,879 | 21.0% |
+| ACTOR | 1,570 | 11.5% |
+| NARRATIVA | 454 | 3.3% |
+| PRÁCTICA | 210 | 1.5% |
+| COMUNIDAD | 188 | 1.4% |
+| ACCIÓN | 176 | 1.3% |
+| INFRAESTRUCTURA | 41 | 0.3% |
+| VALOR_ECOLÓGICO | 8 | 0.1% |
+
+### Mejoras al clasificador
+
+1. **`entity_classifier.py`:**
+   - Protección ampliada contra falsos positivos comunes: "Madre", "Dios", "Además", "Uso", "Potencial", "Bovina", conectores y frases preposicionales
+   - Nuevas keywords INSTITUCIÓN: Tropical Forest Alliance, The Nature Conservancy, TNC, MINAM, Solidaridad Network, Cooperativa Agraria CP Cacao, LandScale
+   - Nuevas keywords NARRATIVA: Plan Nacional para el Desarrollo de la Cadena de Valor de Cacao, Política Nacional Forestal, Ley Forestal, Revolución Productiva, Bosques conservados y restaurados, Fomento de la ganadería, Ganadería Sostenible, AgroPerú y Agroideas
+
+2. **`ner.py`:**
+   - Ampliación de `STRUCTURAL_WORDS` con falsos positivos frecuentes que spaCy corta mal
+
+### Entrenamiento de embeddings (iteración 1)
+
+1. **Dataset para entrenamiento:** 4,125 entidades únicas con categoría válida (excluyendo MISC_Spacy), 9 categorías
+2. **Modelo base:** `paraphrase-multilingual-MiniLM-L12-v2`
+3. **Loss:** `BatchHardTripletLoss`
+4. **Hiperparámetros:** 1 época, batch size 8, lr 2e-5, warmup 100
+5. **Resultados:** Loss final 4.811 (bajó de 5.375)
+6. **Problemas:** MPS OOM en Mac → se entrenó en CPU (muy lento, ~2.5 min por época)
+7. **Modelo guardado:** `models/entity_embeddings/` (1.8GB, no commiteado)
+
+### Decisiones
+
+1. **Normalización de nombres:** Cuando una entidad tiene nombre completo conocido, siempre guardar el nombre completo (ej: "AGRAP" en vez de "Alianza por una Ganadería Regenerativa en la Amazonía Peruana")
+2. **Descarte de entidades:** Las marcadas "No es entidad" en el CSV se descartan del dataset completo
+3. **Categorías compuestas del usuario:** "ORGANIZACION/ACTOR/AGENTE" se mapea a "INSTITUCIÓN"
+4. **No commitear modelos:** Los modelos entrenados son muy grandes (1.8GB), se ignoran en `.gitignore`
+
+### Aprendizajes
+
+- **Las correcciones manuales son fundamentales:** El clasificador rule-based clasifica bien lo obvio pero necesita supervisión humana para los casos difíciles
+- **Normalización global es poderosa:** Una regla como "Solidaridad → Solidaridad Network" corrige docenas de instancias
+- **sentence-transformers v5 cambió la API:** `SentenceTransformerTrainer` requiere `accelerate` y `datasets`, y `Trainer.train()` no acepta kwargs directos
+- **MPS en Mac tiene límite de memoria:** `PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0` desactiva el límite pero puede causar inestabilidad del sistema
+- **1 época no es suficiente:** Las similitudes intra-categoría son muy bajas (0.16-0.26), se necesitan 3-5 épocas mínimo
+
+---
+
 **Fecha:** 2026-05-05 (sesión 14)
 
 **Trabajado en:**
@@ -1103,3 +1175,4 @@ AttributeError: module 'alembic.op' has no attribute 'create_extension'
 | 2026-05-04 (s8) | Verificación en disco de que Capa 2 sí se aplicó (falsa alarma de usuaria); implementación Capa 2c (re-unión de oraciones partidas por columnas) con heurística que respeta listas verticales y nuevos párrafos; validación visual antes/después; aplicación Capa 1+2+2c al corpus (28 docs, **7,121 oraciones re-unidas**, mismas métricas de reducción porque 2c no quita caracteres) |
 | 2026-05-04 (s9) | Análisis programático de tipos de TOC en el corpus (3 tipos identificados, incluyendo trampa de palabra "Índice/Contenido" sin TOC real en 7 docs); implementación Capa 3 (3a dot leaders + 3b bloques TOC numerados al inicio con protección de "primeros 15%" + ≥5 líneas + ≥70% numeradas); validación dry_run con 0 falsos positivos; aplicación Capa 1+2+2c+3 al corpus (28 docs, avg 5.54% reducción, max 14.04%; +21 dot leaders + 5 bloques TOC + 122 líneas TOC eliminadas en 6/28 archivos) |
 | 2026-05-05 (s10) | Decisión arquitectónica: Capa 4 dedicada a ruido editorial por contenido (4a URLs/emails, 4b créditos, 4c portadas MAYÚSCULAS, 4d agradecimientos); análisis programático del corpus identificó falsos positivos en regex de créditos; implementación con extensión B inicial fue agresiva (40 líneas en Plan AGRAP, comió instituciones firmantes); refinamiento a B1 (parar tras 5 líneas sin keyword) bajó a 13 líneas preservando instituciones; aplicación Capa 1+2+2c+3+4 al corpus (28 docs, **avg 7.01% reducción, max 16.55%**; +305 URLs +47 emails +89 portada +62 créditos +45 agradecimientos en 22/28 archivos) |
+| 2026-05-06 (s15) | Correcciones manuales de MISC_Spacy aplicadas al dataset (170 textos descartados, 354 corregidos); mejoras a clasificador (protección contra falsos positivos + nuevas keywords); entrenamiento modelo embeddings iteración 1 (`paraphrase-multilingual-MiniLM-L12-v2` + `BatchHardTripletLoss`, 1 época, loss 4.81); datasets generados: `_all_entities_corrected.json` (13,681 entidades) + `_entities_for_embeddings.json` (6,510 únicas) |

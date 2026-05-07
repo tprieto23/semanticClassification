@@ -51,7 +51,7 @@
 - [x] **Validación manual:** 3 documentos top-reducción revisados, bug crítico encontrado y corregido
 - [ ] **Validación manual pendiente:** revisar los otros documentos donde Capa 4 actuó
 
-### Objetivo 4: Clasificar entidades relevantes 🚧 EN PROGRESO (Fase 2 implementada)
+### Objetivo 4: Clasificar entidades relevantes 🚧 EN PROGRESO (Fase 2 + correcciones manuales + embeddings iteración 1)
 - [x] Definir lista completa de categorías (9 categorías en methodology.md)
 - [x] **Decisión:** entidad puede tener múltiples categorías → se guardan como entidades separadas
 - [x] **Decisión:** clasificación es por aparición (contexto específico)
@@ -62,12 +62,23 @@
 - [x] **Fase 2:** Categoría temporal `MISC_Spacy` para entidades no clasificables automáticamente
 - [x] **Fase 2:** Endpoint actualizado guarda `project_category` en DB, `spacy_label` en metadata
 - [x] **Fase 1:** Definir metadata de cada entidad (contexto, oración, posición, idioma, source_ner)
-- [ ] **Fase 3:** Revisión manual de MISC_Spacy para entrenar modelo BERT/RoBERTa
+- [x] **Fase 2b:** Revisión manual de MISC_Spacy (CSV con 200 entidades revisadas por usuaria)
+- [x] **Fase 2b:** Script `apply_corrections.py` para aplicar correcciones manuales al dataset completo
+- [x] **Fase 2b:** 170 textos marcados como "No es entidad" descartados (1,131 ocurrencias eliminadas)
+- [x] **Fase 2b:** 354 entidades corregidas manualmente (nombre + categoría)
+- [x] **Fase 2b:** Normalizaciones globales aplicadas (Solidaridad → Solidaridad Network, AGRAP, etc.)
+- [x] **Fase 2b:** Dataset corregido: `_all_entities_corrected.json` (13,681 entidades)
+- [x] **Fase 2b:** Lista única para embeddings: `_entities_for_embeddings.json` (6,510 entidades únicas)
+- [x] **Mejoras al clasificador:** protección contra falsos positivos comunes ("Madre", "Dios", "Además", "Uso", etc.)
+- [x] **Mejoras al clasificador:** nuevas keywords para INSTITUCIÓN (Tropical Forest Alliance, TNC, MINAM, LandScale)
+- [x] **Mejoras al clasificador:** nuevas keywords para NARRATIVA (Plan Nacional Cacao, Política Forestal, Revolución Productiva)
+- [ ] **Fase 3:** Entrenar modelo de embeddings con sentence-transformers (iteración 1 completada, falta convergencia)
+- [ ] **Fase 3:** Implementar clasificador por similitud de embeddings
 - [ ] **Fase 3:** Implementar extracción de NARRATIVA y PRÁCTICA (método alternativo a NER)
 - [ ] Evaluar calidad del NER sobre corpus completo (28 docs)
 - [ ] Iterar filtros de falsos positivos estructurales
 
-### Objetivo 5: Representar entidades mediante vectores ⏳ TBD
+### Objetivo 5: Representar entidades mediante vectores 🚧 EN PROGRESO (iteración 1)
 - [ ] Seleccionar modelo de embeddings
 - [ ] Definir dimensiones del vector
 - [ ] Decidir si embedding es por entidad o por aparición
@@ -126,48 +137,23 @@
 
 ## En progreso
 
-- Validación manual de los 28 archivos limpiados con Capa 1+2+3+4 (especialmente los 22 donde Capa 4 actuó)
-  - ✅ 3 documentos top-reducción validados (Proforest, DIPTICO, Guía AGRAP)
-  - ✅ Bug crítico en Capa 2b encontrado y corregido (contenido narrativo eliminado)
-  - ✅ Corpus re-procesado con corrección (avg reducción ahora 5.32%)
-  - ⏳ 19 documentos restantes por validar
-- Decidir si avanzar a Objetivo 4 (NER) o seguir refinando limpieza
-
-## Completadas
-
-- [x] Definir estructura de documentación (.agent/)
-- [x] Documentar objetivos del proyecto
-- [x] Decidir stack tecnológico principal
-- [x] Configurar Docker (docker-compose.yml + Dockerfile)
-- [x] Crear estructura de carpetas src/ y data/
-- [x] API básica con 2 endpoints probada con Postman
-- [x] Schema de DB con 5 modelos SQLAlchemy
-- [x] Migración inicial Alembic aplicada (extensión `vector` + 5 tablas + índices)
-- [x] Volúmenes de `migrations/` y `alembic.ini` agregados a docker-compose
-- [x] Stack completo (DB + API) levantado y verificado en Docker
-- [x] `POST /documents` recibe archivo real (multipart) y lo guarda en `data/raw/{id}/`
-- [x] Servicio de conversión `src/services/conversion.py` (PDF + DOCX)
-- [x] Endpoint `POST /documents/{id}/process` funcional
-- [x] Pipeline upload → procesar probado end-to-end con PDF y DOCX
-- [x] Pruebas manuales desde Postman con 5 archivos reales del corpus
-- [x] Endpoint `POST /documents/batch` para subida y procesamiento múltiple
-- [x] Servicio `src/services/cleaning.py` (Capa 1 + 2 + 2c + 3a + 3b + 4a + 4b + 4c + 4d)
-- [x] Endpoint `POST /documents/{id}/clean` con métricas en DB y soporte `?dry_run=true`
-- [x] Migración Alembic `1e6e4c60daa8` aplicada (4 columnas nuevas en `documents`)
-- [x] 28 documentos del corpus limpiados con Capa 1 (avg 1.57%)
-- [x] 28 documentos re-limpiados con Capa 1+2 (avg 4.92%, 1,540 páginas + 899 headers eliminados)
-- [x] 28 documentos re-limpiados con Capa 1+2+2c (mismo % reducción + **7,121 oraciones re-unidas**)
-- [x] 28 documentos re-limpiados con Capa 1+2+2c+3 (avg 5.54%, max 14.04%; +21 dot leaders + 122 líneas TOC eliminadas)
-- [x] 28 documentos re-limpiados con Capa 1+2+3+4 (avg 7.01%, max 16.55%; +305 URLs + 47 emails + 89 portada + 62 créditos + 45 agradecimientos)
+- **Objetivo 4 (NER):** Refinamiento iterativo del clasificador
+  - ✅ Fase 2 implementada (reglas deterministas + keywords)
+  - ✅ Revisión manual de MISC_Spacy completada por usuaria
+  - ✅ Correcciones aplicadas al dataset completo
+  - ✅ Clasificador mejorado con nuevas reglas y protecciones
+  - 🚧 Modelo de embeddings iteración 1 entrenado (necesita más épocas para convergencia)
+  - ⏳ Crear script de inferencia para clasificar nuevas entidades por similitud
+  - ⏳ Revisar si hay nuevos falsos positivos estructurales
 
 ## Próximos pasos
 
-1. **Validar manualmente** 2-3 archivos limpios con Capa 1+2+3+4 (sobre todo los de mayor reducción: `Proforest Reporte` 16.55%, `DIPTICO-CPS-EARTHWORM` 14.34%, `Año de Referencia` 11.80%).
-2. **Iteraciones futuras de Capa 4 (si fuera necesario):**
-   - Detección de bloques de créditos al inicio/final que no fueron capturados por Capa 2 (heurísticas de "Autor:", "Diseño:", "ISBN", "Primera Edición")
-   - Eliminación de URLs y emails sueltos
-4. **Objetivo 4 (NER):** decidir librería (spaCy multilingüe? modelo dedicado?) y empezar clasificación de entidades. Considerar que el corpus es bilingüe (español + inglés).
-5. **Objetivo 2 - 2da iteración (cuando aparezcan documentos que lo necesiten):**
+1. **Mejorar modelo de embeddings:** entrenar 3-5 épocas (actualmente solo 1, loss 4.81) para que las similitudes intra-categoría sean más altas.
+2. **Crear script de inferencia** que use el modelo entrenado para clasificar nuevas entidades MISC_Spacy por similitud coseno.
+3. **Segunda iteración de revisión manual:** revisar más entidades MISC_Spacy para mejorar el dataset de entrenamiento.
+4. **Normalizaciones adicionales:** aplicar reglas de normalización global más robustas (ej: "Bosques Tropicales" → "Tropical Forest Alliance").
+5. **Objetivo 5 (vectores):** integrar embeddings con pgvector para búsqueda por similitud.
+6. **Objetivo 2 - 2da iteración (cuando aparezcan documentos que lo necesiten):**
    - OCR para PDFs escaneados / imágenes
    - Transcripción de audio
    - Extracción de audio + transcripción para video

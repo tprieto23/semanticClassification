@@ -427,4 +427,75 @@ Agregar sub-reglas **4e** y **4f** dentro de `clean_text_layer4`:
 - ✅ Placeholders de MS Word eliminados (incluyendo multi-línea)
 - ✅ Líneas de dirección postal eliminadas
 - ⚠️ Líneas como `E:` (prefijo de email sin dirección) pueden quedar residuales si el email fue eliminado por 4a
+
+---
+
+### 2026-05-06 - Aplicación de correcciones manuales al dataset de entidades
+
+**Contexto:**
+La usuaria revisó manualmente 200 entidades MISC_Spacy en un CSV. Era necesario aplicar esas correcciones al dataset completo de 14,812 entidades de forma sistemática.
+
+**Opciones consideradas:**
+1. **Editar archivos JSON individuales:** muy laborioso y propenso a errores.
+2. **Script de correcciones centralizado:** leer el CSV revisado, construir un mapping, aplicar al `_all_entities.json`.
+3. **Corrección directa en DB:** requeriría conexión a PostgreSQL y sería menos reproducible.
+
+**Decisión:**
+Script `apply_corrections.py` con lógica de 3 pasos:
+1. **Descartar:** textos con `proposed_category == "No es entidad"` se eliminan del dataset.
+2. **Corregir manual:** textos con categoría asignada y/o `full_entity_name` diferente se actualizan.
+3. **Normalizar global:** reglas basadas en las notas del CSV (ej: "cada vez que diga 'Solidaridad' → 'Solidaridad Network'") se aplican a TODO el dataset, no solo a las entidades del CSV.
+
+**Mapeo de categorías del usuario:**
+- "ORGANIZACION/ACTOR/AGENTE" → "INSTITUCIÓN"
+
+**Resultados:**
+- 170 textos únicos descartados (1,131 ocurrencias eliminadas)
+- 354 entidades corregidas manualmente
+- 4 entidades normalizadas automáticamente por reglas globales
+- Dataset final: 13,681 entidades
+
+**Consecuencias:**
+- ✅ Dataset corregido reproducible desde el CSV fuente
+- ✅ Normalizaciones globales evitan inconsistencias
+- ⚠️ Algunas entidades del CSV tenían `proposed_category` vacío pero `notes == "No es entidad"` → se tuvo que considerar ambas columnas para el descarte
+
+---
+
+### 2026-05-06 - Entrenamiento de embeddings con sentence-transformers
+
+**Contexto:**
+Con el dataset corregido (6,510 entidades únicas, 4,125 con categoría válida), se quería entrenar un modelo de embeddings para que entidades de la misma categoría tengan vectores similares.
+
+**Opciones consideradas:**
+1. **Fine-tuning de BERT/RoBERTa con clasificación:** requiere más datos y es más complejo.
+2. **sentence-transformers con BatchHardTripletLoss:** entrena embeddings directamente, no requiere clasificación explícita, funciona bien con pocos ejemplos por clase.
+3. **Zero-shot con modelo pre-entrenado:** no aprovecha las correcciones manuales.
+
+**Decisión:**
+sentence-transformers con `BatchHardTripletLoss` sobre `paraphrase-multilingual-MiniLM-L12-v2`.
+- Loss: en cada batch, selecciona el positive más difícil y el negative más difícil para cada anchor.
+- Entrada: texto de la entidad (sin categoría explícita, para evitar data leakage en inference).
+- Label: ID de categoría.
+
+**Hiperparámetros (iteración 1):**
+- Base model: `paraphrase-multilingual-MiniLM-L12-v2`
+- Loss: `BatchHardTripletLoss`
+- Epochs: 1 (conservador para primera prueba)
+- Batch size: 8 (reducido por OOM en MPS)
+- Learning rate: 2e-5
+- Warmup: 100 steps
+
+**Resultados:**
+- Loss final: 4.811 (bajó de 5.375)
+- Tiempo: ~2.5 minutos en CPU
+- Similitud intra-categoría (INSTITUCIÓN): 0.161
+- Similitud intra-categoría (LUGAR): 0.259
+
+**Consecuencias:**
+- ✅ Modelo entrenado y guardado localmente
+- ✅ 1 época no es suficiente para convergencia → se necesitan 3-5 épocas
+- ⚠️ MPS en Mac tiene límite de memoria de 9GB → se entrenó en CPU (lento)
+- ⚠️ Modelo pesa 1.8GB → no se commitea a git
+- ⚠️ BatchHardTripletLoss requiere batches con múltiples ejemplos por categoría; con batch size 8 y 9 categorías, algunos batches pueden tener poca variedad
 - ⚠️ Direcciones parciales sin patrón postal explícito (ej. `Campestre Towers |Cali| Colombia`) no se eliminan — aceptado como trade-off

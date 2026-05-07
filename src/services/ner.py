@@ -49,6 +49,14 @@ STRUCTURAL_WORDS = {
     "acciones", "acción", "accion", "ejes", "eje",
     "plan de acción", "plan de accion", "plan de trabajo",
     "alianza", "coalición", "coalcion", "fomento", "programa",
+    # Falsos positivos frecuentes (spaCy los corta mal)
+    "madre", "dios", "además", "uso", "potencial", "bovina",
+    "por otro lado", "sin embargo", "de igual modo",
+    "a continuación", "en cuanto a", "al respecto",
+    "por un lado", "por lo tanto", "de igual manera",
+    "así mismo", "asimismo", "no obstante",
+    "con fines de", "a través de", "en función de",
+    "con el objetivo de", "con el fin de",
     # Inglés
     "credits", "credit", "introduction", "contents", "index",
     "summary", "abstract", "acknowledgements", "acknowledgments",

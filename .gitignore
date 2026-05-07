@@ -26,3 +26,7 @@ data/processed/entities/*.csv
 # Temporary files
 *.tmp
 *.bak
+train_output.log
+
+# ML Models (too large for git)
+models/
