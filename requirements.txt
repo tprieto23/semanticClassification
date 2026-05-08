@@ -24,3 +24,11 @@ ftfy==6.2.3
 # NER / Extracción de entidades (Objetivo 4)
 spacy>=3.7.0
 langdetect==1.0.9
+
+# Fine-tuning NER con XLM-RoBERTa
+torch
+transformers
+datasets
+seqeval
+accelerate
+evaluate

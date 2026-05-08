@@ -22,10 +22,10 @@
 - **Conversión imágenes/OCR:** TBD (sugerido: pytesseract con `tesseract-ocr-spa`) — diferido a 2da iteración
 - **Conversión audio:** TBD (sugerido: faster-whisper) — diferido a 2da iteración
 - **Conversión video:** TBD (sugerido: ffmpeg-python + faster-whisper) — diferido a 2da iteración
-- **Limpieza:** ftfy (encoding) + `unicodedata` (NFC) + `re` (stdlib) — enfoque determinista por capas. Capa 1 implementada.
-- **NER/Extracción de entidades:** spaCy (`es_core_news_sm`, `en_core_web_sm`) + langdetect
-- **NER/Extracción de entidades:** spaCy (`es_core_news_sm`, `en_core_web_sm`) + langdetect
-- **Clasificación de entidades:** Reglas deterministas con keywords (Fase 2). Futuro: BERT/RoBERTa
+- **Limpieza:** ftfy (encoding) + `unicodedata` (NFC) + `re` (stdlib) — enfoque determinista por capas. Capas 1-4 implementadas.
+- **NER/Extracción de entidades (ANTERIOR):** spaCy (`es_core_news_sm`, `en_core_web_sm`) + langdetect + reglas deterministas en `entity_classifier.py` — **DEPRECADO** por alta tasa de error.
+- **NER/Extracción de entidades (NUEVO):** XLM-RoBERTa (`xlm-roberta-base`) fine-tuned para Token Classification. Un solo modelo multilingüe (es+en), sin `langdetect`. Fase 3 en progreso.
+- **Clasificación de entidades:** El modelo XLM-R predice directamente las 9 categorías del proyecto (BIO tagging). Ya no se usan reglas deterministas ni keywords.
 - **Embeddings:** TBD (sentence-transformers, OpenAI, etc.)
 - **Grafos:** TBD (networkx, igraph)
 
@@ -55,6 +55,12 @@
 | ftfy | 6.2.3 |
 | spacy | >=3.7.0 |
 | langdetect | 1.0.9 |
+| torch | 2.11.0 |
+| transformers | 5.8.0 |
+| datasets | 4.8.5 |
+| seqeval | 1.2.2 |
+| evaluate | 0.4.6 |
+| accelerate | 1.13.0 |
 
 ## TBD (Por definir)
 

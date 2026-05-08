@@ -44,4 +44,12 @@ Pasar de documentos dispersos a una lectura más clara, relacional e interpretat
 
 ## Estado actual
 
-<!-- En qué etapa está el proyecto -->
+**Fase activa:** Migración del motor de extracción de entidades (Objetivo 4).
+
+- ✅ Pipeline de limpieza (4 capas) completado y validado sobre 28 documentos
+- ✅ Dataset de entidades corregido manualmente (13,681 entidades, primera iteración)
+- 🚧 Reemplazo del motor NER: spaCy + reglas → XLM-RoBERTa fine-tuned
+  - Dataset BIO generado (3,679 oraciones)
+  - 1 época de prueba entrenada (test F1: 0.511)
+  - Pendiente: 3-5 épocas de entrenamiento + integración en API
+- ⏳ Objetivos 5-8 (vectores, matrices, grafos, métricas) aún no iniciados
