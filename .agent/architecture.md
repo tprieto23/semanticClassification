@@ -31,6 +31,7 @@ Documentos no estructurados → Conversión → Limpieza → Clasificación → 
 │   ├── core/               # Lógica principal
 │   ├── models/             # Modelos SQLAlchemy
 │   ├── services/           # Servicios de procesamiento
+│   ├── training/           # Scripts de entrenamiento de modelos
 │   └── utils/              # Utilidades
 ├── migrations/             # Alembic migrations
 ├── tests/                  # Tests
@@ -73,16 +74,34 @@ Documentos no estructurados → Conversión → Limpieza → Clasificación → 
 - Endpoint: `POST /documents/{id}/clean?dry_run=<bool>` (dry_run devuelve métricas sin escribir archivos ni actualizar DB)
 - Métricas guardadas en columnas de `documents` (`original_char_count`, `cleaned_char_count`, `reduction_percentage`, `cleaning_metadata` JSONB con detalle por capa)
 
-### 4. Clasificación (Objetivo 4) — Fase 1: NER implementado
+### 4. Clasificación (Objetivo 4) — 🚧 Fase 3: XLM-RoBERTa fine-tuned en progreso
+
+**Arquitectura anterior (DEPRECADA):**
 - **Fase 1 (NER genérico):** spaCy (`es_core_news_sm` + `en_core_web_sm`) + `langdetect`
   - Extrae entidades nombradas: PER, ORG, LOC, GPE, MISC, PRODUCT, EVENT, WORK_OF_ART
-  - Guarda etiquetas spaCy originales en `entities.category`
-  - Incluye contexto (±300 chars) y oración completa en metadata
-  - Filtros de falsos positivos estructurales (títulos/secciones)
-- **Fase 2 (pendiente):** mapear etiquetas spaCy → 9 categorías del proyecto
-- Entidades objetivo: comunidades, instituciones, lugares, prácticas, infraestructuras, valores ecológicos, narrativas, actores, acciones
-- Servicio: `src/services/ner.py`
-- Endpoint: `POST /documents/{id}/extract-entities`
+  - Problemas: corta entidades, falsos positivos estructurales, requiere editar manualmente casi todo
+- **Fase 2 (mapeo con reglas):** `entity_classifier.py` con 158 líneas de regex + keywords
+  - Mapea spaCy → 9 categorías del proyecto
+  - Problemas: ~33% van a `MISC_Spacy`, reglas frágiles, no entiende contexto
+
+**Nueva arquitectura (Fase 3):**
+- **Modelo:** `xlm-roberta-base` fine-tuned para Token Classification (NER BIO)
+  - Un solo modelo multilingüe (español + inglés), sin necesidad de `langdetect`
+  - Predice directamente las 9 categorías del proyecto: B-{cat} / I-{cat} / O
+  - Entiende contexto de la oración completa, no solo keywords
+- **Dataset de entrenamiento:** `_all_entities_corrected.json` → formato BIO
+  - 3,679 oraciones, 19 etiquetas BIO, división por documento
+  - ⚠️ Ground truth provisional (contiene errores residuales de la primera iteración)
+- **Pipeline de entrenamiento:**
+  - `src/training/prepare_ner_dataset.py` → genera dataset BIO
+  - `src/training/train_ner_xlm.py` → fine-tuning con `XLMRobertaForTokenClassification`
+  - `src/training/infer_ner_xlm.py` → inferencia en texto libre
+- **Resultados (1 época, CPU):** Test F1 0.511 | LUGAR F1 0.64 | COMUNIDAD/PRÁCTICA F1 0.00
+
+**Estado actual:**
+- Servicio: `src/services/ner.py` (aún usa spaCy, pendiente integrar XLM-R)
+- Endpoint: `POST /documents/{id}/extract-entities` (aún usa spaCy)
+- Modelo entrenado: `models/ner_xlm_roberta/final/`
 
 ### 5. Vectorización (Objetivo 5)
 - Representación vectorial de entidades
@@ -234,7 +253,7 @@ docker-compose restart
 - `GET /documents/{id}` → Ver detalle de documento
 - `POST /documents/{id}/process` → Procesar documento (conversión a TXT)
 - `POST /documents/batch` → Subir y procesar múltiples archivos en un solo request
-- `POST /documents/{id}/extract-entities` → Extraer entidades NER de un documento limpio
+- `POST /documents/{id}/extract-entities` → Extraer entidades NER de un documento limpio (⚠️ aún usa spaCy; pendiente migrar a XLM-RoBERTa)
 - `GET /entities` → Listar entidades (con filtros por categoría y documento)
 
 ### Variables de entorno (.env)

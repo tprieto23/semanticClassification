@@ -499,3 +499,37 @@ sentence-transformers con `BatchHardTripletLoss` sobre `paraphrase-multilingual-
 - ⚠️ Modelo pesa 1.8GB → no se commitea a git
 - ⚠️ BatchHardTripletLoss requiere batches con múltiples ejemplos por categoría; con batch size 8 y 9 categorías, algunos batches pueden tener poca variedad
 - ⚠️ Direcciones parciales sin patrón postal explícito (ej. `Campestre Towers |Cali| Colombia`) no se eliminan — aceptado como trade-off
+
+---
+
+### 2026-05-07 - Migración del motor NER: spaCy → XLM-RoBERTa fine-tuned
+
+**Contexto:**
+La usuaria reportó que el pipeline actual (spaCy `es_core_news_sm` + reglas deterministas en `entity_classifier.py`) produce demasiados errores: cortes de entidades, falsos positivos estructurales, clasificación incorrecta de entidades ambiguas. Requiere editar manualmente casi todo el clasificador. Se decidió reemplazar el motor de extracción y clasificación por un modelo `XLM-RoBERTa` fine-tuned con el dataset corregido.
+
+**Decisiones:**
+1. **Conservar `_all_entities_corrected.json`** como ground truth provisional (con advertencia de que contiene errores residuales de la primera iteración).
+2. **Descartar `MISC_Spacy`** del entrenamiento: se marcan como `O` (no entidad) porque representan ambigüedad, no ground truth.
+3. **Formato BIO:** convertir oraciones + entidades a etiquetas BIO (Begin-Inside-Outside) por palabra, alineadas con tokenizer de XLM-R.
+4. **Modelo base:** `xlm-roberta-base` (alias público de `facebook/xlm-roberta-base`). Nota: el ID `facebook/xlm-roberta-base` está bloqueado para acceso anónimo desde la IP/ubicación del usuario; `xlm-roberta-base` redirige correctamente.
+5. **Hardware:** MPS (Apple Silicon) arroja OOM incluso con batch_size=1, max_length=256 y gradient_checkpointing. Se fuerza CPU con `--force_cpu` y `use_cpu=True` en `TrainingArguments`.
+6. **Entrenamiento:** 1 época de prueba en CPU (~22 minutos). Próximo paso: 5 épocas.
+
+**Implementación:**
+- `src/training/prepare_ner_dataset.py`: conversión de `_all_entities_corrected.json` a formato BIO (JSON Lines).
+- `src/training/train_ner_xlm.py`: script de fine-tuning con `XLMRobertaForTokenClassification`, `Trainer`, `seqeval`.
+- `src/training/infer_ner_xlm.py`: script de inferencia para probar el modelo en texto libre.
+
+**Resultados (1 época, CPU):**
+- Test F1: 0.511 | Precision: 0.550 | Recall: 0.477 | Accuracy: 0.914
+- Mejor categoría: LUGAR (F1 0.64)
+- Peores categorías: COMUNIDAD y PRÁCTICA (F1 0.00, pocos ejemplos de entrenamiento)
+
+**Consecuencias:**
+- ✅ Pipeline de entrenamiento funcional end-to-end.
+- ✅ El modelo ya predice entidades coherentes en español e inglés con un solo modelo (no más `langdetect` + cambio de modelo).
+- ⚠️ `facebook/xlm-roberta-base` requiere alias `xlm-roberta-base` para descarga anónima en esta red.
+- ⚠️ MPS no es viable para XLM-R base en esta Mac (OOM incluso con BS1). CPU es lento pero estable.
+- ⚠️ 1 época es insuficiente; se requieren 3-5 para convergencia.
+- ⚠️ El dataset de entrenamiento tiene errores residuales (ej. "Editor" como ACTOR, "Diseño" como LUGAR) que el modelo aprenderá a replicar hasta que se corrijan.
+- ⚠️ Categorías con pocos ejemplos (VALOR_ECOLÓGICO, PRÁCTICA, COMUNIDAD) no se detectan bien.

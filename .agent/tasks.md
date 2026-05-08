@@ -72,11 +72,18 @@
 - [x] **Mejoras al clasificador:** protección contra falsos positivos comunes ("Madre", "Dios", "Además", "Uso", etc.)
 - [x] **Mejoras al clasificador:** nuevas keywords para INSTITUCIÓN (Tropical Forest Alliance, TNC, MINAM, LandScale)
 - [x] **Mejoras al clasificador:** nuevas keywords para NARRATIVA (Plan Nacional Cacao, Política Forestal, Revolución Productiva)
-- [ ] **Fase 3:** Entrenar modelo de embeddings con sentence-transformers (iteración 1 completada, falta convergencia)
-- [ ] **Fase 3:** Implementar clasificador por similitud de embeddings
+- [x] **Fase 3 (NUEVO MOTOR NER):** Reemplazar spaCy + reglas por XLM-RoBERTa fine-tuned para Token Classification
+- [x] **Fase 3:** Convertir `_all_entities_corrected.json` a formato BIO (`prepare_ner_dataset.py`)
+- [x] **Fase 3:** Script de entrenamiento `train_ner_xlm.py` con `XLMRobertaForTokenClassification`
+- [x] **Fase 3:** Script de inferencia `infer_ner_xlm.py` para probar el modelo
+- [x] **Fase 3:** Entrenar 1 época de prueba en CPU (test F1: 0.511)
+- [ ] **Fase 3:** Entrenar 3-5 épocas completas para convergencia
+- [ ] **Fase 3:** Integrar modelo entrenado al endpoint `/extract-entities` (reemplazar spaCy)
+- [ ] **Fase 3:** Evaluar calidad del nuevo NER vs. spaCy en corpus completo
+- [ ] **Fase 3:** Corregir errores residuales del dataset BIO para re-entrenar
 - [ ] **Fase 3:** Implementar extracción de NARRATIVA y PRÁCTICA (método alternativo a NER)
-- [ ] Evaluar calidad del NER sobre corpus completo (28 docs)
-- [ ] Iterar filtros de falsos positivos estructurales
+- [ ] **Fase 3 (embeddings):** Entrenar modelo de embeddings con sentence-transformers (iteración 1 completada, falta convergencia)
+- [ ] **Fase 3 (embeddings):** Implementar clasificador por similitud de embeddings
 
 ### Objetivo 5: Representar entidades mediante vectores 🚧 EN PROGRESO (iteración 1)
 - [ ] Seleccionar modelo de embeddings

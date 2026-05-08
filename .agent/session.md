@@ -2,6 +2,56 @@
 
 ## Última sesión
 
+**Fecha:** 2026-05-07 (sesión 16)
+
+**Trabajado en:**
+- Reemplazo del motor de extracción y clasificación: spaCy + reglas → XLM-RoBERTa fine-tuned
+- Conversión de `_all_entities_corrected.json` a formato BIO para entrenamiento
+- Entrenamiento de primera época de `xlm-roberta-base` para Token Classification (NER)
+- Scripts de entrenamiento (`train_ner_xlm.py`) e inferencia (`infer_ner_xlm.py`)
+- Actualización de dependencias (`requirements.txt`) y documentación (`.agent/`)
+
+**Resumen de la sesión:**
+
+### Problema identificado
+La usuaria confirmó que el pipeline de spaCy + `entity_classifier.py` produce demasiados errores sistémicos. Quiere reiniciar la fase de clasificación con un modelo contextual (XLM-RoBERTa) que entienda el contexto de la oración en vez de depender de regex y keywords.
+
+### Dataset BIO generado
+- Script: `src/training/prepare_ner_dataset.py`
+- Input: `data/processed/entities/_all_entities_corrected.json` (13,659 entidades)
+- Output: `data/processed/entities/ner_dataset/{train,validation,test}.jsonl`
+- 3,679 oraciones únicas con entidades válidas (excluyendo MISC_Spacy)
+- Tasa de alineación: 96.1%
+- División por documento: 21 train / 2 val / 4 test
+
+### Entrenamiento (iteración 1, 1 época)
+- Modelo: `xlm-roberta-base` (~270M parámetros)
+- Dispositivo: CPU (MPS da OOM incluso con batch_size=1)
+- Tiempo: ~22 minutos
+- Resultados test: F1 0.511 | Precision 0.550 | Recall 0.477 | Accuracy 0.914
+- Mejor categoría: LUGAR (F1 0.64)
+- Peores: COMUNIDAD, PRÁCTICA (F1 0.00 por falta de ejemplos)
+
+### Problemas técnicos resueltos
+1. **Hugging Face 401:** `facebook/xlm-roberta-base` bloqueado desde la IP del usuario. Solución: usar alias `xlm-roberta-base`.
+2. **Transformers v5 API:** `evaluation_strategy` renombrado a `eval_strategy`. Solución: actualizar `TrainingArguments`.
+3. **MPS OOM:** XLM-R base no cabe en 9GB de MPS ni siquiera con BS1 + gradient checkpointing + max_length 256. Solución: forzar CPU con `--force_cpu` y `use_cpu=True`.
+
+### Archivos creados/modificados
+- `src/training/prepare_ner_dataset.py` (nuevo)
+- `src/training/train_ner_xlm.py` (nuevo)
+- `src/training/infer_ner_xlm.py` (nuevo)
+- `requirements.txt` (torch, transformers, datasets, seqeval, evaluate, accelerate)
+- `.agent/decisions.md`, `.agent/session.md`, `.agent/tasks.md`
+
+### Próximos pasos
+1. Entrenar 3-5 épocas completas en CPU (o buscar GPU alternativa: Google Colab)
+2. Comparar salida del nuevo modelo vs. spaCy en 3-5 documentos de holdout
+3. Corregir errores residuales del dataset BIO para mejorar ground truth
+4. Evaluar si es necesario aumentar datos para categorías minoritarias (COMUNIDAD, PRÁCTICA, VALOR_ECOLÓGICO)
+
+---
+
 **Fecha:** 2026-05-06 (sesión 15)
 
 **Trabajado en:**
