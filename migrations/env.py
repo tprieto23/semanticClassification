@@ -10,12 +10,11 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-from src.models.models import Base
 from src.config import settings
 
-target_metadata = Base.metadata
+target_metadata = None
 
-config.set_main_option("sqlalchemy.url", settings.get_database_url())
+config.set_main_option("sqlalchemy.url", settings.database_url)
 
 
 def run_migrations_offline() -> None:
