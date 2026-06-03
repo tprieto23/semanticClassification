@@ -11,7 +11,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 from src.models.models import Base
-from src.core.database import settings
+from src.config import settings
 
 target_metadata = Base.metadata
 
