@@ -1,0 +1,233 @@
+{
+  "info": {
+    "name": "Semantic Classification API",
+    "description": "API para procesamiento documental y análisis territorial socioambiental",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "opencode"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "document_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET Root",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Verificar que la API está corriendo"
+          },
+          "response": []
+        },
+        {
+          "name": "GET Health",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Health check de la API"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "POST Create Document",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/documents",
+              "host": ["{{base_url}}"],
+              "path": ["documents"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "",
+                  "description": "Archivo a subir (PDF, DOCX, etc.)"
+                },
+                {
+                  "key": "metadata",
+                  "type": "text",
+                  "value": "",
+                  "description": "(Opcional) JSON con metadata del documento"
+                }
+              ]
+            },
+            "description": "Subir un documento individual"
+          },
+          "response": []
+        },
+        {
+          "name": "POST Batch Upload",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/documents/batch",
+              "host": ["{{base_url}}"],
+              "path": ["documents", "batch"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": "",
+                  "description": "Múltiples archivos (PDF, DOCX). Usar el mismo key 'files' para todos."
+                }
+              ]
+            },
+            "description": "Subir y procesar múltiples archivos en un solo request"
+          },
+          "response": []
+        },
+        {
+          "name": "GET List Documents",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/documents?status_filter=",
+              "host": ["{{base_url}}"],
+              "path": ["documents"],
+              "query": [
+                {
+                  "key": "status_filter",
+                  "value": "",
+                  "description": "(Opcional) Filtrar por status: raw, converted, cleaned, processed, failed"
+                }
+              ]
+            },
+            "description": "Listar todos los documentos, opcionalmente filtrados por estado"
+          },
+          "response": []
+        },
+        {
+          "name": "GET Document by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/documents/{{document_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["documents", "{{document_id}}"]
+            },
+            "description": "Obtener detalle de un documento específico"
+          },
+          "response": []
+        },
+        {
+          "name": "POST Process Document",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/documents/{{document_id}}/process",
+              "host": ["{{base_url}}"],
+              "path": ["documents", "{{document_id}}", "process"]
+            },
+            "description": "Convertir documento a texto plano (PDF/DOCX → TXT)"
+          },
+          "response": []
+        },
+        {
+          "name": "POST Clean Document",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/documents/{{document_id}}/clean?dry_run=false",
+              "host": ["{{base_url}}"],
+              "path": ["documents", "{{document_id}}", "clean"],
+              "query": [
+                {
+                  "key": "dry_run",
+                  "value": "false",
+                  "description": "true = solo métricas sin escribir archivos ni actualizar DB"
+                }
+              ]
+            },
+            "description": "Limpiar texto del documento (Capas 1+2+2c+3+4)"
+          },
+          "response": []
+        },
+        {
+          "name": "POST Extract Entities",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/documents/{{document_id}}/extract-entities",
+              "host": ["{{base_url}}"],
+              "path": ["documents", "{{document_id}}", "extract-entities"]
+            },
+            "description": "Extraer entidades NER del documento limpio (usa spaCy — pendiente migrar a XLM-RoBERTa)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Entities",
+      "item": [
+        {
+          "name": "GET List Entities",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/entities?category_filter=&document_id=",
+              "host": ["{{base_url}}"],
+              "path": ["entities"],
+              "query": [
+                {
+                  "key": "category_filter",
+                  "value": "",
+                  "description": "(Opcional) Filtrar por categoría: INSTITUCIÓN, LUGAR, ACTOR, COMUNIDAD, NARRATIVA, PRÁCTICA, ACCIÓN, INFRAESTRUCTURA, VALOR_ECOLÓGICO, MISC_Spacy"
+                },
+                {
+                  "key": "document_id",
+                  "value": "",
+                  "description": "(Opcional) Filtrar por ID de documento"
+                }
+              ]
+            },
+            "description": "Listar entidades con filtros opcionales por categoría y documento"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
