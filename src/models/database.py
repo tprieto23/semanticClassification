@@ -5,10 +5,10 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from src.config import settings
 
-
 engine = create_engine(settings.database_url)
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+
 
 class Base(DeclarativeBase):
     pass
