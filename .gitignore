@@ -11,6 +11,9 @@ env/
 venv/
 .venv/
 
+# Almacenamiento de archivos subidos
+s3/
+
 # Data outputs (generated)
 data/output/
 data/processed/entities/*.json
