@@ -79,3 +79,14 @@ class DocumentService:
     def eliminar(db: Session, documento: Document) -> None:
         Storage.eliminar(documento.file_path)
         DocumentRepo.eliminar(db, documento)
+
+    @staticmethod
+    def cargar_documentos(
+        db: Session,
+        files: list[UploadFile],
+        metadata_json: str | None,
+    ) -> list[Document]:
+        return [
+            DocumentService.cargar_documento(db, file, metadata_json)
+            for file in files
+        ]

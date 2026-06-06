@@ -19,6 +19,15 @@ def upload(
     return DocumentService.cargar_documento(db, file, metadata)
 
 
+@router.post("/batch", response_model=list[DocumentRead], status_code=status.HTTP_201_CREATED)
+def upload_batch(
+    files: Annotated[list[UploadFile], File()],
+    metadata: Annotated[str | None, Form()] = None,
+    db: Session = Depends(get_db),
+):
+    return DocumentService.cargar_documentos(db, files, metadata)
+
+
 @router.get("", response_model=DocumentListResponse)
 def list_documents(
     db: Session = Depends(get_db),
