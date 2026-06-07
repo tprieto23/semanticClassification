@@ -35,3 +35,10 @@ class Storage:
             Path(file_path).unlink(missing_ok=True)
         except OSError:
             pass
+
+    @staticmethod
+    def guardar_convertido(content: bytes, filename: str) -> Path:
+        settings.STORAGE_CONVERTED.mkdir(parents=True, exist_ok=True)
+        path = settings.STORAGE_CONVERTED / filename
+        path.write_bytes(content)
+        return path

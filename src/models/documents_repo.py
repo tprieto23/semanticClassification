@@ -44,3 +44,8 @@ class DocumentRepo:
     def eliminar(db: Session, documento: Document) -> None:
         db.delete(documento)
         db.commit()
+
+    @staticmethod
+    def actualizar_status(db: Session, documento: Document, nuevo_status: str) -> None:
+        documento.status = nuevo_status
+        db.commit()

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.api.routers import ingesta
+from src.api.routers import conversion, ingesta
 from src.services.documents import DocumentoError
 
 app = FastAPI(
@@ -33,3 +33,4 @@ def health() -> dict[str, str]:
 
 
 app.include_router(ingesta.router)
+app.include_router(conversion.router)
