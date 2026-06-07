@@ -4,23 +4,26 @@
 
 ```
 src/
-├── config.py                  ← DATABASE_URL + paths
+├── config.py
 ├── api/
-│   ├── main.py                ← FastAPI app, CORS, /health, exception handlers
+│   ├── main.py                ← FastAPI + CORS + /health + routers
 │   ├── routers/
-│   │   └── ingesta.py         ← endpoints (POST/GET/GET-id/DELETE /documents)
+│   │   ├── ingesta.py         ← POST/GET/GET-id/DELETE /documents + /batch
+│   │   └── conversion.py      ← POST /documents/{id}/process
 │   └── schemas/
-│       └── ingesta.py         ← Pydantic: DocumentRead, DocumentListResponse
+│       └── ingesta.py         ← DocumentRead, DocumentListResponse
 ├── models/
 │   ├── database.py            ← engine, SessionLocal, Base, get_db
-│   ├── documents.py           ← ORM Document (columnas)
-│   ├── documents_repo.py      ← CRUD puro (crear, leer_todos, leer_uno, eliminar)
-│   └── storage.py             ← guardar/eliminar archivos en s3/archivosCrudos
+│   ├── documents.py           ← ORM Document (8 columnas)
+│   ├── documents_repo.py      ← crear, leer_todos, leer_uno, eliminar, actualizar_status
+│   └── storage.py             ← guardar, eliminar, guardar_convertido, preparar_nombre
 └── services/
-    └── documents.py           ← DocumentService (orquesta Storage + Repo) + excepciones
+    ├── database.py            ← re-exporta get_db (pasamanos para api)
+    ├── documents.py           ← DocumentService + excepciones
+    └── conversion.py          ← ConversionService.convertir()
 ```
 
-## Capas y responsabilidades
+## Capas
 
 ```
 api/routers → services → models/{repo, storage}
@@ -28,43 +31,45 @@ api/routers → services → models/{repo, storage}
   HTTP       orquesta       DB + archivos
 ```
 
-| Capa | ¿Qué hace? | ¿Qué NO hace? |
-|---|---|---|
-| `api/routers/` | Recibir request, llamar service, devolver response | Lógica de negocio, queries, archivos |
-| `services/` | Validar, orquestar Storage + Repo, manejar errores de dominio | HTTP, SQL directo, sistema operativo |
-| `models/` | ORM, queries SQL, archivos en disco | HTTP, validaciones de negocio |
-
-## Flujo de upload
+## Flujo Objetivo 1: Upload
 
 ```
 POST /documents
-  → router: recibe file + metadata
   → DocumentService.cargar_documento()
-    → Storage.preparar_nombre()    → nombre seguro, extensión, UUID
-    → Storage.guardar()            → escribe en s3/archivosCrudos/{uuid}.ext
-    → DocumentRepo.crear()         → INSERT en PostgreSQL
-  ← Document (ORM) → serializado como DocumentRead
+    → Storage.preparar_nombre() → nombre seguro, ext, UUID
+    → Storage.guardar()         → s3/archivosCrudos/{uuid}.{ext}
+    → DocumentRepo.crear()      → INSERT
+  ← 201 + DocumentRead
 ```
 
-## DB
+## Flujo Objetivo 2: Conversión
 
 ```
-documents
-├── id                 UUID PK
-├── original_filename  text
-├── file_path          text
-├── file_type          text
-├── file_size_bytes    bigint
-├── status             text      (raw → converted → cleaned → processed)
-├── uploaded_at        timestamp
-└── metadata           jsonb     (autor, etiquetas, notas, etc.)
+POST /documents/{id}/process
+  → ConversionService.convertir()
+    → DocumentRepo.leer_uno()            → SELECT
+    → MarkItDown().convert(file_path)    → PDF/DOCX → MD
+    → Storage.guardar_convertido()       → s3/archivosConvertidos/{id}.md
+    → DocumentRepo.actualizar_status()   → status = 'converted'
+  ← 200 OK
 ```
 
 ## Storage
 
 ```
-s3/archivosCrudos/
-└── {uuid}.{ext}       ← archivos subidos (gitignored)
+s3/
+├── archivosCrudos/           ← upload (POST /documents)
+└── archivosConvertidos/      ← conversión (POST /documents/{id}/process)
 ```
 
-Montado como volumen en Docker: `./s3:/app/s3`
+## Endpoints activos
+
+| Método | Ruta | Router | Objetivo |
+|---|---|---|---|
+| POST | `/documents` | ingesta | Subir archivo |
+| POST | `/documents/batch` | ingesta | Subir múltiples |
+| GET | `/documents` | ingesta | Listar + filtros |
+| GET | `/documents/{id}` | ingesta | Ver uno |
+| DELETE | `/documents/{id}` | ingesta | Eliminar |
+| POST | `/documents/{id}/process` | conversion | Convertir a MD |
+| GET | `/health` | main | Health check |
