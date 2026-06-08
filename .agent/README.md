@@ -13,11 +13,11 @@ Procesar documentos (PDF, DOCX), extraer entidades relevantes y mapear relacione
 docker compose up -d
 
 # Migraciones
-docker exec sc_api alembic upgrade head
+docker compose exec api alembic upgrade head
 
 # Si hay cambios en modelos
-docker exec sc_api alembic revision --autogenerate -m "descripcion"
-docker exec sc_api alembic upgrade head
+docker compose exec api alembic revision --autogenerate -m "descripcion"
+docker compose exec api alembic upgrade head
 
 # API
 http://localhost:8000/docs
@@ -31,13 +31,40 @@ http://localhost:8000/docs
 | DB | PostgreSQL 16 + pgvector |
 | ORM | SQLAlchemy 2.0 |
 | Migraciones | Alembic |
-| Almacenamiento | s3/archivosCrudos (local, montado en Docker) |
+| Conversión | markitdown (PDF, DOCX → MD) |
+| Parseo MD | markdown-it-py |
+| Reparación encoding | ftfy |
+| Almacenamiento | s3/ (local, montado en Docker) |
 | Contenedores | Docker + docker-compose |
+
+## Endpoints
+
+| Método | Ruta | Descripción |
+|---|---|---|
+| POST | `/documents` | Subir archivo |
+| POST | `/documents/batch` | Subir múltiples archivos |
+| GET | `/documents` | Listar con filtros (status, file_type) |
+| GET | `/documents/{id}` | Ver documento |
+| DELETE | `/documents/{id}` | Eliminar documento |
+| POST | `/documents/{id}/process` | Convertir a Markdown |
+| POST | `/documents/process-batch` | Convertir todos en raw |
+| POST | `/documents/{id}/clean` | Limpiar texto |
+| POST | `/documents/clean-batch` | Limpiar todos en converted |
+| POST | `/documents/{id}/revert-clean` | Revertir limpieza → converted |
+
+## Estados del documento
+
+| Estado | Significado |
+|---|---|
+| `raw` | Recién subido, sin convertir |
+| `converted` | Convertido a .md |
+| `cleaned` | Texto limpiado, listo para NER |
 
 ## Convenciones
 
 - **Python:** snake_case para archivos, variables y funciones. PascalCase para clases.
-- **Endpoints:** router fino (3 líneas máximo), lógica en services, DB en models.
-- **Naming de archivos:** mismo dominio, misma carpeta. Ej: `ingesta.py` en api/routers/, services/ y models/.
+- **Endpoints:** router fino, lógica en services, DB en models.
+- **Storage:** `Storage.guardar(content, filename, target_dir)` recibe el directorio desde la capa de servicio.
+- **Excepciones:** heredan de `DocumentoError(codigo_http)`, capturadas por handler global en `main.py`.
 - **Commits:** solo cuando se pida explícitamente.
 - **Variables de entorno:** `.env` (gitignored). `DATABASE_URL` es la única obligatoria.
