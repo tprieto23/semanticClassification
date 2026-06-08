@@ -16,7 +16,7 @@ class CleaningService:
     _SPACES = re.compile(r"[ \t]+")
 
     @staticmethod
-    def limpiar(texto_md: str) -> str:
+    def structuralCleaning(texto_md: str) -> str:
         texto = fix_text(texto_md)
 
         md = MarkdownIt("commonmark")
@@ -33,3 +33,7 @@ class CleaningService:
         texto = texto.strip()
 
         return texto.lower()
+
+    @staticmethod
+    def linguisticCleaning(texto: str) -> str:
+        pass

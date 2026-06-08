@@ -45,9 +45,9 @@ class DocumentoNoConvertido(DocumentoError):
         super().__init__(f"Documento {document_id} no está convertido (estado: '{status}')", 409)
 
 
-class DocumentoNoLimpiado(DocumentoError):
+class DocumentoNoReversible(DocumentoError):
     def __init__(self, document_id: str, status: str):
-        super().__init__(f"Documento {document_id} no está limpiado (estado: '{status}')", 409)
+        super().__init__(f"Documento {document_id} no es reversible desde el estado '{status}'", 409)
 
 
 class DocumentService:
@@ -161,7 +161,7 @@ class DocumentService:
         if not texto_md:
             raise DocumentoError("Archivo convertido no encontrado o vacío", 500)
 
-        texto_limpio = CleaningService.limpiar(texto_md)
+        texto_limpio = CleaningService.structuralCleaning(texto_md)
         nombre_txt = f"{doc.id}.txt"
 
         path = Storage.guardar(texto_limpio.encode("utf-8"), nombre_txt, settings.DATA_CLEANED)
@@ -186,15 +186,20 @@ class DocumentService:
         return {"processed": processed, "errors": errors}
 
     @staticmethod
-    def revertir_limpieza(db: Session, document_id: str) -> None:
+    def revertir(db: Session, document_id: str) -> None:
         doc = DocumentRepo.leer_uno(db, document_id)
         if doc is None:
             raise DocumentoNoEncontrado(document_id)
 
-        if doc.status != "cleaned":
-            raise DocumentoNoLimpiado(document_id, doc.status)
-
-        if doc.cleaned_path:
-            Storage.eliminar(doc.cleaned_path)
-        doc.cleaned_path = None
-        DocumentRepo.actualizar_status(db, doc, "converted")
+        if doc.status == "cleaned":
+            if doc.cleaned_path:
+                Storage.eliminar(doc.cleaned_path)
+            doc.cleaned_path = None
+            DocumentRepo.actualizar_status(db, doc, "converted")
+        elif doc.status == "converted":
+            if doc.converted_path:
+                Storage.eliminar(doc.converted_path)
+            doc.converted_path = None
+            DocumentRepo.actualizar_status(db, doc, "raw")
+        else:
+            raise DocumentoNoReversible(document_id, doc.status)

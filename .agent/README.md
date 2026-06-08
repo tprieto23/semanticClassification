@@ -50,7 +50,7 @@ http://localhost:8000/docs
 | POST | `/documents/process-batch` | Convertir todos en raw |
 | POST | `/documents/{id}/clean` | Limpiar texto |
 | POST | `/documents/clean-batch` | Limpiar todos en converted |
-| POST | `/documents/{id}/revert-clean` | Revertir limpieza → converted |
+| POST | `/documents/{id}/revert` | Revertir al estado anterior |
 
 ## Estados del documento
 

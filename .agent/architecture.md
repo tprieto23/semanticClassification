@@ -79,16 +79,20 @@ POST /documents/clean-batch
 limpiar_varios: busca todos en status "converted", limpia uno a uno con rollback por documento
 ```
 
-## Flujo Revertir Limpieza
+## Flujo Revertir
 
 ```
-POST /documents/{id}/revert-clean
+POST /documents/{id}/revert
 
-  → DocumentService.revertir_limpieza()
+  → DocumentService.revertir()
     → DocumentRepo.leer_uno()          → SELECT
-    → Storage.eliminar(cleaned_path)   → borra el .txt
-    → doc.cleaned_path = None          → limpia referencia
-    → DocumentRepo.actualizar_status() → status = 'converted'
+    → cleaned  → Storage.eliminar(cleaned_path)  → borra .txt
+              → doc.cleaned_path = None
+              → status = 'converted'
+    → converted → Storage.eliminar(converted_path) → borra .md
+               → doc.converted_path = None
+               → status = 'raw'
+    → raw      → DocumentoNoReversible (409)
   ← 200 OK
 ```
 
@@ -114,5 +118,5 @@ s3/
 | POST | `/documents/process-batch` | Convertir todos en raw |
 | POST | `/documents/{id}/clean` | Limpiar texto |
 | POST | `/documents/clean-batch` | Limpiar todos en converted |
-| POST | `/documents/{id}/revert-clean` | Revertir limpieza → converted |
+| POST | `/documents/{id}/revert` | Revertir al estado anterior |
 | GET | `/health` | Health check |
