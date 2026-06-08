@@ -45,6 +45,11 @@ class DocumentoNoConvertido(DocumentoError):
         super().__init__(f"Documento {document_id} no está convertido (estado: '{status}')", 409)
 
 
+class DocumentoNoLimpiado(DocumentoError):
+    def __init__(self, document_id: str, status: str):
+        super().__init__(f"Documento {document_id} no está limpiado (estado: '{status}')", 409)
+
+
 class DocumentService:
 
     @staticmethod
@@ -179,3 +184,17 @@ class DocumentService:
                 db.rollback()
 
         return {"processed": processed, "errors": errors}
+
+    @staticmethod
+    def revertir_limpieza(db: Session, document_id: str) -> None:
+        doc = DocumentRepo.leer_uno(db, document_id)
+        if doc is None:
+            raise DocumentoNoEncontrado(document_id)
+
+        if doc.status != "cleaned":
+            raise DocumentoNoLimpiado(document_id, doc.status)
+
+        if doc.cleaned_path:
+            Storage.eliminar(doc.cleaned_path)
+        doc.cleaned_path = None
+        DocumentRepo.actualizar_status(db, doc, "converted")
