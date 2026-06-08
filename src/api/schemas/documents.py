@@ -16,6 +16,7 @@ class DocumentRead(BaseModel):
     status: str
     uploaded_at: datetime
     metadata: dict[str, Any] | None = Field(None, validation_alias="metadata_")
+    converted_path: str | None = None
 
 
 class DocumentListResponse(BaseModel):
@@ -23,3 +24,13 @@ class DocumentListResponse(BaseModel):
     total: int
     skip: int
     limit: int
+
+
+class BatchProcessError(BaseModel):
+    id: UUID
+    error: str
+
+
+class BatchProcessResponse(BaseModel):
+    processed: list[UUID]
+    errors: list[BatchProcessError]

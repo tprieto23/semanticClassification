@@ -1,8 +1,6 @@
 from pathlib import Path
 from uuid import uuid4
 
-from src.config import settings
-
 
 class Storage:
 
@@ -23,9 +21,9 @@ class Storage:
         return nombreInicial, ext, doc_id, nombreParaAlmacenar
 
     @staticmethod
-    def guardar(content: bytes, filename: str) -> Path:
-        settings.STORAGE_RAW.mkdir(parents=True, exist_ok=True)
-        path = settings.STORAGE_RAW / filename
+    def guardar(content: bytes, filename: str, target_dir: Path) -> Path:
+        target_dir.mkdir(parents=True, exist_ok=True)
+        path = target_dir / filename
         path.write_bytes(content)
         return path
 
@@ -35,10 +33,3 @@ class Storage:
             Path(file_path).unlink(missing_ok=True)
         except OSError:
             pass
-
-    @staticmethod
-    def guardar_convertido(content: bytes, filename: str) -> Path:
-        settings.STORAGE_CONVERTED.mkdir(parents=True, exist_ok=True)
-        path = settings.STORAGE_CONVERTED / filename
-        path.write_bytes(content)
-        return path

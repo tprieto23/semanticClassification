@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
 from sqlalchemy.orm import Session
 
-from src.api.schemas.ingesta import DocumentListResponse, DocumentRead
+from src.api.schemas.documents import BatchProcessResponse, DocumentListResponse, DocumentRead
 from src.services.documents import DocumentService, get_db
 
 router = APIRouter(prefix="/documents", tags=["Documents"])
@@ -54,6 +54,22 @@ def get_document(
     if doc is None:
         raise HTTPException(status_code=404, detail=f"Documento {document_id} no encontrado")
     return doc
+
+
+@router.post("/{document_id}/process", status_code=status.HTTP_200_OK)
+def process(
+    document_id: UUID,
+    db: Session = Depends(get_db),
+):
+    DocumentService.convertir(db, str(document_id))
+
+
+@router.post("/process-batch", response_model=BatchProcessResponse)
+def process_batch(
+    db: Session = Depends(get_db),
+):
+    resultado = DocumentService.convertir_varios(db)
+    return BatchProcessResponse(**resultado)
 
 
 @router.delete("/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
