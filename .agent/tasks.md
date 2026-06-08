@@ -42,7 +42,7 @@
 - [x] `api/routers/documents.py` — POST /documents/{id}/clean + /clean-batch
 - [x] `config.py` — DATA_CLEANED = s3/archivosLimpiados (borrado DATA_TXT)
 - [x] Probado: 200, 404, 409, 500 (archivo no encontrado)
-- [x] `POST /documents/{id}/revert-clean` — revierte limpieza, borra .txt, status → converted
+- [x] `POST /documents/{id}/revert` — revierte al estado anterior (cleaned→converted, converted→raw)
 
 ## Objetivo 4: Extracción de entidades ⏳
 

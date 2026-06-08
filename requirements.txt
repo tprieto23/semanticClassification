@@ -19,6 +19,7 @@ markitdown[pdf,docx]
 
 # Limpieza de textos (Objetivo 3)
 ftfy==6.2.3
+nltk
 
 # NER / Extracción de entidades (Objetivo 4)
 spacy>=3.7.0
