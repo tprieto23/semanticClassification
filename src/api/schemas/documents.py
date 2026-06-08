@@ -17,6 +17,7 @@ class DocumentRead(BaseModel):
     uploaded_at: datetime
     metadata: dict[str, Any] | None = Field(None, validation_alias="metadata_")
     converted_path: str | None = None
+    cleaned_path: str | None = None
 
 
 class DocumentListResponse(BaseModel):

@@ -72,6 +72,22 @@ def process_batch(
     return BatchProcessResponse(**resultado)
 
 
+@router.post("/{document_id}/clean", status_code=status.HTTP_200_OK)
+def clean(
+    document_id: UUID,
+    db: Session = Depends(get_db),
+):
+    DocumentService.limpiar(db, str(document_id))
+
+
+@router.post("/clean-batch", response_model=BatchProcessResponse)
+def clean_batch(
+    db: Session = Depends(get_db),
+):
+    resultado = DocumentService.limpiar_varios(db)
+    return BatchProcessResponse(**resultado)
+
+
 @router.delete("/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_document(
     document_id: UUID,
