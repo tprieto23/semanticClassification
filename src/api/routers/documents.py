@@ -88,6 +88,14 @@ def clean_batch(
     return BatchProcessResponse(**resultado)
 
 
+@router.post("/{document_id}/revert-clean", status_code=status.HTTP_200_OK)
+def revert_clean(
+    document_id: UUID,
+    db: Session = Depends(get_db),
+):
+    DocumentService.revertir_limpieza(db, str(document_id))
+
+
 @router.delete("/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_document(
     document_id: UUID,
