@@ -49,3 +49,7 @@ class DocumentRepo:
     def actualizar_status(db: Session, documento: Document, nuevo_status: str) -> None:
         documento.status = nuevo_status
         db.commit()
+
+    @staticmethod
+    def leer_por_status(db: Session, status: str) -> list[Document]:
+        return list(db.scalars(select(Document).where(Document.status == status)).all())

@@ -35,3 +35,4 @@ class Document(Base):
     metadata_: Mapped[dict[str, Any] | None] = mapped_column(
         "metadata", JSONB, nullable=True
     )
+    converted_path: Mapped[str | None] = mapped_column(Text, nullable=True)

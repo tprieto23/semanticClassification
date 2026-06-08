@@ -1,10 +1,12 @@
 import json
 
 from fastapi import UploadFile
+from markitdown import MarkItDown
 from sqlalchemy.orm import Session
 
 from src.models.database import get_db  # noqa: F401 — pasamanos para api
 
+from src.config import settings
 from src.models.documents import Document
 from src.models.documents_repo import DocumentRepo
 from src.models.storage import Storage
@@ -25,6 +27,16 @@ class ArchivoSinNombre(DocumentoError):
 class MetadataInvalido(DocumentoError):
     def __init__(self, detalle: str):
         super().__init__(f"Metadata inválido: {detalle}", 422)
+
+
+class DocumentoNoEncontrado(DocumentoError):
+    def __init__(self, document_id: str):
+        super().__init__(f"Documento {document_id} no encontrado", 404)
+
+
+class DocumentoYaConvertido(DocumentoError):
+    def __init__(self, document_id: str, status: str):
+        super().__init__(f"Documento {document_id} ya está en estado '{status}'", 409)
 
 
 class DocumentService:
@@ -49,7 +61,7 @@ class DocumentService:
 
         nombreInicial, ext, doc_id, nombreParaAlmacenar = Storage.preparar_nombre(file.filename)
         content = file.file.read()
-        path = Storage.guardar(content, nombreParaAlmacenar)
+        path = Storage.guardar(content, nombreParaAlmacenar, settings.STORAGE_RAW)
 
         return DocumentRepo.crear(
             db,
@@ -90,3 +102,37 @@ class DocumentService:
             DocumentService.cargar_documento(db, file, metadata_json)
             for file in files
         ]
+
+    @staticmethod
+    def convertir(db: Session, document_id: str) -> None:
+        doc = DocumentRepo.leer_uno(db, document_id)
+        if doc is None:
+            raise DocumentoNoEncontrado(document_id)
+
+        if doc.status != "raw":
+            raise DocumentoYaConvertido(document_id, doc.status)
+
+        md = MarkItDown()
+        resultado = md.convert(doc.file_path)
+        nombre_md = f"{doc.id}.md"
+
+        path = Storage.guardar(resultado.text_content.encode("utf-8"), nombre_md, settings.STORAGE_CONVERTED)
+        doc.converted_path = str(path)
+        DocumentRepo.actualizar_status(db, doc, "converted")
+
+    @staticmethod
+    def convertir_varios(db: Session) -> dict:
+        docs = DocumentRepo.leer_por_status(db, "raw")
+        processed: list[str] = []
+        errors: list[dict] = []
+
+        for doc in docs:
+            doc_id = str(doc.id)
+            try:
+                DocumentService.convertir(db, doc_id)
+                processed.append(doc_id)
+            except DocumentoError as e:
+                errors.append({"id": doc_id, "error": e.mensaje})
+                db.rollback()
+
+        return {"processed": processed, "errors": errors}
