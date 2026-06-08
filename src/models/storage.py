@@ -33,3 +33,10 @@ class Storage:
             Path(file_path).unlink(missing_ok=True)
         except OSError:
             pass
+
+    @staticmethod
+    def leer(file_path: str) -> str | None:
+        p = Path(file_path)
+        if not p.exists():
+            return None
+        return p.read_text(encoding="utf-8")

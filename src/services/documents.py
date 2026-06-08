@@ -10,6 +10,7 @@ from src.config import settings
 from src.models.documents import Document
 from src.models.documents_repo import DocumentRepo
 from src.models.storage import Storage
+from src.services.cleaning import CleaningService
 
 
 class DocumentoError(Exception):
@@ -37,6 +38,11 @@ class DocumentoNoEncontrado(DocumentoError):
 class DocumentoYaConvertido(DocumentoError):
     def __init__(self, document_id: str, status: str):
         super().__init__(f"Documento {document_id} ya está en estado '{status}'", 409)
+
+
+class DocumentoNoConvertido(DocumentoError):
+    def __init__(self, document_id: str, status: str):
+        super().__init__(f"Documento {document_id} no está convertido (estado: '{status}')", 409)
 
 
 class DocumentService:
@@ -130,6 +136,43 @@ class DocumentService:
             doc_id = str(doc.id)
             try:
                 DocumentService.convertir(db, doc_id)
+                processed.append(doc_id)
+            except DocumentoError as e:
+                errors.append({"id": doc_id, "error": e.mensaje})
+                db.rollback()
+
+        return {"processed": processed, "errors": errors}
+
+    @staticmethod
+    def limpiar(db: Session, document_id: str) -> None:
+        doc = DocumentRepo.leer_uno(db, document_id)
+        if doc is None:
+            raise DocumentoNoEncontrado(document_id)
+
+        if doc.status != "converted":
+            raise DocumentoNoConvertido(document_id, doc.status)
+
+        texto_md = doc.converted_path and Storage.leer(doc.converted_path)
+        if not texto_md:
+            raise DocumentoError("Archivo convertido no encontrado o vacío", 500)
+
+        texto_limpio = CleaningService.limpiar(texto_md)
+        nombre_txt = f"{doc.id}.txt"
+
+        path = Storage.guardar(texto_limpio.encode("utf-8"), nombre_txt, settings.DATA_CLEANED)
+        doc.cleaned_path = str(path)
+        DocumentRepo.actualizar_status(db, doc, "cleaned")
+
+    @staticmethod
+    def limpiar_varios(db: Session) -> dict:
+        docs = DocumentRepo.leer_por_status(db, "converted")
+        processed: list[str] = []
+        errors: list[dict] = []
+
+        for doc in docs:
+            doc_id = str(doc.id)
+            try:
+                DocumentService.limpiar(db, doc_id)
                 processed.append(doc_id)
             except DocumentoError as e:
                 errors.append({"id": doc_id, "error": e.mensaje})

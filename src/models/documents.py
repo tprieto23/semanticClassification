@@ -36,3 +36,4 @@ class Document(Base):
         "metadata", JSONB, nullable=True
     )
     converted_path: Mapped[str | None] = mapped_column(Text, nullable=True)
+    cleaned_path: Mapped[str | None] = mapped_column(Text, nullable=True)
