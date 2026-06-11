@@ -48,7 +48,8 @@ POST /documents/process-batch
 
   → DocumentService.convertir()
     → DocumentRepo.leer_uno()          → SELECT
-    → MarkItDown().convert(file_path)  → archivo → MD
+    → DocumentConverter().convert()    → Docling convierte archivo → MD
+    → resultado.document.export_to_markdown()
     → Storage.guardar()                → s3/archivosConvertidos/{id}.md
     → doc.converted_path = path        → guarda ruta en DB
     → DocumentRepo.actualizar_status() → status = 'converted'
@@ -66,15 +67,17 @@ POST /documents/clean-batch
   → DocumentService.limpiar()
     → DocumentRepo.leer_uno()          → SELECT
     → Storage.leer(converted_path)     → lee el .md
-    → CleaningService.limpiar()
+    → CleaningService.structuralCleaning()
         → ftfy.fix_text()              → repara encoding
-        → markdown_it.MarkdownIt()     → parsea MD → extrae texto plano
+        → markdown_it.MarkdownIt()     → parsea MD (default) → extrae texto plano
         → regex URL/email/teléfono     → elimina datos de contacto
-        → re.sub + strip + .lower()   → normaliza whitespace + minúsculas
+        → _MULTISPACE + _SPACES + strip + .lower() → normaliza whitespace + minúsculas
     → Storage.guardar()                → s3/archivosLimpiados/{id}.txt
     → doc.cleaned_path = path          → guarda ruta en DB
     → DocumentRepo.actualizar_status() → status = 'cleaned'
   ← 200 OK
+
+linguisticCleaning() es un stub (pass). Pendiente: spaCy + langdetect para tokenización por oraciones y filtrado de ruido.
 
 limpiar_varios: busca todos en status "converted", limpia uno a uno con rollback por documento
 ```

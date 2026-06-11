@@ -31,7 +31,7 @@ http://localhost:8000/docs
 | DB | PostgreSQL 16 + pgvector |
 | ORM | SQLAlchemy 2.0 |
 | Migraciones | Alembic |
-| Conversión | markitdown (PDF, DOCX → MD) |
+| Conversión | Docling (PDF, DOCX → MD) |
 | Parseo MD | markdown-it-py |
 | Reparación encoding | ftfy |
 | Almacenamiento | s3/ (local, montado en Docker) |
@@ -61,6 +61,26 @@ http://localhost:8000/docs
 | `cleaned` | Texto limpiado, listo para NER |
 
 ## Convenciones
+
+- **Python:** snake_case para archivos, variables y funciones. PascalCase para clases.
+- **Endpoints:** router fino, lógica en services, DB en models.
+- **Storage:** `Storage.guardar(content, filename, target_dir)` recibe el directorio desde la capa de servicio.
+- **Excepciones:** heredan de `DocumentoError(codigo_http)`, capturadas por handler global en `main.py`.
+- **Commits:** solo cuando se pida explícitamente.
+- **Variables de entorno:** `.env` (gitignored). `DATABASE_URL` es la única obligatoria.
+
+## Dependencias del sistema (Dockerfile)
+
+La imagen base `python:3.11-slim` requiere estos paquetes adicionales para Docling/OpenCV:
+
+- `gcc` — compilación
+- `libgl1` — OpenGL
+- `libglib2.0-0` — GLib
+- `libxcb1` — X11 protocol (requerido por OpenCV)
+
+## Reglas de trabajo
+
+- **Autorización previa:** antes de cualquier edición de código, presentar el cambio propuesto y esperar autorización explícita. No modificar archivos sin visto bueno.
 
 - **Python:** snake_case para archivos, variables y funciones. PascalCase para clases.
 - **Endpoints:** router fino, lógica en services, DB en models.
