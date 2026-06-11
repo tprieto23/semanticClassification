@@ -14,12 +14,13 @@
 
 ## Objetivo 2: Conversión a Markdown ✅
 
-- [x] `markitdown[pdf,docx]` en requirements.txt
+- [x] ~~`markitdown[pdf,docx]` en requirements.txt~~ → reemplazado por `docling`
 - [x] `s3/archivosConvertidos/` — destino de archivos .md
 - [x] `config.py` — STORAGE_CONVERTED
 - [x] `models/documents.py` — columna converted_path
-- [x] `services/documents.py` — DocumentService.convertir() + convertir_varios()
+- [x] `services/documents.py` — DocumentService.convertir() con Docling + convertir_varios()
 - [x] `api/routers/documents.py` — POST /documents/{id}/process + /process-batch
+- [x] Dockerfile — `libgl1`, `libglib2.0-0`, `libxcb1` para OpenCV/Docling
 - [x] Probado: 200, 404, 409
 
 ### Refactors del objetivo 2
@@ -29,13 +30,14 @@
 - [x] `api/schemas/documents.py` — renombrado de `ingesta.py`
 - [x] Eliminados `services/conversion.py`, `api/routers/conversion.py`, `api/routers/ingesta.py`, `api/schemas/ingesta.py`
 
-## Objetivo 3: Limpieza de textos ✅
+## Objetivo 3: Limpieza de textos 🔧
 
-- [x] `src/services/cleaning.py` — CleaningService.limpiar()
+- [x] `src/services/cleaning.py` — CleaningService.structuralCleaning()
   - [x] ftfy.fix_text() → reparación de encoding
-  - [x] markdown_it.MarkdownIt() → parseo MD → extracción texto plano
+  - [x] markdown_it.MarkdownIt() (default, no "commonmark") → parseo MD → extracción texto plano
   - [x] regex → eliminación de URLs, emails, teléfonos
-  - [x] normalización whitespace + .lower()
+  - [x] normalización whitespace (_MULTISPACE + _SPACES) + .lower()
+- [ ] `linguisticCleaning()` — **stub (pass)**. Plan: spaCy + langdetect para tokenización por oraciones y filtrado de ruido (portadas, referencias)
 - [x] `models/documents.py` — columna cleaned_path
 - [x] `models/storage.py` — método leer()
 - [x] `services/documents.py` — DocumentService.limpiar() + limpiar_varios() + DocumentoNoConvertido
@@ -53,3 +55,17 @@
 ## Objetivos 5–8: Vectores, matrices, grafos, métricas ⏳
 
 - [ ] Sin definir
+
+## Status de sesión — Jun 11 2026
+
+**Stack actual:**
+- Conversión: Docling (DocumentConverter sin opciones de pipeline, sin OCR)
+- Dockerfile: `libgl1`, `libglib2.0-0`, `libxcb1` para OpenCV
+- 29 documentos en DB, todos en `raw` (salvo 1 en `converted`)
+
+**Pendiente inmediato:**
+- Implementar `linguisticCleaning()` con spaCy + langdetect (actualmente es `pass`)
+- Definir si `limpiar()` guarda un solo `.txt` o múltiples chunks
+
+**Siguiente objetivo:**
+- Objetivo 4: Extracción de entidades (NER con XLM-RoBERTa)

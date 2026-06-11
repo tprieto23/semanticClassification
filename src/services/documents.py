@@ -1,7 +1,7 @@
 import json
 
 from fastapi import UploadFile
-from markitdown import MarkItDown
+from docling.document_converter import DocumentConverter
 from sqlalchemy.orm import Session
 
 from src.models.database import get_db  # noqa: F401 — pasamanos para api
@@ -123,11 +123,10 @@ class DocumentService:
         if doc.status != "raw":
             raise DocumentoYaConvertido(document_id, doc.status)
 
-        md = MarkItDown()
-        resultado = md.convert(doc.file_path)
-        nombre_md = f"{doc.id}.md"
-
-        path = Storage.guardar(resultado.text_content.encode("utf-8"), nombre_md, settings.STORAGE_CONVERTED)
+        converter = DocumentConverter()
+        resultado = converter.convert(doc.file_path)
+        md_content = resultado.document.export_to_markdown()
+        path = Storage.guardar(md_content.encode("utf-8"), f"{doc.id}.md", settings.STORAGE_CONVERTED)
         doc.converted_path = str(path)
         DocumentRepo.actualizar_status(db, doc, "converted")
 
