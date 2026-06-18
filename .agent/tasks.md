@@ -30,6 +30,20 @@
 - [x] `api/schemas/documents.py` — renombrado de `ingesta.py`
 - [x] Eliminados `services/conversion.py`, `api/routers/conversion.py`, `api/routers/ingesta.py`, `api/schemas/ingesta.py`
 
+### Mejora de rendimiento PDF — Jun 12 2026
+- [x] `requirements.txt` — agregado `PyMuPDF`
+- [x] `Dockerfile` — agregados `libxcb-shm0`, `libxcb-xfixes0`, `libxcb-xinerama0`, `libglx-mesa0`
+- [x] `src/services/pdf_converter.py` — **nuevo** convertidor híbrido:
+  - Fast path: PyMuPDF para PDFs nativos (~0.1-1s por documento)
+  - Fallback: Docling OCR para PDFs escaneados (~60-90s por documento)
+- [x] `src/config.py` — agregado `STORAGE_IMAGES = s3/imagenesExtraidas`
+- [x] `src/models/documents.py` — agregada columna `images_path`
+- [x] `src/models/storage.py` — agregado `eliminar_directorio()`
+- [x] `src/api/schemas/documents.py` — agregado `images_path`
+- [x] `src/services/documents.py` — `convertir()` reutiliza `PdfConverter` (lazy), `revertir()` elimina directorio de imágenes
+- [x] Migración alembic: `cfe959221fc7` — add images_path to documents
+- [x] Batch de 27 PDFs convertidos en **28 segundos** (vs ~2-3 horas con Docling puro)
+
 ## Objetivo 3: Limpieza de textos 🔧
 
 - [x] `src/services/cleaning.py` — CleaningService.structuralCleaning()

@@ -14,6 +14,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
     libxcb1 \
+    libxcb-shm0 \
+    libxcb-xfixes0 \
+    libxcb-xinerama0 \
+    libglx-mesa0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar requirements primero (mejor cache)
