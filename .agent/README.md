@@ -31,7 +31,8 @@ http://localhost:8000/docs
 | DB | PostgreSQL 16 + pgvector |
 | ORM | SQLAlchemy 2.0 |
 | Migraciones | Alembic |
-| Conversión | Docling (PDF, DOCX → MD) |
+| Conversión PDF | **PyMuPDF** (fast path) + Docling OCR (fallback) |
+| Conversión DOCX | Docling |
 | Parseo MD | markdown-it-py |
 | Reparación encoding | ftfy |
 | Almacenamiento | s3/ (local, montado en Docker) |
@@ -71,12 +72,16 @@ http://localhost:8000/docs
 
 ## Dependencias del sistema (Dockerfile)
 
-La imagen base `python:3.11-slim` requiere estos paquetes adicionales para Docling/OpenCV:
+La imagen base `python:3.11-slim` requiere estos paquetes adicionales para Docling/OpenCV/PyMuPDF:
 
 - `gcc` — compilación
 - `libgl1` — OpenGL
 - `libglib2.0-0` — GLib
 - `libxcb1` — X11 protocol (requerido por OpenCV)
+- `libxcb-shm0` — shared memory (X11)
+- `libxcb-xfixes0` — X11 fixes extension
+- `libxcb-xinerama0` — X11 multi-head extension
+- `libglx-mesa0` — Mesa GLX (OpenGL)
 
 ## Reglas de trabajo
 

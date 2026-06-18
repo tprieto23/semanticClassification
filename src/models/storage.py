@@ -35,6 +35,14 @@ class Storage:
             pass
 
     @staticmethod
+    def eliminar_directorio(dir_path: str) -> None:
+        try:
+            import shutil
+            shutil.rmtree(dir_path, ignore_errors=True)
+        except OSError:
+            pass
+
+    @staticmethod
     def leer(file_path: str) -> str | None:
         p = Path(file_path)
         if not p.exists():

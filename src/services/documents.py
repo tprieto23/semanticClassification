@@ -1,7 +1,6 @@
 import json
 
 from fastapi import UploadFile
-from docling.document_converter import DocumentConverter
 from sqlalchemy.orm import Session
 
 from src.models.database import get_db  # noqa: F401 — pasamanos para api
@@ -11,6 +10,7 @@ from src.models.documents import Document
 from src.models.documents_repo import DocumentRepo
 from src.models.storage import Storage
 from src.services.cleaning import CleaningService
+from src.services.pdf_converter import PdfConverter
 
 
 class DocumentoError(Exception):
@@ -115,7 +115,11 @@ class DocumentService:
         ]
 
     @staticmethod
-    def convertir(db: Session, document_id: str) -> None:
+    def convertir(
+        db: Session,
+        document_id: str,
+        converter: PdfConverter | None = None,
+    ) -> None:
         doc = DocumentRepo.leer_uno(db, document_id)
         if doc is None:
             raise DocumentoNoEncontrado(document_id)
@@ -123,11 +127,16 @@ class DocumentService:
         if doc.status != "raw":
             raise DocumentoYaConvertido(document_id, doc.status)
 
-        converter = DocumentConverter()
-        resultado = converter.convert(doc.file_path)
-        md_content = resultado.document.export_to_markdown()
-        path = Storage.guardar(md_content.encode("utf-8"), f"{doc.id}.md", settings.STORAGE_CONVERTED)
+        if converter is None:
+            converter = PdfConverter()
+
+        md_content, images_dir = converter.convertir(doc.file_path, str(doc.id))
+        path = Storage.guardar(
+            md_content.encode("utf-8"), f"{doc.id}.md", settings.STORAGE_CONVERTED
+        )
         doc.converted_path = str(path)
+        if images_dir:
+            doc.images_path = str(images_dir)
         DocumentRepo.actualizar_status(db, doc, "converted")
 
     @staticmethod
@@ -135,11 +144,12 @@ class DocumentService:
         docs = DocumentRepo.leer_por_status(db, "raw")
         processed: list[str] = []
         errors: list[dict] = []
+        converter = PdfConverter()
 
         for doc in docs:
             doc_id = str(doc.id)
             try:
-                DocumentService.convertir(db, doc_id)
+                DocumentService.convertir(db, doc_id, converter)
                 processed.append(doc_id)
             except DocumentoError as e:
                 errors.append({"id": doc_id, "error": e.mensaje})
@@ -198,7 +208,10 @@ class DocumentService:
         elif doc.status == "converted":
             if doc.converted_path:
                 Storage.eliminar(doc.converted_path)
+            if doc.images_path:
+                Storage.eliminar_directorio(doc.images_path)
             doc.converted_path = None
+            doc.images_path = None
             DocumentRepo.actualizar_status(db, doc, "raw")
         else:
             raise DocumentoNoReversible(document_id, doc.status)
