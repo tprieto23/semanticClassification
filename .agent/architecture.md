@@ -16,9 +16,10 @@ src/
 │   ├── documents.py           ← ORM Document (10 columnas)
 │   ├── documents_repo.py      ← crear, leer_todos, leer_uno, eliminar, actualizar_status, leer_por_status
 │   └── storage.py             ← guardar, leer, eliminar, preparar_nombre
-└── services/
-    ├── cleaning.py            ← CleaningService.limpiar()
-    └── documents.py           ← DocumentService + todas las excepciones
+ └── services/
+     ├── cleaning.py            ← CleaningService.limpiar()
+     ├── documents.py           ← DocumentService + todas las excepciones
+     └── pdf_converter.py       ← PdfConverter: PyMuPDF fast path + Docling OCR fallback
 ```
 
 ## Capas
@@ -46,13 +47,12 @@ POST /documents
 POST /documents/{id}/process
 POST /documents/process-batch
 
-  → DocumentService.convertir()
-    → DocumentRepo.leer_uno()          → SELECT
-    → DocumentConverter().convert()    → Docling convierte archivo → MD
-    → resultado.document.export_to_markdown()
-    → Storage.guardar()                → s3/archivosConvertidos/{id}.md
-    → doc.converted_path = path        → guarda ruta en DB
-    → DocumentRepo.actualizar_status() → status = 'converted'
+   → DocumentService.convertir()
+     → DocumentRepo.leer_uno()          → SELECT
+     → PdfConverter().convertir()       → PyMuPDF (PDF nativo) o Docling OCR (fallback) → MD
+     → Storage.guardar()                → s3/archivosConvertidos/{id}.md
+     → doc.converted_path = path        → guarda ruta en DB
+     → DocumentRepo.actualizar_status() → status = 'converted'
   ← 200 OK
 
 convertir_varios: busca todos en status "raw", convierte uno a uno con rollback por documento

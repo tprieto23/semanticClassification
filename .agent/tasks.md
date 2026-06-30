@@ -36,13 +36,15 @@
 - [x] `src/services/pdf_converter.py` — **nuevo** convertidor híbrido:
   - Fast path: PyMuPDF para PDFs nativos (~0.1-1s por documento)
   - Fallback: Docling OCR para PDFs escaneados (~60-90s por documento)
-- [x] `src/config.py` — agregado `STORAGE_IMAGES = s3/imagenesExtraidas`
-- [x] `src/models/documents.py` — agregada columna `images_path`
-- [x] `src/models/storage.py` — agregado `eliminar_directorio()`
-- [x] `src/api/schemas/documents.py` — agregado `images_path`
-- [x] `src/services/documents.py` — `convertir()` reutiliza `PdfConverter` (lazy), `revertir()` elimina directorio de imágenes
-- [x] Migración alembic: `cfe959221fc7` — add images_path to documents
+- [x] `src/services/documents.py` — `convertir()` reutiliza `PdfConverter` (lazy)
 - [x] Batch de 27 PDFs convertidos en **28 segundos** (vs ~2-3 horas con Docling puro)
+
+### Refactor de simplificación — feat/reedireccion2
+- [x] `src/services/pdf_converter.py` — API simplificada: `convertir(file_path: str) -> str`
+- [x] `src/services/pdf_converter.py` — código muerto eliminado (`_extraer_imagenes_pymupdf`, bloques comentados, imports no usados)
+- [x] `src/services/pdf_converter.py` — TODO documentado para extracción futura de texto en imágenes `.png` dentro de PDFs nativos
+- [x] `src/services/documents.py` — adaptado a la nueva firma del convertidor
+- [ ] Extracción de imágenes como archivos separados — **postergado** (se mantiene la columna `images_path` en DB/schema por si se retoma)
 
 ## Objetivo 3: Limpieza de textos 🔧
 

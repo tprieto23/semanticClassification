@@ -1,7 +1,5 @@
 """Convertidor híbrido PDF: fast path con PyMuPDF, fallback a Docling OCR."""
 
-import base64
-import os
 from pathlib import Path
 
 import fitz  # PyMuPDF
@@ -9,8 +7,6 @@ import pymupdf4llm  # extracción layout-aware (orden multicolumna + tablas)
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import ThreadedPdfPipelineOptions
-
-from src.config import settings
 
 
 _MIN_TEXTO_NATIVO = 500  # chars — umbral para considerar PDF nativo
@@ -46,45 +42,14 @@ class PdfConverter:
         finally:
             doc.close()
 
-    def _extraer_imagenes_pymupdf(
-        self, file_path: str, images_dir: Path
-    ) -> list[Path]:
-        """Extrae imágenes embebidas de un PDF usando PyMuPDF."""
-        doc = fitz.open(file_path)
-        images_dir.mkdir(parents=True, exist_ok=True)
-        extraidas: list[Path] = []
-
-        try:
-            for page_num in range(len(doc)):
-                page = doc[page_num]
-                images = page.get_images(full=True)
-                for img_idx, img in enumerate(images):
-                    xref = img[0]
-                    base_image = doc.extract_image(xref)
-                    image_bytes = base_image["image"]
-                    image_ext = base_image["ext"]
-                    # Normalizar a PNG si es posible, sino conservar extensión
-                    ext = "png" if image_ext in ("png", "PNG") else image_ext
-                    img_name = f"page_{page_num + 1}_img_{img_idx + 1}.{ext}"
-                    img_path = images_dir / img_name
-                    img_path.write_bytes(image_bytes)
-                    extraidas.append(img_path)
-        finally:
-            doc.close()
-
-        return extraidas
-
-    def _pymupdf_to_markdown(
-        self, file_path: str, images_dir: Path
-    ) -> str:
+    def _pymupdf_to_markdown(self, file_path: str) -> str:
         """Ruta FAST con extracción layout-aware (pymupdf4llm).
 
         Respeta el orden de lectura multicolumna y reconstruye las tablas como
-        tablas Markdown (fix #2/#3), a diferencia de page.get_text() que aplanaba
-        columnas y desordenaba el texto.
+        tablas Markdown, a diferencia de page.get_text() que aplanaba columnas
+        y desordenaba el texto.
 
-        Minado de imágenes DESACTIVADO (write_images=False): no escribe archivos.
-        pymupdf4llm ya señala la presencia de imágenes con marcadores
+        Las imágenes embebidas se marcan con placeholders
         <!-- Start of picture text --> / <!-- End of picture text -->.
         """
         return pymupdf4llm.to_markdown(
@@ -94,74 +59,31 @@ class PdfConverter:
             show_progress=False,
         )
 
-        # --- Implementación anterior con page.get_text() DESACTIVADA ---
-        # Aplanaba tablas (columnas en secuencia) y desordenaba multicolumna.
-        # doc = fitz.open(file_path)
-        # partes: list[str] = []
-        # try:
-        #     for page_num in range(len(doc)):
-        #         page = doc[page_num]
-        #         texto = page.get_text().strip()
-        #         if texto:
-        #             partes.append(texto)
-        #         else:
-        #             partes.append(f"<!-- scanned page {page_num + 1} — no text detected -->")
-        #         if page.get_images(full=True):
-        #             partes.append("\n<!-- imagen -->\n")
-        # finally:
-        #     doc.close()
-        # return "\n\n".join(partes)
-
-    def _docling_to_markdown(
-        self, file_path: str, images_dir: Path
-    ) -> str:
-        """Fallback OCR. Minado de imágenes DESACTIVADO: foco en el texto.
-
-        export_to_markdown() ya inserta placeholders <!-- image --> que señalan
-        la presencia de cada imagen, así que no se extraen los PNG.
-        """
+    def _docling_to_markdown(self, file_path: str) -> str:
+        """Fallback OCR para PDFs escaneados o con muy poco texto nativo."""
         converter = self._get_docling_converter()
         resultado = converter.convert(file_path)
-        doc = resultado.document
+        return resultado.document.export_to_markdown()
 
-        # --- Minado de imágenes DESACTIVADO (Paso 2: foco en conversión de texto) ---
-        # NOTA: este bloque escribía PNG en disco pero NO inyecta nada en el .md;
-        # el texto sale entero de export_to_markdown() (camino independiente).
-        # images_dir.mkdir(parents=True, exist_ok=True)
-        # for page_no, page in doc.pages.items():
-        #     if page.image:
-        #         uri = str(page.image.uri)
-        #         if uri.startswith("data:image"):
-        #             header, b64 = uri.split(",", 1)
-        #             img_data = base64.b64decode(b64)
-        #             img_path = images_dir / f"page_{page_no}.png"
-        #             img_path.write_bytes(img_data)
+    def convertir(self, file_path: str) -> str:
+        """Convierte un archivo a Markdown.
 
-        # Docling deja placeholders <!-- image --> que marcan la presencia de imagen.
-        md = doc.export_to_markdown()
-        return md
+        - PDFs nativos: PyMuPDF (rápido).
+        - PDFs escaneados: Docling con OCR (fallback).
+        - DOCX y otros formatos: Docling directamente.
 
-    def convertir(self, file_path: str, doc_id: str) -> tuple[str, Path | None]:
-        """
-        Convierte un PDF a Markdown.
-
-        Retorna: (markdown_content, images_dir) o (markdown_content, None) si no hay imágenes.
+        TODO: futura mejora — para PDFs nativos que contengan imágenes .png
+        con texto relevante (por ejemplo tablas insertadas como imagen),
+        combinar el markdown de PyMuPDF con OCR selectivo sobre esas imágenes,
+        de modo que el documento final incluya tanto el texto nativo como el
+        texto legible en las imágenes, todo en un solo archivo markdown.
         """
         ext = Path(file_path).suffix.lower()
         if ext != ".pdf":
-            # No es PDF — usar Docling directamente (DOCX, etc.)
             converter = DocumentConverter()
             resultado = converter.convert(file_path)
-            return resultado.document.export_to_markdown(), None
-
-        images_dir = settings.STORAGE_IMAGES / doc_id
+            return resultado.document.export_to_markdown()
 
         if self._es_texto_nativo(file_path):
-            md = self._pymupdf_to_markdown(file_path, images_dir)
-        else:
-            md = self._docling_to_markdown(file_path, images_dir)
-
-        # Si no se extrajo ninguna imagen, no reportar directorio
-        if images_dir.exists() and any(images_dir.iterdir()):
-            return md, images_dir
-        return md, None
+            return self._pymupdf_to_markdown(file_path)
+        return self._docling_to_markdown(file_path)
