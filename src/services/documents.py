@@ -130,13 +130,11 @@ class DocumentService:
         if converter is None:
             converter = PdfConverter()
 
-        md_content, images_dir = converter.convertir(doc.file_path, str(doc.id))
+        md_content = converter.convertir(doc.file_path)
         path = Storage.guardar(
             md_content.encode("utf-8"), f"{doc.id}.md", settings.STORAGE_CONVERTED
         )
         doc.converted_path = str(path)
-        if images_dir:
-            doc.images_path = str(images_dir)
         DocumentRepo.actualizar_status(db, doc, "converted")
 
     @staticmethod
@@ -208,10 +206,7 @@ class DocumentService:
         elif doc.status == "converted":
             if doc.converted_path:
                 Storage.eliminar(doc.converted_path)
-            if doc.images_path:
-                Storage.eliminar_directorio(doc.images_path)
             doc.converted_path = None
-            doc.images_path = None
             DocumentRepo.actualizar_status(db, doc, "raw")
         else:
             raise DocumentoNoReversible(document_id, doc.status)
