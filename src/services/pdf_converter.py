@@ -1,35 +1,36 @@
-"""Convertidor híbrido PDF: fast path con PyMuPDF, fallback a Docling OCR."""
+"""Convertidor de documentos a Markdown.
 
-import base64
-import os
+PDF nativo    → pymupdf4llm (estructura: títulos, párrafos, tablas).
+PDF escaneado → Docling con OCR (texto desde imagen).
+DOCX          → Docling.
+
+No extrae imágenes: solo interesa el texto estructurado.
+"""
+
 from pathlib import Path
 
 import fitz  # PyMuPDF
-import pymupdf4llm  # extracción layout-aware (orden multicolumna + tablas)
+import pymupdf4llm
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import ThreadedPdfPipelineOptions
 
-from src.config import settings
 
-
-_MIN_TEXTO_NATIVO = 500  # chars — umbral para considerar PDF nativo
+_MIN_TEXTO_NATIVO = 500  # chars — umbral para considerar un PDF nativo
 
 
 class PdfConverter:
-    """Convierte PDFs usando PyMuPDF (rápido) o Docling OCR (lento, fallback)."""
+    """Convierte PDFs y DOCX a Markdown, priorizando texto nativo."""
 
     def __init__(self):
         self._docling_converter: DocumentConverter | None = None
 
     def _get_docling_converter(self) -> DocumentConverter:
-        """Lazy-load del convertidor Docling (con OCR)."""
+        """Lazy-load del convertidor Docling con OCR (para escaneados)."""
         if self._docling_converter is None:
             opts = ThreadedPdfPipelineOptions(do_ocr=True, do_table_structure=False)
             self._docling_converter = DocumentConverter(
-                format_options={
-                    InputFormat.PDF: PdfFormatOption(pipeline_options=opts)
-                }
+                format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=opts)}
             )
         return self._docling_converter
 
@@ -37,12 +38,12 @@ class PdfConverter:
         """Detecta si un PDF tiene texto nativo seleccionable."""
         doc = fitz.open(file_path)
         try:
-            total_texto = 0
+            total = 0
             for page in doc:
-                total_texto += len(page.get_text().strip())
-                if total_texto > _MIN_TEXTO_NATIVO:
+                total += len(page.get_text().strip())
+                if total > _MIN_TEXTO_NATIVO:
                     return True
-            return total_texto > _MIN_TEXTO_NATIVO
+            return total > _MIN_TEXTO_NATIVO
         finally:
             doc.close()
 
@@ -148,20 +149,16 @@ class PdfConverter:
         Retorna: (markdown_content, images_dir) o (markdown_content, None) si no hay imágenes.
         """
         ext = Path(file_path).suffix.lower()
-        if ext != ".pdf":
-            # No es PDF — usar Docling directamente (DOCX, etc.)
-            converter = DocumentConverter()
-            resultado = converter.convert(file_path)
-            return resultado.document.export_to_markdown(), None
 
-        images_dir = settings.STORAGE_IMAGES / doc_id
+        if ext != ".pdf":
+            # DOCX y otros → Docling
+            resultado = DocumentConverter().convert(file_path)
+            return resultado.document.export_to_markdown()
 
         if self._es_texto_nativo(file_path):
-            md = self._pymupdf_to_markdown(file_path, images_dir)
-        else:
-            md = self._docling_to_markdown(file_path, images_dir)
+            # PDF nativo → pymupdf4llm (Markdown estructurado, sin imágenes)
+            return pymupdf4llm.to_markdown(file_path, write_images=False, show_progress=False)
 
-        # Si no se extrajo ninguna imagen, no reportar directorio
-        if images_dir.exists() and any(images_dir.iterdir()):
-            return md, images_dir
-        return md, None
+        # PDF escaneado → Docling con OCR (sin extraer imágenes)
+        resultado = self._get_docling_converter().convert(file_path)
+        return resultado.document.export_to_markdown()

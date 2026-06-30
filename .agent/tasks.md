@@ -70,16 +70,44 @@
 
 - [ ] Sin definir
 
-## Status de sesión — Jun 11 2026
+## Refactor convertidor — solo texto, sin imágenes — Jun 29 2026
 
-**Stack actual:**
-- Conversión: Docling (DocumentConverter sin opciones de pipeline, sin OCR)
-- Dockerfile: `libgl1`, `libglib2.0-0`, `libxcb1` para OpenCV
-- 29 documentos en DB, todos en `raw` (salvo 1 en `converted`)
+**Motivo:** la extracción de imágenes guardaba archivos innecesarios para el análisis.
+El foco es producir Markdown **bien estructurado** (títulos, secciones, párrafos), no imágenes.
 
-**Pendiente inmediato:**
+**Hallazgos de diagnóstico:**
+- Corpus actual: **27 PDFs + 2 DOCX**. Los 27 PDFs son **100% texto nativo** (0 escaneados).
+- El camino de OCR de Docling nunca se disparaba con el corpus actual.
+- El camino rápido viejo (`page.get_text()`) producía texto **plano** sin estructura → raíz de la queja de "desorden".
+- 24 de 29 documentos en DB ya tenían `images_path` (convertidos con el código viejo).
+
+**Decisiones de diseño:**
+- PDF nativo → **`pymupdf4llm`** (Markdown estructurado, `write_images=False`).
+- PDF escaneado → **Docling + OCR conservado** para documentos futuros (hoy no hay ninguno, queda "dormido").
+- DOCX → Docling.
+- Imágenes: se eliminan por completo (extracción, `images_path`, `STORAGE_IMAGES`).
+- Ruido editorial (créditos, números de página) → se filtra en la **etapa de limpieza**, no en la conversión.
+
+**Plan por pasos:**
+- [x] **Paso 1** — convertidor + dependencias
+  - [x] `src/services/pdf_converter.py` reescrito (158 → ~70 líneas, sin imágenes, usa `pymupdf4llm`)
+  - [x] `src/services/documents.py` — `convertir()` y `revertir()` sin manejo de `images_dir`
+  - [x] `requirements.txt` — agregado `pymupdf4llm==0.0.17` (versión liviana, sin `onnxruntime`)
+  - [x] Probado: smoke test convierte PDF nativo → MD estructurado OK
+- [ ] **Paso 2** — sacar `images_path` del modelo de datos
+  - [ ] `models/documents.py` — quitar columna `images_path`
+  - [ ] `config.py` — quitar `STORAGE_IMAGES`
+  - [ ] `api/schemas/documents.py` — quitar `images_path`
+  - [ ] `models/storage.py` — quitar `eliminar_directorio()`
+  - [ ] migración Alembic — `DROP COLUMN images_path`
+- [ ] **Paso 3** — borrar `s3/imagenesExtraidas/` y `s3/test_images/`
+- [ ] **Paso 4** — rebuild de la imagen + revertir los 24 docs viejos a `raw` y reconvertir con el nuevo convertidor (iterar calidad del MD)
+- [ ] **Paso 5** — actualizar `.agent/` (README, architecture)
+
+**Pendiente posterior (Objetivo 3):**
 - Implementar `linguisticCleaning()` con spaCy + langdetect (actualmente es `pass`)
 - Definir si `limpiar()` guarda un solo `.txt` o múltiples chunks
+- Conflicto a resolver: `structuralCleaning()` hace `.lower()` al final, pero el criterio del proyecto es **no** bajar a minúsculas (las mayúsculas son señal para NER)
 
 **Siguiente objetivo:**
 - Objetivo 4: Extracción de entidades (NER con XLM-RoBERTa)

@@ -48,13 +48,16 @@ POST /documents/process-batch
 
   → DocumentService.convertir()
     → DocumentRepo.leer_uno()          → SELECT
-    → DocumentConverter().convert()    → Docling convierte archivo → MD
-    → resultado.document.export_to_markdown()
+    → PdfConverter().convertir()       → enruta según tipo:
+        · PDF nativo    → pymupdf4llm.to_markdown(write_images=False)  → MD estructurado
+        · PDF escaneado → Docling + OCR (export_to_markdown)           → MD texto (futuros)
+        · DOCX          → Docling (export_to_markdown)                 → MD
     → Storage.guardar()                → s3/archivosConvertidos/{id}.md
     → doc.converted_path = path        → guarda ruta en DB
     → DocumentRepo.actualizar_status() → status = 'converted'
   ← 200 OK
 
+No se extraen imágenes: el convertidor solo produce texto estructurado.
 convertir_varios: busca todos en status "raw", convierte uno a uno con rollback por documento
 ```
 
