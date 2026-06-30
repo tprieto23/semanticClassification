@@ -76,10 +76,15 @@ class PdfConverter:
     def _pymupdf_to_markdown(
         self, file_path: str, images_dir: Path
     ) -> str:
-        """Extrae texto nativo + imágenes y genera Markdown con referencias."""
+        """Extrae texto nativo por página. Minado de imágenes DESACTIVADO.
+
+        Se conserva un marcador <!-- imagen --> donde hay imágenes, pero no se
+        extraen ni se escriben los archivos (foco en la conversión del texto).
+        """
         doc = fitz.open(file_path)
         partes: list[str] = []
-        images = self._extraer_imagenes_pymupdf(file_path, images_dir)
+        # --- Minado de imágenes DESACTIVADO (Paso 2: foco en conversión de texto) ---
+        # images = self._extraer_imagenes_pymupdf(file_path, images_dir)
 
         try:
             for page_num in range(len(doc)):
@@ -93,14 +98,18 @@ class PdfConverter:
                     # Página sin texto (posible imagen escaneada) — insertar placeholder
                     partes.append(f"<!-- scanned page {page_num + 1} — no text detected -->")
 
-                # Añadir imágenes de esta página al final
-                page_images = [
-                    img for img in images
-                    if f"page_{page_num + 1}_" in img.name
-                ]
-                for img in page_images:
-                    rel_path = str(img.relative_to(settings.STORAGE_IMAGES))
-                    partes.append(f"\n![image]({rel_path})\n")
+                # Señalar presencia de imágenes SIN extraerlas (solo lee metadata, no escribe archivos).
+                if page.get_images(full=True):
+                    partes.append("\n<!-- imagen -->\n")
+
+                # --- Extracción/enlace de imágenes DESACTIVADO ---
+                # page_images = [
+                #     img for img in images
+                #     if f"page_{page_num + 1}_" in img.name
+                # ]
+                # for img in page_images:
+                #     rel_path = str(img.relative_to(settings.STORAGE_IMAGES))
+                #     partes.append(f"\n![image]({rel_path})\n")
         finally:
             doc.close()
 
@@ -109,26 +118,30 @@ class PdfConverter:
     def _docling_to_markdown(
         self, file_path: str, images_dir: Path
     ) -> str:
-        """Fallback: Docling con OCR + extracción de imágenes."""
+        """Fallback OCR. Minado de imágenes DESACTIVADO: foco en el texto.
+
+        export_to_markdown() ya inserta placeholders <!-- image --> que señalan
+        la presencia de cada imagen, así que no se extraen los PNG.
+        """
         converter = self._get_docling_converter()
         resultado = converter.convert(file_path)
         doc = resultado.document
 
-        # Extraer imágenes de páginas como PNG
-        images_dir.mkdir(parents=True, exist_ok=True)
-        for page_no, page in doc.pages.items():
-            if page.image:
-                uri = str(page.image.uri)
-                if uri.startswith("data:image"):
-                    header, b64 = uri.split(",", 1)
-                    img_data = base64.b64decode(b64)
-                    img_path = images_dir / f"page_{page_no}.png"
-                    img_path.write_bytes(img_data)
+        # --- Minado de imágenes DESACTIVADO (Paso 2: foco en conversión de texto) ---
+        # NOTA: este bloque escribía PNG en disco pero NO inyecta nada en el .md;
+        # el texto sale entero de export_to_markdown() (camino independiente).
+        # images_dir.mkdir(parents=True, exist_ok=True)
+        # for page_no, page in doc.pages.items():
+        #     if page.image:
+        #         uri = str(page.image.uri)
+        #         if uri.startswith("data:image"):
+        #             header, b64 = uri.split(",", 1)
+        #             img_data = base64.b64decode(b64)
+        #             img_path = images_dir / f"page_{page_no}.png"
+        #             img_path.write_bytes(img_data)
 
+        # Docling deja placeholders <!-- image --> que marcan la presencia de imagen.
         md = doc.export_to_markdown()
-        # Reemplazar placeholders de Docling con referencias locales
-        # Docling usa <!-- image --> por cada imagen; no sabemos el orden exacto,
-        # así que mantenemos los placeholders y el usuario puede referenciar.
         return md
 
     def convertir(self, file_path: str, doc_id: str) -> tuple[str, Path | None]:
