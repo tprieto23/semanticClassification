@@ -14,10 +14,50 @@ class CleaningService:
     )
     _MULTISPACE = re.compile(r"\n{3,}")
     _SPACES = re.compile(r"[ \t]+")
+    _SOLO_NUMERO = re.compile(r"^\d{1,4}$")
+
+    @staticmethod
+    def _eliminar_lineas_repetidas(texto: str, min_repeticiones: int = 3) -> str:
+        """Elimina headers/footers recurrentes (Paso 3, fix #1).
+
+        Una línea idéntica que se repite muchas veces a lo largo del documento
+        suele ser un encabezado/pie de página que PyMuPDF extrae una vez por
+        página (p. ej. el título del documento ×N páginas). Se conserva solo la
+        primera aparición. Además se descartan líneas que son solo número de
+        página (pies de página numéricos).
+        """
+        lineas = texto.split("\n")
+
+        # Cuenta líneas no vacías normalizadas → candidatas a recurrentes.
+        conteo: dict[str, int] = {}
+        for ln in lineas:
+            clave = ln.strip().lower()
+            if clave:
+                conteo[clave] = conteo.get(clave, 0) + 1
+        recurrentes = {k for k, c in conteo.items() if c >= min_repeticiones}
+
+        resultado: list[str] = []
+        vistos: set[str] = set()
+        for ln in lineas:
+            clave = ln.strip().lower()
+            # Pie de página numérico → descartar.
+            if CleaningService._SOLO_NUMERO.match(clave):
+                continue
+            # Header/footer recurrente → conservar solo la 1ª aparición.
+            if clave in recurrentes:
+                if clave in vistos:
+                    continue
+                vistos.add(clave)
+            resultado.append(ln)
+
+        return "\n".join(resultado)
 
     @staticmethod
     def structuralCleaning(texto_md: str) -> str:
         texto = fix_text(texto_md)
+
+        # Fix #1: quitar headers/footers repetidos por página antes del render.
+        texto = CleaningService._eliminar_lineas_repetidas(texto)
 
         md = MarkdownIt("commonmark")
         html = md.render(texto)
