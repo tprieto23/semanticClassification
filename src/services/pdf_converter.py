@@ -76,7 +76,7 @@ class PdfConverter:
         return extraidas
 
     def _pymupdf_to_markdown(
-        self, file_path: str, images_dir: Path
+        self, file_path: str
     ) -> str:
         """Ruta FAST con extracción layout-aware (pymupdf4llm).
 
@@ -156,9 +156,8 @@ class PdfConverter:
             return resultado.document.export_to_markdown()
 
         if self._es_texto_nativo(file_path):
-            # PDF nativo → pymupdf4llm (Markdown estructurado, sin imágenes)
-            return pymupdf4llm.to_markdown(file_path, write_images=False, show_progress=False)
+            md = self._pymupdf_to_markdown(file_path)
+        else:
+            md = self._docling_to_markdown(file_path)
 
-        # PDF escaneado → Docling con OCR (sin extraer imágenes)
-        resultado = self._get_docling_converter().convert(file_path)
-        return resultado.document.export_to_markdown()
+        return md
