@@ -16,6 +16,7 @@ pydantic-settings>=2.3.0
 
 # Conversión de documentos (Objetivo 2)
 docling
+pymupdf4llm
 PyMuPDF>=1.24.0
 
 # Limpieza de textos (Objetivo 3)
@@ -26,10 +27,14 @@ nltk
 spacy>=3.7.0
 langdetect==1.0.9
 
-# Fine-tuning NER con XLM-RoBERTa
-torch
-transformers
-datasets
-seqeval
-accelerate
-evaluate
+# torch/torchvision: requeridos por docling/transformers.
+# Se instalan CPU-only en el Dockerfile (evita wheels CUDA nvidia ~1.5GB).
+# torch        ← instalado en Dockerfile desde índice CPU
+# torchvision  ← instalado en Dockerfile desde índice CPU
+transformers   # requerido por docling (import a nivel de módulo)
+
+# Fine-tuning NER con XLM-RoBERTa (Objetivo 4) — OMITIDO por ahora (pesado)
+# datasets
+# seqeval
+# accelerate
+# evaluate

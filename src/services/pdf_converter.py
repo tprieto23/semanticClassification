@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 import fitz  # PyMuPDF
+import pymupdf4llm  # extracción layout-aware (orden multicolumna + tablas)
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import ThreadedPdfPipelineOptions
@@ -76,44 +77,40 @@ class PdfConverter:
     def _pymupdf_to_markdown(
         self, file_path: str, images_dir: Path
     ) -> str:
-        """Extrae texto nativo por página. Minado de imágenes DESACTIVADO.
+        """Ruta FAST con extracción layout-aware (pymupdf4llm).
 
-        Se conserva un marcador <!-- imagen --> donde hay imágenes, pero no se
-        extraen ni se escriben los archivos (foco en la conversión del texto).
+        Respeta el orden de lectura multicolumna y reconstruye las tablas como
+        tablas Markdown (fix #2/#3), a diferencia de page.get_text() que aplanaba
+        columnas y desordenaba el texto.
+
+        Minado de imágenes DESACTIVADO (write_images=False): no escribe archivos.
+        pymupdf4llm ya señala la presencia de imágenes con marcadores
+        <!-- Start of picture text --> / <!-- End of picture text -->.
         """
-        doc = fitz.open(file_path)
-        partes: list[str] = []
-        # --- Minado de imágenes DESACTIVADO (Paso 2: foco en conversión de texto) ---
-        # images = self._extraer_imagenes_pymupdf(file_path, images_dir)
+        return pymupdf4llm.to_markdown(
+            file_path,
+            write_images=False,
+            embed_images=False,
+            show_progress=False,
+        )
 
-        try:
-            for page_num in range(len(doc)):
-                page = doc[page_num]
-                texto = page.get_text().strip()
-
-                # Si la página tiene texto nativo, usarlo
-                if texto:
-                    partes.append(texto)
-                else:
-                    # Página sin texto (posible imagen escaneada) — insertar placeholder
-                    partes.append(f"<!-- scanned page {page_num + 1} — no text detected -->")
-
-                # Señalar presencia de imágenes SIN extraerlas (solo lee metadata, no escribe archivos).
-                if page.get_images(full=True):
-                    partes.append("\n<!-- imagen -->\n")
-
-                # --- Extracción/enlace de imágenes DESACTIVADO ---
-                # page_images = [
-                #     img for img in images
-                #     if f"page_{page_num + 1}_" in img.name
-                # ]
-                # for img in page_images:
-                #     rel_path = str(img.relative_to(settings.STORAGE_IMAGES))
-                #     partes.append(f"\n![image]({rel_path})\n")
-        finally:
-            doc.close()
-
-        return "\n\n".join(partes)
+        # --- Implementación anterior con page.get_text() DESACTIVADA ---
+        # Aplanaba tablas (columnas en secuencia) y desordenaba multicolumna.
+        # doc = fitz.open(file_path)
+        # partes: list[str] = []
+        # try:
+        #     for page_num in range(len(doc)):
+        #         page = doc[page_num]
+        #         texto = page.get_text().strip()
+        #         if texto:
+        #             partes.append(texto)
+        #         else:
+        #             partes.append(f"<!-- scanned page {page_num + 1} — no text detected -->")
+        #         if page.get_images(full=True):
+        #             partes.append("\n<!-- imagen -->\n")
+        # finally:
+        #     doc.close()
+        # return "\n\n".join(partes)
 
     def _docling_to_markdown(
         self, file_path: str, images_dir: Path
