@@ -64,17 +64,25 @@ convertir_varios: busca todos en status "raw", convierte uno a uno con rollback 
 POST /documents/{id}/clean
 POST /documents/clean-batch
 
-  → DocumentService.limpiar()
-    → DocumentRepo.leer_uno()          → SELECT
-    → Storage.leer(converted_path)     → lee el .md
-    → CleaningService.structuralCleaning()
-        → ftfy.fix_text()              → repara encoding
-        → markdown_it.MarkdownIt()     → parsea MD (default) → extrae texto plano
-        → regex URL/email/teléfono     → elimina datos de contacto
-        → _MULTISPACE + _SPACES + strip + .lower() → normaliza whitespace + minúsculas
-    → Storage.guardar()                → s3/archivosLimpiados/{id}.txt
-    → doc.cleaned_path = path          → guarda ruta en DB
-    → DocumentRepo.actualizar_status() → status = 'cleaned'
+   → DocumentService.limpiar()
+     → DocumentRepo.leer_uno()          → SELECT
+     → Storage.leer(converted_path)     → lee el .md
+     → CleaningService.structuralCleaning()
+         → ftfy.fix_text()              → repara encoding
+         → elimina placeholders de imágenes
+         → elimina headers/footers repetidos
+         → markdown_it.MarkdownIt()     → parsea MD → extrae texto plano
+         → regex URL/email/teléfono     → elimina datos de contacto
+         → elimina metadata de autoria (autores, facilitadores, revisores, directores)
+         → elimina direcciones postales, notas legales, copyright y créditos
+         → elimina índices/tablas de contenido, tablas Markdown y headers de anexos
+         → elimina prefijos de numeración de secciones, subsecciones e items
+         → elimina números de página y líneas muy cortas
+         → deduplica párrafos consecutivos
+         → _MULTISPACE + _SPACES + strip → normaliza whitespace (mantiene mayúsculas)
+     → Storage.guardar()                → s3/archivosLimpiados/{id}.txt
+     → doc.cleaned_path = path          → guarda ruta en DB
+     → DocumentRepo.actualizar_status() → status = 'cleaned'
   ← 200 OK
 
 linguisticCleaning() es un stub (pass). Pendiente: spaCy + langdetect para tokenización por oraciones y filtrado de ruido.

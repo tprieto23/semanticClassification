@@ -50,9 +50,20 @@
 
 - [x] `src/services/cleaning.py` — CleaningService.structuralCleaning()
   - [x] ftfy.fix_text() → reparación de encoding
-  - [x] markdown_it.MarkdownIt() (default, no "commonmark") → parseo MD → extracción texto plano
+  - [x] markdown_it.MarkdownIt("commonmark") → parseo MD → extracción texto plano
   - [x] regex → eliminación de URLs, emails, teléfonos
-  - [x] normalización whitespace (_MULTISPACE + _SPACES) + .lower()
+  - [x] eliminación de placeholders de imágenes (`<!-- Start/End of picture text -->`)
+  - [x] eliminación conservadora de metadata de autoria (autores, facilitadores, revisores, directores, etc.)
+  - [x] eliminación de direcciones postales, correos y teléfonos
+  - [x] eliminación de notas legales, copyright y créditos de fotografía/diagramación
+  - [x] eliminación de índices/tablas de contenido
+  - [x] eliminación de tablas Markdown (agenda, anexos tabulados)
+  - [x] eliminación de headers de anexos
+  - [x] eliminación de prefijos de numeración de secciones y subsecciones
+  - [x] eliminación de items/viñetas sueltos
+  - [x] eliminación de números de página y líneas muy cortas
+  - [x] deduplicación de párrafos consecutivos
+  - [x] normalización whitespace (_MULTISPACE + _SPACES) **sin** `.lower()`
 - [ ] `linguisticCleaning()` — **stub (pass)**. Plan: spaCy + langdetect para tokenización por oraciones y filtrado de ruido (portadas, referencias)
 - [x] `models/documents.py` — columna cleaned_path
 - [x] `models/storage.py` — método leer()
