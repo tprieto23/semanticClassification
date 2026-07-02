@@ -1,17 +1,41 @@
+import logging
 import re
 
 from bs4 import BeautifulSoup
 from ftfy import fix_text
 from markdown_it import MarkdownIt
 
+logger = logging.getLogger(__name__)
+
 
 class CleaningService:
-
-    _URL_PATTERN = re.compile(r"https?://\S+|ftp://\S+|www\.\S+")
-    _EMAIL_PATTERN = re.compile(r"[\w.\-]+@[\w.\-]+\.\w{2,}")
-    _PHONE_PATTERN = re.compile(
-        r"\+?\d{1,4}?[\s.\-]?(?:\(?\d{1,4}?\)?)[\s.\-]?\d{1,4}[\s.\-]?\d{1,4}[\s.\-]?\d{1,9}"
+    # --- Patrones de contacto ---
+    _URL_PATTERN = re.compile(
+        r"(?:https?|ftp)://[^\s<>\"')]+|www\.[^\s<>\"')]+|"
+        r"(?<![@\w])[^\s<>\"'):/@]+\."
+        r"(?:com|org|net|edu|gov|pe|co|mx|ar|cl|br|es|int|io|ai|info|biz|coop)"
+        r"[^\s<>\"')]*",
+        re.IGNORECASE,
     )
+    _EMAIL_PATTERN = re.compile(r"[\w.\-+]+@[\w.\-]+\.\w{2,}")
+    # Conservador: solo captura números con estructura telefónica real.
+    # Evita borrar años (2015-2020), fechas (12-05-2024), coordenadas o
+    # rangos de páginas (pp. 45-67).
+    _PHONE_PATTERN = re.compile(
+        r"(?:\+\d{1,3}[\s.\-])?"
+        r"(?:"
+        r"\d{3}[\s.\-]\d{3}[\s.\-]\d{3}"          # móvil: 987 654 321
+        r"|"
+        r"\d{2}[\s.\-]\d{3}[\s.\-]\d{4}"          # fijo: 01 234 5678
+        r"|"
+        r"\d{1}[\s.\-]\d{3}[\s.\-]\d{4}"          # fijo sin 0: +51 1 234 5678
+        r"|"
+        r"\(\d{1,4}\)[\s.\-]?\d{3}[\s.\-]\d{4}"  # (01) 234-5678
+        r"|"
+        r"\(\d{3}\)[\s.\-]?\d{3}[\s.\-]\d{3}"    # (987) 654-321
+        r")"
+    )
+
     _MULTISPACE = re.compile(r"\n{3,}")
     _SPACES = re.compile(r"[ \t]+")
     _SOLO_NUMERO = re.compile(r"^\s*\d{1,4}\s*\.?\s*$")
@@ -22,12 +46,15 @@ class CleaningService:
         re.IGNORECASE | re.DOTALL,
     )
 
-    # Palabras clave que indican dirección postal o ubicación institucional.
-    _DIRECCION_PALABRAS = {
+    # Indicadores de dirección postal propiamente dicha.
+    # Una línea debe tener al menos uno de estos + un número, o dos de estos,
+    # para considerarse dirección postal. Nunca se elimina un topónimo solo.
+    _INDICADORES_POSTALES = {
         "jr.", "jiron", "av.", "avenida", "cra.", "carrera", "cl.", "calle",
-        "urb.", "urbanizacion", "urbanización", "n°", "nro.", "no.", "numero",
-        "número", "piso", "of.", "oficina", "magdalena", "lima", "bogotá",
-        "bogota", "medellín", "medellin", "cali", "perú", "peru", "colombia",
+        "urb.", "urbanizacion", "urbanización", "piso", "of.", "oficina",
+        "departamento", "interior", "int.", "mz.", "manzana", "lote", "lt.",
+        "km.", "kilometro", "kilómetro", "n°", "nro.", "nro", "numero", "número",
+        "dirección", "direccion", "dir.", "direc.",
     }
 
     # Palabras clave que indican instituciones académicas o de investigación.
@@ -53,6 +80,29 @@ class CleaningService:
         "revisora", "revisores", "asesor", "asesora", "asesores", "asesoras",
     }
 
+    # Títulos estructurales que se eliminan explícitamente como headers.
+    _TITULOS_ESTRUCTURALES = {
+        "introducción", "introduccion", "resumen", "abstract", "conclusiones",
+        "conclusión", "conclusion", "referencias", "bibliografía", "bibliografia",
+        "índice", "indice", "contenido", "tabla de contenido", "anexo", "annex",
+        "anexos", "resumen ejecutivo", "marco teórico", "marco teorico",
+        "metodología", "metodologia", "resultados", "discusión", "discusion",
+        "agradecimientos", "glosario", "siglas", "abreviaturas", "objetivos",
+        "objetivo general", "objetivos específicos", "objetivos especificos",
+        "antecedentes", "justificación", "justificacion", "hipótesis", "hipotesis",
+        "preguntas de investigación", "preguntas de investigacion",
+        "limitaciones", "alcance", "marco legal", "marco conceptual",
+    }
+
+    # Headers de secciones de referencias bibliográficas.
+    _HEADERS_REFERENCIAS = {
+        "referencias", "referencias bibliográficas", "referencias bibliograficas",
+        "referencias consultadas", "bibliografía", "bibliografia",
+        "bibliografía consultada", "bibliografia consultada",
+        "fuentes", "fuentes consultadas", "fuentes bibliográficas",
+        "fuentes bibliograficas",
+    }
+
     # Prefijos editoriales que identifican metadata de publicación.
     _PREFIJOS_EDITORIAL = (
         "titulo:", "título:", "publicado por", "editado por",
@@ -76,13 +126,38 @@ class CleaningService:
     _ANEXO_PATTERN = re.compile(r"^(anexo|annex)\s+[IVXivx0-9]+", re.IGNORECASE)
 
     # Prefijos de numeración de secciones, subsecciones e items.
+    # - Romanos de 2+ letras (II., III., IV.) → sección.
+    # - Romanos de 1 letra (I., V., X.) se preservan para no dañar iniciales.
+    # - Numéricos: 1., 1.1, 1), 1-
+    # - Items alfabéticos: a), b)
     _SECCION_PREFIX = re.compile(
-        r"^(?:[IVXÁÉÍÓÚÑA-Z]+|\d+)(?:\.\d+)*\s*[\.\)\-]\s+",
+        r"^(?:[IVX]{2,5}\.|\d+(?:\.\d+)*\s*[\.\)\-]|[a-zA-Z]\)\s+)",
         re.MULTILINE,
     )
 
     # Línea que solo contiene un item (viñeta o numeración).
     _ITEM_SOLO = re.compile(r"^\s*(?:\d+[\.\)]|[a-zA-Z][\.\)]|[-•◦○▪►])\s*$")
+
+    # --- Métodos de utilidad ---
+
+    @staticmethod
+    def _contar_lineas_palabras(texto: str) -> tuple[int, int]:
+        lineas = texto.split("\n") if texto else []
+        palabras = len(texto.split()) if texto else 0
+        return len(lineas), palabras
+
+    @staticmethod
+    def _log_paso(nombre: str, antes: str, despues: str) -> None:
+        lineas_antes, palabras_antes = CleaningService._contar_lineas_palabras(antes)
+        lineas_despues, palabras_despues = CleaningService._contar_lineas_palabras(despues)
+        logger.info(
+            "Paso '%s': lineas %d -> %d, palabras %d -> %d",
+            nombre,
+            lineas_antes,
+            lineas_despues,
+            palabras_antes,
+            palabras_despues,
+        )
 
     @staticmethod
     def _eliminar_tablas(texto: str) -> str:
@@ -97,7 +172,6 @@ class CleaningService:
                 en_tabla = True
                 continue
             if en_tabla:
-                # Una línea vacía después de la tabla se salta también para no dejar huecos.
                 if ln.strip() == "":
                     continue
                 en_tabla = False
@@ -121,16 +195,68 @@ class CleaningService:
     @staticmethod
     def _limpiar_contacto(texto: str) -> str:
         """Elimina URLs, emails y teléfonos."""
-        texto = CleaningService._URL_PATTERN.sub(" ", texto)
+        # Email primero para no romper dominios como minam.gob.pe que forman
+        # parte de una dirección de correo.
         texto = CleaningService._EMAIL_PATTERN.sub(" ", texto)
+        texto = CleaningService._URL_PATTERN.sub(" ", texto)
         texto = CleaningService._PHONE_PATTERN.sub(" ", texto)
         return texto
 
     @staticmethod
+    def _tiene_numero(linea: str) -> bool:
+        """Detecta si la línea contiene algún dígito numérico."""
+        return any(ch.isdigit() for ch in linea)
+
+    @staticmethod
+    def _empieza_con_indicador_postal(linea: str) -> bool:
+        inicio = linea.lower().strip()
+        return any(inicio.startswith(ind) for ind in CleaningService._INDICADORES_POSTALES)
+
+    @staticmethod
     def _es_direccion(linea: str) -> bool:
-        """Detecta si una línea parece una dirección postal."""
-        palabras = set(linea.lower().replace(",", " ").replace(".", " ").split())
-        return len(palabras & CleaningService._DIRECCION_PALABRAS) >= 2
+        """
+        Detecta si una línea parece una dirección postal real.
+
+        Solo se elimina si:
+        - Tiene múltiples indicadores postales y es predominantemente dirección.
+        - Tiene un indicador postal + número y comienza con él o es
+          predominantemente dirección.
+
+        Nunca se considera dirección un topónimo aislado (Lima, Perú, etc.)
+        ni una oración que simplemente mencione una dirección.
+        """
+        tokens = linea.lower().replace(",", " ").replace(".", " ").split()
+        if not tokens:
+            return False
+
+        palabras = set(tokens)
+        indicadores = palabras & CleaningService._INDICADORES_POSTALES
+        # También considerar formas sin punto, ej. 'av' en 'Av. Arequipa'.
+        indicadores_sin_punto = {
+            t for t in tokens
+            if t + "." in CleaningService._INDICADORES_POSTALES
+        }
+        indicadores = indicadores | indicadores_sin_punto
+
+        if not indicadores:
+            return False
+
+        tiene_numero = CleaningService._tiene_numero(linea)
+
+        # Contar palabras claramente relacionadas con dirección.
+        address_words = set(indicadores)
+        for t in tokens:
+            if t.isdigit():
+                address_words.add(t)
+
+        address_ratio = len(address_words) / len(tokens)
+        empieza_con_postal = CleaningService._empieza_con_indicador_postal(linea)
+
+        if len(indicadores) >= 2 and address_ratio >= 0.5:
+            return True
+        if len(indicadores) >= 1 and tiene_numero and (address_ratio >= 0.5 or empieza_con_postal):
+            return True
+        return False
 
     @staticmethod
     def _es_lista_nombres(linea: str) -> bool:
@@ -139,8 +265,18 @@ class CleaningService:
         if len(palabras) < 3:
             return False
         capitalizadas = re.findall(r"\b[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+\b", linea)
-        # Si la mitad o más de las palabras son nombres propios, es una lista de nombres.
         return len(capitalizadas) >= 3 and len(capitalizadas) / len(palabras) >= 0.5
+
+    @staticmethod
+    def _es_titulo_estructural(linea: str) -> bool:
+        """Detecta títulos de sección tipo 'Introducción', 'Referencias', etc."""
+        clave = linea.strip().rstrip(":").lower()
+        if clave in CleaningService._TITULOS_ESTRUCTURALES:
+            return True
+        return any(
+            clave.startswith(t + " ") or clave.startswith(t + ":")
+            for t in CleaningService._TITULOS_ESTRUCTURALES
+        )
 
     @staticmethod
     def _es_linea_autoria(linea: str, linea_anterior: str) -> bool:
@@ -148,23 +284,18 @@ class CleaningService:
         linea_lower = linea.lower()
         anterior_lower = linea_anterior.lower()
 
-        # Copyright o símbolo © → metadata de autoría.
         if CleaningService._COPYRIGHT_PATTERN.search(linea):
             return True
 
-        # Dos o más emails en la misma línea → casi siempre metadata de autores.
         if len(CleaningService._EMAIL_PATTERN.findall(linea)) >= 2:
             return True
 
-        # Múltiples instituciones en la misma línea.
         palabras = set(re.findall(r"\b\w+\b", linea_lower))
         instituciones = palabras & CleaningService._INSTITUCION_PALABRAS
         if len(instituciones) >= 2:
             return True
 
-        # La línea anterior era un header de autoria y esta línea parece una lista.
         if any(header in anterior_lower for header in CleaningService._HEADERS_AUTORIA):
-            # Si la línea es una lista de nombres, es metadata.
             if CleaningService._es_lista_nombres(linea):
                 return True
 
@@ -176,7 +307,6 @@ class CleaningService:
         linea_limpia = linea.lower().strip().rstrip(":")
         if linea_limpia in CleaningService._HEADERS_AUTORIA:
             return True
-        # También detecta cuando el header aparece al inicio de una línea más larga.
         return any(
             linea_limpia.startswith(header + " ") or linea_limpia.startswith(header + ":")
             for header in CleaningService._HEADERS_AUTORIA
@@ -196,52 +326,89 @@ class CleaningService:
         for ln in lineas:
             clave = ln.strip()
 
-            # Línea vacía → conservar.
             if not clave:
                 resultado.append(ln)
                 continue
 
-            # Línea que solo es un item → descartar.
             if CleaningService._ITEM_SOLO.match(clave):
                 continue
 
-            # Quitar prefijo de numeración al inicio.
             limpia = CleaningService._SECCION_PREFIX.sub("", ln)
             resultado.append(limpia)
 
         return "\n".join(resultado)
 
     @staticmethod
-    def _eliminar_lineas_repetidas(texto: str, min_repeticiones: int = 3) -> str:
-        """Elimina headers/footers recurrentes y números de página."""
+    def _es_linea_mayusculas(linea: str) -> bool:
+        """Detecta si una línea está completamente en mayúsculas (títulos/footers)."""
+        letras = re.sub(r"[^a-zA-ZÁÉÍÓÚÑáéíóúñ]", "", linea)
+        return bool(letras) and letras == letras.upper()
+
+    @staticmethod
+    def _eliminar_headers_footers_y_numeros(texto: str, min_repeticiones: int = 3) -> str:
+        """
+        Elimina únicamente:
+        - Números de página sueltos.
+        - Headers/footers cortos (≤ 5 palabras) que se repitan varias veces.
+        - Headers/footers largos en MAYÚSCULAS que se repitan varias veces
+          (typical de diapositivas/presentaciones).
+
+        No elimina lemas, frases identitarias ni contenido narrativo repetido,
+        porque esos deben contarse en la etapa de NER como NARRATIVA.
+        """
         lineas = texto.split("\n")
 
-        conteo: dict[str, int] = {}
+        conteo_cortos: dict[str, int] = {}
+        conteo_mayusculas: dict[str, int] = {}
         for ln in lineas:
             clave = ln.strip().lower()
-            if clave:
-                conteo[clave] = conteo.get(clave, 0) + 1
-        recurrentes = {k for k, c in conteo.items() if c >= min_repeticiones}
+            if not clave:
+                continue
+
+            # Cortos sin punto final → posibles headers/footers.
+            if len(clave.split()) <= 5 and not clave.endswith("."):
+                conteo_cortos[clave] = conteo_cortos.get(clave, 0) + 1
+
+            # Líneas completamente en mayúsculas → posibles footers de diapositiva.
+            if CleaningService._es_linea_mayusculas(ln.strip()):
+                conteo_mayusculas[clave] = conteo_mayusculas.get(clave, 0) + 1
+
+        recurrentes_cortos = {k for k, c in conteo_cortos.items() if c >= min_repeticiones}
+        recurrentes_mayusculas = {k for k, c in conteo_mayusculas.items() if c >= min_repeticiones}
 
         resultado: list[str] = []
-        vistos: set[str] = set()
+        vistos_cortos: set[str] = set()
+        vistos_mayusculas: set[str] = set()
         for ln in lineas:
             clave = ln.strip().lower()
-            # Pie de página numérico → descartar.
+
             if CleaningService._SOLO_NUMERO.match(clave):
                 continue
-            # Header/footer recurrente → conservar solo la 1ª aparición.
-            if clave in recurrentes:
-                if clave in vistos:
+
+            if clave in recurrentes_cortos:
+                if clave in vistos_cortos:
                     continue
-                vistos.add(clave)
+                vistos_cortos.add(clave)
+
+            # Mantener la primera aparición del footer en mayúsculas.
+            if clave in recurrentes_mayusculas:
+                if clave in vistos_mayusculas:
+                    continue
+                vistos_mayusculas.add(clave)
+
+            # También eliminar variantes con prefijo numérico ("29 ENFOQUE...").
+            if recurrentes_mayusculas:
+                clave_sin_prefijo = re.sub(r"^\d+\s+", "", clave)
+                if clave_sin_prefijo in recurrentes_mayusculas and clave_sin_prefijo in vistos_mayusculas:
+                    continue
+
             resultado.append(ln)
 
         return "\n".join(resultado)
 
     @staticmethod
     def _es_prefijo_editorial(linea: str) -> bool:
-        """Detecta líneas que empiezan con metadata editorial (título, publicado, etc.)."""
+        """Detecta líneas que empiezan con metadata editorial."""
         linea_lower = linea.lower().strip()
         return any(linea_lower.startswith(prefijo) for prefijo in CleaningService._PREFIJOS_EDITORIAL)
 
@@ -262,7 +429,7 @@ class CleaningService:
 
     @staticmethod
     def _eliminar_lineas_ruido(texto: str) -> str:
-        """Elimina direcciones, metadata de autoria y líneas muy cortas."""
+        """Elimina direcciones, metadata de autoria, títulos estructurales y líneas muy cortas."""
         lineas = texto.split("\n")
         resultado: list[str] = []
         anterior = ""
@@ -271,75 +438,66 @@ class CleaningService:
         for ln in lineas:
             clave = ln.strip()
 
-            # Línea vacía → conservar para mantener párrafos.
-            # No reseteamos anterior_fue_autoria porque los bloques de autoria
-            # suelen venir con saltos de línea entre nombres.
             if not clave:
                 resultado.append(ln)
                 anterior = ""
                 continue
 
-            # Número de página suelto.
             if CleaningService._SOLO_NUMERO.match(clave):
                 anterior = clave
                 anterior_fue_autoria = False
                 continue
 
-            # Header de autoria → descartar, pero marcar la anterior para la siguiente línea.
+            if CleaningService._es_titulo_estructural(clave):
+                anterior = clave
+                anterior_fue_autoria = True
+                continue
+
             if CleaningService._es_header_autoria(clave):
                 anterior = clave
                 anterior_fue_autoria = True
                 continue
 
-            # Header de anexo → descartar.
             if CleaningService._es_anexo(clave):
                 anterior = clave
                 anterior_fue_autoria = False
                 continue
 
-            # Prefijos editoriales: Título:, Publicado por, Nota aclaratoria, etc.
             if CleaningService._es_prefijo_editorial(clave):
                 anterior = clave
                 anterior_fue_autoria = True
                 continue
 
-            # Notas legales de reproducción/derechos.
             if CleaningService._es_linea_legal(clave):
                 anterior = clave
                 anterior_fue_autoria = True
                 continue
 
-            # Líneas de índice o tabla de contenido.
             if CleaningService._es_indice(clave):
                 anterior = clave
                 anterior_fue_autoria = False
                 continue
 
-            # Créditos de fotografía.
             if CleaningService._es_credito_foto(clave):
                 anterior = clave
                 anterior_fue_autoria = True
                 continue
 
-            # Línea de autoria (lista de nombres, emails, instituciones, copyright).
             if CleaningService._es_linea_autoria(clave, anterior):
                 anterior = clave
                 anterior_fue_autoria = True
                 continue
 
-            # Si la línea anterior fue autoria y esta es una lista de nombres, también es autoria.
             if anterior_fue_autoria and CleaningService._es_lista_nombres(clave):
                 anterior = clave
                 anterior_fue_autoria = True
                 continue
 
-            # Dirección postal.
             if CleaningService._es_direccion(clave):
                 anterior = clave
                 anterior_fue_autoria = False
                 continue
 
-            # Línea muy corta sin sentido completo (< 4 palabras).
             palabras = clave.split()
             if len(palabras) < 4 and not clave.endswith("."):
                 anterior = clave
@@ -378,21 +536,191 @@ class CleaningService:
         texto = CleaningService._SPACES.sub(" ", texto)
         return texto.strip()
 
+    # --- Limpieza lingüística ---
+
+    # Citas entre paréntesis tipo (Apellido, 2020), (Apellido et al., 2018),
+    # (Apellido y Apellido, 2015; Ortiz, 2020).
+    # Excluye explícitamente normas, decretos y referencias institucionales.
+    _CITA_PARENTESIS = re.compile(
+        r"\(\s*(?!"
+        r"[^)]*?\b(?:"
+        r"Decreto|Decreto\s+Supremo|Resolución|Resolucion|"
+        r"Resolución\s+Ministerial|Resolucion\s+Ministerial|Ley|"
+        r"DS|D\.S\.|RM|R\.M\.|Ministerio|GORE|SERNANP|DGAAM|"
+        r"OSINERGMIN|OEFA|SUNAT|PNP|Congreso|Defensoría|Defensoria|"
+        r"Poder\s+Judicial|Poder\s+Ejecutivo"
+        r")\b"
+        r")"
+        r"[^()]*?"
+        r"(?:"
+        r"\b[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+y\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)?"
+        r"(?:\s+et\s+al\.?)?"
+        r"\s*,?\s*\d{4}[a-z]?"
+        r"(?:\s*;\s*[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+et\s+al\.?)?\s*,?\s*\d{4}[a-z]?)*"
+        r")"
+        r"[^()]*?"
+        r"\)",
+        re.IGNORECASE,
+    )
+
+    _REF_BIB_PATTERN = re.compile(
+        r"\b(?:et\s+al|pp\.?|vol\.?|n[°o]\.?|doi:|isbn|issn|eds?\.?|comps?\.?)\b",
+        re.IGNORECASE,
+    )
+    # Apellido, A.  o  Apellido, A.B.  — requiere inicial con punto para no
+    # confundir con topónimos seguidos de coma (Maldonado, Lima).
+    _REF_BIB_AUTOR = re.compile(
+        r"\b[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+,\s*[A-ZÁÉÍÓÚÑ]\.(?:\s*[A-ZÁÉÍÓÚÑ]\.)*"
+    )
+
+    # Nota al pie: línea corta que empieza con número seguido de texto capitalizado.
+    _NOTA_PIE = re.compile(r"^\s*\d+\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+[a-záéíóúñ]+){0,8}\s*$")
+
+    @staticmethod
+    def _eliminar_citas_parentesis(texto: str) -> str:
+        """Elimina citas entre paréntesis tipo (Apellido, 2020)."""
+        return CleaningService._CITA_PARENTESIS.sub(" ", texto)
+
+    @staticmethod
+    def _es_referencia_bibliografica(linea: str) -> bool:
+        """
+        Heurística para detectar líneas de referencias bibliográficas.
+
+        No usa rangos de años como único criterio, porque rangos como
+        2001-2018 aparecen constantemente en el cuerpo del texto (datos,
+        estadísticas, períodos) y no solo en bibliografías.
+        """
+        if CleaningService._REF_BIB_PATTERN.search(linea):
+            return True
+        if CleaningService._REF_BIB_AUTOR.search(linea):
+            return True
+        return False
+
+    @staticmethod
+    def _eliminar_referencias_bibliograficas(texto: str) -> str:
+        """Elimina líneas que parezcan referencias bibliográficas."""
+        lineas = texto.split("\n")
+        resultado: list[str] = []
+        for ln in lineas:
+            clave = ln.strip()
+            if not clave:
+                resultado.append(ln)
+                continue
+            if CleaningService._es_referencia_bibliografica(clave):
+                continue
+            resultado.append(ln)
+        return "\n".join(resultado)
+
+    @staticmethod
+    def _eliminar_notas_al_pie(texto: str) -> str:
+        """Elimina líneas cortas que parezcan notas al pie."""
+        lineas = texto.split("\n")
+        resultado: list[str] = []
+        for ln in lineas:
+            clave = ln.strip()
+            if not clave:
+                resultado.append(ln)
+                continue
+            if (
+                CleaningService._NOTA_PIE.match(clave)
+                and len(clave.split()) < 12
+            ):
+                continue
+            resultado.append(ln)
+        return "\n".join(resultado)
+
+    @staticmethod
+    def _eliminar_seccion_referencias(texto: str) -> str:
+        """
+        Detecta el header de la sección de referencias/bibliografía y elimina
+        todo el contenido desde ese punto en adelante.
+        """
+        lineas = texto.split("\n")
+        idx_referencias: int | None = None
+
+        for i, ln in enumerate(lineas):
+            clave = ln.strip().rstrip(":").lower()
+            if clave in CleaningService._HEADERS_REFERENCIAS:
+                idx_referencias = i
+                break
+
+        if idx_referencias is not None:
+            logger.info("Eliminada sección de referencias a partir de la línea %d", idx_referencias)
+            return "\n".join(lineas[:idx_referencias])
+
+        return texto
+
+    # --- API pública ---
+
     @staticmethod
     def structuralCleaning(texto_md: str) -> str:
         """Limpieza estructural: convierte MD a texto plano y quita ruido común."""
+        logger.info("Iniciando limpieza estructural")
+
         texto = fix_text(texto_md)
+        CleaningService._log_paso("fix_text", texto_md, texto)
+
         texto = CleaningService._limpiar_placeholders_imagenes(texto)
-        texto = CleaningService._eliminar_lineas_repetidas(texto)
+        CleaningService._log_paso("limpiar_placeholders_imagenes", texto_md, texto)
+
+        texto = CleaningService._eliminar_headers_footers_y_numeros(texto)
+        CleaningService._log_paso("eliminar_headers_footers_y_numeros", texto_md, texto)
+
         texto = CleaningService._eliminar_tablas(texto)
+        CleaningService._log_paso("eliminar_tablas", texto_md, texto)
+
         texto = CleaningService._markdown_a_texto(texto)
+        CleaningService._log_paso("markdown_a_texto", texto_md, texto)
+
         texto = CleaningService._limpiar_contacto(texto)
+        CleaningService._log_paso("limpiar_contacto", texto_md, texto)
+
         texto = CleaningService._eliminar_lineas_ruido(texto)
+        CleaningService._log_paso("eliminar_lineas_ruido", texto_md, texto)
+
         texto = CleaningService._limpiar_numeracion(texto)
+        CleaningService._log_paso("limpiar_numeracion", texto_md, texto)
+
         texto = CleaningService._deduplicar_parrafos(texto)
+        CleaningService._log_paso("deduplicar_parrafos", texto_md, texto)
+
         texto = CleaningService._normalizar_espacios(texto)
+        CleaningService._log_paso("normalizar_espacios", texto_md, texto)
+
+        logger.info("Limpieza estructural finalizada")
         return texto
 
     @staticmethod
     def linguisticCleaning(texto: str) -> str:
-        pass
+        """
+        Limpieza lingüística conservadora:
+        - Elimina citas entre paréntesis (salvo normas y decretos).
+        - Elimina la sección de referencias bibliográficas.
+        - Elimina líneas sueltas de referencias bibliográficas.
+        - Elimina notas al pie.
+        - Mantiene párrafos como unidades de contenido.
+        - Une todo en una sola línea continua.
+        - Mantiene mayúsculas y puntuación.
+        """
+        logger.info("Iniciando limpieza lingüística")
+
+        if not texto or not texto.strip():
+            return ""
+
+        texto = CleaningService._eliminar_seccion_referencias(texto)
+        CleaningService._log_paso("eliminar_seccion_referencias", texto, texto)
+
+        texto = CleaningService._eliminar_citas_parentesis(texto)
+        CleaningService._log_paso("eliminar_citas_parentesis", texto, texto)
+
+        texto = CleaningService._eliminar_referencias_bibliograficas(texto)
+        CleaningService._log_paso("eliminar_referencias_bibliograficas", texto, texto)
+
+        texto = CleaningService._eliminar_notas_al_pie(texto)
+        CleaningService._log_paso("eliminar_notas_al_pie", texto, texto)
+
+        resultado = " ".join(texto.split())
+        CleaningService._log_paso("unir_lineas", texto, resultado)
+
+        logger.info("Limpieza lingüística finalizada")
+        return resultado
