@@ -11,6 +11,11 @@ class Settings(BaseSettings):
     DATA_CLEANED: Path = Path("s3/archivosLimpiados")
     STORAGE_IMAGES: Path = Path("s3/imagenesExtraidas")
 
+    ANTHROPIC_API_KEY: str = ""
+    ANTHROPIC_MODEL: str = "claude-sonnet-4-5-20250929"
+    NER_MAX_CHUNK_LEN: int = 48_000
+    NER_ANNOTATIONS_PATH: Path = Path("data/ner/annotations/a251048a.json")
+
     class Config:
         env_file = ".env"
         extra = "ignore"

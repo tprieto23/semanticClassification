@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Upload
 from sqlalchemy.orm import Session
 
 from src.api.schemas.documents import BatchProcessResponse, DocumentListResponse, DocumentRead
+from src.api.schemas.entities import EntityOut, ExtractEntitiesResponse
 from src.services.documents import DocumentService, get_db
 
 router = APIRouter(prefix="/documents", tags=["Documents"])
@@ -94,6 +95,18 @@ def revert(
     db: Session = Depends(get_db),
 ):
     DocumentService.revertir(db, str(document_id))
+
+
+@router.post("/{document_id}/extract-entities", response_model=ExtractEntitiesResponse)
+def extract_entities(
+    document_id: UUID,
+    db: Session = Depends(get_db),
+):
+    entidades = DocumentService.extraer_entidades_de_documento(db, str(document_id))
+    return ExtractEntitiesResponse(
+        document_id=document_id,
+        entities=[EntityOut(**e) for e in entidades],
+    )
 
 
 @router.delete("/{document_id}", status_code=status.HTTP_204_NO_CONTENT)

@@ -31,10 +31,6 @@ RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu 
 # Resto de dependencias de Python (torch ya satisfecho, no se reinstala)
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Descargar modelos de spaCy para NER (Objetivo 4)
-RUN python -m spacy download es_core_news_sm
-RUN python -m spacy download en_core_web_sm
-
 # Copiar el código
 COPY . .
 

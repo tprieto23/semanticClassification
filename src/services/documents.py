@@ -1,15 +1,21 @@
 import json
+import logging
+from datetime import datetime, timezone
 
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
+
+logger = logging.getLogger(__name__)
 
 from src.models.database import get_db  # noqa: F401 — pasamanos para api
 
 from src.config import settings
 from src.models.documents import Document
 from src.models.documents_repo import DocumentRepo
+from src.models.entities import Entity  # noqa: F401 — registra modelo
 from src.models.storage import Storage
 from src.services.cleaning import CleaningService
+from src.services.ner import extraer_entidades
 from src.services.pdf_converter import PdfConverter
 
 
@@ -192,6 +198,49 @@ class DocumentService:
                 db.rollback()
 
         return {"processed": processed, "errors": errors}
+
+    @staticmethod
+    def extraer_entidades_de_documento(
+        db: Session, document_id: str
+    ) -> list[dict]:
+        """Extrae entidades NER de un documento limpio usando Anthropic
+        y las persiste en la tabla entities."""
+        doc = DocumentRepo.leer_uno(db, document_id)
+        if doc is None:
+            raise DocumentoNoEncontrado(document_id)
+
+        if doc.status != "cleaned":
+            raise DocumentoError(
+                f"Documento {document_id} no está limpio (status: '{doc.status}')", 409
+            )
+
+        texto = doc.cleaned_path and Storage.leer(doc.cleaned_path)
+        if not texto:
+            raise DocumentoError("Archivo limpio no encontrado o vacío", 500)
+
+        logger.info("Extrayendo entidades para documento %s", document_id)
+        entidades = extraer_entidades(texto)
+        logger.info("Extraídas %d entidades para documento %s", len(entidades), document_id)
+
+        # Persistir en DB: eliminar entidades previas y guardar nuevas
+        db.query(Entity).filter(Entity.document_id == doc.id).delete()
+        now = datetime.now(timezone.utc)
+        for ent in entidades:
+            entity = Entity(
+                document_id=doc.id,
+                category=ent["labels"][0] if ent["labels"] else "",
+                text=ent["text"],
+                position_start=ent.get("start"),
+                position_end=ent.get("end"),
+                confidence=ent.get("confidence"),
+                metadata_={"context": ent.get("context")} if ent.get("context") else None,
+                created_at=now,
+            )
+            db.add(entity)
+        db.commit()
+        logger.info("Persistidas %d entidades en DB para documento %s", len(entidades), document_id)
+
+        return entidades
 
     @staticmethod
     def revertir(db: Session, document_id: str) -> None:

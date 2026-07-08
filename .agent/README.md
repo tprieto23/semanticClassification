@@ -35,6 +35,7 @@ http://localhost:8000/docs
 | Conversión DOCX | Docling |
 | Parseo MD | markdown-it-py |
 | Reparación encoding | ftfy |
+| NER | Anthropic Claude (API) + few-shot prompting |
 | Almacenamiento | s3/ (local, montado en Docker) |
 | Contenedores | Docker + docker-compose |
 
@@ -52,6 +53,7 @@ http://localhost:8000/docs
 | POST | `/documents/{id}/clean` | Limpiar texto |
 | POST | `/documents/clean-batch` | Limpiar todos en converted |
 | POST | `/documents/{id}/revert` | Revertir al estado anterior |
+| POST | `/documents/{id}/extract-entities` | Extraer entidades NER (Anthropic) |
 
 ## Estados del documento
 

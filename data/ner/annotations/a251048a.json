@@ -1,0 +1,1896 @@
+[
+  {
+    "id": 1,
+    "annotations": [
+      {
+        "id": 1,
+        "completed_by": 1,
+        "result": [
+          {
+            "value": {
+              "start": 116,
+              "end": 132,
+              "text": "Amazonía peruana",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "IfzgyhhPAR",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 215,
+              "end": 231,
+              "text": "cadenas de valor",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "1PMVEuVrVb",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 233,
+              "end": 237,
+              "text": "café",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "DIxJxw3gEO",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 239,
+              "end": 244,
+              "text": "cacao",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "qxFT1xQjzI",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 246,
+              "end": 260,
+              "text": "palma aceitera",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "tjAG_R0UJV",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 263,
+              "end": 272,
+              "text": "ganadería",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "iTC619d1XL",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 275,
+              "end": 291,
+              "text": "Amazonía peruana",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "wt4Zphq3sY",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 317,
+              "end": 340,
+              "text": "comunidad internacional",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "PR59-rM73u",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 133,
+              "end": 174,
+              "text": "Contribuciones Nacionalmente Determinadas",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "NtwelivJeK",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 43,
+              "end": 66,
+              "text": "compromisos voluntarios",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "ZdIcmhPhxu",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 369,
+              "end": 390,
+              "text": "propuestas normativas",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "ue2y56wVTA",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 495,
+              "end": 508,
+              "text": "Unión Europea",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "MpSHoamMDf",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 514,
+              "end": 528,
+              "text": "Estados Unidos",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "gtv_9TRFAD",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 550,
+              "end": 576,
+              "text": "República Popular de China",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "337_NaaIOg",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 533,
+              "end": 544,
+              "text": "Reino Unido",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "kyBP0gCJam",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 636,
+              "end": 678,
+              "text": "importación de productos y materias primas",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "elafIqCQ6G",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 759,
+              "end": 770,
+              "text": "commodities",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "qB_WpNXNtQ",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 779,
+              "end": 787,
+              "text": "la soya,",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "I8Nf7BNkiT",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 788,
+              "end": 803,
+              "text": "la carne bovina",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "7QX5rMHNJ4",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 805,
+              "end": 813,
+              "text": "el cacao",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "BJsl-kExO5",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 815,
+              "end": 822,
+              "text": "el café",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "AuAqQmAntr",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 828,
+              "end": 852,
+              "text": "aceite de palma aceitera",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "2zw-vFr9dn",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 871,
+              "end": 887,
+              "text": "se comercialicen",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "0e3GiaOk4u",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 914,
+              "end": 940,
+              "text": "propuestas de regulaciones",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "MkD9jFaX_t",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 965,
+              "end": 985,
+              "text": "compromisos globales",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "elvOznMOP8",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1035,
+              "end": 1051,
+              "text": "Acuerdo de París",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "N7SL77c8MO",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1057,
+              "end": 1079,
+              "text": "Declaración de Glasgow",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "wn5tR-4UCN",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 406,
+              "end": 453,
+              "text": "minimizar el impacto del comercio internacional",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "4okB9sUQJO",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 998,
+              "end": 1025,
+              "text": "mitigar el cambio climático",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "SbJzoiKROD",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1230,
+              "end": 1246,
+              "text": "Gobierno peruano",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "mqrT6lqslL",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1268,
+              "end": 1309,
+              "text": "compromisos para reducir la deforestación",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "u98RLGwJ_Z",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1408,
+              "end": 1441,
+              "text": "producción libre de deforestación",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "VnWwDGR6Sq",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1472,
+              "end": 1499,
+              "text": "actores públicos y privados",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "SjDOZimUlF",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1520,
+              "end": 1543,
+              "text": "compromisos voluntarios",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "pUFsjagkie",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1625,
+              "end": 1664,
+              "text": "los agricultores y ganaderos amazónicos",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "pkgCG1TMBz",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1566,
+              "end": 1587,
+              "text": "libre de deforestació",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "ztjkBAnezb",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1683,
+              "end": 1720,
+              "text": "competitividad de la Amazonía peruana",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "B9erYNixzB",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 1774,
+              "end": 1801,
+              "text": "sectores públicos y privado",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "BdxOlkeUgT",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2009,
+              "end": 2034,
+              "text": "cadenas de valor de cacao",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "bhlBubdG21",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2036,
+              "end": 2050,
+              "text": "palma aceitera",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "sDLqHlwHXg",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2052,
+              "end": 2056,
+              "text": "café",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "8Nz8o2KvZI",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2059,
+              "end": 2068,
+              "text": "ganadería",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "i7krhpRreT",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2075,
+              "end": 2091,
+              "text": "Amazonía peruana",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "BE2eM81_IK",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2093,
+              "end": 2134,
+              "text": "Naciones Unidas sobre el Cambio Climático",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "u7_ZAtqAF8",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2136,
+              "end": 2142,
+              "text": "CMNUCC",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "9md6VCD8Es",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2161,
+              "end": 2177,
+              "text": "Acuerdo de París",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "5g9Pq2glaq",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2346,
+              "end": 2387,
+              "text": "Contribuciones Nacionalmente Determinadas",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "NHTrMptviX",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2458,
+              "end": 2506,
+              "text": "Ley Marco sobre Cambio Climático - Ley n.º 30754",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "x7SOtPhagn",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2508,
+              "end": 2555,
+              "text": "la Estrategia Nacional ante el Cambio Climático",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "COrWz5cH1m",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2567,
+              "end": 2619,
+              "text": "Estrategia Nacional sobre Bosques y Cambio Climático",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "lem8Wi0Pk1",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2633,
+              "end": 2679,
+              "text": "Estrategia Nacional sobre Diversidad Biológica",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "-8MdAl42pi",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2557,
+              "end": 2561,
+              "text": "ENCC",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "gw8kWktGYv",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2621,
+              "end": 2626,
+              "text": "ENBCC",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "WRr5YUOBDZ",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2681,
+              "end": 2685,
+              "text": "ENDB",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "yJvaE56Xka",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2744,
+              "end": 2821,
+              "text": "conservar los bosques, y reducir las emisiones de gases de efecto invernadero",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "pMDt20QdOX",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2823,
+              "end": 2827,
+              "text": "GEI)",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "caxh4auamE",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 2971,
+              "end": 3005,
+              "text": "Declaración Conjunta de Intención ",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "5sdPX6ANi6",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3006,
+              "end": 3009,
+              "text": "DCI",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "v10YMjhqux",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3017,
+              "end": 3050,
+              "text": "acuerdo voluntario de cooperación",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "foAagrgmHW",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3067,
+              "end": 3104,
+              "text": "Gobiernos de Perú, Noruega y Alemania",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "we30lCgNwh",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3120,
+              "end": 3173,
+              "text": "reducción de emisiones de gases de efecto invernadero",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "vvS7IlZLk5",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3192,
+              "end": 3245,
+              "text": "deforestación y degradación de los bosques en el Perú",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "dgwmPSPzzB",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3362,
+              "end": 3393,
+              "text": "gobiernos regionales amazónicos",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "Ixm9kmLfKU",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3449,
+              "end": 3473,
+              "text": "reducir la deforestación",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "yFHnNWb-t8",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3704,
+              "end": 3718,
+              "text": "palma aceitera",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "vaatOVAG80",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3723,
+              "end": 3728,
+              "text": "cacao",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "U-mARbZYUL",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3731,
+              "end": 3740,
+              "text": "chocolate",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "1RgrPc28E_",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3787,
+              "end": 3811,
+              "text": "reducir la deforestación",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "lMitZ8TU6j",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3765,
+              "end": 3781,
+              "text": "ruta estratégica",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "QC8hjatcj0",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3813,
+              "end": 3909,
+              "text": "incrementar la competitividad y sostenibilidad de la producción regional, y mejorar el bienestar",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "GIsvPdiTTb",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3913,
+              "end": 3938,
+              "text": "los ciudadanos amazónicos",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "ucFU9iuYaw",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3957,
+              "end": 3966,
+              "text": "inclusión",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "9muSk6jzSG",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3974,
+              "end": 3981,
+              "text": "mujeres",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "Qsc9JyGrsy",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 3987,
+              "end": 4004,
+              "text": "pueblos indígenas",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "9rHWKTwNSH",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4011,
+              "end": 4018,
+              "text": "jóvenes",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "oPNDwrj0LD",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4971,
+              "end": 4987,
+              "text": "Amazonía peruana",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "Q11PzlqW-8",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4041,
+              "end": 4076,
+              "text": "Alianza de Bioversity International",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "8I-1XNuXpR",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4082,
+              "end": 4127,
+              "text": "Centro Internacional de Agricultura Tropical ",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "NA6z1_WmnY",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4128,
+              "end": 4132,
+              "text": "CIAT",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "STqTSRHiVS",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4255,
+              "end": 4258,
+              "text": "IKI",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "1i_aF5gZw1",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4294,
+              "end": 4299,
+              "text": "MINAM",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "32pt5dtMt8",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4302,
+              "end": 4309,
+              "text": "MIDAGRI",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "RQZuC-1hu_",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4151,
+              "end": 4189,
+              "text": "proyecto Sustainable Amazon Businesses",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "KRAgoo3OCI",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4314,
+              "end": 4353,
+              "text": "Coalición por una Producción Sostenible",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "RqqE79RDJJ",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4366,
+              "end": 4400,
+              "text": "Acuerdo Cacao, Bosque y Diversidad",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "xxBKIvalB8",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4441,
+              "end": 4464,
+              "text": "compromisos voluntarios",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "1YQEbjgVjM",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4468,
+              "end": 4501,
+              "text": "producción libre de deforestación",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "LZ7CttGX5Y",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4589,
+              "end": 4594,
+              "text": "cacao",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "Sssli-SX0h",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4599,
+              "end": 4613,
+              "text": "palma aceitera",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "k1Ue46HMjT",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4618,
+              "end": 4622,
+              "text": "café",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "H6MgEqwKPc",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4628,
+              "end": 4637,
+              "text": "ganadería",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "4AcbLrR5sk",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 4718,
+              "end": 4734,
+              "text": "Amazonía peruana",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "EU9INph5fU",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5218,
+              "end": 5234,
+              "text": "cadenas de cacao",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "tzMFR7_VL2",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5239,
+              "end": 5253,
+              "text": "palma aceitera",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "qOYUPnvi5K",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5259,
+              "end": 5263,
+              "text": "café",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "wbdrF506rp",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5361,
+              "end": 5370,
+              "text": "ganadería",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "rdXMCWKhcv",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5379,
+              "end": 5411,
+              "text": "cadenas agropecuarias amazónicas",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "moBudv25BM",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5428,
+              "end": 5444,
+              "text": "Amazonía peruana",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "bz__ox6K84",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5457,
+              "end": 5482,
+              "text": "procesos de deforestación",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "1mXwb4hwIx",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5486,
+              "end": 5490,
+              "text": "Perú",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "pRhRoijLqS",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5711,
+              "end": 5719,
+              "text": "Amazonas",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "TqYREW6Btn",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5721,
+              "end": 5726,
+              "text": "Cusco",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "Re9RHjW0TG",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5728,
+              "end": 5735,
+              "text": "Huánuco",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "_kcpImka0-",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5737,
+              "end": 5743,
+              "text": "Loreto",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "xA_fXZcSNz",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5745,
+              "end": 5758,
+              "text": "Madre de Dios",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "uKTMT5-AU3",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5760,
+              "end": 5770,
+              "text": "San Martín",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "hnB4agFl8G",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5773,
+              "end": 5780,
+              "text": "Ucayali",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "omiIkiwnzm",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5888,
+              "end": 5904,
+              "text": "bosques peruanos",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "abUNVitmVs",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5905,
+              "end": 5943,
+              "text": "albergan una gran diversidad biológica",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "Gmho-jCzJ1",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5946,
+              "end": 5961,
+              "text": "proveen bienes ",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "GxWP-Wcctn",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 5963,
+              "end": 6015,
+              "text": "servicios fundamentales, para el desarrollo del país",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "fivJ0hcLq-",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6021,
+              "end": 6048,
+              "text": "bienestar de sus habitantes",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "pW4P2-TuOA",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6072,
+              "end": 6089,
+              "text": "pueblos indígenas",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "I8o3ATaRC5",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6147,
+              "end": 6186,
+              "text": "Gobernadores por el Clima y los Bosques",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "UptUc1ekhI",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6188,
+              "end": 6194,
+              "text": "GCF-TF",
+              "labels": [
+                "ACTR"
+              ]
+            },
+            "id": "JJfG28MGFo",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6468,
+              "end": 6501,
+              "text": "producción libre de deforestación",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "n5HMa3bQy1",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6508,
+              "end": 6524,
+              "text": "Amazonía peruana",
+              "labels": [
+                "LOC"
+              ]
+            },
+            "id": "QgLVuNZSR6",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6530,
+              "end": 6553,
+              "text": "compromisos voluntarios",
+              "labels": [
+                "GOV"
+              ]
+            },
+            "id": "gDbDy3X4n4",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6583,
+              "end": 6606,
+              "text": "productos agropecuarios",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "0056FFz0LY",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6607,
+              "end": 6630,
+              "text": "libres de deforestación",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "HES8y2FXDn",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6726,
+              "end": 6753,
+              "text": "conservación de los bosques",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "tAYD4p5clB",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6799,
+              "end": 6822,
+              "text": "producción agropecuaria",
+              "labels": [
+                "PRAC"
+              ]
+            },
+            "id": "FQDASpdAcc",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          },
+          {
+            "value": {
+              "start": 6840,
+              "end": 6853,
+              "text": "deforestación",
+              "labels": [
+                "NARV"
+              ]
+            },
+            "id": "1zfzJWPnZO",
+            "from_name": "label",
+            "to_name": "text",
+            "type": "labels",
+            "origin": "manual"
+          }
+        ],
+        "was_cancelled": false,
+        "ground_truth": false,
+        "created_at": "2026-07-07T18:18:31.833765Z",
+        "updated_at": "2026-07-07T23:56:59.187870Z",
+        "draft_created_at": "2026-07-07T16:33:03.200358Z",
+        "lead_time": 21992.485,
+        "prediction": {},
+        "result_count": 123,
+        "unique_id": "78bf8670-f4d9-4720-af57-bac07f988264",
+        "import_id": null,
+        "last_action": null,
+        "bulk_created": false,
+        "task": 1,
+        "project": 2,
+        "updated_by": 1,
+        "parent_prediction": null,
+        "parent_annotation": null,
+        "last_created_by": null
+      }
+    ],
+    "file_upload": "c50db765-0f1d2ac0-5a4f-42ed-834d-b20b05ab1f15.txt",
+    "drafts": [],
+    "predictions": [],
+    "data": {
+      "text": "Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana Contribuciones Nacionalmente Determinadas (CND), cambio climático, deforestación, cadenas de valor (café, cacao, palma aceitera y ganadería), Amazonía peruana. En los últimos años, la comunidad internacional ha estado negociando varias propuestas normativas, con el fin de minimizar el impacto del comercio internacional en los bosques y el cambio climático. La Unión Europea, los Estados Unidos, el Reino Unido y la República Popular de China, entre otros, están debatiendo regulaciones para evitar la importación de productos y materias primas asociados a la deforestación y analizar los requisitos de trazabilidad para los commodities (p. ej. la soya, la carne bovina, el cacao, el café y el aceite de palma aceitera, entre otros) que se comercialicen en sus territorios. Estas propuestas de regulaciones se dan en línea con los compromisos globales, que buscan mitigar el cambio climático, como el Acuerdo de París y la Declaración de Glasgow sobre bosques y uso de la tierra, los cuales ponen sus reflectores sobre la deforestación, especialmente en regiones tropicales. A nivel nacional, el Gobierno peruano ha asumido múltiples compromisos para reducir la deforestación. El país es miembro de la Convención Marco de las 1 La selección de un año de referencia, para la producción libre de deforestación, es fruto del consenso de los actores públicos y privados, en el marco de los compromisos voluntarios, sobre una producción libre de deforestación. Con ello, se busca el beneficio de los agricultores y ganaderos amazónicos, los bosques y la competitividad de la Amazonía peruana. 3 En las consultas con actores claves, tanto de los sectores públicos y privado de las cadenas priorizadas, se identificó que el 2020 es la opción más factible para tomar como año de referencia, con respecto a los compromisos voluntarios para la producción libre de deforestación de las cadenas de valor de cacao, palma aceitera, café y ganadería en la Amazonía peruana. Naciones Unidas sobre el Cambio Climático (CMNUCC) y ha endosado el Acuerdo de París, a través del cual, se ha comprometido a reducir sus emisiones de GEI en un 40% para el año 2030, respecto al 2015. Para ello, se han definido medidas para alcanzar la Contribuciones Nacionalmente Determinadas – CND, con la finalidad de alcanzar esta meta y luego de aprobarse la Ley Marco sobre Cambio Climático - Ley n.º 30754, la Estrategia Nacional ante el Cambio Climático (ENCC), la Estrategia Nacional sobre Bosques y Cambio Climático (ENBCC) y la Estrategia Nacional sobre Diversidad Biológica (ENDB), las cuales proponen líneas y acciones estratégicas para conservar los bosques, y reducir las emisiones de gases de efecto invernadero (GEI), en el aprovechamiento del territorio y los sectores del cambio del uso de la tierra y la silvicultura (UTCUTS). Además, el país ha firmado la Declaración Conjunta de Intención (DCI) es un acuerdo voluntario de cooperación firmado por los Gobiernos de Perú, Noruega y Alemania para lograr la reducción de emisiones de gases de efecto invernadero producidas por la deforestación y degradación de los bosques en el Perú (ver Cuadro 1 : Marco legal peruano vinculado a bosques, propiedad rural y cambio climático). A nivel regional, los gobiernos regionales amazónicos han suscrito la Declaración de Río Branco1 , que busca reducir la deforestación en cada jurisdicción en un 80%, y han aprobado las Estrategias Nacionales de Desarrollo Rural Bajo en Emisiones (ERDRBE)2 y los planes de competitividad libre de deforestación y bajo de emisiones GEI, para las cadenas de valor de palma aceitera, de cacao y chocolate. Lo anterior define una ruta estratégica para reducir la deforestación, incrementar la competitividad y sostenibilidad de la producción regional, y mejorar el bienestar de los ciudadanos amazónicos, al considerar la inclusión de las mujeres, los pueblos indígenas y los jóvenes. En este contexto, la Alianza de Bioversity International y el Centro Internacional de Agricultura Tropical (CIAT), en el marco del proyecto Sustainable Amazon Businesses (SAB) para abordar las causas de la deforestación financiado por IKI e implementado en coordinación con MINAM y MIDAGRI, la Coalición por una Producción Sostenible (CPS) y del Acuerdo Cacao, Bosque y Diversidad, proponen un año de referencia para los compromisos voluntarios de producción libre de deforestación, producto de un proceso transparente y participativo, acotados en una primera etapa al cacao, la palma aceitera, el café y la ganadería, que promueve e identifica las condiciones apropiadas para implementarlos en la Amazonía peruana. La presente propuesta está basada en una revisión extensa de fuentes bibliográficas y entrevistas estructuradas, como parte de un estudio sobre el año de referencia para los compromisos sobre la producción libre de deforestación en la Amazonía peruana3 . Posteriormente, la información ha sido validada a través de dos talleres de consulta con actores clave, donde se incluyen los tomadores de decisión del sector público, del sector privado y de los gremios representativos de las cadenas de cacao, la palma aceitera y el café; así como los actores de la sociedad civil4 . Asimismo, esta propuesta es aplicable también a la ganadería u otras cadenas agropecuarias amazónicas. Contexto de la Amazonía peruana – bosques y procesos de deforestación El Perú es uno de los diez países del mundo con mayor superficie de bosques, el segundo con mayor extensión de bosques amazónicos y el cuarto en bosques tropicales del mundo . Estos bosques se concentran en siete departamentos (Amazonas, Cusco, Huánuco, Loreto, Madre de Dios, San Martín y Ucayali), los cuales abarcan más del 92% del total nacional . Además de ser una importante reserva de carbono, los bosques peruanos albergan una gran diversidad biológica y proveen bienes y servicios fundamentales, para el desarrollo del país y el bienestar de sus habitantes, en particular, de los pueblos indígenas u originarios. 1 En el marco del Grupo de Trabajo de los Gobernadores por el Clima y los Bosques (GCF-TF): 2 Amazonas, Loreto, Ucayali y San Martín cuentan con ERDRBE aprobadas y publicadas. Las estrategias de Madre de Dios y Huánuco son diseñadas. Los documentos finales se pueden acceder aquí: 3 Del Pozo PL. 2022. Análisis del año de referencia para los compromisos sobre la producción libre de deforestación en la Amazonía peruana. Los compromisos voluntarios y los modelos de negocios de productos agropecuarios libres de deforestación Los compromisos voluntarios son acciones conjuntas e individuales, las cuales contribuyen a la conservación de los bosques, y a evitar que la expansión de las áreas de producción agropecuaria sea un factor de deforestación. Estos tienen un enfoque de acción colectiva; es decir, firmados por empresas, organizaciones de productores, gobierno y sociedad civil, quienes se comprometen a eliminar la huella de deforestación en sus cadenas de valor. En este sentido, es relevante identificar y promover los diferentes incentivos que, más allá de la responsabilidad, permitan avanzar hacia la Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana transformación productiva esperada, e involucrar a los actores de múltiples niveles y a los sectores en estos compromisos. La mayoría de los entrevistados para esta propuesta manifestó la importancia de los incentivos, sobre todo los financieros, para poder garantizar el éxito de los compromisos voluntarios de producción libre de deforestación. Ello debido a que, más allá de la buena voluntad y conocimiento de la importancia de mitigar el cambio climático, son conscientes de los esfuerzos necesarios para adoptar un modelo de producción libre de deforestación. De igual modo, es necesario reconocer que, para conseguir una producción libre de deforestación, se requiere que diferentes actores privados realicen cambios en sus procesos de toma de decisiones y en su modelo de negocio, de un business as usual , a un modelo de negocio libre de deforestación y bajo de emisiones GEI. Para el desarrollo de un modelo de negocio orientado a la conservación de los bosques, Propuestas para un año de referencia 5 Ver para palma: y para cacao: A continuación, se presentan los cinco escenarios de los años de referencia (ver a continuación Cuadro 4 ) propuestos por los actores consultados: 2017: año de referencia por la creación de la Coalición por una Producción Sostenible. 2018: año de referencia por la disponibilidad de imágenes satelitales de alta resolución e, incluso, de acceso gratuito. Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana CUADRO 4. Alternativas de años de referencia para los compromisos voluntarios de producción libre de deforestación1 1 Del Pozo PL. 2022. Análisis del año de referencia para los compromisos sobre la producción libre de deforestación en la Amazonía peruana. 2 FAO (2015), Situación de los bosques del mundo 2005, 3 De Accountability Framework: 4 CPS (2018), Hoja de ruta: hacia la consolidación de una Coalición por una Producción Sostenible. 2011 2014 2017 2018 2020 De igual modo, es relevante considerar que las compensaciones ambientales, aplicables a los bosques, se rigen legalmente: a) al marco legal asociado a la Ley n.º 27446, Ley del SEIA, su modificatoria aprobada por Decreto Legislativo Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana Sobre la base del Sistema Integrado de Estadísticas Agrarias del MIDAGRI, un análisis especializado estima que el impacto de estas regulaciones podrá afectar a más de 223.738 productores de café, 89.789 productores de cacao, 3.185 productores de palma aceitera y un número desconocido de productores de ganadería bovina. Del mismo modo, puede tener un impacto económico anual de al menos USD 925,8 millones . En ese sentido, los compromisos voluntarios de producción libre deforestación para las cadenas de cacao, café, palma aceitera y ganadería – que promueve la CPS y proyectos que contribuyen a esta como el proyecto IKI SAB – pueden ayudar a generar condiciones habilitantes (sistemas de monitoreo, promoción de la trazabilidad, pilotos de plataformas de servicios y diseño de incentivos, entre otros), para escalar este modelo de negocio libre de deforestación, de acuerdo con las demandas futuras del mercado internacional y al aportar al cumplimiento de los compromisos internacionales que se tienen como país. Si bien existe una base importante y representativa de actores que estaría de acuerdo con el 31 de diciembre del 2020 como año de referencia, se requiere continuar con los diálogos para fortalecer el consenso generado. En particular, esto es relevante a nivel subnacional y local, donde es necesario informar y retroalimentar la propuesta del año de referencia. Aunque el año de referencia está vinculado a compromisos voluntarios, se debe armonizar con las regulaciones nacionales en los ámbitos que corresponda o aplique. Es necesario involucrar a nuevos actores nacionales, como el Ministerio de Comercio Exterior y Turismo, al igual que al Ministerio de Relaciones Exteriores, para promover y articular los compromisos por la libre deforestación de la estrategia exportadora y la competitividad de mercado de las exportaciones de agricultura tropical en el Perú. Al igual que con el Acuerdo Cacao, Bosques y Diversidad, procesos similares deben desarrollarse con la palma, el café y la ganadería. De este modo, se establecerán las acciones y los mecanismos para eliminar la deforestación, con base en el año de referencia propuesto. La CPS puede ser la plataforma sobre la cual se anidan y se diseñan estos compromisos. Es necesario seguir avanzando sobre esquemas de monitoreo para productos agropecuarios libres de deforestación. El proyecto SAB avanzó con un prototipo aplicado a dos modelos de negocios en cacao y palma. Este prototipo puede ser validado con otros actores de la CPS y aplicado a nuevos modelos de negocios. Las lecciones aprendidas en el desarrollo de los pilotos de modelos de negocios cero deforestación del proyecto SAB deben traducirse en acciones que permitan el desarrollo de nuevos modelos en el marco de la CPS. Propuesta de un año de referencia para los compromisos voluntarios, para la producción libre de deforestación en la Amazonía peruana El presente documento ha sido elaborado por la Alianza de Bioversity International y el CIAT, bajo el liderazgo del área de Paisajes Multifuncionales, en el marco del proyecto \"Modelos de negocios para abordar los motores de la deforestación en el Perú\" o Sustainable Amazon Businesses, financiado por la Iniciativa Climática Internacional (IKI) del Ministerio Federal de Medio Ambiente, Conservación de la Naturaleza y Seguridad Nuclear de Alemania, y a solicitud de la Coalición por una Producción Sostenible (CPS) y el Acuerdo Cacao, Bosque y Diversidad, con la valiosa contribución de múltiples actores del sector público, privado y de la sociedad civil peruana. Alianza Colombia TFA. 2021. Cero deforestación en Colombia: ABC de las cadenas cero deforestación de palma, cacao, carne y leche en Colombia, Del Pozo PL. 2022. Análisis del año de referencia para los compromisos sobre la producción libre de deforestación en la Amazonía peruana. FAO. 2020. El estado de los bosques en el mundo MINAM. 2020. Programa Nacional de Conservación de Bosques para la Mitigación del Cambio Climático Acerca de los autores Patricia Luna Del Pozo: Consultora, autora del reporte preliminar Análisis del año de referencia para los compromisos sobre la producción libre de deforestación en la Amazonía peruana. Marcela Quintero: Directora del área de investigación en Paisajes Multifuncionales, Alianza de Bioversity International y el CIAT."
+    },
+    "meta": {},
+    "created_at": "2026-07-07T16:31:54.590152Z",
+    "updated_at": "2026-07-07T23:56:59.221012Z",
+    "allow_skip": true,
+    "inner_id": 1,
+    "total_annotations": 1,
+    "cancelled_annotations": 0,
+    "total_predictions": 0,
+    "comment_count": 0,
+    "unresolved_comment_count": 0,
+    "last_comment_updated_at": null,
+    "project": 2,
+    "updated_by": 1,
+    "comment_authors": []
+  }
+]
