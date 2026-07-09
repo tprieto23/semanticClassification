@@ -18,6 +18,7 @@ class DocumentRead(BaseModel):
     metadata: dict[str, Any] | None = Field(None, validation_alias="metadata_")
     converted_path: str | None = None
     cleaned_path: str | None = None
+    ner_path: str | None = None
     images_path: str | None = None
 
 

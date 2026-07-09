@@ -109,6 +109,14 @@ def extract_entities(
     )
 
 
+@router.post("/extract-entities-batch", response_model=BatchProcessResponse)
+def extract_entities_batch(
+    db: Session = Depends(get_db),
+):
+    resultado = DocumentService.extraer_entidades_de_varios(db)
+    return BatchProcessResponse(**resultado)
+
+
 @router.delete("/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_document(
     document_id: UUID,

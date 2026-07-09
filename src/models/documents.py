@@ -37,4 +37,5 @@ class Document(Base):
     )
     converted_path: Mapped[str | None] = mapped_column(Text, nullable=True)
     cleaned_path: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ner_path: Mapped[str | None] = mapped_column(Text, nullable=True)
     images_path: Mapped[str | None] = mapped_column(Text, nullable=True)

@@ -107,6 +107,9 @@ class DocumentService:
     @staticmethod
     def eliminar(db: Session, documento: Document) -> None:
         Storage.eliminar(documento.file_path)
+        Storage.eliminar(documento.converted_path)
+        Storage.eliminar(documento.cleaned_path)
+        Storage.eliminar(documento.ner_path)
         DocumentRepo.eliminar(db, documento)
 
     @staticmethod
@@ -222,6 +225,20 @@ class DocumentService:
         entidades = extraer_entidades(texto)
         logger.info("Extraídas %d entidades para documento %s", len(entidades), document_id)
 
+        # Guardar resultado en JSON
+        resultado = {
+            "document_id": document_id,
+            "entities": entidades,
+        }
+        ner_filename = f"{doc.id}.json"
+        ner_path = Storage.guardar(
+            json.dumps(resultado, ensure_ascii=False, indent=2).encode("utf-8"),
+            ner_filename,
+            settings.STORAGE_NER,
+        )
+        doc.ner_path = str(ner_path)
+        logger.info("Guardadas %d entidades en %s", len(entidades), ner_path)
+
         # Persistir en DB: eliminar entidades previas y guardar nuevas
         db.query(Entity).filter(Entity.document_id == doc.id).delete()
         now = datetime.now(timezone.utc)
@@ -240,7 +257,27 @@ class DocumentService:
         db.commit()
         logger.info("Persistidas %d entidades en DB para documento %s", len(entidades), document_id)
 
+        DocumentRepo.actualizar_status(db, doc, "ner")
+        logger.info("Documento %s actualizado a status 'ner'", document_id)
+
         return entidades
+
+    @staticmethod
+    def extraer_entidades_de_varios(db: Session) -> dict:
+        docs = DocumentRepo.leer_por_status(db, "cleaned")
+        processed: list[str] = []
+        errors: list[dict] = []
+
+        for doc in docs:
+            doc_id = str(doc.id)
+            try:
+                DocumentService.extraer_entidades_de_documento(db, doc_id)
+                processed.append(doc_id)
+            except DocumentoError as e:
+                errors.append({"id": doc_id, "error": e.mensaje})
+                db.rollback()
+
+        return {"processed": processed, "errors": errors}
 
     @staticmethod
     def revertir(db: Session, document_id: str) -> None:
@@ -248,10 +285,20 @@ class DocumentService:
         if doc is None:
             raise DocumentoNoEncontrado(document_id)
 
-        if doc.status == "cleaned":
+        if doc.status == "ner":
+            db.query(Entity).filter(Entity.document_id == doc.id).delete()
+            if doc.ner_path:
+                Storage.eliminar(doc.ner_path)
+            doc.ner_path = None
+            DocumentRepo.actualizar_status(db, doc, "cleaned")
+        elif doc.status == "cleaned":
             if doc.cleaned_path:
                 Storage.eliminar(doc.cleaned_path)
+            if doc.ner_path:
+                Storage.eliminar(doc.ner_path)
+            db.query(Entity).filter(Entity.document_id == doc.id).delete()
             doc.cleaned_path = None
+            doc.ner_path = None
             DocumentRepo.actualizar_status(db, doc, "converted")
         elif doc.status == "converted":
             if doc.converted_path:

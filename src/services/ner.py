@@ -60,6 +60,19 @@ def _formatear_definiciones() -> str:
 SYSTEM_PROMPT = f"""Eres un extractor de entidades especializado en análisis territorial y socioambiental.
 Extrae entidades del texto y clasifícalas en UNA de estas 6 categorías:
 
+LOC: Lugares geográficos, territorios, regiones, países, ciudades, áreas geográficas, topónimos.
+   Ejemplos: Amazonía peruana, Madre de Dios, Perú, Loreto, Unión Europea
+INFRA: Infraestructura física o técnica: carreteras, puertos, centrales eléctricas, redes de monitoreo, sistemas construidos.
+   Ejemplos: carretera interoceánica, puerto fluvial, red de monitoreo
+ACTR: Actores individuales o colectivos: personas, grupos, organizaciones, instituciones en tanto actores, ministerios, comunidades.
+   Ejemplos: Gobierno peruano, MINAM, pueblos indígenas, agricultores
+PRAC: Prácticas, actividades productivas, cadenas de valor, procesos socioeconómicos rutinizados, cultivos, productos.
+   Ejemplos: cacao, palma aceitera, ganadería, cadenas de valor
+GOV: Instrumentos de gobernanza: políticas, normas, leyes, acuerdos, decretos, regulaciones, estrategias, compromisos oficiales.
+   Ejemplos: Acuerdo de París, Ley Marco sobre Cambio Climático, compromisos voluntarios
+NARV: Narrativas, discursos, conceptos, objetivos, justificaciones, visiones, ideas-fuerza.
+   Ejemplos: producción libre de deforestación, mitigar el cambio climático, conservar los bosques
+
 {_formatear_definiciones()}
 
 Reglas:
