@@ -38,6 +38,7 @@ class Storage:
     def eliminar_directorio(dir_path: str) -> None:
         try:
             import shutil
+
             shutil.rmtree(dir_path, ignore_errors=True)
         except OSError:
             pass

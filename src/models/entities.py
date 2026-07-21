@@ -1,9 +1,8 @@
 from datetime import datetime, timezone
-from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, Text, text
-from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
+from sqlalchemy import DateTime, ForeignKey, Integer, Text, text
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.models.database import Base
@@ -26,14 +25,30 @@ class Entity(Base):
     )
     category: Mapped[str] = mapped_column(Text, nullable=False, index=True)
     text: Mapped[str] = mapped_column(Text, nullable=False)
-    normalized_text: Mapped[str | None] = mapped_column(Text, nullable=True)
     context: Mapped[str | None] = mapped_column(Text, nullable=True)
-    position_start: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    position_end: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
-    metadata_: Mapped[dict[str, Any] | None] = mapped_column(
-        "metadata", JSONB, nullable=True
+    ambiguity: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    label_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("catalog_labels.id", ondelete="SET NULL"), nullable=True
     )
+    type_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("catalog_types.id", ondelete="SET NULL"), nullable=True
+    )
+    node_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("catalog_nodes.id", ondelete="SET NULL"), nullable=True
+    )
+    attribute_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("catalog_attributes.id", ondelete="SET NULL"), nullable=True
+    )
+    value_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("catalog_values.id", ondelete="SET NULL"), nullable=True
+    )
+    ambiguity_id: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey("catalog_ambiguity_levels.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=True, default=lambda: datetime.now(timezone.utc)
     )

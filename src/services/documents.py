@@ -1,18 +1,16 @@
 import json
 import logging
-from datetime import datetime, timezone
 
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
-from src.models.database import get_db  # noqa: F401 — pasamanos para api
-
 from src.config import settings
+from src.models.database import get_db  # noqa: F401 — pasamanos para api
 from src.models.documents import Document
 from src.models.documents_repo import DocumentRepo
-from src.models.entities import Entity  # noqa: F401 — registra modelo
+from src.models.entities_repo import EntityRepo
 from src.models.storage import Storage
 from src.services.cleaning import CleaningService
 from src.services.ner import extraer_entidades
@@ -48,12 +46,16 @@ class DocumentoYaConvertido(DocumentoError):
 
 class DocumentoNoConvertido(DocumentoError):
     def __init__(self, document_id: str, status: str):
-        super().__init__(f"Documento {document_id} no está convertido (estado: '{status}')", 409)
+        super().__init__(
+            f"Documento {document_id} no está convertido (estado: '{status}')", 409
+        )
 
 
 class DocumentoNoReversible(DocumentoError):
     def __init__(self, document_id: str, status: str):
-        super().__init__(f"Documento {document_id} no es reversible desde el estado '{status}'", 409)
+        super().__init__(
+            f"Documento {document_id} no es reversible desde el estado '{status}'", 409
+        )
 
 
 class DocumentService:
@@ -76,7 +78,9 @@ class DocumentService:
             except (json.JSONDecodeError, ValueError) as e:
                 raise MetadataInvalido(str(e))
 
-        nombreInicial, ext, doc_id, nombreParaAlmacenar = Storage.preparar_nombre(file.filename)
+        nombreInicial, ext, doc_id, nombreParaAlmacenar = Storage.preparar_nombre(
+            file.filename
+        )
         content = file.file.read()
         path = Storage.guardar(content, nombreParaAlmacenar, settings.STORAGE_RAW)
 
@@ -119,8 +123,7 @@ class DocumentService:
         metadata_json: str | None,
     ) -> list[Document]:
         return [
-            DocumentService.cargar_documento(db, file, metadata_json)
-            for file in files
+            DocumentService.cargar_documento(db, file, metadata_json) for file in files
         ]
 
     @staticmethod
@@ -181,7 +184,9 @@ class DocumentService:
         texto_limpio = CleaningService.linguisticCleaning(texto_limpio)
         nombre_txt = f"{doc.id}.txt"
 
-        path = Storage.guardar(texto_limpio.encode("utf-8"), nombre_txt, settings.DATA_CLEANED)
+        path = Storage.guardar(
+            texto_limpio.encode("utf-8"), nombre_txt, settings.DATA_CLEANED
+        )
         doc.cleaned_path = str(path)
         DocumentRepo.actualizar_status(db, doc, "cleaned")
 
@@ -203,9 +208,7 @@ class DocumentService:
         return {"processed": processed, "errors": errors}
 
     @staticmethod
-    def extraer_entidades_de_documento(
-        db: Session, document_id: str
-    ) -> list[dict]:
+    def extraer_entidades_de_documento(db: Session, document_id: str) -> list[dict]:
         """Extrae entidades NER de un documento limpio usando Anthropic
         y las persiste en la tabla entities."""
         doc = DocumentRepo.leer_uno(db, document_id)
@@ -222,10 +225,16 @@ class DocumentService:
             raise DocumentoError("Archivo limpio no encontrado o vacío", 500)
 
         logger.info("Extrayendo entidades para documento %s", document_id)
-        entidades = extraer_entidades(texto)
-        logger.info("Extraídas %d entidades para documento %s", len(entidades), document_id)
+        entidades = extraer_entidades(
+            texto,
+            db=db,
+            document_id=document_id,
+            document_title=doc.original_filename,
+        )
+        logger.info(
+            "Extraídas %d entidades para documento %s", len(entidades), document_id
+        )
 
-        # Guardar resultado en JSON
         resultado = {
             "document_id": document_id,
             "entities": entidades,
@@ -239,23 +248,12 @@ class DocumentService:
         doc.ner_path = str(ner_path)
         logger.info("Guardadas %d entidades en %s", len(entidades), ner_path)
 
-        # Persistir en DB: eliminar entidades previas y guardar nuevas
-        db.query(Entity).filter(Entity.document_id == doc.id).delete()
-        now = datetime.now(timezone.utc)
-        for ent in entidades:
-            entity = Entity(
-                document_id=doc.id,
-                category=ent["labels"][0] if ent["labels"] else "",
-                text=ent["text"],
-                position_start=ent.get("start"),
-                position_end=ent.get("end"),
-                confidence=ent.get("confidence"),
-                metadata_={"context": ent.get("context")} if ent.get("context") else None,
-                created_at=now,
-            )
-            db.add(entity)
-        db.commit()
-        logger.info("Persistidas %d entidades en DB para documento %s", len(entidades), document_id)
+        EntityRepo.reemplazar_entidades(db, doc.id, entidades)
+        logger.info(
+            "Persistidas %d entidades en DB para documento %s",
+            len(entidades),
+            document_id,
+        )
 
         DocumentRepo.actualizar_status(db, doc, "ner")
         logger.info("Documento %s actualizado a status 'ner'", document_id)
@@ -286,7 +284,7 @@ class DocumentService:
             raise DocumentoNoEncontrado(document_id)
 
         if doc.status == "ner":
-            db.query(Entity).filter(Entity.document_id == doc.id).delete()
+            EntityRepo.eliminar_por_documento(db, doc.id)
             if doc.ner_path:
                 Storage.eliminar(doc.ner_path)
             doc.ner_path = None
@@ -296,7 +294,7 @@ class DocumentService:
                 Storage.eliminar(doc.cleaned_path)
             if doc.ner_path:
                 Storage.eliminar(doc.ner_path)
-            db.query(Entity).filter(Entity.document_id == doc.id).delete()
+            EntityRepo.eliminar_por_documento(db, doc.id)
             doc.cleaned_path = None
             doc.ner_path = None
             DocumentRepo.actualizar_status(db, doc, "converted")

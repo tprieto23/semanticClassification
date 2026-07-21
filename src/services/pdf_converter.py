@@ -4,10 +4,9 @@ from pathlib import Path
 
 import fitz  # PyMuPDF
 import pymupdf4llm  # extracción layout-aware (orden multicolumna + tablas)
-from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import ThreadedPdfPipelineOptions
-
+from docling.document_converter import DocumentConverter, PdfFormatOption
 
 _MIN_TEXTO_NATIVO = 500  # chars — umbral para considerar PDF nativo
 
@@ -23,9 +22,7 @@ class PdfConverter:
         if self._docling_converter is None:
             opts = ThreadedPdfPipelineOptions(do_ocr=True, do_table_structure=False)
             self._docling_converter = DocumentConverter(
-                format_options={
-                    InputFormat.PDF: PdfFormatOption(pipeline_options=opts)
-                }
+                format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=opts)}
             )
         return self._docling_converter
 

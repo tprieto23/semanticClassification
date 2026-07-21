@@ -1,10 +1,23 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Query,
+    UploadFile,
+    status,
+)
 from sqlalchemy.orm import Session
 
-from src.api.schemas.documents import BatchProcessResponse, DocumentListResponse, DocumentRead
+from src.api.schemas.documents import (
+    BatchProcessResponse,
+    DocumentListResponse,
+    DocumentRead,
+)
 from src.api.schemas.entities import EntityOut, ExtractEntitiesResponse
 from src.services.documents import DocumentService, get_db
 
@@ -20,7 +33,9 @@ def upload(
     return DocumentService.cargar_documento(db, file, metadata)
 
 
-@router.post("/batch", response_model=list[DocumentRead], status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/batch", response_model=list[DocumentRead], status_code=status.HTTP_201_CREATED
+)
 def upload_batch(
     files: Annotated[list[UploadFile], File()],
     metadata: Annotated[str | None, Form()] = None,
@@ -53,7 +68,9 @@ def get_document(
 ):
     doc = DocumentService.leer_uno(db, str(document_id))
     if doc is None:
-        raise HTTPException(status_code=404, detail=f"Documento {document_id} no encontrado")
+        raise HTTPException(
+            status_code=404, detail=f"Documento {document_id} no encontrado"
+        )
     return doc
 
 
@@ -104,7 +121,7 @@ def extract_entities(
 ):
     entidades = DocumentService.extraer_entidades_de_documento(db, str(document_id))
     return ExtractEntitiesResponse(
-        document_id=document_id,
+        document_id=str(document_id),
         entities=[EntityOut(**e) for e in entidades],
     )
 
@@ -124,5 +141,7 @@ def delete_document(
 ):
     doc = DocumentService.leer_uno(db, str(document_id))
     if doc is None:
-        raise HTTPException(status_code=404, detail=f"Documento {document_id} no encontrado")
+        raise HTTPException(
+            status_code=404, detail=f"Documento {document_id} no encontrado"
+        )
     DocumentService.eliminar(db, doc)

@@ -60,51 +60,169 @@ class CleaningService:
     )
 
     _INDICADORES_POSTALES = {
-        "jr.", "jiron", "av.", "avenida", "cra.", "carrera", "cl.", "calle",
-        "urb.", "urbanizacion", "urbanización", "piso", "of.", "oficina",
-        "departamento", "interior", "int.", "mz.", "manzana", "lote", "lt.",
-        "km.", "kilometro", "kilómetro", "n°", "nro.", "nro", "numero", "número",
-        "dirección", "direccion", "dir.", "direc.",
+        "jr.",
+        "jiron",
+        "av.",
+        "avenida",
+        "cra.",
+        "carrera",
+        "cl.",
+        "calle",
+        "urb.",
+        "urbanizacion",
+        "urbanización",
+        "piso",
+        "of.",
+        "oficina",
+        "departamento",
+        "interior",
+        "int.",
+        "mz.",
+        "manzana",
+        "lote",
+        "lt.",
+        "km.",
+        "kilometro",
+        "kilómetro",
+        "n°",
+        "nro.",
+        "nro",
+        "numero",
+        "número",
+        "dirección",
+        "direccion",
+        "dir.",
+        "direc.",
     }
 
     _INSTITUCION_PALABRAS = {
-        "universidad", "instituto", "departamento", "facultad", "escuela",
-        "centro", "programa", "grupo", "investigación", "investigacion",
-        "corporación", "corporacion", "fundación", "fundacion", "asociación",
-        "asociacion", "convención", "convencion",
+        "universidad",
+        "instituto",
+        "departamento",
+        "facultad",
+        "escuela",
+        "centro",
+        "programa",
+        "grupo",
+        "investigación",
+        "investigacion",
+        "corporación",
+        "corporacion",
+        "fundación",
+        "fundacion",
+        "asociación",
+        "asociacion",
+        "convención",
+        "convencion",
     }
 
     _HEADERS_AUTORIA = {
-        "autores", "autor", "autoras", "autora", "investigadores",
-        "investigadoras", "equipo", "consejo directivo", "directores",
-        "directora", "director", "participantes", "elaborado por",
-        "preparado por", "coordinadores", "coordinadoras", "coordinador",
-        "facilitadores", "facilitador", "facilitadoras", "facilitadora",
-        "diseño y diagramacion", "diseño y diagramación", "diagramacion",
-        "diagramación", "nota aclaratoria", "publicado por", "editado por",
-        "copyright", "creditos", "créditos", "fotografia", "fotografía",
-        "foto", "elaboracion", "elaboración", "preparacion", "preparación",
-        "revision tecnica", "revisión técnica", "revisado por", "revisor",
-        "revisora", "revisores", "asesor", "asesora", "asesores", "asesoras",
+        "autores",
+        "autor",
+        "autoras",
+        "autora",
+        "investigadores",
+        "investigadoras",
+        "equipo",
+        "consejo directivo",
+        "directores",
+        "directora",
+        "director",
+        "participantes",
+        "elaborado por",
+        "preparado por",
+        "coordinadores",
+        "coordinadoras",
+        "coordinador",
+        "facilitadores",
+        "facilitador",
+        "facilitadoras",
+        "facilitadora",
+        "diseño y diagramacion",
+        "diseño y diagramación",
+        "diagramacion",
+        "diagramación",
+        "nota aclaratoria",
+        "publicado por",
+        "editado por",
+        "copyright",
+        "creditos",
+        "créditos",
+        "fotografia",
+        "fotografía",
+        "foto",
+        "elaboracion",
+        "elaboración",
+        "preparacion",
+        "preparación",
+        "revision tecnica",
+        "revisión técnica",
+        "revisado por",
+        "revisor",
+        "revisora",
+        "revisores",
+        "asesor",
+        "asesora",
+        "asesores",
+        "asesoras",
     }
 
     _TITULOS_ESTRUCTURALES = {
-        "introducción", "introduccion", "resumen", "abstract", "conclusiones",
-        "conclusión", "conclusion", "referencias", "bibliografía", "bibliografia",
-        "índice", "indice", "contenido", "tabla de contenido", "anexo", "annex",
-        "anexos", "resumen ejecutivo", "marco teórico", "marco teorico",
-        "metodología", "metodologia", "resultados", "discusión", "discusion",
-        "agradecimientos", "glosario", "siglas", "abreviaturas", "objetivos",
-        "objetivo general", "objetivos específicos", "objetivos especificos",
-        "antecedentes", "justificación", "justificacion", "hipótesis", "hipotesis",
-        "preguntas de investigación", "preguntas de investigacion",
-        "limitaciones", "alcance", "marco legal", "marco conceptual",
+        "introducción",
+        "introduccion",
+        "resumen",
+        "abstract",
+        "conclusiones",
+        "conclusión",
+        "conclusion",
+        "referencias",
+        "bibliografía",
+        "bibliografia",
+        "índice",
+        "indice",
+        "contenido",
+        "tabla de contenido",
+        "anexo",
+        "annex",
+        "anexos",
+        "resumen ejecutivo",
+        "marco teórico",
+        "marco teorico",
+        "metodología",
+        "metodologia",
+        "resultados",
+        "discusión",
+        "discusion",
+        "agradecimientos",
+        "glosario",
+        "siglas",
+        "abreviaturas",
+        "objetivos",
+        "objetivo general",
+        "objetivos específicos",
+        "objetivos especificos",
+        "antecedentes",
+        "justificación",
+        "justificacion",
+        "hipótesis",
+        "hipotesis",
+        "preguntas de investigación",
+        "preguntas de investigacion",
+        "limitaciones",
+        "alcance",
+        "marco legal",
+        "marco conceptual",
     }
 
     _PREFIJOS_EDITORIAL = (
-        "titulo:", "título:", "publicado por", "editado por",
-        "nota aclaratoria", "esta permitida la reproduccion",
-        "está permitida la reproducción", "todos los derechos reservados",
+        "titulo:",
+        "título:",
+        "publicado por",
+        "editado por",
+        "nota aclaratoria",
+        "esta permitida la reproduccion",
+        "está permitida la reproducción",
+        "todos los derechos reservados",
     )
 
     _COPYRIGHT_PATTERN = re.compile(r"©")
@@ -136,7 +254,9 @@ class CleaningService:
     @staticmethod
     def _log_paso(nombre: str, antes: str, despues: str) -> None:
         lineas_antes, palabras_antes = CleaningService._contar_lineas_palabras(antes)
-        lineas_despues, palabras_despues = CleaningService._contar_lineas_palabras(despues)
+        lineas_despues, palabras_despues = CleaningService._contar_lineas_palabras(
+            despues
+        )
         logger.info(
             "Paso '%s': lineas %d -> %d, palabras %d -> %d",
             nombre,
@@ -190,7 +310,9 @@ class CleaningService:
     @staticmethod
     def _empieza_con_indicador_postal(linea: str) -> bool:
         inicio = linea.lower().strip()
-        return any(inicio.startswith(ind) for ind in CleaningService._INDICADORES_POSTALES)
+        return any(
+            inicio.startswith(ind) for ind in CleaningService._INDICADORES_POSTALES
+        )
 
     @staticmethod
     def _es_direccion(linea: str) -> bool:
@@ -214,7 +336,11 @@ class CleaningService:
         empieza_con_postal = CleaningService._empieza_con_indicador_postal(linea)
         if len(indicadores) >= 2 and address_ratio >= 0.5:
             return True
-        if len(indicadores) >= 1 and tiene_numero and (address_ratio >= 0.5 or empieza_con_postal):
+        if (
+            len(indicadores) >= 1
+            and tiene_numero
+            and (address_ratio >= 0.5 or empieza_con_postal)
+        ):
             return True
         return False
 
@@ -259,7 +385,8 @@ class CleaningService:
         if linea_limpia in CleaningService._HEADERS_AUTORIA:
             return True
         return any(
-            linea_limpia.startswith(header + " ") or linea_limpia.startswith(header + ":")
+            linea_limpia.startswith(header + " ")
+            or linea_limpia.startswith(header + ":")
             for header in CleaningService._HEADERS_AUTORIA
         )
 
@@ -288,7 +415,9 @@ class CleaningService:
         return bool(letras) and letras == letras.upper()
 
     @staticmethod
-    def _eliminar_headers_footers_y_numeros(texto: str, min_repeticiones: int = 3) -> str:
+    def _eliminar_headers_footers_y_numeros(
+        texto: str, min_repeticiones: int = 3
+    ) -> str:
         lineas = texto.split("\n")
         conteo_cortos: dict[str, int] = {}
         conteo_mayusculas: dict[str, int] = {}
@@ -301,8 +430,12 @@ class CleaningService:
             if CleaningService._es_linea_mayusculas(ln.strip()):
                 conteo_mayusculas[clave] = conteo_mayusculas.get(clave, 0) + 1
 
-        recurrentes_cortos = {k for k, c in conteo_cortos.items() if c >= min_repeticiones}
-        recurrentes_mayusculas = {k for k, c in conteo_mayusculas.items() if c >= min_repeticiones}
+        recurrentes_cortos = {
+            k for k, c in conteo_cortos.items() if c >= min_repeticiones
+        }
+        recurrentes_mayusculas = {
+            k for k, c in conteo_mayusculas.items() if c >= min_repeticiones
+        }
 
         resultado: list[str] = []
         vistos_cortos: set[str] = set()
@@ -321,7 +454,10 @@ class CleaningService:
                 vistos_mayusculas.add(clave)
             if recurrentes_mayusculas:
                 clave_sin_prefijo = re.sub(r"^\d+\s+", "", clave)
-                if clave_sin_prefijo in recurrentes_mayusculas and clave_sin_prefijo in vistos_mayusculas:
+                if (
+                    clave_sin_prefijo in recurrentes_mayusculas
+                    and clave_sin_prefijo in vistos_mayusculas
+                ):
                     continue
             resultado.append(ln)
 
@@ -330,7 +466,10 @@ class CleaningService:
     @staticmethod
     def _es_prefijo_editorial(linea: str) -> bool:
         linea_lower = linea.lower().strip()
-        return any(linea_lower.startswith(prefijo) for prefijo in CleaningService._PREFIJOS_EDITORIAL)
+        return any(
+            linea_lower.startswith(prefijo)
+            for prefijo in CleaningService._PREFIJOS_EDITORIAL
+        )
 
     @staticmethod
     def _es_linea_legal(linea: str) -> bool:
@@ -523,14 +662,21 @@ class CleaningService:
         chunks = CleaningService._partir_por_parrafos(texto, max_chunk)
 
         if len(chunks) > 1:
-            logger.info("Texto dividido en %d chunks para limpieza lingüística", len(chunks))
+            logger.info(
+                "Texto dividido en %d chunks para limpieza lingüística", len(chunks)
+            )
 
         client = get_anthropic_client()
         partes_limpias: list[str] = []
 
         for i, chunk in enumerate(chunks):
             if len(chunks) > 1:
-                logger.info("Limpiando chunk %d/%d (%d caracteres)", i + 1, len(chunks), len(chunk))
+                logger.info(
+                    "Limpiando chunk %d/%d (%d caracteres)",
+                    i + 1,
+                    len(chunks),
+                    len(chunk),
+                )
 
             response = client.messages.create(
                 model=settings.ANTHROPIC_MODEL,

@@ -62,6 +62,7 @@ http://localhost:8000/docs
 | `raw` | Recién subido, sin convertir |
 | `converted` | Convertido a .md |
 | `cleaned` | Texto limpiado, listo para NER |
+| `ner` | Entidades extraídas |
 
 ## Convenciones
 
