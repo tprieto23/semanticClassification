@@ -227,7 +227,6 @@ class DocumentService:
         logger.info("Extrayendo entidades para documento %s", document_id)
         entidades = extraer_entidades(
             texto,
-            db=db,
             document_id=document_id,
             document_title=doc.original_filename,
         )

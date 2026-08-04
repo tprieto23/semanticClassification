@@ -14,8 +14,8 @@ class Settings(BaseSettings):
 
     ANTHROPIC_API_KEY: str = ""
     ANTHROPIC_MODEL: str = "claude-sonnet-4-5-20250929"
-    NER_MAX_CHUNK_LEN: int = 48_000
-    NER_ANNOTATIONS_PATH: Path = Path("data/ner/annotations/a251048a.json")
+    NER_MAX_CHUNK_LEN: int = 12_000
+    NER_FEW_SHOT_PATH: Path = Path("data/ner/few_shot_examples.json")
     NER_PROMPT_PATH: Path = Path("data/prompts/ner_prompt.md")
     NER_USER_PROMPT_PATH: Path = Path("data/prompts/ner_user_prompt.md")
 

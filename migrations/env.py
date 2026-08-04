@@ -15,7 +15,6 @@ from src.config import settings
 
 import src.models.documents  # noqa: F401 — registra el modelo en Base.metadata
 import src.models.entities  # noqa: F401 — registra Entity en Base.metadata
-import src.models.catalogs  # noqa: F401 — registra modelos de catálogos en Base.metadata
 
 target_metadata = Base.metadata
 

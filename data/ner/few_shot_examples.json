@@ -1,0 +1,183 @@
+{
+  "version": "1.0",
+  "codebook_version": "1.1",
+  "source": "data/ner/annotations/a251048a.json",
+  "labels": ["CHAR", "LOC", "INFRA", "GOV", "PRAC"],
+  "examples": [
+    {
+      "id": "char-001",
+      "text": "es fruto del consenso de los actores públicos y privados",
+      "annotations": [
+        {"label": "CHAR", "text": "actores públicos y privados", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "char-002",
+      "text": "se busca el beneficio de los agricultores y ganaderos amazónicos",
+      "annotations": [
+        {"label": "CHAR", "text": "agricultores y ganaderos amazónicos", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "char-003",
+      "text": "firmado por los Gobiernos de Perú, Noruega y Alemania",
+      "annotations": [
+        {"label": "CHAR", "text": "Gobiernos de Perú, Noruega y Alemania", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "char-004",
+      "text": "los gobiernos regionales amazónicos han suscrito",
+      "annotations": [
+        {"label": "CHAR", "text": "gobiernos regionales amazónicos", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "char-005",
+      "text": "que promueve la CPS",
+      "annotations": [
+        {"label": "CHAR", "text": "CPS", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "loc-001",
+      "text": "en la Amazonía peruana",
+      "annotations": [
+        {"label": "LOC", "text": "Amazonía peruana", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "loc-002",
+      "text": "los bosques en el Perú",
+      "annotations": [
+        {"label": "LOC", "text": "Perú", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "loc-003",
+      "text": "especialmente en regiones tropicales",
+      "annotations": [
+        {"label": "LOC", "text": "regiones tropicales", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "loc-004",
+      "text": "los bosques peruanos albergan una gran diversidad biológica",
+      "annotations": [
+        {"label": "LOC", "text": "bosques peruanos", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "loc-005",
+      "text": "competitividad de la Amazonía peruana",
+      "annotations": [
+        {"label": "LOC", "text": "Amazonía peruana", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "infra-001",
+      "text": "Sobre la base del Sistema Integrado de Estadísticas Agrarias del MIDAGRI",
+      "annotations": [
+        {"label": "INFRA", "text": "Sistema Integrado de Estadísticas Agrarias del MIDAGRI", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "infra-002",
+      "text": "condiciones habilitantes (sistemas de monitoreo",
+      "annotations": [
+        {"label": "INFRA", "text": "sistemas de monitoreo", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "infra-003",
+      "text": "pilotos de plataformas de servicios",
+      "annotations": [
+        {"label": "INFRA", "text": "plataformas de servicios", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "infra-004",
+      "text": "seguir avanzando sobre esquemas de monitoreo para productos agropecuarios",
+      "annotations": [
+        {"label": "INFRA", "text": "esquemas de monitoreo", "ambiguity": "medium"}
+      ]
+    },
+    {
+      "id": "infra-005",
+      "text": "un prototipo aplicado a dos modelos de negocios",
+      "annotations": [
+        {"label": "INFRA", "text": "prototipo", "ambiguity": "medium"}
+      ]
+    },
+    {
+      "id": "gov-001",
+      "text": "Contribuciones Nacionalmente Determinadas (CND)",
+      "annotations": [
+        {"label": "GOV", "text": "Contribuciones Nacionalmente Determinadas (CND)", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "gov-002",
+      "text": "Ley Marco sobre Cambio Climático - Ley n.º 30754",
+      "annotations": [
+        {"label": "GOV", "text": "Ley Marco sobre Cambio Climático - Ley n.º 30754", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "gov-003",
+      "text": "Estrategia Nacional sobre Bosques y Cambio Climático (ENBCC)",
+      "annotations": [
+        {"label": "GOV", "text": "Estrategia Nacional sobre Bosques y Cambio Climático (ENBCC)", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "gov-004",
+      "text": "Declaración Conjunta de Intención (DCI)",
+      "annotations": [
+        {"label": "GOV", "text": "Declaración Conjunta de Intención (DCI)", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "gov-005",
+      "text": "Acuerdo Cacao, Bosque y Diversidad",
+      "annotations": [
+        {"label": "GOV", "text": "Acuerdo Cacao, Bosque y Diversidad", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "prac-001",
+      "text": "importación de productos y materias primas asociados a la deforestación",
+      "annotations": [
+        {"label": "PRAC", "text": "importación de productos y materias primas", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "prac-002",
+      "text": "cadenas de valor de cacao",
+      "annotations": [
+        {"label": "PRAC", "text": "cadenas de valor de cacao", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "prac-003",
+      "text": "aplicable también a la ganadería",
+      "annotations": [
+        {"label": "PRAC", "text": "ganadería", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "prac-004",
+      "text": "otras cadenas agropecuarias amazónicas",
+      "annotations": [
+        {"label": "PRAC", "text": "cadenas agropecuarias amazónicas", "ambiguity": "low"}
+      ]
+    },
+    {
+      "id": "prac-005",
+      "text": "expansión de las áreas de producción agropecuaria",
+      "annotations": [
+        {"label": "PRAC", "text": "expansión de las áreas de producción agropecuaria", "ambiguity": "low"}
+      ]
+    }
+  ]
+}

@@ -23,18 +23,12 @@ class EntityRepo:
         for ent in entidades:
             entity = Entity(
                 document_id=document_id,
-                category=ent.get(
-                    "category", ent.get("labels", [""])[0] if ent.get("labels") else ""
-                ),
+                category=ent.get("category", ""),
                 text=ent["text"],
+                position_start=ent["start"],
+                position_end=ent["end"],
                 context=ent.get("context"),
                 ambiguity=ent.get("ambiguity"),
-                label_id=ent.get("label_id"),
-                type_id=ent.get("type_id"),
-                node_id=ent.get("node_id"),
-                attribute_id=ent.get("attribute_id"),
-                value_id=ent.get("value_id"),
-                ambiguity_id=ent.get("ambiguity_id"),
                 created_at=now,
             )
             db.add(entity)

@@ -1,5 +1,7 @@
 # Sesión de Trabajo — 13 Jul 2026
 
+> **Decisión histórica superada:** esta sesión documenta el experimento que introdujo `ACT` y catálogos. Ambas decisiones fueron retiradas posteriormente: el esquema vigente usa `CHAR`, `LOC`, `INFRA`, `GOV` y `PRAC`, sin catálogos en la extracción NER. Se conserva este archivo como trazabilidad histórica.
+
 ## Contexto
 
 **Participante:** Tania (Usuario) + OpenCode (Agente)

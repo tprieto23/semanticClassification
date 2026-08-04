@@ -25,29 +25,10 @@ class Entity(Base):
     )
     category: Mapped[str] = mapped_column(Text, nullable=False, index=True)
     text: Mapped[str] = mapped_column(Text, nullable=False)
+    position_start: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    position_end: Mapped[int | None] = mapped_column(Integer, nullable=True)
     context: Mapped[str | None] = mapped_column(Text, nullable=True)
     ambiguity: Mapped[str | None] = mapped_column(Text, nullable=True)
-
-    label_id: Mapped[int | None] = mapped_column(
-        Integer, ForeignKey("catalog_labels.id", ondelete="SET NULL"), nullable=True
-    )
-    type_id: Mapped[int | None] = mapped_column(
-        Integer, ForeignKey("catalog_types.id", ondelete="SET NULL"), nullable=True
-    )
-    node_id: Mapped[int | None] = mapped_column(
-        Integer, ForeignKey("catalog_nodes.id", ondelete="SET NULL"), nullable=True
-    )
-    attribute_id: Mapped[int | None] = mapped_column(
-        Integer, ForeignKey("catalog_attributes.id", ondelete="SET NULL"), nullable=True
-    )
-    value_id: Mapped[int | None] = mapped_column(
-        Integer, ForeignKey("catalog_values.id", ondelete="SET NULL"), nullable=True
-    )
-    ambiguity_id: Mapped[int | None] = mapped_column(
-        Integer,
-        ForeignKey("catalog_ambiguity_levels.id", ondelete="SET NULL"),
-        nullable=True,
-    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=True, default=lambda: datetime.now(timezone.utc)

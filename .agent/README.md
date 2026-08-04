@@ -35,7 +35,7 @@ http://localhost:8000/docs
 | Conversión DOCX | Docling |
 | Parseo MD | markdown-it-py |
 | Reparación encoding | ftfy |
-| NER | Anthropic Claude (API) + few-shot prompting |
+| NER | Anthropic Claude (API) + extracción few-shot estructurada |
 | Almacenamiento | s3/ (local, montado en Docker) |
 | Contenedores | Docker + docker-compose |
 

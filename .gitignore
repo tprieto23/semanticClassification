@@ -10,6 +10,7 @@ __pycache__/
 env/
 venv/
 .venv/
+.label-studio-venv/
 
 # Almacenamiento de archivos subidos
 s3/
@@ -21,6 +22,7 @@ data/processed/entities/*.csv
 
 # Environment
 .env
+*.env
 
 # IDE
 .vscode/
