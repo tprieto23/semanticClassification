@@ -35,12 +35,16 @@ NER_TOOL = {
                             "type": "string",
                             "description": "Span literal exacto copiado del fragmento.",
                         },
+                        "sentence_id": {
+                            "type": "string",
+                            "description": "Identificador de la oración que contiene el span.",
+                        },
                         "ambiguity": {
                             "type": "string",
                             "enum": ["low", "medium", "high"],
                         },
                     },
-                    "required": ["label", "text", "ambiguity"],
+                    "required": ["label", "text", "sentence_id", "ambiguity"],
                 },
             },
         },
@@ -89,7 +93,9 @@ def _cargar_few_shot_examples() -> str:
 
     examples = payload.get("examples") if isinstance(payload, dict) else None
     if not isinstance(examples, list) or not examples:
-        raise ValueError("El archivo few-shot debe contener una lista examples no vacía")
+        raise ValueError(
+            "El archivo few-shot debe contener una lista examples no vacía"
+        )
 
     formatted: list[str] = []
     for index, example in enumerate(examples, start=1):
@@ -104,6 +110,7 @@ def _cargar_few_shot_examples() -> str:
         if not isinstance(annotations, list):
             raise ValueError(f"Annotations inválido en ejemplo few-shot {example_id}")
 
+        sentence_id = f"{example_id}-s1"
         validated_annotations: list[dict[str, str]] = []
         for annotation in annotations:
             if not isinstance(annotation, dict):
@@ -116,13 +123,20 @@ def _cargar_few_shot_examples() -> str:
                     f"Etiqueta no permitida {label!r} en ejemplo {example_id}"
                 )
             if not isinstance(span_text, str) or span_text not in source_text:
-                raise ValueError(f"Span no literal en ejemplo {example_id}: {span_text!r}")
+                raise ValueError(
+                    f"Span no literal en ejemplo {example_id}: {span_text!r}"
+                )
             if ambiguity not in {"low", "medium", "high"}:
                 raise ValueError(
                     f"Ambigüedad no permitida en ejemplo {example_id}: {ambiguity!r}"
                 )
             validated_annotations.append(
-                {"label": label, "text": span_text, "ambiguity": ambiguity}
+                {
+                    "label": label,
+                    "text": span_text,
+                    "sentence_id": sentence_id,
+                    "ambiguity": ambiguity,
+                }
             )
 
         demonstration = {
@@ -131,7 +145,7 @@ def _cargar_few_shot_examples() -> str:
                 "document_id": example_id,
                 "document_title": "",
                 "section_title": "",
-                "text": source_text,
+                "sentences": [{"sentence_id": sentence_id, "text": source_text}],
             },
             "expected_output": {
                 "document_id": example_id,
@@ -154,7 +168,7 @@ def _build_user_prompt(json_input: str, few_shot_examples: str) -> str:
 
 
 def _construir_json_entrada(
-    chunk: str,
+    sentences: list[dict[str, Any]],
     document_id: str = "",
     document_title: str = "",
     section_title: str = "",
@@ -163,7 +177,10 @@ def _construir_json_entrada(
         "document_id": document_id,
         "document_title": document_title,
         "section_title": section_title,
-        "text": chunk,
+        "sentences": [
+            {"sentence_id": sentence["sentence_id"], "text": sentence["text"]}
+            for sentence in sentences
+        ],
     }
     return json.dumps(entrada, ensure_ascii=False)
 
@@ -198,36 +215,105 @@ def _partir_por_parrafos(texto: str, max_chars: int) -> list[tuple[str, int]]:
     return chunks or [(texto, 0)]
 
 
-def _extraer_contexto(
-    texto_original: str, start: int, end: int, ventana: int = 80
-) -> str:
-    ctx_start = max(0, start - ventana)
-    ctx_end = min(len(texto_original), end + ventana)
-    contexto = texto_original[ctx_start:ctx_end]
-    if ctx_start > 0:
-        contexto = "..." + contexto.lstrip()
-    if ctx_end < len(texto_original):
-        contexto = contexto.rstrip() + "..."
-    return contexto.strip()
+_ABBREVIATIONS = {
+    "dr.",
+    "dra.",
+    "sr.",
+    "sra.",
+    "srta.",
+    "ing.",
+    "lic.",
+    "etc.",
+    "ej.",
+    "p.",
+    "pp.",
+    "n.º",
+    "n°.",
+}
 
 
-def _buscar_offset(
+def _es_limite_oracion(texto: str, boundary_start: int, boundary_end: int) -> bool:
+    separator = texto[boundary_start:boundary_end]
+    if "\n\n" in separator:
+        return True
+
+    prefix = texto[:boundary_start].rstrip()
+    token_match = re.search(r"(\S+)$", prefix)
+    token = token_match.group(1).casefold() if token_match else ""
+    if token in _ABBREVIATIONS or re.fullmatch(r"[a-záéíóúñ]\.", token):
+        return False
+
+    suffix = texto[boundary_end:].lstrip()
+    if suffix and suffix[0].islower():
+        return False
+    return True
+
+
+def _segmentar_oraciones(
     chunk_text: str,
+    chunk_offset: int,
+) -> list[dict[str, Any]]:
+    boundaries = list(re.finditer(r"(?<=[.!?])\s+|\n{2,}", chunk_text))
+    sentences: list[dict[str, Any]] = []
+    segment_start = 0
+
+    for boundary in boundaries:
+        if not _es_limite_oracion(chunk_text, boundary.start(), boundary.end()):
+            continue
+        raw = chunk_text[segment_start : boundary.start()]
+        leading = len(raw) - len(raw.lstrip())
+        sentence_text = raw.strip()
+        if sentence_text:
+            start = chunk_offset + segment_start + leading
+            sentences.append(
+                {
+                    "sentence_id": f"s-{start:09d}",
+                    "text": sentence_text,
+                    "start": start,
+                }
+            )
+        segment_start = boundary.end()
+
+    raw = chunk_text[segment_start:]
+    leading = len(raw) - len(raw.lstrip())
+    sentence_text = raw.strip()
+    if sentence_text:
+        start = chunk_offset + segment_start + leading
+        sentences.append(
+            {
+                "sentence_id": f"s-{start:09d}",
+                "text": sentence_text,
+                "start": start,
+            }
+        )
+
+    return sentences
+
+
+def _buscar_offset_disponible(
+    sentence_text: str,
     span_text: str,
-    last_index: int = 0,
+    used_ranges: list[tuple[int, int]],
 ) -> tuple[int, int] | None:
     if not span_text:
         return None
-    start = chunk_text.find(span_text, last_index)
-    if start == -1:
-        return None
-    return start, start + len(span_text)
+    search_from = 0
+    while True:
+        start = sentence_text.find(span_text, search_from)
+        if start == -1:
+            return None
+        end = start + len(span_text)
+        if all(
+            end <= used_start or start >= used_end
+            for used_start, used_end in used_ranges
+        ):
+            return start, end
+        search_from = start + 1
 
 
 def _parsear_datos(
     data: Any,
-    chunk_text: str,
-    chunk_offset: int = 0,
+    sentences: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     if not isinstance(data, dict):
         logger.warning("Respuesta estructurada inesperada (no es objeto): %r", data)
@@ -238,8 +324,11 @@ def _parsear_datos(
         logger.warning("Respuesta inesperada: annotations no es un array")
         return []
 
+    sentence_by_id = {sentence["sentence_id"]: sentence for sentence in sentences}
+    used_ranges: dict[str, list[tuple[int, int]]] = {
+        sentence_id: [] for sentence_id in sentence_by_id
+    }
     entidades: list[dict[str, Any]] = []
-    last_index = 0
 
     for anot in anotaciones:
         if not isinstance(anot, dict):
@@ -254,36 +343,51 @@ def _parsear_datos(
         if not span_text:
             continue
 
-        offset_result = _buscar_offset(chunk_text, span_text, last_index)
+        sentence_id = str(anot.get("sentence_id", ""))
+        sentence = sentence_by_id.get(sentence_id)
+        if sentence is None:
+            logger.warning(
+                "sentence_id inválido, se ignora anotación %r: %r",
+                sentence_id,
+                span_text[:100],
+            )
+            continue
+
+        offset_result = _buscar_offset_disponible(
+            sentence["text"], span_text, used_ranges[sentence_id]
+        )
         if offset_result is None:
             logger.warning(
-                "Span no encontrado literalmente en chunk, se ignora: %r",
+                "Span no disponible literalmente en %s, se ignora: %r",
+                sentence_id,
                 span_text[:100],
             )
             continue
 
         start_rel, end_rel = offset_result
-        last_index = end_rel
+        used_ranges[sentence_id].append((start_rel, end_rel))
 
         ambiguity = anot.get("ambiguity", "low")
         if ambiguity not in {"low", "medium", "high"}:
             logger.warning("Ambigüedad inválida, se normaliza a high: %r", ambiguity)
             ambiguity = "high"
 
-        ctx = _extraer_contexto(chunk_text, start_rel, end_rel)
+        start = sentence["start"] + start_rel
+        end = sentence["start"] + end_rel
 
         entidades.append(
             {
                 "text": span_text,
                 "category": label,
-                "start": chunk_offset + start_rel,
-                "end": chunk_offset + end_rel,
-                "context": ctx,
+                "start": start,
+                "end": end,
+                "sentence_id": sentence_id,
+                "context": sentence["text"],
                 "ambiguity": ambiguity,
             }
         )
 
-    return entidades
+    return sorted(entidades, key=lambda ent: (ent["start"], ent["end"]))
 
 
 def _fusionar_entidades(
@@ -332,8 +436,9 @@ def extraer_entidades(
             len(chunk_text),
         )
 
+        sentences = _segmentar_oraciones(chunk_text, chunk_offset)
         json_input = _construir_json_entrada(
-            chunk=chunk_text,
+            sentences=sentences,
             document_id=document_id,
             document_title=document_title,
         )
@@ -369,7 +474,7 @@ def extraer_entidades(
             None,
         )
         if tool_input is not None:
-            entities = _parsear_datos(tool_input, chunk_text, chunk_offset)
+            entities = _parsear_datos(tool_input, sentences)
         else:
             raise RuntimeError(
                 f"Claude no usó la herramienta NER requerida en offset {chunk_offset}"

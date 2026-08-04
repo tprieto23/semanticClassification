@@ -27,6 +27,7 @@ class EntityRepo:
                 text=ent["text"],
                 position_start=ent["start"],
                 position_end=ent["end"],
+                sentence_id=ent.get("sentence_id"),
                 context=ent.get("context"),
                 ambiguity=ent.get("ambiguity"),
                 created_at=now,

@@ -115,18 +115,19 @@ POST /documents/{id}/extract-entities
      → extraer_entidades(texto, document_id, document_title):
          → _cargar_system_prompt()          → lee data/prompts/ner_prompt.md (caché)
          → _partir_por_parrafos()           → chunks de máximo 3 párrafos / 12K caracteres
-         → _construir_json_entrada()        → arma JSON con document_id, title, text
+         → _segmentar_oraciones()           → asigna sentence_id estable y offset absoluto
+         → _construir_json_entrada()        → arma JSON con document_id, title y sentences
          → _cargar_few_shot_examples()      → valida y formatea 25 ejemplos curados
          → Anthropic API (claude-sonnet)    → system + ejemplos + fragmento objetivo
          → tool submit_entity_annotations   → salida validada por JSON Schema
-         → _parsear_datos()                 → valida annotations [{label, text, ambiguity}]
+         → _parsear_datos()                 → localiza cada span dentro de su sentence_id
          → fallo explícito                  → no persiste resultados truncados o sin tool use
          → _buscar_offset()                 → calcula start/end absolutos buscando text literal
          → _fusionar_entidades()            → conserva apariciones y deduplica solo la misma posición
      → Guardar JSON en s3/archivosNER/{id}.json
      → Entity bulk insert en DB             → persiste menciones y offsets sin catálogos
      → db.commit()
-   ← 200 + ExtractEntitiesResponse {document_id, entities: [{text, category, start, end, context, ambiguity}]}
+   ← 200 + ExtractEntitiesResponse {document_id, entities: [{text, category, start, end, sentence_id, context, ambiguity}]}
 ```
 
 ## Flujo Revertir

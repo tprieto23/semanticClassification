@@ -27,6 +27,7 @@ class Entity(Base):
     text: Mapped[str] = mapped_column(Text, nullable=False)
     position_start: Mapped[int | None] = mapped_column(Integer, nullable=True)
     position_end: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    sentence_id: Mapped[str | None] = mapped_column(Text, nullable=True, index=True)
     context: Mapped[str | None] = mapped_column(Text, nullable=True)
     ambiguity: Mapped[str | None] = mapped_column(Text, nullable=True)
 

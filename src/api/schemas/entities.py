@@ -6,6 +6,7 @@ class EntityOut(BaseModel):
     category: str
     start: int
     end: int
+    sentence_id: str
     context: str | None = None
     ambiguity: str | None = None
 

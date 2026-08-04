@@ -142,6 +142,8 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
   - Salida estructurada forzada con `submit_entity_annotations` y JSON Schema
   - Salida semántica: `{"annotations": [{label, text, ambiguity}]}`
   - Fallo explícito si Anthropic trunca la respuesta o no usa la herramienta requerida
+  - Oraciones con `sentence_id` estable para localizar menciones aunque Claude responda fuera de orden
+  - Repeticiones conservadas por aparición, incluso dentro de una misma oración
   - Cálculo backend de `start`/`end` absolutos buscando el span literal en el chunk
   - Campo `context` (texto circundante 80 chars antes/después)
   - Fusión de resultados de chunks conservando cada aparición por posición

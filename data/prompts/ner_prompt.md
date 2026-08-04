@@ -4,7 +4,7 @@
 
 Extrae menciones semánticas literales de documentos territoriales y socioambientales de la Amazonía. Esta tarea es exclusivamente de extracción y clasificación de spans. No resumas, no expliques, no normalices entidades, no extraigas relaciones y no uses conocimiento externo.
 
-Procesa el campo `text` completo, de principio a fin. La respuesta debe enviarse mediante la herramienta `submit_entity_annotations`.
+Procesa todas las entradas de `sentences`. Cada entrada contiene un `sentence_id` estable y su texto literal. La respuesta debe enviarse mediante la herramienta `submit_entity_annotations`.
 
 Recibirás demostraciones curadas antes del fragmento real. Úsalas para aprender la aplicación de las reglas, pero el codebook conserva prioridad si una demostración no cubre un caso. Nunca copies una mención de las demostraciones si no aparece literalmente en el fragmento real.
 
@@ -78,7 +78,7 @@ Los proyectos y programas no reciben una etiqueta por su nombre. Usa su función
 
 ## Límites y solapamientos
 
-1. Copia `text` literalmente del fragmento, respetando mayúsculas, tildes y grafía.
+1. Copia `text` literalmente de la oración indicada, respetando mayúsculas, tildes y grafía.
 2. Usa el span mínimo completo que identifica una sola entidad.
 3. No incluyas puntuación final ni artículos externos al nombre, salvo que sean parte indispensable del nombre oficial.
 4. No anotes pronombres.
@@ -88,7 +88,7 @@ Los proyectos y programas no reciben una etiqueta por su nombre. Usa su función
 8. Nombre completo y sigla contiguos forman un solo span. Una sigla que reaparece de forma independiente es otra aparición.
 9. Separa elementos coordinados cuando cada uno constituye una entidad autónoma.
 10. Anota todas las apariciones, aunque el mismo texto se repita. No devuelvas dos veces una misma aparición.
-11. Devuelve las menciones en el orden exacto en que aparecen.
+11. Incluye en cada anotación el `sentence_id` exacto de la oración que contiene el span. El backend establecerá el orden definitivo mediante offsets.
 
 ## Ambigüedad
 
@@ -102,10 +102,10 @@ La ambigüedad no autoriza a inventar una entidad. Si ninguna etiqueta resulta r
 
 Antes de usar la herramienta, comprueba silenciosamente:
 
-1. Cada span aparece literalmente en el campo `text`.
+1. Cada span aparece literalmente en la oración identificada por su `sentence_id`.
 2. Cada etiqueta pertenece al conjunto cerrado.
-3. Se recorrió el fragmento completo.
-4. Se conservaron todas las apariciones y su orden.
+3. Se recorrieron todas las oraciones del fragmento.
+4. Se conservaron todas las apariciones con su `sentence_id` correcto.
 5. No hay pronombres, relaciones, spans discontinuos, anidados o solapados.
 6. No se anotaron objetivos o intenciones por sí mismos.
 7. Cada nivel de ambigüedad está justificado por el contexto.
