@@ -18,7 +18,11 @@ from src.api.schemas.documents import (
     DocumentListResponse,
     DocumentRead,
 )
-from src.api.schemas.entities import EntityOut, ExtractEntitiesResponse
+from src.api.schemas.entities import (
+    EntityOut,
+    ExtractEntitiesResponse,
+    FuzzyMatchingResponse,
+)
 from src.services.documents import DocumentService, get_db
 
 router = APIRouter(prefix="/documents", tags=["Documents"])
@@ -132,6 +136,18 @@ def extract_entities_batch(
 ):
     resultado = DocumentService.extraer_entidades_de_varios(db)
     return BatchProcessResponse(**resultado)
+
+
+@router.post("/{document_id}/fuzzy-matching", response_model=FuzzyMatchingResponse)
+def fuzzy_matching(
+    document_id: UUID,
+    db: Session = Depends(get_db),
+):
+    entidades = DocumentService.preparar_fuzzy_matching(db, str(document_id))
+    return FuzzyMatchingResponse(
+        document_id=str(document_id),
+        entities=[EntityOut(**e) for e in entidades],
+    )
 
 
 @router.delete("/{document_id}", status_code=status.HTTP_204_NO_CONTENT)

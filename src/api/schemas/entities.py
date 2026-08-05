@@ -14,3 +14,8 @@ class EntityOut(BaseModel):
 class ExtractEntitiesResponse(BaseModel):
     document_id: str
     entities: list[EntityOut]
+
+
+class FuzzyMatchingResponse(BaseModel):
+    document_id: str
+    entities: list[EntityOut]

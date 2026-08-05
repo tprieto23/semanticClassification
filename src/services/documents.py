@@ -209,8 +209,7 @@ class DocumentService:
 
     @staticmethod
     def extraer_entidades_de_documento(db: Session, document_id: str) -> list[dict]:
-        """Extrae entidades NER de un documento limpio usando Anthropic
-        y las persiste en la tabla entities."""
+        """Extrae entidades NER y guarda el resultado como un archivo JSON."""
         doc = DocumentRepo.leer_uno(db, document_id)
         if doc is None:
             raise DocumentoNoEncontrado(document_id)
@@ -247,13 +246,6 @@ class DocumentService:
         doc.ner_path = str(ner_path)
         logger.info("Guardadas %d entidades en %s", len(entidades), ner_path)
 
-        EntityRepo.reemplazar_entidades(db, doc.id, entidades)
-        logger.info(
-            "Persistidas %d entidades en DB para documento %s",
-            len(entidades),
-            document_id,
-        )
-
         DocumentRepo.actualizar_status(db, doc, "ner")
         logger.info("Documento %s actualizado a status 'ner'", document_id)
 
@@ -277,12 +269,57 @@ class DocumentService:
         return {"processed": processed, "errors": errors}
 
     @staticmethod
+    def preparar_fuzzy_matching(db: Session, document_id: str) -> list[dict]:
+        doc = DocumentRepo.leer_uno(db, document_id)
+        if doc is None:
+            raise DocumentoNoEncontrado(document_id)
+
+        if doc.status != "ner":
+            raise DocumentoError(
+                f"Documento {document_id} no está en estado 'ner' "
+                f"(status: '{doc.status}')",
+                409,
+            )
+
+        if not doc.ner_path:
+            raise DocumentoError(
+                f"Documento {document_id} no tiene archivo NER registrado", 409
+            )
+
+        contenido = Storage.leer(doc.ner_path)
+        if not contenido:
+            raise DocumentoError("Archivo NER no encontrado o vacío", 500)
+
+        try:
+            resultado = json.loads(contenido)
+        except json.JSONDecodeError as exc:
+            raise DocumentoError(f"Archivo NER contiene JSON inválido: {exc}", 500)
+
+        if not isinstance(resultado, dict) or not isinstance(
+            resultado.get("entities"), list
+        ):
+            raise DocumentoError(
+                "Archivo NER inválido: se esperaba un objeto con una lista 'entities'",
+                500,
+            )
+
+        DocumentRepo.actualizar_status(db, doc, "fuzzyMatching")
+        logger.info(
+            "Documento %s preparado para fuzzy matching con %d entidades",
+            document_id,
+            len(resultado["entities"]),
+        )
+        return resultado["entities"]
+
+    @staticmethod
     def revertir(db: Session, document_id: str) -> None:
         doc = DocumentRepo.leer_uno(db, document_id)
         if doc is None:
             raise DocumentoNoEncontrado(document_id)
 
-        if doc.status == "ner":
+        if doc.status == "fuzzyMatching":
+            DocumentRepo.actualizar_status(db, doc, "ner")
+        elif doc.status == "ner":
             EntityRepo.eliminar_por_documento(db, doc.id)
             if doc.ner_path:
                 Storage.eliminar(doc.ner_path)

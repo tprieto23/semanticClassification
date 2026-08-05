@@ -54,6 +54,7 @@ http://localhost:8000/docs
 | POST | `/documents/clean-batch` | Limpiar todos en converted |
 | POST | `/documents/{id}/revert` | Revertir al estado anterior |
 | POST | `/documents/{id}/extract-entities` | Extraer entidades NER (Anthropic) |
+| POST | `/documents/{id}/fuzzy-matching` | Validar y preparar el JSON NER para fuzzy matching |
 
 ## Estados del documento
 
@@ -63,6 +64,7 @@ http://localhost:8000/docs
 | `converted` | Convertido a .md |
 | `cleaned` | Texto limpiado, listo para NER |
 | `ner` | Entidades extraídas |
+| `fuzzyMatching` | JSON NER validado y listo para normalización canónica |
 
 ## Convenciones
 

@@ -150,10 +150,10 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
   - Parseo robusto (strip markdown wrappers)
 - [x] `src/services/cleaning.py` — `linguisticCleaning()` migrado a Anthropic (ver Objetivo 3)
 - [x] `src/api/schemas/entities.py` — EntityOut con text, category, start, end, context y ambiguity
-- [x] `POST /documents/{id}/extract-entities` — endpoint que extrae y persiste entidades en DB
+- [x] `POST /documents/{id}/extract-entities` — endpoint que extrae entidades y guarda el resultado en JSON
 - [x] `.env` — variable `ANTHROPIC_API_KEY` (completada por el usuario)
 - [x] `requirements.txt` — dependencia `anthropic` (removido spacy/langdetect)
-- [x] `src/services/documents.py` — `extraer_entidades_de_documento()` persiste entidades en DB (opción C)
+- [x] `src/services/documents.py` — `extraer_entidades_de_documento()` no modifica la tabla `entities`; esa persistencia queda para un endpoint posterior
 - [x] `migrations/versions/b8e3f2a1c4d5_recreate_entities_table.py` — recrea tabla entities
 - [x] `src/config.py` — `STORAGE_NER = s3/archivosNER`, `NER_PROMPT_PATH = data/prompts/ner_prompt.md`, `NER_USER_PROMPT_PATH = data/prompts/ner_user_prompt.md`
 - [x] `src/models/documents.py` — columna `ner_path`
@@ -164,6 +164,9 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - [x] `src/services/documents.py` — `eliminar()` borra todos los archivos generados (raw, converted, cleaned, NER)
 - [x] `src/services/documents.py` — `extraer_entidades_de_varios()` para batch NER
 - [x] `src/api/routers/documents.py` — `POST /documents/extract-entities-batch`
+- [x] `POST /documents/{id}/fuzzy-matching` — valida estado `ner`, lee el JSON NER y avanza a `fuzzyMatching`
+- [x] `canonical_entities` — modelo, repositorio y migración inicial
+- [x] `entities.canonical_id` — FK obligatoria hacia `canonical_entities`
 
 ### Línea base histórica probada
 

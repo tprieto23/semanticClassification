@@ -23,6 +23,7 @@ class EntityRepo:
         for ent in entidades:
             entity = Entity(
                 document_id=document_id,
+                canonical_id=ent["canonical_id"],
                 category=ent.get("category", ""),
                 text=ent["text"],
                 position_start=ent["start"],

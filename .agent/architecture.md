@@ -21,6 +21,8 @@ data/
 │   ├── database.py                ← engine, SessionLocal, Base, get_db
 │   ├── documents.py               ← ORM Document (10 columnas)
 │   ├── documents_repo.py          ← crear, leer_todos, leer_uno, eliminar, actualizar_status, leer_por_status
+│   ├── canonical_entities.py      ← ORM CanonicalEntity
+│   ├── canonical_entities_repo.py ← acceso a entidades canónicas
 │   ├── entities.py                ← ORM Entity (category, text, offsets, context, ambiguity)
 │   ├── entities_repo.py           ← eliminar_por_documento, reemplazar_entidades
 │   └── storage.py                 ← guardar, leer, eliminar, preparar_nombre
@@ -125,10 +127,29 @@ POST /documents/{id}/extract-entities
          → _buscar_offset()                 → calcula start/end absolutos buscando text literal
          → _fusionar_entidades()            → conserva apariciones y deduplica solo la misma posición
      → Guardar JSON en s3/archivosNER/{id}.json
-     → Entity bulk insert en DB             → persiste menciones y offsets sin catálogos
-     → db.commit()
+     → doc.ner_path = path                   → guarda la ruta del JSON en documents
+     → DocumentRepo.actualizar_status()      → status = 'ner'
    ← 200 + ExtractEntitiesResponse {document_id, entities: [{text, category, start, end, sentence_id, context, ambiguity}]}
 ```
+
+Este endpoint no escribe, reemplaza ni elimina menciones en la tabla `entities`.
+La persistencia y normalización de menciones se delega a un endpoint posterior.
+
+## Flujo Fuzzy Matching (estructura inicial)
+
+```
+POST /documents/{id}/fuzzy-matching
+
+   → comprueba que el documento exista y tenga status = 'ner'
+   → comprueba que ner_path esté registrado
+   → lee y valida s3/archivosNER/{id}.json
+   → DocumentRepo.actualizar_status() → status = 'fuzzyMatching'
+   ← 200 + entidades leídas del JSON
+```
+
+En esta etapa todavía no se comparan ni persisten menciones. La tabla
+`canonical_entities` contiene `id`, `canonical_name` y `category`; cada fila futura
+de `entities` deberá referenciar una entidad canónica mediante `canonical_id` no nulo.
 
 ## Flujo Revertir
 
@@ -172,4 +193,5 @@ s3/
 | POST | `/documents/clean-batch` | Limpiar todos en converted |
 | POST | `/documents/{id}/revert` | Revertir al estado anterior |
 | POST | `/documents/{id}/extract-entities` | Extraer entidades NER (Anthropic LLM) |
+| POST | `/documents/{id}/fuzzy-matching` | Validar el JSON NER y avanzar a fuzzyMatching |
 | GET | `/health` | Health check |

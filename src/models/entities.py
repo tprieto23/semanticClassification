@@ -5,6 +5,7 @@ from sqlalchemy import DateTime, ForeignKey, Integer, Text, text
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from src.models.canonical_entities import CanonicalEntity
 from src.models.database import Base
 
 
@@ -23,6 +24,12 @@ class Entity(Base):
         nullable=False,
         index=True,
     )
+    canonical_id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        ForeignKey("canonical_entities.id", ondelete="RESTRICT"),
+        nullable=False,
+        index=True,
+    )
     category: Mapped[str] = mapped_column(Text, nullable=False, index=True)
     text: Mapped[str] = mapped_column(Text, nullable=False)
     position_start: Mapped[int | None] = mapped_column(Integer, nullable=True)
@@ -36,6 +43,7 @@ class Entity(Base):
     )
 
     document: Mapped["Document"] = relationship(backref="entities")  # noqa: F821
+    canonical_entity: Mapped[CanonicalEntity] = relationship(backref="mentions")
 
     def __repr__(self) -> str:
         return f"<Entity {self.category}: {self.text[:50]}>"
