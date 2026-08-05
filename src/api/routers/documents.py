@@ -22,6 +22,7 @@ from src.api.schemas.entities import (
     EntityOut,
     ExtractEntitiesResponse,
     FuzzyMatchingResponse,
+    MatchedEntityOut,
 )
 from src.services.documents import DocumentService, get_db
 
@@ -146,7 +147,7 @@ def fuzzy_matching(
     entidades = DocumentService.preparar_fuzzy_matching(db, str(document_id))
     return FuzzyMatchingResponse(
         document_id=str(document_id),
-        entities=[EntityOut(**e) for e in entidades],
+        entities=[MatchedEntityOut(**e) for e in entidades],
     )
 
 

@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from pydantic import BaseModel
 
 
@@ -16,6 +18,14 @@ class ExtractEntitiesResponse(BaseModel):
     entities: list[EntityOut]
 
 
+class MatchedEntityOut(EntityOut):
+    canonical_id: UUID
+    canonical_name: str
+    match_type: str
+    match_score: float
+    second_match_score: float | None = None
+
+
 class FuzzyMatchingResponse(BaseModel):
     document_id: str
-    entities: list[EntityOut]
+    entities: list[MatchedEntityOut]

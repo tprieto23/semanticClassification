@@ -164,9 +164,11 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - [x] `src/services/documents.py` — `eliminar()` borra todos los archivos generados (raw, converted, cleaned, NER)
 - [x] `src/services/documents.py` — `extraer_entidades_de_varios()` para batch NER
 - [x] `src/api/routers/documents.py` — `POST /documents/extract-entities-batch`
-- [x] `POST /documents/{id}/fuzzy-matching` — valida estado `ner`, lee el JSON NER y avanza a `fuzzyMatching`
+- [x] `POST /documents/{id}/fuzzy-matching` — normaliza, crea/reutiliza canónicos, persiste menciones y avanza a `fuzzyMatching`
 - [x] `canonical_entities` — modelo, repositorio y migración inicial
 - [x] `entities.canonical_id` — FK obligatoria hacia `canonical_entities`
+- [x] Matching conservador por categoría — exact normalizado, fuzzy con umbral y margen, y protección para términos cortos
+- [x] Persistencia transaccional — rollback completo ante errores y reemplazo idempotente de menciones por documento
 
 ### Línea base histórica probada
 

@@ -25,6 +25,7 @@ nltk
 
 # NER / Extracción de entidades (Objetivo 4)
 anthropic>=0.49.0
+rapidfuzz>=3.9.0,<4.0.0
 
 # torch/torchvision: requeridos por docling/transformers.
 # Se instalan CPU-only en el Dockerfile (evita wheels CUDA nvidia ~1.5GB).

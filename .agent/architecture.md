@@ -135,7 +135,7 @@ POST /documents/{id}/extract-entities
 Este endpoint no escribe, reemplaza ni elimina menciones en la tabla `entities`.
 La persistencia y normalización de menciones se delega a un endpoint posterior.
 
-## Flujo Fuzzy Matching (estructura inicial)
+## Flujo Fuzzy Matching
 
 ```
 POST /documents/{id}/fuzzy-matching
@@ -143,13 +143,21 @@ POST /documents/{id}/fuzzy-matching
    → comprueba que el documento exista y tenga status = 'ner'
    → comprueba que ner_path esté registrado
    → lee y valida s3/archivosNER/{id}.json
-   → DocumentRepo.actualizar_status() → status = 'fuzzyMatching'
-   ← 200 + entidades leídas del JSON
+   → normaliza texto para comparación (sin modificar la mención literal)
+   → busca candidatos exclusivamente dentro de la misma categoría
+   → exact match normalizado o fuzzy conservador con umbral y margen
+   → crea canonical_entity si no existe una coincidencia segura
+   → reemplaza las menciones previas del documento en entities
+   → commit único                          → menciones + canónicos + status
+   → status = 'fuzzyMatching'
+   ← 200 + menciones con canonical_id y metadatos de la decisión
 ```
 
-En esta etapa todavía no se comparan ni persisten menciones. La tabla
-`canonical_entities` contiene `id`, `canonical_name` y `category`; cada fila futura
-de `entities` deberá referenciar una entidad canónica mediante `canonical_id` no nulo.
+La tabla `canonical_entities` contiene `id`, `canonical_name` y `category`; cada fila
+de `entities` referencia una entidad canónica mediante `canonical_id` no nulo. Los
+umbrales iniciales son 93 para CHAR/LOC y 96 para INFRA/GOV/PRAC, con margen mínimo
+de 5 puntos frente al segundo candidato. Las expresiones menores de cinco caracteres
+solo se unen mediante coincidencia exacta normalizada.
 
 ## Flujo Revertir
 
@@ -193,5 +201,5 @@ s3/
 | POST | `/documents/clean-batch` | Limpiar todos en converted |
 | POST | `/documents/{id}/revert` | Revertir al estado anterior |
 | POST | `/documents/{id}/extract-entities` | Extraer entidades NER (Anthropic LLM) |
-| POST | `/documents/{id}/fuzzy-matching` | Validar el JSON NER y avanzar a fuzzyMatching |
+| POST | `/documents/{id}/fuzzy-matching` | Normalizar y persistir menciones con canonical_id |
 | GET | `/health` | Health check |

@@ -34,4 +34,4 @@ class EntityRepo:
                 created_at=now,
             )
             db.add(entity)
-        db.commit()
+        db.flush()

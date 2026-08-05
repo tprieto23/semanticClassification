@@ -15,9 +15,12 @@ class CanonicalEntityRepo:
             category=category,
         )
         db.add(canonical_entity)
-        db.commit()
-        db.refresh(canonical_entity)
+        db.flush()
         return canonical_entity
+
+    @staticmethod
+    def leer_todas(db: Session) -> list[CanonicalEntity]:
+        return list(db.scalars(select(CanonicalEntity)).all())
 
     @staticmethod
     def leer_uno(db: Session, canonical_id: UUID) -> CanonicalEntity | None:

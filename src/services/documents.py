@@ -13,6 +13,10 @@ from src.models.documents_repo import DocumentRepo
 from src.models.entities_repo import EntityRepo
 from src.models.storage import Storage
 from src.services.cleaning import CleaningService
+from src.services.fuzzy_matching import (
+    FuzzyMatchingDataError,
+    asociar_entidades_canonicas,
+)
 from src.services.ner import extraer_entidades
 from src.services.pdf_converter import PdfConverter
 
@@ -303,13 +307,29 @@ class DocumentService:
                 500,
             )
 
-        DocumentRepo.actualizar_status(db, doc, "fuzzyMatching")
+        try:
+            entidades, estadisticas = asociar_entidades_canonicas(
+                db, resultado["entities"]
+            )
+            EntityRepo.reemplazar_entidades(db, doc.id, entidades)
+            doc.status = "fuzzyMatching"
+            db.commit()
+        except FuzzyMatchingDataError as exc:
+            db.rollback()
+            raise DocumentoError(f"Archivo NER inválido: {exc}", 422)
+        except Exception:
+            db.rollback()
+            logger.exception("Falló fuzzy matching para documento %s", document_id)
+            raise DocumentoError("No fue posible completar fuzzy matching", 500)
+
         logger.info(
-            "Documento %s preparado para fuzzy matching con %d entidades",
+            "Fuzzy matching completado para %s: %d exact, %d fuzzy, %d nuevas",
             document_id,
-            len(resultado["entities"]),
+            estadisticas["exact"],
+            estadisticas["fuzzy"],
+            estadisticas["new"],
         )
-        return resultado["entities"]
+        return entidades
 
     @staticmethod
     def revertir(db: Session, document_id: str) -> None:
