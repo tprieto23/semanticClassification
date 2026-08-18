@@ -22,6 +22,7 @@ class DocumentRepo:
         file_type: str | None = None,
         status: str | None = None,
         incubator_number: int | None = None,
+        language: str | None = None,
     ) -> tuple[list[Document], int]:
         q = select(Document)
         if file_type:
@@ -30,6 +31,8 @@ class DocumentRepo:
             q = q.where(Document.status == status)
         if incubator_number is not None:
             q = q.where(Document.incubator_number == incubator_number)
+        if language is not None:
+            q = q.where(Document.language == language)
 
         total = db.scalar(select(func.count()).select_from(q.subquery())) or 0
         filas = list(
@@ -56,3 +59,10 @@ class DocumentRepo:
     @staticmethod
     def leer_por_status(db: Session, status: str) -> list[Document]:
         return list(db.scalars(select(Document).where(Document.status == status)).all())
+
+    @staticmethod
+    def actualizar_language(
+        db: Session, documento: Document, language: str | None
+    ) -> None:
+        documento.language = language
+        db.commit()

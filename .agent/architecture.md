@@ -54,19 +54,25 @@ api/routers → services → models/{repo, storage}
 
 ```
 POST /documents
-  multipart: file + incubator_number (1..8) + metadata opcional
+  multipart: file + incubator_number (1..8) + metadata opcional + language opcional
   → FastAPI/OpenAPI valida que la incubadora esté entre 1 y 8
   → DocumentService.cargar_documento()
     → Storage.preparar_nombre() → nombre seguro, ext, UUID
     → Storage.guardar()         → s3/archivosCrudos/{uuid}.{ext}
     → DocumentRepo.crear()      → INSERT con status=raw e incubator_number
-  ← 201 + DocumentRead (incluye incubator_number)
+  ← 201 + DocumentRead (incluye incubator_number y language)
 
 POST /documents/batch
-  multipart: files[] + una incubator_number común al lote
+  multipart: files[] + una incubator_number común al lote + language opcional
 
-GET /documents?incubator_number={1..8}
-  → filtra el corpus documental por incubadora
+PATCH /documents/{id}/language
+  → registra el idioma de un documento ya cargado
+
+POST /documents/set-language-batch
+  → registra el idioma para varios documentos a la vez
+
+GET /documents?incubator_number={1..8}&language=es
+  → filtra el corpus documental por incubadora y/o idioma
 ```
 
 ## Flujo Objetivo 2: Conversión

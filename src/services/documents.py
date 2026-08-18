@@ -71,6 +71,7 @@ class DocumentService:
         file: UploadFile,
         incubator_number: int,
         metadata_json: str | None,
+        language: str | None = None,
     ) -> Document:
         if not file.filename:
             raise ArchivoSinNombre()
@@ -98,6 +99,7 @@ class DocumentService:
             file_type=ext,
             file_size_bytes=len(content),
             incubator_number=incubator_number,
+            language=language,
             metadata_=metadata,
         )
 
@@ -109,9 +111,10 @@ class DocumentService:
         file_type: str | None = None,
         status: str | None = None,
         incubator_number: int | None = None,
+        language: str | None = None,
     ) -> tuple[list[Document], int]:
         return DocumentRepo.leer_todos(
-            db, skip, limit, file_type, status, incubator_number
+            db, skip, limit, file_type, status, incubator_number, language
         )
 
     @staticmethod
@@ -133,11 +136,42 @@ class DocumentService:
         files: list[UploadFile],
         incubator_number: int,
         metadata_json: str | None,
+        language: str | None = None,
     ) -> list[Document]:
         return [
-            DocumentService.cargar_documento(db, file, incubator_number, metadata_json)
+            DocumentService.cargar_documento(
+                db, file, incubator_number, metadata_json, language
+            )
             for file in files
         ]
+
+    @staticmethod
+    def actualizar_language(
+        db: Session, document_id: str, language: str | None
+    ) -> Document:
+        doc = DocumentRepo.leer_uno(db, document_id)
+        if doc is None:
+            raise DocumentoNoEncontrado(document_id)
+
+        DocumentRepo.actualizar_language(db, doc, language)
+        return doc
+
+    @staticmethod
+    def actualizar_language_varios(
+        db: Session, document_ids: list[str], language: str
+    ) -> dict:
+        updated: list[str] = []
+        errors: list[dict] = []
+
+        for doc_id in document_ids:
+            try:
+                DocumentService.actualizar_language(db, doc_id, language)
+                updated.append(doc_id)
+            except DocumentoError as e:
+                errors.append({"id": doc_id, "error": e.mensaje})
+                db.rollback()
+
+        return {"processed": updated, "errors": errors}
 
     @staticmethod
     def convertir(

@@ -8,6 +8,7 @@ from sqlalchemy import (
     DateTime,
     Index,
     SmallInteger,
+    String,
     Text,
     text,
 )
@@ -46,6 +47,7 @@ class Document(Base):
         Text, nullable=False, default="raw", server_default=text("'raw'")
     )
     incubator_number: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    language: Mapped[str | None] = mapped_column(String(10), nullable=True)
     uploaded_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=True, default=_utcnow
     )

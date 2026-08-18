@@ -15,9 +15,12 @@ from sqlalchemy.orm import Session
 
 from src.api.schemas.documents import (
     BatchProcessResponse,
+    DocumentLanguageUpdate,
     DocumentListResponse,
     DocumentRead,
     IncubatorNumber,
+    SetLanguageBatchRequest,
+    SetLanguageBatchResponse,
 )
 from src.api.schemas.entities import (
     EntityOut,
@@ -35,9 +38,13 @@ def upload(
     file: Annotated[UploadFile, File()],
     incubator_number: Annotated[IncubatorNumber, Form()],
     metadata: Annotated[str | None, Form()] = None,
+    language: Annotated[str | None, Form(min_length=2, max_length=10)] = None,
     db: Session = Depends(get_db),
 ):
-    return DocumentService.cargar_documento(db, file, int(incubator_number), metadata)
+    language_limpio = language.lower().strip() if language else None
+    return DocumentService.cargar_documento(
+        db, file, int(incubator_number), metadata, language_limpio
+    )
 
 
 @router.post(
@@ -47,10 +54,12 @@ def upload_batch(
     files: Annotated[list[UploadFile], File()],
     incubator_number: Annotated[IncubatorNumber, Form()],
     metadata: Annotated[str | None, Form()] = None,
+    language: Annotated[str | None, Form(min_length=2, max_length=10)] = None,
     db: Session = Depends(get_db),
 ):
+    language_limpio = language.lower().strip() if language else None
     return DocumentService.cargar_documentos(
-        db, files, int(incubator_number), metadata
+        db, files, int(incubator_number), metadata, language_limpio
     )
 
 
@@ -62,9 +71,11 @@ def list_documents(
     file_type: Annotated[str | None, Query()] = None,
     status: Annotated[str | None, Query()] = None,
     incubator_number: Annotated[int | None, Query(ge=1, le=8)] = None,
+    language: Annotated[str | None, Query(min_length=2, max_length=10)] = None,
 ):
+    language_limpio = language.lower().strip() if language else None
     filas, total = DocumentService.leer_todos(
-        db, skip, limit, file_type, status, incubator_number
+        db, skip, limit, file_type, status, incubator_number, language_limpio
     )
     return DocumentListResponse(
         items=[DocumentRead.model_validate(r) for r in filas],
@@ -85,6 +96,30 @@ def get_document(
             status_code=404, detail=f"Documento {document_id} no encontrado"
         )
     return doc
+
+
+@router.patch("/{document_id}/language", response_model=DocumentRead)
+def update_document_language(
+    document_id: UUID,
+    body: DocumentLanguageUpdate,
+    db: Session = Depends(get_db),
+):
+    doc = DocumentService.actualizar_language(db, str(document_id), body.language)
+    return doc
+
+
+@router.post("/set-language-batch", response_model=SetLanguageBatchResponse)
+def set_language_batch(
+    body: SetLanguageBatchRequest,
+    db: Session = Depends(get_db),
+):
+    resultado = DocumentService.actualizar_language_varios(
+        db, [str(doc_id) for doc_id in body.document_ids], body.language
+    )
+    return SetLanguageBatchResponse(
+        updated=[UUID(doc_id) for doc_id in resultado["processed"]],
+        errors=[BatchProcessError(**e) for e in resultado["errors"]],
+    )
 
 
 @router.post("/{document_id}/process", status_code=status.HTTP_200_OK)

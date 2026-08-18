@@ -18,6 +18,11 @@
 - [x] Eliminados 29 documentos de prueba que permanecían en estado `raw` y sus archivos físicos
 - [x] Seguimiento: eliminado `1770a776-d813-47c0-8738-b7f23e06f230` tras revertirlo a `raw`
 - [x] `61b5cf8e-8109-408c-a571-cdf5b31512ca` asignado a `incubator_number = 1`
+- [x] `documents.language` — idioma del documento (`es`, `en`, `pt`, etc.), nullable, indexado
+- [x] `PATCH /documents/{id}/language` — registrar idioma después de la carga
+- [x] `POST /documents/set-language-batch` — registrar idioma en lote
+- [x] `GET /documents?language=...` — filtrar documentos por idioma
+- [x] Migración `d5e6f7a8b9c0` aplicada; todos los documentos existentes quedan con `language = NULL`
 
 ## Objetivo 2: Conversión a Markdown ✅
 

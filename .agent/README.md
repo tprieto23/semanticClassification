@@ -43,11 +43,13 @@ http://localhost:8000/docs
 
 | Método | Ruta | Descripción |
 |---|---|---|
-| POST | `/documents` | Subir archivo; exige `incubator_number` entre 1 y 8 |
-| POST | `/documents/batch` | Subir múltiples archivos bajo una incubadora común |
-| GET | `/documents` | Listar con filtros (`status`, `file_type`, `incubator_number`) |
+| POST | `/documents` | Subir archivo; exige `incubator_number` entre 1 y 8; `language` opcional |
+| POST | `/documents/batch` | Subir múltiples archivos bajo una incubadora común; `language` opcional |
+| GET | `/documents` | Listar con filtros (`status`, `file_type`, `incubator_number`, `language`) |
 | GET | `/documents/{id}` | Ver documento |
 | DELETE | `/documents/{id}` | Eliminar documento |
+| PATCH | `/documents/{id}/language` | Registrar idioma después de la carga |
+| POST | `/documents/set-language-batch` | Registrar idioma para varios documentos |
 | POST | `/documents/{id}/process` | Convertir a Markdown |
 | POST | `/documents/process-batch` | Convertir todos en raw |
 | POST | `/documents/{id}/clean` | Limpiar texto |
