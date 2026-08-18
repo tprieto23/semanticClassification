@@ -11,6 +11,13 @@
 - [x] `src/api/routers/documents.py` — POST, GET, GET/{id}, DELETE, POST /batch
 - [x] `src/api/schemas/documents.py` — DocumentRead, DocumentListResponse, BatchProcess*
 - [x] `src/api/main.py` — FastAPI + exception handler
+- [x] `documents.incubator_number` — dimensión controlada `1..8`, indexada y validada en PostgreSQL
+- [x] `POST /documents` y `POST /documents/batch` — incubadora obligatoria y seleccionable en OpenAPI
+- [x] `GET /documents?incubator_number=1..8` — filtro de documentos por incubadora
+- [x] Migración `c4d5e6f7a8b9` aplicada; el esquema admite temporalmente incubadora `NULL` para legado
+- [x] Eliminados 29 documentos de prueba que permanecían en estado `raw` y sus archivos físicos
+- [x] Seguimiento: eliminado `1770a776-d813-47c0-8738-b7f23e06f230` tras revertirlo a `raw`
+- [x] `61b5cf8e-8109-408c-a571-cdf5b31512ca` asignado a `incubator_number = 1`
 
 ## Objetivo 2: Conversión a Markdown ✅
 
@@ -170,17 +177,57 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - [x] Matching conservador por categoría — exact normalizado, fuzzy con umbral y margen, y protección para términos cortos
 - [x] Persistencia transaccional — rollback completo ante errores y reemplazo idempotente de menciones por documento
 
+### Rediseño de resolución canónica v2 — Ago 12 2026
+
+- [x] Planificación por documento antes de comparar menciones aisladas
+- [x] Singularización controlada de actores genéricos CHAR, en minúscula y conservando género/calificadores
+- [x] Familias de nombres personales por prefijo compatible y ancla más completa
+- [x] Protección contra nombres de pila ambiguos y sufijos corporativos (`SA`, `SAC`, `EIRL`, etc.)
+- [x] Tabla `canonical_entity_aliases` para conservar formas observadas
+- [x] Trazabilidad en `entities`: método, puntaje, versión y evidencia JSON
+- [x] Migración `b3c4d5e6f7a8` aplicada y verificada
+- [x] Auditoría reversible PostgreSQL + JSON + red antes/después
+- [x] Simulación de `Relatos mineros.docx`: 1.111 menciones, DB sin cambios, 13 convergencias y 0 separaciones
+- [x] 33 pruebas unitarias/integración local y health check de API
+- [ ] Revisar cualitativamente los 48 nuevos canónicos propuestos y las 27 decisiones `person_alias`
+- [ ] Reprocesar el documento real solo después de aprobar la auditoría
+
 ### Línea base histórica probada
 
 - [x] La versión anterior extrajo 133 entidades en un documento de prueba.
 - [x] Persistencia y respuesta HTTP funcionaron con el esquema anterior.
 - [ ] Repetir el piloto con el esquema vigente de cinco etiquetas y sin catálogos.
 
-## Objetivos 5–8: Vectores, matrices, grafos, métricas ⏳
+## Objetivos 5–8: Vectores, matrices, grafos, métricas 🔧
 
-- [ ] Sin definir
+- [x] Primer experimento de coocurrencia por `(document_id, sentence_id)`
+- [x] Nodos definidos por `canonical_id`; menciones repetidas en una oración cuentan una sola presencia
+- [x] Matriz de incidencia oración–nodo y adyacencia sparse simétrica
+- [x] Bloques CHAR, L2, LOC y subbloques PRAC/INFRA/GOV
+- [x] Exportaciones CSV/Matrix Market con observaciones auditables
+- [x] Visualización de G₃ (`peso >= 3`) en PNG, HTML interactivo y GraphML
+- [x] Matrices regeneradas después de aplicar resolución v2: 523 nodos y 1.216 aristas
+- [x] Visualización G₁ completa: peso mínimo 1, 523 nodos, 1.216 aristas y 28 aislados
+- [x] Visualizador: aislados preservados, etiquetas bajo demanda en HTML y top 25 en figuras estáticas
+- [ ] Evaluar normalizaciones de peso y relaciones semánticas explícitas
 
-## Status de sesión — Jul 27 2026
+## Reentrada vigente — 12 Ago 2026
+
+- Leer `.agent/sessions/2026-08-12-redisenio-resolucion-entidades-v2.md`.
+- Resolución v2 implementada, migrada y simulada; todavía no aplicada al documento real.
+- Siguiente prioridad: revisar `created_canonicals.csv` y `decisions_person_alias.csv`.
+
+## Reentrada histórica — 5 Ago 2026
+
+- Leer `.agent/sessions/2026-08-05-ner-y-fuzzy-matching-canonico.md`.
+- Estado validado: 1.111 menciones y 539 canónicos para `Relatos mineros.docx`.
+- Siguiente prioridad: auditoría cualitativa de falsas fusiones y falsas separaciones antes de ajustar umbrales o construir relaciones.
+
+## Status histórico — Jul 27 2026 (superado)
+
+> Este bloque se conserva como trazabilidad. El problema `entities: []` fue resuelto
+> posteriormente con tool use estructurado, `sentence_id` y cálculo backend de offsets.
+> Para el estado vigente leer la sección **Reentrada — 5 Ago 2026** y la bitácora allí enlazada.
 
 **Stack actual:**
 - Conversión: PyMuPDF (fast path) + Docling OCR (fallback)
@@ -205,10 +252,10 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - Instrucción de exhaustividad agregada al prompt ("recorre de principio a fin, ante duda anota").
 - `max_tokens` en 16384.
 
-**Problema activo:**
+**Problema activo en ese momento (resuelto):**
 - El endpoint `extract-entities` responde 200 pero con `entities: []`. El parseo de la respuesta del LLM falla (`json.JSONDecodeError`). Se agregó logging detallado para diagnosticar. Pendiente de debug.
 
-**Siguiente objetivo:**
+**Siguiente objetivo histórico (completado/superado):**
 - Diagnosticar y corregir el parseo de la respuesta JSON del LLM.
 - Probar extracción exitosa con el prompt de cinco etiquetas y sin catálogos.
 - Objetivo 5: Vectores, matrices, grafos, métricas ⏳

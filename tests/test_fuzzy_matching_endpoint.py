@@ -18,7 +18,7 @@ if "src.services.pdf_converter" not in sys.modules:
     pdf_converter_stub.PdfConverter = type("PdfConverter", (), {})
     sys.modules["src.services.pdf_converter"] = pdf_converter_stub
 
-from src.services.documents import DocumentService, DocumentoError
+from src.services.documents import DocumentoError, DocumentService
 
 
 class FuzzyMatchingPreparationTests(unittest.TestCase):
@@ -67,6 +67,7 @@ class FuzzyMatchingPreparationTests(unittest.TestCase):
 
         self.assertEqual(result, matched_entities)
         leer.assert_called_once_with(doc.ner_path)
+        asociar.assert_called_once_with(self.db, entities, document_id=doc.id)
         reemplazar.assert_called_once_with(self.db, doc.id, matched_entities)
         self.assertEqual(doc.status, "fuzzyMatching")
         self.db.commit.assert_called_once_with()

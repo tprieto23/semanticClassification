@@ -31,6 +31,10 @@ class EntityRepo:
                 sentence_id=ent.get("sentence_id"),
                 context=ent.get("context"),
                 ambiguity=ent.get("ambiguity"),
+                resolution_method=ent.get("match_type"),
+                resolution_score=ent.get("match_score"),
+                resolution_version=ent.get("resolution_version"),
+                resolution_details=ent.get("resolution_details"),
                 created_at=now,
             )
             db.add(entity)

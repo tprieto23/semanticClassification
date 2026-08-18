@@ -19,11 +19,13 @@ data/
     └── ner_user_prompt.md         ← plantilla del user prompt (inyecta el JSON de entrada)
 ├── models/
 │   ├── database.py                ← engine, SessionLocal, Base, get_db
-│   ├── documents.py               ← ORM Document (10 columnas)
-│   ├── documents_repo.py          ← crear, leer_todos, leer_uno, eliminar, actualizar_status, leer_por_status
+│   ├── documents.py               ← ORM Document + incubator_number controlado (1..8)
+│   ├── documents_repo.py          ← CRUD, filtros y acceso por status/incubadora
 │   ├── canonical_entities.py      ← ORM CanonicalEntity
 │   ├── canonical_entities_repo.py ← acceso a entidades canónicas
-│   ├── entities.py                ← ORM Entity (category, text, offsets, context, ambiguity)
+│   ├── canonical_entity_aliases.py ← alias observados por canónico
+│   ├── canonical_entity_aliases_repo.py ← consulta y registro idempotente de alias
+│   ├── entities.py                ← mención + identidad + trazabilidad de resolución
 │   ├── entities_repo.py           ← eliminar_por_documento, reemplazar_entidades
 │   └── storage.py                 ← guardar, leer, eliminar, preparar_nombre
  └── services/
@@ -31,7 +33,13 @@ data/
       ├── documents.py           ← DocumentService + todas las excepciones
       ├── llm_client.py          ← Cliente Anthropic compartido
       ├── ner.py                 ← Extracción few-shot (Anthropic + ejemplos curados + tool schema)
+      ├── fuzzy_matching.py      ← resolución determinista de entidades v2
       └── pdf_converter.py       ← PdfConverter: PyMuPDF fast path + Docling OCR fallback
+
+src/analysis/
+├── cooccurrence.py               ← incidencia y matrices de coocurrencia por oración
+├── entity_resolution_audit.py    ← simulación reversible antes/después
+└── network_visualization.py      ← red G₃ estática, HTML y GraphML
 ```
 
 ## Capas
@@ -46,11 +54,19 @@ api/routers → services → models/{repo, storage}
 
 ```
 POST /documents
+  multipart: file + incubator_number (1..8) + metadata opcional
+  → FastAPI/OpenAPI valida que la incubadora esté entre 1 y 8
   → DocumentService.cargar_documento()
     → Storage.preparar_nombre() → nombre seguro, ext, UUID
     → Storage.guardar()         → s3/archivosCrudos/{uuid}.{ext}
-    → DocumentRepo.crear()      → INSERT
-  ← 201 + DocumentRead
+    → DocumentRepo.crear()      → INSERT con status=raw e incubator_number
+  ← 201 + DocumentRead (incluye incubator_number)
+
+POST /documents/batch
+  multipart: files[] + una incubator_number común al lote
+
+GET /documents?incubator_number={1..8}
+  → filtra el corpus documental por incubadora
 ```
 
 ## Flujo Objetivo 2: Conversión
@@ -135,7 +151,7 @@ POST /documents/{id}/extract-entities
 Este endpoint no escribe, reemplaza ni elimina menciones en la tabla `entities`.
 La persistencia y normalización de menciones se delega a un endpoint posterior.
 
-## Flujo Fuzzy Matching
+## Flujo de resolución canónica (endpoint histórico Fuzzy Matching)
 
 ```
 POST /documents/{id}/fuzzy-matching
@@ -143,21 +159,41 @@ POST /documents/{id}/fuzzy-matching
    → comprueba que el documento exista y tenga status = 'ner'
    → comprueba que ner_path esté registrado
    → lee y valida s3/archivosNER/{id}.json
-   → normaliza texto para comparación (sin modificar la mención literal)
+   → valida primero todas las menciones y analiza el documento completo
+   → conserva text/start/end/context; solo normaliza claves de comparación
+   → agrupa actores genéricos CHAR mediante singularización controlada
+      (mineros → minero; mineras → minera; conserva género y calificadores)
+   → detecta familias nominales CHAR por prefijos compatibles dentro del documento
+      (Griselda ↔ Griselda Zubizarreta ↔ Griselda Zubizarreta Vargas)
+   → rechaza el nombre corto si hay dos familias compatibles en el documento
+   → bloquea marcadores institucionales/corporativos en la regla de personas
    → busca candidatos exclusivamente dentro de la misma categoría
-   → exact match normalizado o fuzzy conservador con umbral y margen
+   → aplica exacto, alias persistido, nombre personal seguro o fuzzy conservador
    → crea canonical_entity si no existe una coincidencia segura
+   → registra los textos observados en canonical_entity_aliases
    → reemplaza las menciones previas del documento en entities
-   → commit único                          → menciones + canónicos + status
+   → persiste method, score, version y details para auditar cada decisión
+   → commit único → menciones + canónicos + alias + status
    → status = 'fuzzyMatching'
    ← 200 + menciones con canonical_id y metadatos de la decisión
 ```
 
 La tabla `canonical_entities` contiene `id`, `canonical_name` y `category`; cada fila
-de `entities` referencia una entidad canónica mediante `canonical_id` no nulo. Los
-umbrales iniciales son 93 para CHAR/LOC y 96 para INFRA/GOV/PRAC, con margen mínimo
-de 5 puntos frente al segundo candidato. Las expresiones menores de cinco caracteres
-solo se unen mediante coincidencia exacta normalizada.
+de `entities` referencia una entidad canónica mediante `canonical_id` no nulo. La
+versión `deterministic-v2` usa los métodos `exact`, `morphology`, `person_alias`,
+`stored_alias`, `person_name`, `fuzzy` y `new`. Los umbrales fuzzy siguen siendo 93
+para CHAR/LOC y 96 para INFRA/GOV/PRAC, con margen mínimo de 5 puntos. La forma
+minúscula/singular se aplica a actores genéricos controlados; los nombres propios
+conservan una etiqueta legible. Los UUID no se transforman.
+
+Antes de reprocesar un documento puede ejecutarse una auditoría transaccional que
+siempre hace rollback y compara también la red G₁/G₃:
+
+```bash
+python -m src.analysis.entity_resolution_audit \
+  --ner-json s3/archivosNER/{document_id}.json \
+  --output-dir data/output/entity_resolution/{document_id}
+```
 
 ## Flujo Revertir
 
@@ -190,9 +226,9 @@ s3/
 
 | Método | Ruta | Objetivo |
 |---|---|---|
-| POST | `/documents` | Subir archivo |
-| POST | `/documents/batch` | Subir múltiples |
-| GET | `/documents` | Listar + filtros |
+| POST | `/documents` | Subir archivo con incubadora obligatoria 1..8 |
+| POST | `/documents/batch` | Subir múltiples bajo una incubadora común |
+| GET | `/documents` | Listar + filtros, incluido `incubator_number` |
 | GET | `/documents/{id}` | Ver uno |
 | DELETE | `/documents/{id}` | Eliminar |
 | POST | `/documents/{id}/process` | Convertir a MD |

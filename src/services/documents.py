@@ -14,6 +14,7 @@ from src.models.entities_repo import EntityRepo
 from src.models.storage import Storage
 from src.services.cleaning import CleaningService
 from src.services.fuzzy_matching import (
+    RESOLUTION_VERSION,
     FuzzyMatchingDataError,
     asociar_entidades_canonicas,
 )
@@ -68,6 +69,7 @@ class DocumentService:
     def cargar_documento(
         db: Session,
         file: UploadFile,
+        incubator_number: int,
         metadata_json: str | None,
     ) -> Document:
         if not file.filename:
@@ -95,6 +97,7 @@ class DocumentService:
             file_path=str(path),
             file_type=ext,
             file_size_bytes=len(content),
+            incubator_number=incubator_number,
             metadata_=metadata,
         )
 
@@ -105,8 +108,11 @@ class DocumentService:
         limit: int = 50,
         file_type: str | None = None,
         status: str | None = None,
+        incubator_number: int | None = None,
     ) -> tuple[list[Document], int]:
-        return DocumentRepo.leer_todos(db, skip, limit, file_type, status)
+        return DocumentRepo.leer_todos(
+            db, skip, limit, file_type, status, incubator_number
+        )
 
     @staticmethod
     def leer_uno(db: Session, document_id: str) -> Document | None:
@@ -118,16 +124,19 @@ class DocumentService:
         Storage.eliminar(documento.converted_path)
         Storage.eliminar(documento.cleaned_path)
         Storage.eliminar(documento.ner_path)
+        Storage.eliminar_directorio(documento.images_path)
         DocumentRepo.eliminar(db, documento)
 
     @staticmethod
     def cargar_documentos(
         db: Session,
         files: list[UploadFile],
+        incubator_number: int,
         metadata_json: str | None,
     ) -> list[Document]:
         return [
-            DocumentService.cargar_documento(db, file, metadata_json) for file in files
+            DocumentService.cargar_documento(db, file, incubator_number, metadata_json)
+            for file in files
         ]
 
     @staticmethod
@@ -309,7 +318,7 @@ class DocumentService:
 
         try:
             entidades, estadisticas = asociar_entidades_canonicas(
-                db, resultado["entities"]
+                db, resultado["entities"], document_id=doc.id
             )
             EntityRepo.reemplazar_entidades(db, doc.id, entidades)
             doc.status = "fuzzyMatching"
@@ -322,12 +331,16 @@ class DocumentService:
             logger.exception("Falló fuzzy matching para documento %s", document_id)
             raise DocumentoError("No fue posible completar fuzzy matching", 500)
 
+        resumen = ", ".join(
+            f"{metodo}={cantidad}"
+            for metodo, cantidad in estadisticas.items()
+            if cantidad
+        )
         logger.info(
-            "Fuzzy matching completado para %s: %d exact, %d fuzzy, %d nuevas",
+            "Resolución de entidades completada para %s (%s): %s",
             document_id,
-            estadisticas["exact"],
-            estadisticas["fuzzy"],
-            estadisticas["new"],
+            RESOLUTION_VERSION,
+            resumen or "sin entidades",
         )
         return entidades
 

@@ -21,12 +21,15 @@ class DocumentRepo:
         limit: int = 50,
         file_type: str | None = None,
         status: str | None = None,
+        incubator_number: int | None = None,
     ) -> tuple[list[Document], int]:
         q = select(Document)
         if file_type:
             q = q.where(Document.file_type == file_type)
         if status:
             q = q.where(Document.status == status)
+        if incubator_number is not None:
+            q = q.where(Document.incubator_number == incubator_number)
 
         total = db.scalar(select(func.count()).select_from(q.subquery())) or 0
         filas = list(

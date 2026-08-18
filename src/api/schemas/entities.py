@@ -1,3 +1,4 @@
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -24,6 +25,8 @@ class MatchedEntityOut(EntityOut):
     match_type: str
     match_score: float
     second_match_score: float | None = None
+    resolution_version: str
+    resolution_details: dict[str, Any]
 
 
 class FuzzyMatchingResponse(BaseModel):

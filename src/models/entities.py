@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, ForeignKey, Integer, Text, text
+from sqlalchemy import DateTime, Float, ForeignKey, Index, Integer, Text, text
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -11,6 +12,7 @@ from src.models.database import Base
 
 class Entity(Base):
     __tablename__ = "entities"
+    __table_args__ = (Index("ix_entities_document", "document_id"),)
 
     id: Mapped[UUID] = mapped_column(
         PG_UUID(as_uuid=True),
@@ -22,7 +24,6 @@ class Entity(Base):
         PG_UUID(as_uuid=True),
         ForeignKey("documents.id", ondelete="CASCADE"),
         nullable=False,
-        index=True,
     )
     canonical_id: Mapped[UUID] = mapped_column(
         PG_UUID(as_uuid=True),
@@ -37,6 +38,10 @@ class Entity(Base):
     sentence_id: Mapped[str | None] = mapped_column(Text, nullable=True, index=True)
     context: Mapped[str | None] = mapped_column(Text, nullable=True)
     ambiguity: Mapped[str | None] = mapped_column(Text, nullable=True)
+    resolution_method: Mapped[str | None] = mapped_column(Text, nullable=True)
+    resolution_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    resolution_version: Mapped[str | None] = mapped_column(Text, nullable=True)
+    resolution_details: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=True, default=lambda: datetime.now(timezone.utc)

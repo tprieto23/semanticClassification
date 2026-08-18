@@ -2,7 +2,15 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import BigInteger, DateTime, Text, text
+from sqlalchemy import (
+    BigInteger,
+    CheckConstraint,
+    DateTime,
+    Index,
+    SmallInteger,
+    Text,
+    text,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column
@@ -16,6 +24,13 @@ def _utcnow() -> datetime:
 
 class Document(Base):
     __tablename__ = "documents"
+    __table_args__ = (
+        CheckConstraint(
+            "incubator_number BETWEEN 1 AND 8",
+            name="ck_documents_incubator_number",
+        ),
+        Index("ix_documents_incubator_number", "incubator_number"),
+    )
 
     id: Mapped[UUID] = mapped_column(
         PG_UUID(as_uuid=True),
@@ -30,6 +45,7 @@ class Document(Base):
     status: Mapped[str] = mapped_column(
         Text, nullable=False, default="raw", server_default=text("'raw'")
     )
+    incubator_number: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
     uploaded_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=True, default=_utcnow
     )

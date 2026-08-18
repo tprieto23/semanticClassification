@@ -43,9 +43,9 @@ http://localhost:8000/docs
 
 | Método | Ruta | Descripción |
 |---|---|---|
-| POST | `/documents` | Subir archivo |
-| POST | `/documents/batch` | Subir múltiples archivos |
-| GET | `/documents` | Listar con filtros (status, file_type) |
+| POST | `/documents` | Subir archivo; exige `incubator_number` entre 1 y 8 |
+| POST | `/documents/batch` | Subir múltiples archivos bajo una incubadora común |
+| GET | `/documents` | Listar con filtros (`status`, `file_type`, `incubator_number`) |
 | GET | `/documents/{id}` | Ver documento |
 | DELETE | `/documents/{id}` | Eliminar documento |
 | POST | `/documents/{id}/process` | Convertir a Markdown |
@@ -54,7 +54,7 @@ http://localhost:8000/docs
 | POST | `/documents/clean-batch` | Limpiar todos en converted |
 | POST | `/documents/{id}/revert` | Revertir al estado anterior |
 | POST | `/documents/{id}/extract-entities` | Extraer entidades NER (Anthropic) |
-| POST | `/documents/{id}/fuzzy-matching` | Normalizar menciones y asociarlas a entidades canónicas |
+| POST | `/documents/{id}/fuzzy-matching` | Resolver menciones v2, registrar evidencia y asociar canónicos |
 
 ## Estados del documento
 
