@@ -1,15 +1,24 @@
 import json
+import logging
 
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
-from src.models.database import get_db  # noqa: F401 — pasamanos para api
+logger = logging.getLogger(__name__)
 
 from src.config import settings
+from src.models.database import get_db  # noqa: F401 — pasamanos para api
 from src.models.documents import Document
 from src.models.documents_repo import DocumentRepo
+from src.models.entities_repo import EntityRepo
 from src.models.storage import Storage
 from src.services.cleaning import CleaningService
+from src.services.fuzzy_matching import (
+    RESOLUTION_VERSION,
+    FuzzyMatchingDataError,
+    asociar_entidades_canonicas,
+)
+from src.services.ner import extraer_entidades
 from src.services.pdf_converter import PdfConverter
 
 
@@ -42,12 +51,16 @@ class DocumentoYaConvertido(DocumentoError):
 
 class DocumentoNoConvertido(DocumentoError):
     def __init__(self, document_id: str, status: str):
-        super().__init__(f"Documento {document_id} no está convertido (estado: '{status}')", 409)
+        super().__init__(
+            f"Documento {document_id} no está convertido (estado: '{status}')", 409
+        )
 
 
 class DocumentoNoReversible(DocumentoError):
     def __init__(self, document_id: str, status: str):
-        super().__init__(f"Documento {document_id} no es reversible desde el estado '{status}'", 409)
+        super().__init__(
+            f"Documento {document_id} no es reversible desde el estado '{status}'", 409
+        )
 
 
 class DocumentService:
@@ -56,7 +69,9 @@ class DocumentService:
     def cargar_documento(
         db: Session,
         file: UploadFile,
+        incubator_number: int,
         metadata_json: str | None,
+        language: str | None = None,
     ) -> Document:
         if not file.filename:
             raise ArchivoSinNombre()
@@ -70,7 +85,9 @@ class DocumentService:
             except (json.JSONDecodeError, ValueError) as e:
                 raise MetadataInvalido(str(e))
 
-        nombreInicial, ext, doc_id, nombreParaAlmacenar = Storage.preparar_nombre(file.filename)
+        nombreInicial, ext, doc_id, nombreParaAlmacenar = Storage.preparar_nombre(
+            file.filename
+        )
         content = file.file.read()
         path = Storage.guardar(content, nombreParaAlmacenar, settings.STORAGE_RAW)
 
@@ -81,6 +98,8 @@ class DocumentService:
             file_path=str(path),
             file_type=ext,
             file_size_bytes=len(content),
+            incubator_number=incubator_number,
+            language=language,
             metadata_=metadata,
         )
 
@@ -91,8 +110,12 @@ class DocumentService:
         limit: int = 50,
         file_type: str | None = None,
         status: str | None = None,
+        incubator_number: int | None = None,
+        language: str | None = None,
     ) -> tuple[list[Document], int]:
-        return DocumentRepo.leer_todos(db, skip, limit, file_type, status)
+        return DocumentRepo.leer_todos(
+            db, skip, limit, file_type, status, incubator_number, language
+        )
 
     @staticmethod
     def leer_uno(db: Session, document_id: str) -> Document | None:
@@ -101,18 +124,54 @@ class DocumentService:
     @staticmethod
     def eliminar(db: Session, documento: Document) -> None:
         Storage.eliminar(documento.file_path)
+        Storage.eliminar(documento.converted_path)
+        Storage.eliminar(documento.cleaned_path)
+        Storage.eliminar(documento.ner_path)
+        Storage.eliminar_directorio(documento.images_path)
         DocumentRepo.eliminar(db, documento)
 
     @staticmethod
     def cargar_documentos(
         db: Session,
         files: list[UploadFile],
+        incubator_number: int,
         metadata_json: str | None,
+        language: str | None = None,
     ) -> list[Document]:
         return [
-            DocumentService.cargar_documento(db, file, metadata_json)
+            DocumentService.cargar_documento(
+                db, file, incubator_number, metadata_json, language
+            )
             for file in files
         ]
+
+    @staticmethod
+    def actualizar_language(
+        db: Session, document_id: str, language: str | None
+    ) -> Document:
+        doc = DocumentRepo.leer_uno(db, document_id)
+        if doc is None:
+            raise DocumentoNoEncontrado(document_id)
+
+        DocumentRepo.actualizar_language(db, doc, language)
+        return doc
+
+    @staticmethod
+    def actualizar_language_varios(
+        db: Session, document_ids: list[str], language: str
+    ) -> dict:
+        updated: list[str] = []
+        errors: list[dict] = []
+
+        for doc_id in document_ids:
+            try:
+                DocumentService.actualizar_language(db, doc_id, language)
+                updated.append(doc_id)
+            except DocumentoError as e:
+                errors.append({"id": doc_id, "error": e.mensaje})
+                db.rollback()
+
+        return {"processed": updated, "errors": errors}
 
     @staticmethod
     def convertir(
@@ -169,9 +228,12 @@ class DocumentService:
             raise DocumentoError("Archivo convertido no encontrado o vacío", 500)
 
         texto_limpio = CleaningService.structuralCleaning(texto_md)
+        texto_limpio = CleaningService.linguisticCleaning(texto_limpio)
         nombre_txt = f"{doc.id}.txt"
 
-        path = Storage.guardar(texto_limpio.encode("utf-8"), nombre_txt, settings.DATA_CLEANED)
+        path = Storage.guardar(
+            texto_limpio.encode("utf-8"), nombre_txt, settings.DATA_CLEANED
+        )
         doc.cleaned_path = str(path)
         DocumentRepo.actualizar_status(db, doc, "cleaned")
 
@@ -193,15 +255,151 @@ class DocumentService:
         return {"processed": processed, "errors": errors}
 
     @staticmethod
+    def extraer_entidades_de_documento(db: Session, document_id: str) -> list[dict]:
+        """Extrae entidades NER y guarda el resultado como un archivo JSON."""
+        doc = DocumentRepo.leer_uno(db, document_id)
+        if doc is None:
+            raise DocumentoNoEncontrado(document_id)
+
+        if doc.status != "cleaned":
+            raise DocumentoError(
+                f"Documento {document_id} no está limpio (status: '{doc.status}')", 409
+            )
+
+        texto = doc.cleaned_path and Storage.leer(doc.cleaned_path)
+        if not texto:
+            raise DocumentoError("Archivo limpio no encontrado o vacío", 500)
+
+        logger.info("Extrayendo entidades para documento %s", document_id)
+        entidades = extraer_entidades(
+            texto,
+            document_id=document_id,
+            document_title=doc.original_filename,
+        )
+        logger.info(
+            "Extraídas %d entidades para documento %s", len(entidades), document_id
+        )
+
+        resultado = {
+            "document_id": document_id,
+            "entities": entidades,
+        }
+        ner_filename = f"{doc.id}.json"
+        ner_path = Storage.guardar(
+            json.dumps(resultado, ensure_ascii=False, indent=2).encode("utf-8"),
+            ner_filename,
+            settings.STORAGE_NER,
+        )
+        doc.ner_path = str(ner_path)
+        logger.info("Guardadas %d entidades en %s", len(entidades), ner_path)
+
+        DocumentRepo.actualizar_status(db, doc, "ner")
+        logger.info("Documento %s actualizado a status 'ner'", document_id)
+
+        return entidades
+
+    @staticmethod
+    def extraer_entidades_de_varios(db: Session) -> dict:
+        docs = DocumentRepo.leer_por_status(db, "cleaned")
+        processed: list[str] = []
+        errors: list[dict] = []
+
+        for doc in docs:
+            doc_id = str(doc.id)
+            try:
+                DocumentService.extraer_entidades_de_documento(db, doc_id)
+                processed.append(doc_id)
+            except DocumentoError as e:
+                errors.append({"id": doc_id, "error": e.mensaje})
+                db.rollback()
+
+        return {"processed": processed, "errors": errors}
+
+    @staticmethod
+    def preparar_fuzzy_matching(db: Session, document_id: str) -> list[dict]:
+        doc = DocumentRepo.leer_uno(db, document_id)
+        if doc is None:
+            raise DocumentoNoEncontrado(document_id)
+
+        if doc.status != "ner":
+            raise DocumentoError(
+                f"Documento {document_id} no está en estado 'ner' "
+                f"(status: '{doc.status}')",
+                409,
+            )
+
+        if not doc.ner_path:
+            raise DocumentoError(
+                f"Documento {document_id} no tiene archivo NER registrado", 409
+            )
+
+        contenido = Storage.leer(doc.ner_path)
+        if not contenido:
+            raise DocumentoError("Archivo NER no encontrado o vacío", 500)
+
+        try:
+            resultado = json.loads(contenido)
+        except json.JSONDecodeError as exc:
+            raise DocumentoError(f"Archivo NER contiene JSON inválido: {exc}", 500)
+
+        if not isinstance(resultado, dict) or not isinstance(
+            resultado.get("entities"), list
+        ):
+            raise DocumentoError(
+                "Archivo NER inválido: se esperaba un objeto con una lista 'entities'",
+                500,
+            )
+
+        try:
+            entidades, estadisticas = asociar_entidades_canonicas(
+                db, resultado["entities"], document_id=doc.id
+            )
+            EntityRepo.reemplazar_entidades(db, doc.id, entidades)
+            doc.status = "fuzzyMatching"
+            db.commit()
+        except FuzzyMatchingDataError as exc:
+            db.rollback()
+            raise DocumentoError(f"Archivo NER inválido: {exc}", 422)
+        except Exception:
+            db.rollback()
+            logger.exception("Falló fuzzy matching para documento %s", document_id)
+            raise DocumentoError("No fue posible completar fuzzy matching", 500)
+
+        resumen = ", ".join(
+            f"{metodo}={cantidad}"
+            for metodo, cantidad in estadisticas.items()
+            if cantidad
+        )
+        logger.info(
+            "Resolución de entidades completada para %s (%s): %s",
+            document_id,
+            RESOLUTION_VERSION,
+            resumen or "sin entidades",
+        )
+        return entidades
+
+    @staticmethod
     def revertir(db: Session, document_id: str) -> None:
         doc = DocumentRepo.leer_uno(db, document_id)
         if doc is None:
             raise DocumentoNoEncontrado(document_id)
 
-        if doc.status == "cleaned":
+        if doc.status == "fuzzyMatching":
+            DocumentRepo.actualizar_status(db, doc, "ner")
+        elif doc.status == "ner":
+            EntityRepo.eliminar_por_documento(db, doc.id)
+            if doc.ner_path:
+                Storage.eliminar(doc.ner_path)
+            doc.ner_path = None
+            DocumentRepo.actualizar_status(db, doc, "cleaned")
+        elif doc.status == "cleaned":
             if doc.cleaned_path:
                 Storage.eliminar(doc.cleaned_path)
+            if doc.ner_path:
+                Storage.eliminar(doc.ner_path)
+            EntityRepo.eliminar_por_documento(db, doc.id)
             doc.cleaned_path = None
+            doc.ner_path = None
             DocumentRepo.actualizar_status(db, doc, "converted")
         elif doc.status == "converted":
             if doc.converted_path:

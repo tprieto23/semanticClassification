@@ -28,16 +28,21 @@ class Storage:
         return path
 
     @staticmethod
-    def eliminar(file_path: str) -> None:
+    def eliminar(file_path: str | None) -> None:
+        if not file_path:
+            return
         try:
             Path(file_path).unlink(missing_ok=True)
         except OSError:
             pass
 
     @staticmethod
-    def eliminar_directorio(dir_path: str) -> None:
+    def eliminar_directorio(dir_path: str | None) -> None:
+        if not dir_path:
+            return
         try:
             import shutil
+
             shutil.rmtree(dir_path, ignore_errors=True)
         except OSError:
             pass

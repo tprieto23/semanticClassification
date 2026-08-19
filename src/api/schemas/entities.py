@@ -1,0 +1,34 @@
+from typing import Any
+from uuid import UUID
+
+from pydantic import BaseModel
+
+
+class EntityOut(BaseModel):
+    text: str
+    category: str
+    start: int
+    end: int
+    sentence_id: str
+    context: str | None = None
+    ambiguity: str | None = None
+
+
+class ExtractEntitiesResponse(BaseModel):
+    document_id: str
+    entities: list[EntityOut]
+
+
+class MatchedEntityOut(EntityOut):
+    canonical_id: UUID
+    canonical_name: str
+    match_type: str
+    match_score: float
+    second_match_score: float | None = None
+    resolution_version: str
+    resolution_details: dict[str, Any]
+
+
+class FuzzyMatchingResponse(BaseModel):
+    document_id: str
+    entities: list[MatchedEntityOut]

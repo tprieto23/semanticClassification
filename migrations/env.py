@@ -1,19 +1,19 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-from src.models.database import Base
-from src.config import settings
-
+import src.models.canonical_entities  # noqa: F401 — registra el modelo en Base.metadata
+import src.models.canonical_entity_aliases  # noqa: F401 — registra aliases
 import src.models.documents  # noqa: F401 — registra el modelo en Base.metadata
+import src.models.entities  # noqa: F401 — registra Entity en Base.metadata
+from src.config import settings
+from src.models.database import Base
 
 target_metadata = Base.metadata
 
@@ -41,9 +41,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

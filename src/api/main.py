@@ -20,7 +20,9 @@ app.add_middleware(
 
 
 @app.exception_handler(DocumentoError)
-async def documento_error_handler(request: Request, exc: DocumentoError) -> JSONResponse:
+async def documento_error_handler(
+    request: Request, exc: DocumentoError
+) -> JSONResponse:
     return JSONResponse(
         status_code=exc.codigo_http,
         content={"detail": exc.mensaje},

@@ -23,12 +23,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copiar requirements primero (mejor cache)
 COPY requirements.txt .
 
-# Instalar dependencias de Python
-RUN pip install --no-cache-dir -r requirements.txt
+# torch/torchvision CPU-only (índice oficial PyTorch CPU): docling/transformers
+# los requieren; evita los wheels CUDA nvidia (~1.5GB) y achica la imagen.
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
+    torch torchvision
 
-# Descargar modelos de spaCy para NER (Objetivo 4)
-RUN python -m spacy download es_core_news_sm
-RUN python -m spacy download en_core_web_sm
+# Resto de dependencias de Python (torch ya satisfecho, no se reinstala)
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar el código
 COPY . .

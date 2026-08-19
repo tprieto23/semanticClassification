@@ -11,6 +11,18 @@
 - [x] `src/api/routers/documents.py` — POST, GET, GET/{id}, DELETE, POST /batch
 - [x] `src/api/schemas/documents.py` — DocumentRead, DocumentListResponse, BatchProcess*
 - [x] `src/api/main.py` — FastAPI + exception handler
+- [x] `documents.incubator_number` — dimensión controlada `1..8`, indexada y validada en PostgreSQL
+- [x] `POST /documents` y `POST /documents/batch` — incubadora obligatoria y seleccionable en OpenAPI
+- [x] `GET /documents?incubator_number=1..8` — filtro de documentos por incubadora
+- [x] Migración `c4d5e6f7a8b9` aplicada; el esquema admite temporalmente incubadora `NULL` para legado
+- [x] Eliminados 29 documentos de prueba que permanecían en estado `raw` y sus archivos físicos
+- [x] Seguimiento: eliminado `1770a776-d813-47c0-8738-b7f23e06f230` tras revertirlo a `raw`
+- [x] `61b5cf8e-8109-408c-a571-cdf5b31512ca` asignado a `incubator_number = 1`
+- [x] `documents.language` — idioma del documento (`es`, `en`, `pt`, etc.), nullable, indexado
+- [x] `PATCH /documents/{id}/language` — registrar idioma después de la carga
+- [x] `POST /documents/set-language-batch` — registrar idioma en lote
+- [x] `GET /documents?language=...` — filtrar documentos por idioma
+- [x] Migración `d5e6f7a8b9c0` aplicada; todos los documentos existentes quedan con `language = NULL`
 
 ## Objetivo 2: Conversión a Markdown ✅
 
@@ -36,22 +48,40 @@
 - [x] `src/services/pdf_converter.py` — **nuevo** convertidor híbrido:
   - Fast path: PyMuPDF para PDFs nativos (~0.1-1s por documento)
   - Fallback: Docling OCR para PDFs escaneados (~60-90s por documento)
-- [x] `src/config.py` — agregado `STORAGE_IMAGES = s3/imagenesExtraidas`
-- [x] `src/models/documents.py` — agregada columna `images_path`
-- [x] `src/models/storage.py` — agregado `eliminar_directorio()`
-- [x] `src/api/schemas/documents.py` — agregado `images_path`
-- [x] `src/services/documents.py` — `convertir()` reutiliza `PdfConverter` (lazy), `revertir()` elimina directorio de imágenes
-- [x] Migración alembic: `cfe959221fc7` — add images_path to documents
+- [x] `src/services/documents.py` — `convertir()` reutiliza `PdfConverter` (lazy)
 - [x] Batch de 27 PDFs convertidos en **28 segundos** (vs ~2-3 horas con Docling puro)
+
+### Refactor de simplificación — feat/reedireccion2
+- [x] `src/services/pdf_converter.py` — API simplificada: `convertir(file_path: str) -> str`
+- [x] `src/services/pdf_converter.py` — código muerto eliminado (`_extraer_imagenes_pymupdf`, bloques comentados, imports no usados)
+- [x] `src/services/pdf_converter.py` — TODO documentado para extracción futura de texto en imágenes `.png` dentro de PDFs nativos
+- [x] `src/services/documents.py` — adaptado a la nueva firma del convertidor
+- [ ] Extracción de imágenes como archivos separados — **postergado** (se mantiene la columna `images_path` en DB/schema por si se retoma)
 
 ## Objetivo 3: Limpieza de textos 🔧
 
 - [x] `src/services/cleaning.py` — CleaningService.structuralCleaning()
   - [x] ftfy.fix_text() → reparación de encoding
-  - [x] markdown_it.MarkdownIt() (default, no "commonmark") → parseo MD → extracción texto plano
+  - [x] markdown_it.MarkdownIt("commonmark") → parseo MD → extracción texto plano
   - [x] regex → eliminación de URLs, emails, teléfonos
-  - [x] normalización whitespace (_MULTISPACE + _SPACES) + .lower()
-- [ ] `linguisticCleaning()` — **stub (pass)**. Plan: spaCy + langdetect para tokenización por oraciones y filtrado de ruido (portadas, referencias)
+  - [x] eliminación de placeholders de imágenes (`<!-- Start/End of picture text -->`)
+  - [x] eliminación conservadora de metadata de autoria (autores, facilitadores, revisores, directores, etc.)
+  - [x] eliminación de direcciones postales, correos y teléfonos
+  - [x] eliminación de notas legales, copyright y créditos de fotografía/diagramación
+  - [x] eliminación de índices/tablas de contenido
+  - [x] eliminación de tablas Markdown (agenda, anexos tabulados)
+  - [x] eliminación de headers de anexos
+  - [x] eliminación de prefijos de numeración de secciones y subsecciones
+  - [x] eliminación de items/viñetas sueltos
+  - [x] eliminación de números de página y líneas muy cortas
+  - [x] deduplicación de párrafos consecutivos
+  - [x] normalización whitespace (_MULTISPACE + _SPACES) **sin** `.lower()`
+- [x] `linguisticCleaning()` — ~~regex~~ → **migrado a Anthropic Claude** (Jul 2026):
+  - [x] Elimina referencias bibliográficas, citas entre paréntesis y notas al pie
+  - [x] Preserva párrafos separados por `\n\n`
+  - [x] Chunking por párrafos para textos largos
+  - [x] Prompt específico alineado con el dominio territorial amazónico
+  - [x] Métodos regex obsoletos eliminados (`_CITA_PARENTESIS`, `_REF_BIB_*`, `_NOTA_PIE`, `_HEADERS_REFERENCIAS`)
 - [x] `models/documents.py` — columna cleaned_path
 - [x] `models/storage.py` — método leer()
 - [x] `services/documents.py` — DocumentService.limpiar() + limpiar_varios() + DocumentoNoConvertido
@@ -60,54 +90,177 @@
 - [x] Probado: 200, 404, 409, 500 (archivo no encontrado)
 - [x] `POST /documents/{id}/revert` — revierte al estado anterior (cleaned→converted, converted→raw)
 
-## Objetivo 4: Extracción de entidades ⏳
+### Refactor de limpieza — Jul 02 2026
 
-- [ ] Modelo XLM-RoBERTa fine-tuned (ya existe en models/)
-- [ ] Servicio NER
-- [ ] Endpoint `POST /documents/{id}/extract-entities`
+- [x] Renombrado `_eliminar_lineas_repetidas` → `_eliminar_headers_footers_y_numeros`:
+  - Solo elimina números de página y headers/footers cortos recurrentes.
+  - Conserva lemas y frases identitarias repetidas para el futuro conteo de `NARRATIVA`.
+- [x] `_es_direccion` separa direcciones postales de topónimos:
+  - Nunca elimina ciudades/países aislados (Lima, Perú, Bogotá, Puerto Maldonado).
+  - Solo elimina líneas que son predominantemente direcciones postales.
+- [x] Nuevo `_es_titulo_estructural` para eliminar headers de sección explícitamente
+  (`Introducción`, `Resumen`, `Conclusiones`, `Referencias`, etc.) sin confundir con contenido.
+- [x] `_eliminar_citas_parentesis` refinado:
+  - Elimina citas académicas `(Apellido, 2020)`.
+  - Preserva decretos, leyes, resoluciones y rangos institucionales.
+- [x] Nueva `_eliminar_seccion_referencias`:
+  - Detecta el header `Referencias` / `Bibliografía` y elimina todo desde ese punto.
+- [x] `_URL_PATTERN` mejorado para capturar dominios sin `www`.
+- [x] `_PHONE_PATTERN` más conservador:
+  - Evita borrar años, fechas, coordenadas y rangos de páginas.
+- [x] `_SECCION_PREFIX` corregido:
+  - Quita numeración romana de 2+ letras (`II.`, `III.`) pero preserva iniciales (`V.`, `A.`).
+- [x] `_NOTA_PIE` corregido para no eliminar listas numeradas legítimas.
+- [x] `_REF_BIB_AUTOR` ajustado para no confundir topónimos con autores
+  (`Maldonado, Lima` vs `García, A.`).
+- [x] Logging de trazabilidad agregado en cada paso de limpieza.
+- [x] Verificación manual de que las 9 categorías semánticas se conservan.
+- [x] Fix post-refactor: `_es_referencia_bibliografica` ya no usa rangos de años
+  (`2001-2018`) como único criterio, evitando que párrafos con datos y
+  estadísticas sean eliminados incorrectamente (caso documento
+  `e33950f0-0e69-41a8-9f37-50ab93f2a0df`).
+- [x] Fix post-refactor: `_eliminar_headers_footers_y_numeros` ahora también
+  elimina footers largos en MAYÚSCULAS repetidos, típicos de presentaciones
+  tipo PowerPoint convertidas a PDF (caso documento
+  `9c6c4d34-34f2-4ecf-a229-71809682cef8`).
 
-## Objetivos 5–8: Vectores, matrices, grafos, métricas ⏳
+## Objetivo 4: Extracción de entidades 🔧
 
-- [ ] Sin definir
+**Nuevo enfoque:** Se reemplazó el modelo BERT/XLM-RoBERTa por extracción few-shot mediante Anthropic Claude. El esquema vigente contiene 5 etiquetas, usa 25 demostraciones curadas, no usa catálogos y fuerza una salida estructurada mediante tool use.
 
-## Refactor convertidor — solo texto, sin imágenes — Jun 29 2026
+### Etiquetas finales
 
-**Motivo:** la extracción de imágenes guardaba archivos innecesarios para el análisis.
-El foco es producir Markdown **bien estructurado** (títulos, secciones, párrafos), no imágenes.
+| Etiqueta | Descripción |
+|----------|-------------|
+| CHAR | Actores individuales o colectivos con un rol contextual concreto |
+| LOC | Lugares geográficos, territorios, regiones, países, ciudades |
+| INFRA | Infraestructura física, técnica o soportes estables |
+| PRAC | Prácticas, actividades productivas, cadenas de valor |
+| GOV | Instrumentos de gobernanza, políticas, normas, acuerdos |
 
-**Hallazgos de diagnóstico:**
-- Corpus actual: **27 PDFs + 2 DOCX**. Los 27 PDFs son **100% texto nativo** (0 escaneados).
-- El camino de OCR de Docling nunca se disparaba con el corpus actual.
-- El camino rápido viejo (`page.get_text()`) producía texto **plano** sin estructura → raíz de la queja de "desorden".
-- 24 de 29 documentos en DB ya tenían `images_path` (convertidos con el código viejo).
+Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entidad nominal autónoma contenida en ellos conserva la etiqueta que le corresponda.
 
-**Decisiones de diseño:**
-- PDF nativo → **`pymupdf4llm`** (Markdown estructurado, `write_images=False`).
-- PDF escaneado → **Docling + OCR conservado** para documentos futuros (hoy no hay ninguno, queda "dormido").
-- DOCX → Docling.
-- Imágenes: se eliminan por completo (extracción, `images_path`, `STORAGE_IMAGES`).
-- Ruido editorial (créditos, números de página) → se filtra en la **etapa de limpieza**, no en la conversión.
+### Implementado
 
-**Plan por pasos:**
-- [x] **Paso 1** — convertidor + dependencias
-  - [x] `src/services/pdf_converter.py` reescrito (158 → ~70 líneas, sin imágenes, usa `pymupdf4llm`)
-  - [x] `src/services/documents.py` — `convertir()` y `revertir()` sin manejo de `images_dir`
-  - [x] `requirements.txt` — agregado `pymupdf4llm==0.0.17` (versión liviana, sin `onnxruntime`)
-  - [x] Probado: smoke test convierte PDF nativo → MD estructurado OK
-- [ ] **Paso 2** — sacar `images_path` del modelo de datos
-  - [ ] `models/documents.py` — quitar columna `images_path`
-  - [ ] `config.py` — quitar `STORAGE_IMAGES`
-  - [ ] `api/schemas/documents.py` — quitar `images_path`
-  - [ ] `models/storage.py` — quitar `eliminar_directorio()`
-  - [ ] migración Alembic — `DROP COLUMN images_path`
-- [ ] **Paso 3** — borrar `s3/imagenesExtraidas/` y `s3/test_images/`
-- [ ] **Paso 4** — rebuild de la imagen + revertir los 24 docs viejos a `raw` y reconvertir con el nuevo convertidor (iterar calidad del MD)
-- [ ] **Paso 5** — actualizar `.agent/` (README, architecture)
+- [x] `data/ner/annotations/a251048a.json` — anotaciones históricas retiradas del request; reservadas para trazabilidad
+- [x] `data/ner/few_shot_examples.json` — 25 ejemplos activos, cinco por categoría
+- [x] `src/models/entities.py` — ORM Entity (tabla `entities` recreada vía migración)
+- [x] `src/services/llm_client.py` — cliente Anthropic compartido (reutilizado por cleaning.py y ner.py)
+- [x] `src/services/ner.py` — servicio de extracción con:
+  - Prompts externos en `data/prompts/`: system prompt + user prompt template
+  - Definiciones de las 5 etiquetas + ejemplos + reglas de frontera en `data/prompts/ner_prompt.md`
+  - Few-shot curado: 25 demostraciones validadas antes de enviar cada fragmento
+  - Chunking de máximo 3 párrafos o 12K caracteres con offsets absolutos
+  - Salida estructurada forzada con `submit_entity_annotations` y JSON Schema
+  - Salida semántica: `{"annotations": [{label, text, ambiguity}]}`
+  - Fallo explícito si Anthropic trunca la respuesta o no usa la herramienta requerida
+  - Oraciones con `sentence_id` estable para localizar menciones aunque Claude responda fuera de orden
+  - Repeticiones conservadas por aparición, incluso dentro de una misma oración
+  - Cálculo backend de `start`/`end` absolutos buscando el span literal en el chunk
+  - Campo `context` (texto circundante 80 chars antes/después)
+  - Fusión de resultados de chunks conservando cada aparición por posición
+  - Parseo robusto (strip markdown wrappers)
+- [x] `src/services/cleaning.py` — `linguisticCleaning()` migrado a Anthropic (ver Objetivo 3)
+- [x] `src/api/schemas/entities.py` — EntityOut con text, category, start, end, context y ambiguity
+- [x] `POST /documents/{id}/extract-entities` — endpoint que extrae entidades y guarda el resultado en JSON
+- [x] `.env` — variable `ANTHROPIC_API_KEY` (completada por el usuario)
+- [x] `requirements.txt` — dependencia `anthropic` (removido spacy/langdetect)
+- [x] `src/services/documents.py` — `extraer_entidades_de_documento()` no modifica la tabla `entities`; esa persistencia queda para un endpoint posterior
+- [x] `migrations/versions/b8e3f2a1c4d5_recreate_entities_table.py` — recrea tabla entities
+- [x] `src/config.py` — `STORAGE_NER = s3/archivosNER`, `NER_PROMPT_PATH = data/prompts/ner_prompt.md`, `NER_USER_PROMPT_PATH = data/prompts/ner_user_prompt.md`
+- [x] `src/models/documents.py` — columna `ner_path`
+- [x] `migrations/versions/5ea1bb7e236a_add_ner_path_to_documents.py` — migración para `ner_path`
+- [x] `src/services/documents.py` — `extraer_entidades_de_documento()` guarda JSON en `s3/archivosNER/{id}.json`, devuelve el array de entidades y actualiza status a `ner`
+- [x] `src/api/schemas/documents.py` — `DocumentRead` incluye `ner_path`
+- [x] `src/services/documents.py` — `revertir()` soporta revertir desde status `ner` → `cleaned` → `raw`
+- [x] `src/services/documents.py` — `eliminar()` borra todos los archivos generados (raw, converted, cleaned, NER)
+- [x] `src/services/documents.py` — `extraer_entidades_de_varios()` para batch NER
+- [x] `src/api/routers/documents.py` — `POST /documents/extract-entities-batch`
+- [x] `POST /documents/{id}/fuzzy-matching` — normaliza, crea/reutiliza canónicos, persiste menciones y avanza a `fuzzyMatching`
+- [x] `canonical_entities` — modelo, repositorio y migración inicial
+- [x] `entities.canonical_id` — FK obligatoria hacia `canonical_entities`
+- [x] Matching conservador por categoría — exact normalizado, fuzzy con umbral y margen, y protección para términos cortos
+- [x] Persistencia transaccional — rollback completo ante errores y reemplazo idempotente de menciones por documento
 
-**Pendiente posterior (Objetivo 3):**
-- Implementar `linguisticCleaning()` con spaCy + langdetect (actualmente es `pass`)
-- Definir si `limpiar()` guarda un solo `.txt` o múltiples chunks
-- Conflicto a resolver: `structuralCleaning()` hace `.lower()` al final, pero el criterio del proyecto es **no** bajar a minúsculas (las mayúsculas son señal para NER)
+### Rediseño de resolución canónica v2 — Ago 12 2026
 
-**Siguiente objetivo:**
-- Objetivo 4: Extracción de entidades (NER con XLM-RoBERTa)
+- [x] Planificación por documento antes de comparar menciones aisladas
+- [x] Singularización controlada de actores genéricos CHAR, en minúscula y conservando género/calificadores
+- [x] Familias de nombres personales por prefijo compatible y ancla más completa
+- [x] Protección contra nombres de pila ambiguos y sufijos corporativos (`SA`, `SAC`, `EIRL`, etc.)
+- [x] Tabla `canonical_entity_aliases` para conservar formas observadas
+- [x] Trazabilidad en `entities`: método, puntaje, versión y evidencia JSON
+- [x] Migración `b3c4d5e6f7a8` aplicada y verificada
+- [x] Auditoría reversible PostgreSQL + JSON + red antes/después
+- [x] Simulación de `Relatos mineros.docx`: 1.111 menciones, DB sin cambios, 13 convergencias y 0 separaciones
+- [x] 33 pruebas unitarias/integración local y health check de API
+- [ ] Revisar cualitativamente los 48 nuevos canónicos propuestos y las 27 decisiones `person_alias`
+- [ ] Reprocesar el documento real solo después de aprobar la auditoría
+
+### Línea base histórica probada
+
+- [x] La versión anterior extrajo 133 entidades en un documento de prueba.
+- [x] Persistencia y respuesta HTTP funcionaron con el esquema anterior.
+- [ ] Repetir el piloto con el esquema vigente de cinco etiquetas y sin catálogos.
+
+## Objetivos 5–8: Vectores, matrices, grafos, métricas 🔧
+
+- [x] Primer experimento de coocurrencia por `(document_id, sentence_id)`
+- [x] Nodos definidos por `canonical_id`; menciones repetidas en una oración cuentan una sola presencia
+- [x] Matriz de incidencia oración–nodo y adyacencia sparse simétrica
+- [x] Bloques CHAR, L2, LOC y subbloques PRAC/INFRA/GOV
+- [x] Exportaciones CSV/Matrix Market con observaciones auditables
+- [x] Visualización de G₃ (`peso >= 3`) en PNG, HTML interactivo y GraphML
+- [x] Matrices regeneradas después de aplicar resolución v2: 523 nodos y 1.216 aristas
+- [x] Visualización G₁ completa: peso mínimo 1, 523 nodos, 1.216 aristas y 28 aislados
+- [x] Visualizador: aislados preservados, etiquetas bajo demanda en HTML y top 25 en figuras estáticas
+- [ ] Evaluar normalizaciones de peso y relaciones semánticas explícitas
+
+## Reentrada vigente — 12 Ago 2026
+
+- Leer `.agent/sessions/2026-08-12-redisenio-resolucion-entidades-v2.md`.
+- Resolución v2 implementada, migrada y simulada; todavía no aplicada al documento real.
+- Siguiente prioridad: revisar `created_canonicals.csv` y `decisions_person_alias.csv`.
+
+## Reentrada histórica — 5 Ago 2026
+
+- Leer `.agent/sessions/2026-08-05-ner-y-fuzzy-matching-canonico.md`.
+- Estado validado: 1.111 menciones y 539 canónicos para `Relatos mineros.docx`.
+- Siguiente prioridad: auditoría cualitativa de falsas fusiones y falsas separaciones antes de ajustar umbrales o construir relaciones.
+
+## Status histórico — Jul 27 2026 (superado)
+
+> Este bloque se conserva como trazabilidad. El problema `entities: []` fue resuelto
+> posteriormente con tool use estructurado, `sentence_id` y cálculo backend de offsets.
+> Para el estado vigente leer la sección **Reentrada — 5 Ago 2026** y la bitácora allí enlazada.
+
+**Stack actual:**
+- Conversión: PyMuPDF (fast path) + Docling OCR (fallback)
+- Limpieza estructural: regex + ftfy + markdown-it-py
+- Limpieza lingüística: Anthropic Claude
+- NER: Anthropic Claude few-shot con prompt externo, ejemplos curados y tool schema (sin catálogos)
+- Prompts NER: `data/prompts/ner_prompt.md` (system) y `data/prompts/ner_user_prompt.md` (user template)
+- Cliente LLM compartido: `src/services/llm_client.py`
+- DB: PostgreSQL 16 + pgvector
+- 31 documentos en DB (varios en cleaned)
+
+**Etiquetas NER:** 5 — CHAR, LOC, INFRA, GOV, PRAC
+
+**Cambios recientes:**
+- Catálogos eliminados: la extracción NER ahora es en dos fases (fase 1: prompt puro, fase 2: filtro futuro sin catálogos tradicionales).
+- ACT eliminado: objetivos, visiones e intenciones no son entidades por sí mismos; las entidades nominales autónomas contenidas en ellos conservan una de las cinco etiquetas válidas.
+- `src/services/ner.py`: sin carga de catálogos, JSON de entrada simplificado (`document_id`, `title`, `text`), salida parseada con `label`, `text`, `context`, `ambiguity`.
+- `src/models/entities.py`: sin FKs a catálogos; conserva `category`, `text`, offsets, `context` y `ambiguity`.
+- Offsets restaurados: el backend calcula posiciones absolutas, las persiste como `position_start`/`position_end` y las expone como `start`/`end`.
+- `src/api/schemas/entities.py`: simplificado a `text`, `category`, `context`, `ambiguity`.
+- Migración de eliminación de tablas y FKs de catálogos aplicada.
+- Instrucción de exhaustividad agregada al prompt ("recorre de principio a fin, ante duda anota").
+- `max_tokens` en 16384.
+
+**Problema activo en ese momento (resuelto):**
+- El endpoint `extract-entities` responde 200 pero con `entities: []`. El parseo de la respuesta del LLM falla (`json.JSONDecodeError`). Se agregó logging detallado para diagnosticar. Pendiente de debug.
+
+**Siguiente objetivo histórico (completado/superado):**
+- Diagnosticar y corregir el parseo de la respuesta JSON del LLM.
+- Probar extracción exitosa con el prompt de cinco etiquetas y sin catálogos.
+- Objetivo 5: Vectores, matrices, grafos, métricas ⏳
