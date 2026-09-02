@@ -130,6 +130,7 @@ _PERSON_PARTICLES = frozenset({"de", "del", "la", "las", "los", "y"})
 _PERSON_BLOCKERS = frozenset(
     {
         "academia",
+        "academy",
         "amazonas",
         "asociacion",
         "banco",
@@ -145,6 +146,7 @@ _PERSON_BLOCKERS = frozenset(
         "frente",
         "gobierno",
         "goremad",
+        "hub",
         "iglesia",
         "imperio",
         "inei",
@@ -662,12 +664,16 @@ def _decidir_canonica(
         return MatchDecision(candidata, "exact", 100.0, None, "normalized_exact_name")
 
     ids_alias = aliases_por_categoria.get((categoria, nombre_normalizado), set())
-    if len(ids_alias) == 1 and not (
-        categoria == "CHAR" and len(nombre_normalizado.split()) == 1
-    ):
+    if len(ids_alias) == 1:
         canonical_id = next(iter(ids_alias))
         candidata = next((item for item in candidatos if item.id == canonical_id), None)
-        if candidata is not None:
+        alias_char_seguro = not (
+            categoria == "CHAR" and len(nombre_normalizado.split()) == 1
+        ) or (
+            candidata is not None
+            and _es_nombre_institucional(candidata.canonical_name)
+        )
+        if candidata is not None and alias_char_seguro:
             return MatchDecision(
                 candidata, "stored_alias", 100.0, None, "unique_stored_alias"
             )
@@ -767,6 +773,12 @@ def _buscar_nombre_persona_mas_completo(
     if len(nombres_compatibles) != 1:
         return None
     return _mejor_canonica_exacta([candidata for _, candidata in compatibles], texto)
+
+
+def _es_nombre_institucional(texto: str) -> bool:
+    return any(
+        token in _PERSON_BLOCKERS for token in normalizar_nombre(texto).split()
+    )
 
 
 def _crear_canonica(

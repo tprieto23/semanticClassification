@@ -289,6 +289,29 @@ class FuzzyMatchingLogicTests(unittest.TestCase):
 
     @patch("src.services.fuzzy_matching.CanonicalEntityRepo.crear")
     @patch("src.services.fuzzy_matching.CanonicalEntityRepo.leer_todas")
+    def test_academy_prefix_is_not_treated_as_a_person_name(
+        self, leer_todas: Mock, crear: Mock
+    ) -> None:
+        academy = canonical("Wyss Academy for Nature", "CHAR")
+        hub = canonical("Wyss Academy Hub South America", "CHAR")
+        new = canonical("Wyss Academy", "CHAR")
+        leer_todas.return_value = [academy, hub]
+        crear.return_value = new
+
+        result, _ = asociar_entidades_canonicas(
+            self.db,
+            [
+                mention("Wyss Academy", "CHAR"),
+                mention("Wyss Academy Hub South America", "CHAR"),
+            ],
+        )
+
+        self.assertNotEqual(result[0]["canonical_id"], hub.id)
+        self.assertNotEqual(result[0]["match_type"], "person_alias")
+        crear.assert_called_once()
+
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.crear")
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.leer_todas")
     def test_unique_longer_person_name_can_resolve_two_token_variant(
         self, leer_todas: Mock, crear: Mock
     ) -> None:
@@ -345,6 +368,26 @@ class FuzzyMatchingLogicTests(unittest.TestCase):
 
         self.assertEqual(result[0]["canonical_id"], new.id)
         self.assertEqual(result[0]["match_type"], "new")
+
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.crear")
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.leer_todas")
+    def test_stored_single_word_institution_alias_is_reused(
+        self, leer_todas: Mock, crear: Mock
+    ) -> None:
+        existing = canonical("Wyss Academy for Nature", "CHAR")
+        leer_todas.return_value = [existing]
+        self.aliases_read.return_value = [
+            SimpleNamespace(
+                canonical_id=existing.id,
+                normalized_alias=normalizar_nombre("Wyss"),
+            )
+        ]
+
+        result, _ = asociar_entidades_canonicas(self.db, [mention("WYSS", "CHAR")])
+
+        self.assertEqual(result[0]["canonical_id"], existing.id)
+        self.assertEqual(result[0]["match_type"], "stored_alias")
+        crear.assert_not_called()
 
 
 if __name__ == "__main__":
