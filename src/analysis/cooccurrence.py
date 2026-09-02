@@ -14,45 +14,88 @@ import json
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from itertools import combinations
+from itertools import combinations, combinations_with_replacement
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 from uuid import UUID
 
-CATEGORY_ORDER = ("CHAR", "PRAC", "INFRA", "GOV", "LOC")
+CATEGORY_ORDER = ("CHAR", "LOC", "PRAC", "INFRA", "GOV")
 CATEGORY_RANK = {category: index for index, category in enumerate(CATEGORY_ORDER)}
-LAYER_BY_CATEGORY = {
-    "CHAR": "CHAR",
-    "PRAC": "L2",
-    "INFRA": "L2",
-    "GOV": "L2",
-    "LOC": "LOC",
-}
+SEMANTIC_CORE_CATEGORIES = ("PRAC", "INFRA", "GOV")
 
-GROUP_CATEGORIES = {
-    "CHAR": frozenset({"CHAR"}),
-    "L2": frozenset({"PRAC", "INFRA", "GOV"}),
-    "LOC": frozenset({"LOC"}),
-    "PRAC": frozenset({"PRAC"}),
-    "INFRA": frozenset({"INFRA"}),
-    "GOV": frozenset({"GOV"}),
-}
 
-# Matrices de las tres macrocapas y descomposición interna de L2.
-BLOCK_SPECS = (
-    ("A_CHAR", "CHAR", "CHAR"),
-    ("A_L2", "L2", "L2"),
-    ("A_LOC", "LOC", "LOC"),
-    ("B_CHAR__L2", "CHAR", "L2"),
-    ("B_CHAR__LOC", "CHAR", "LOC"),
-    ("B_L2__LOC", "L2", "LOC"),
-    ("A_PRAC__PRAC", "PRAC", "PRAC"),
-    ("B_PRAC__INFRA", "PRAC", "INFRA"),
-    ("B_PRAC__GOV", "PRAC", "GOV"),
-    ("A_INFRA__INFRA", "INFRA", "INFRA"),
-    ("B_INFRA__GOV", "INFRA", "GOV"),
-    ("A_GOV__GOV", "GOV", "GOV"),
-)
+def ordered_category_pair(category_a: str, category_b: str) -> tuple[str, str]:
+    """Normaliza un par no dirigido siguiendo el orden canónico de categorías."""
+
+    if category_a not in CATEGORY_RANK or category_b not in CATEGORY_RANK:
+        raise ValueError(
+            f"Par con categoría no permitida: {category_a!r}, {category_b!r}"
+        )
+    if CATEGORY_RANK[category_a] <= CATEGORY_RANK[category_b]:
+        return category_a, category_b
+    return category_b, category_a
+
+
+def all_category_pairs(categories: Sequence[str]) -> tuple[tuple[str, str], ...]:
+    ordered_categories = tuple(
+        sorted(set(categories), key=lambda category: CATEGORY_RANK[category])
+    )
+    return tuple(
+        ordered_category_pair(source, target)
+        for source, target in combinations_with_replacement(ordered_categories, 2)
+    )
+
+
+def normalize_projection(
+    node_categories: Sequence[str] | None = None,
+    allowed_category_pairs: Sequence[tuple[str, str]] | None = None,
+) -> tuple[tuple[str, ...], tuple[tuple[str, str], ...]]:
+    """Valida y normaliza una proyección tipada no dirigida."""
+
+    categories = tuple(
+        sorted(
+            set(node_categories or CATEGORY_ORDER),
+            key=lambda category: CATEGORY_RANK.get(category, len(CATEGORY_ORDER)),
+        )
+    )
+    if not categories:
+        raise ValueError("La proyección debe incluir al menos una categoría")
+    invalid_categories = [
+        category for category in categories if category not in CATEGORY_RANK
+    ]
+    if invalid_categories:
+        raise ValueError(
+            "Categorías no permitidas en la proyección: "
+            + ", ".join(invalid_categories)
+        )
+
+    category_set = set(categories)
+    pairs = (
+        all_category_pairs(categories)
+        if allowed_category_pairs is None
+        else tuple(
+            sorted(
+                {
+                    ordered_category_pair(source, target)
+                    for source, target in allowed_category_pairs
+                },
+                key=lambda pair: (CATEGORY_RANK[pair[0]], CATEGORY_RANK[pair[1]]),
+            )
+        )
+    )
+    if not pairs:
+        raise ValueError("La proyección debe permitir al menos un category_pair")
+    outside = [
+        pair
+        for pair in pairs
+        if pair[0] not in category_set or pair[1] not in category_set
+    ]
+    if outside:
+        formatted = ", ".join("--".join(pair) for pair in outside)
+        raise ValueError(
+            f"Los category_pair usan categorías fuera de node_categories: {formatted}"
+        )
+    return categories, pairs
 
 
 @dataclass(frozen=True)
@@ -74,11 +117,9 @@ class MentionRecord:
 class NodeRecord:
     matrix_index: int
     category_index: int
-    layer_index: int
     canonical_id: str
     canonical_name: str
     category: str
-    layer: str
     mention_count: int
     sentence_count: int
     document_count: int
@@ -95,7 +136,23 @@ class SentenceRecord:
     sentence_id: str
     context: str
     mention_count: int
+    projected_mention_count: int
+    unique_entity_count: int
     unique_node_count: int
+
+
+@dataclass(frozen=True)
+class SentenceEntityRecord:
+    sentence_row: int
+    document_id: str
+    sentence_id: str
+    canonical_id: str
+    canonical_name: str
+    category: str
+    is_projected: bool
+    mention_count: int
+    texts: tuple[str, ...]
+    ambiguities: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -105,6 +162,9 @@ class EdgeObservation:
     sentence_row: int
     document_id: str
     sentence_id: str
+    context: str
+    pair_context: str
+    category_pair: tuple[str, str]
     source_mention_count: int
     target_mention_count: int
     source_texts: tuple[str, ...]
@@ -115,8 +175,13 @@ class EdgeObservation:
 
 @dataclass(frozen=True)
 class CooccurrenceResult:
+    node_categories: tuple[str, ...]
+    allowed_category_pairs: tuple[tuple[str, str], ...]
+    source_mention_count: int
+    projected_mention_count: int
     nodes: tuple[NodeRecord, ...]
     sentences: tuple[SentenceRecord, ...]
+    sentence_entities: tuple[SentenceEntityRecord, ...]
     incidence_entries: tuple[tuple[int, int, int], ...]
     edge_weights: dict[tuple[int, int], int]
     edge_documents: dict[tuple[int, int], frozenset[str]]
@@ -124,13 +189,24 @@ class CooccurrenceResult:
 
 
 def _ordered_category_pair(category_a: str, category_b: str) -> tuple[str, str]:
-    if CATEGORY_RANK[category_a] <= CATEGORY_RANK[category_b]:
-        return category_a, category_b
-    return category_b, category_a
+    return ordered_category_pair(category_a, category_b)
 
 
 def _distinct_strings(values: Iterable[str | None]) -> tuple[str, ...]:
     return tuple(sorted({value for value in values if value}, key=str.casefold))
+
+
+def _merge_contexts(mentions: Sequence[MentionRecord]) -> str:
+    """Une evidencia local distinta sin exigir un contexto global por oración."""
+
+    contexts: list[str] = []
+    seen: set[str] = set()
+    for mention in sorted(mentions, key=lambda item: (item.start, item.end)):
+        context = (mention.context or "").strip()
+        if context and context not in seen:
+            seen.add(context)
+            contexts.append(context)
+    return "\n…\n".join(contexts)
 
 
 def _validate_mentions(mentions: Sequence[MentionRecord]) -> None:
@@ -165,10 +241,24 @@ def _validate_mentions(mentions: Sequence[MentionRecord]) -> None:
 
 def build_sentence_cooccurrence(
     mentions: Sequence[MentionRecord],
+    *,
+    node_categories: Sequence[str] | None = None,
+    allowed_category_pairs: Sequence[tuple[str, str]] | None = None,
 ) -> CooccurrenceResult:
-    """Construye presencia oración–nodo y coocurrencias binarias por oración."""
+    """Construye una proyección tipada sin perder la evidencia de la oración.
+
+    Los nodos, la incidencia y las aristas se limitan a ``node_categories`` y
+    ``allowed_category_pairs``. Sin embargo, primero se agrupan todas las
+    menciones; por eso ``sentence_entities`` conserva también CHAR/LOC u otras
+    categorías contextuales que no formen parte de la proyección.
+    """
 
     _validate_mentions(mentions)
+    projected_categories, projected_pairs = normalize_projection(
+        node_categories, allowed_category_pairs
+    )
+    projected_category_set = set(projected_categories)
+    projected_pair_set = set(projected_pairs)
 
     units: dict[tuple[str, str], list[MentionRecord]] = defaultdict(list)
     mentions_by_node: dict[str, list[MentionRecord]] = defaultdict(list)
@@ -179,12 +269,20 @@ def build_sentence_cooccurrence(
     for mention in mentions:
         sentence_key = (mention.document_id, mention.sentence_id)
         units[sentence_key].append(mention)
+        if mention.category not in projected_category_set:
+            continue
         mentions_by_node[mention.canonical_id].append(mention)
         sentence_keys_by_node[mention.canonical_id].add(sentence_key)
         document_ids_by_node[mention.canonical_id].add(mention.document_id)
         canonical_metadata[mention.canonical_id] = (
             mention.canonical_name,
             mention.category,
+        )
+
+    if not canonical_metadata:
+        raise ValueError(
+            "No hay menciones de las categorías seleccionadas para construir "
+            "la proyección"
         )
 
     ordered_node_ids = sorted(
@@ -197,13 +295,11 @@ def build_sentence_cooccurrence(
     )
 
     category_indexes: Counter[str] = Counter()
-    layer_indexes: Counter[str] = Counter()
     nodes: list[NodeRecord] = []
     index_by_node: dict[str, int] = {}
 
     for matrix_index, canonical_id in enumerate(ordered_node_ids):
         canonical_name, category = canonical_metadata[canonical_id]
-        layer = LAYER_BY_CATEGORY[category]
         node_mentions = mentions_by_node[canonical_id]
         ambiguity_counts = Counter(
             (
@@ -217,11 +313,9 @@ def build_sentence_cooccurrence(
             NodeRecord(
                 matrix_index=matrix_index,
                 category_index=category_indexes[category],
-                layer_index=layer_indexes[layer],
                 canonical_id=canonical_id,
                 canonical_name=canonical_name,
                 category=category,
-                layer=layer,
                 mention_count=len(node_mentions),
                 sentence_count=len(sentence_keys_by_node[canonical_id]),
                 document_count=len(document_ids_by_node[canonical_id]),
@@ -233,28 +327,63 @@ def build_sentence_cooccurrence(
         )
         index_by_node[canonical_id] = matrix_index
         category_indexes[category] += 1
-        layer_indexes[layer] += 1
 
     sentences: list[SentenceRecord] = []
+    sentence_entities: list[SentenceEntityRecord] = []
     incidence_entries: list[tuple[int, int, int]] = []
     edge_weights: Counter[tuple[int, int]] = Counter()
     edge_documents_mutable: dict[tuple[int, int], set[str]] = defaultdict(set)
     observations: list[EdgeObservation] = []
 
-    for sentence_row, sentence_key in enumerate(sorted(units)):
+    for sentence_key in sorted(units):
         document_id, sentence_id = sentence_key
         sentence_mentions = units[sentence_key]
-        contexts = {mention.context for mention in sentence_mentions if mention.context}
-        if len(contexts) > 1:
-            raise ValueError(
-                "Una misma unidad document_id/sentence_id tiene contextos distintos: "
-                f"{document_id}/{sentence_id}"
-            )
-        context = next(iter(contexts), "")
+        projected_mentions = [
+            mention
+            for mention in sentence_mentions
+            if mention.category in projected_category_set
+        ]
+        if not projected_mentions:
+            continue
+
+        sentence_row = len(sentences)
+        sentence_context = _merge_contexts(sentence_mentions)
 
         mentions_by_index: dict[int, list[MentionRecord]] = defaultdict(list)
-        for mention in sentence_mentions:
+        for mention in projected_mentions:
             mentions_by_index[index_by_node[mention.canonical_id]].append(mention)
+
+        mentions_by_canonical: dict[str, list[MentionRecord]] = defaultdict(list)
+        for mention in sentence_mentions:
+            mentions_by_canonical[mention.canonical_id].append(mention)
+
+        for canonical_id, entity_mentions in sorted(
+            mentions_by_canonical.items(),
+            key=lambda item: (
+                CATEGORY_RANK[item[1][0].category],
+                item[1][0].canonical_name.casefold(),
+                item[0],
+            ),
+        ):
+            representative = entity_mentions[0]
+            sentence_entities.append(
+                SentenceEntityRecord(
+                    sentence_row=sentence_row,
+                    document_id=document_id,
+                    sentence_id=sentence_id,
+                    canonical_id=canonical_id,
+                    canonical_name=representative.canonical_name,
+                    category=representative.category,
+                    is_projected=representative.category in projected_category_set,
+                    mention_count=len(entity_mentions),
+                    texts=_distinct_strings(
+                        mention.text for mention in entity_mentions
+                    ),
+                    ambiguities=_distinct_strings(
+                        mention.ambiguity for mention in entity_mentions
+                    ),
+                )
+            )
 
         unique_indexes = sorted(mentions_by_index)
         incidence_entries.extend(
@@ -265,13 +394,22 @@ def build_sentence_cooccurrence(
                 matrix_row=sentence_row,
                 document_id=document_id,
                 sentence_id=sentence_id,
-                context=context,
+                context=sentence_context,
                 mention_count=len(sentence_mentions),
+                projected_mention_count=len(projected_mentions),
+                unique_entity_count=len(mentions_by_canonical),
                 unique_node_count=len(unique_indexes),
             )
         )
 
         for source_index, target_index in combinations(unique_indexes, 2):
+            source_node = nodes[source_index]
+            target_node = nodes[target_index]
+            category_pair = ordered_category_pair(
+                source_node.category, target_node.category
+            )
+            if category_pair not in projected_pair_set:
+                continue
             edge_key = (source_index, target_index)
             edge_weights[edge_key] += 1
             edge_documents_mutable[edge_key].add(document_id)
@@ -285,6 +423,9 @@ def build_sentence_cooccurrence(
                     sentence_row=sentence_row,
                     document_id=document_id,
                     sentence_id=sentence_id,
+                    context=sentence_context,
+                    pair_context=_merge_contexts(source_mentions + target_mentions),
+                    category_pair=category_pair,
                     source_mention_count=len(source_mentions),
                     target_mention_count=len(target_mentions),
                     source_texts=_distinct_strings(
@@ -303,8 +444,15 @@ def build_sentence_cooccurrence(
             )
 
     return CooccurrenceResult(
+        node_categories=projected_categories,
+        allowed_category_pairs=projected_pairs,
+        source_mention_count=len(mentions),
+        projected_mention_count=sum(
+            1 for mention in mentions if mention.category in projected_category_set
+        ),
         nodes=tuple(nodes),
         sentences=tuple(sentences),
+        sentence_entities=tuple(sentence_entities),
         incidence_entries=tuple(incidence_entries),
         edge_weights=dict(sorted(edge_weights.items())),
         edge_documents={
@@ -389,14 +537,21 @@ def load_ner_json(path: Path) -> tuple[str, list[dict[str, Any]]]:
     return document_id, entities
 
 
-def load_db_mentions(document_id: str) -> list[MentionRecord]:
-    """Consulta menciones canonicalizadas sin modificar PostgreSQL."""
+def load_db_mentions(
+    document_id: str | None = None,
+    *,
+    status: str | None = None,
+    incubator_number: int | None = None,
+    language: str | None = None,
+    db: Any | None = None,
+) -> list[MentionRecord]:
+    """Consulta menciones canonicalizadas para un documento o un corpus."""
 
     from sqlalchemy import select
 
     from src.models.canonical_entities import CanonicalEntity
     from src.models.database import SessionLocal
-    from src.models.documents import Document  # noqa: F401 - configura el mapper
+    from src.models.documents import Document
     from src.models.entities import Entity
 
     statement = (
@@ -415,11 +570,24 @@ def load_db_mentions(document_id: str) -> list[MentionRecord]:
             CanonicalEntity.category.label("canonical_category"),
         )
         .join(CanonicalEntity, CanonicalEntity.id == Entity.canonical_id)
-        .where(Entity.document_id == UUID(document_id))
-        .order_by(Entity.position_start, Entity.position_end, Entity.id)
+        .join(Document, Document.id == Entity.document_id)
+    )
+    if document_id is not None:
+        statement = statement.where(Entity.document_id == UUID(document_id))
+    if status is not None:
+        statement = statement.where(Document.status == status)
+    if incubator_number is not None:
+        statement = statement.where(Document.incubator_number == incubator_number)
+    if language is not None:
+        statement = statement.where(Document.language == language)
+    statement = statement.order_by(
+        Entity.document_id, Entity.position_start, Entity.position_end, Entity.id
     )
 
-    with SessionLocal() as db:
+    if db is None:
+        with SessionLocal() as owned_db:
+            rows = owned_db.execute(statement).all()
+    else:
         rows = db.execute(statement).all()
 
     mentions: list[MentionRecord] = []
@@ -488,11 +656,9 @@ def _node_csv_row(node: NodeRecord) -> dict[str, Any]:
     return {
         "matrix_index": node.matrix_index,
         "category_index": node.category_index,
-        "layer_index": node.layer_index,
         "canonical_id": node.canonical_id,
         "canonical_name": node.canonical_name,
         "category": node.category,
-        "layer": node.layer,
         "mention_count": node.mention_count,
         "sentence_count": node.sentence_count,
         "document_count": node.document_count,
@@ -506,11 +672,9 @@ def _node_csv_row(node: NodeRecord) -> dict[str, Any]:
 NODE_FIELDS = (
     "matrix_index",
     "category_index",
-    "layer_index",
     "canonical_id",
     "canonical_name",
     "category",
-    "layer",
     "mention_count",
     "sentence_count",
     "document_count",
@@ -521,146 +685,62 @@ NODE_FIELDS = (
 )
 
 
-def _export_blocks(
+def category_pair_rows(
     result: CooccurrenceResult,
-    output_dir: Path,
+    minimum_weight: int = 1,
+    *,
+    include_isolates: bool = True,
 ) -> list[dict[str, Any]]:
-    blocks_dir = output_dir / "blocks"
-    blocks_dir.mkdir(parents=True, exist_ok=True)
-
-    group_nodes: dict[str, list[NodeRecord]] = {}
-    group_indexes: dict[str, dict[int, int]] = {}
-    for group_name, categories in GROUP_CATEGORIES.items():
-        nodes = [node for node in result.nodes if node.category in categories]
-        group_nodes[group_name] = nodes
-        group_indexes[group_name] = {
-            node.matrix_index: local_index for local_index, node in enumerate(nodes)
+    active_indexes = set(range(len(result.nodes)))
+    if not include_isolates:
+        active_indexes = {
+            node_index
+            for edge, weight in result.edge_weights.items()
+            if weight >= minimum_weight
+            for node_index in edge
         }
-        _write_csv(
-            blocks_dir / f"nodes_{group_name}.csv",
-            ("block_index",) + NODE_FIELDS,
-            (
-                {"block_index": local_index, **_node_csv_row(node)}
-                for local_index, node in enumerate(nodes)
-            ),
-        )
-
-    manifest: list[dict[str, Any]] = []
-    for matrix_name, row_group, column_group in BLOCK_SPECS:
-        row_indexes = group_indexes[row_group]
-        column_indexes = group_indexes[column_group]
-        entries: list[tuple[int, int, int]] = []
-        undirected_edge_count = 0
-        total_weight = 0
-
-        for (source_index, target_index), weight in result.edge_weights.items():
-            if row_group == column_group:
-                if source_index in row_indexes and target_index in row_indexes:
-                    source_local = row_indexes[source_index]
-                    target_local = row_indexes[target_index]
-                    entries.extend(
-                        (
-                            (source_local, target_local, weight),
-                            (target_local, source_local, weight),
-                        )
-                    )
-                    undirected_edge_count += 1
-                    total_weight += weight
-                continue
-
-            if source_index in row_indexes and target_index in column_indexes:
-                entries.append(
-                    (row_indexes[source_index], column_indexes[target_index], weight)
-                )
-            elif target_index in row_indexes and source_index in column_indexes:
-                entries.append(
-                    (row_indexes[target_index], column_indexes[source_index], weight)
-                )
-            else:
-                continue
-            undirected_edge_count += 1
-            total_weight += weight
-
-        filename = f"{matrix_name}.mtx"
-        write_matrix_market(
-            blocks_dir / filename,
-            len(group_nodes[row_group]),
-            len(group_nodes[column_group]),
-            entries,
-            f"Bloque de coocurrencia {row_group} x {column_group}",
-        )
-        manifest.append(
-            {
-                "matrix": matrix_name,
-                "filename": filename,
-                "row_group": row_group,
-                "column_group": column_group,
-                "rows": len(group_nodes[row_group]),
-                "columns": len(group_nodes[column_group]),
-                "nonzero_cells": len(entries),
-                "undirected_edge_count": undirected_edge_count,
-                "total_sentence_cooccurrences": total_weight,
-            }
-        )
-
-    _write_csv(
-        blocks_dir / "manifest.csv",
-        (
-            "matrix",
-            "filename",
-            "row_group",
-            "column_group",
-            "rows",
-            "columns",
-            "nonzero_cells",
-            "undirected_edge_count",
-            "total_sentence_cooccurrences",
-        ),
-        manifest,
+    category_node_counts = Counter(
+        result.nodes[index].category for index in active_indexes
     )
-    return manifest
-
-
-def _category_pair_rows(result: CooccurrenceResult) -> list[dict[str, Any]]:
-    category_node_counts = Counter(node.category for node in result.nodes)
     weights_by_pair: dict[tuple[str, str], list[int]] = defaultdict(list)
 
     for (source_index, target_index), weight in result.edge_weights.items():
+        if weight < minimum_weight:
+            continue
         source = result.nodes[source_index]
         target = result.nodes[target_index]
         category_pair = _ordered_category_pair(source.category, target.category)
         weights_by_pair[category_pair].append(weight)
 
     rows: list[dict[str, Any]] = []
-    for first_index, source_category in enumerate(CATEGORY_ORDER):
-        for target_category in CATEGORY_ORDER[first_index:]:
-            pair = (source_category, target_category)
-            weights = weights_by_pair[pair]
-            source_nodes = category_node_counts[source_category]
-            target_nodes = category_node_counts[target_category]
-            if source_category == target_category:
-                possible_pairs = source_nodes * (source_nodes - 1) // 2
-            else:
-                possible_pairs = source_nodes * target_nodes
-            edge_count = len(weights)
-            rows.append(
-                {
-                    "source_category": source_category,
-                    "target_category": target_category,
-                    "source_nodes": source_nodes,
-                    "target_nodes": target_nodes,
-                    "possible_pairs": possible_pairs,
-                    "observed_edges": edge_count,
-                    "density": (
-                        round(edge_count / possible_pairs, 8) if possible_pairs else 0.0
-                    ),
-                    "total_sentence_cooccurrences": sum(weights),
-                    "mean_weight_observed_edges": (
-                        round(sum(weights) / edge_count, 6) if edge_count else 0.0
-                    ),
-                    "max_weight": max(weights, default=0),
-                }
-            )
+    for source_category, target_category in result.allowed_category_pairs:
+        pair = (source_category, target_category)
+        weights = weights_by_pair[pair]
+        source_nodes = category_node_counts[source_category]
+        target_nodes = category_node_counts[target_category]
+        if source_category == target_category:
+            possible_pairs = source_nodes * (source_nodes - 1) // 2
+        else:
+            possible_pairs = source_nodes * target_nodes
+        edge_count = len(weights)
+        rows.append(
+            {
+                "source_category": source_category,
+                "target_category": target_category,
+                "source_nodes": source_nodes,
+                "target_nodes": target_nodes,
+                "possible_pairs": possible_pairs,
+                "observed_edges": edge_count,
+                "density": (
+                    round(edge_count / possible_pairs, 8) if possible_pairs else 0.0
+                ),
+                "total_sentence_cooccurrences": sum(weights),
+                "mean_weight_observed_edges": (
+                    round(sum(weights) / edge_count, 6) if edge_count else 0.0
+                ),
+                "max_weight": max(weights, default=0),
+            }
+        )
     return rows
 
 
@@ -668,9 +748,11 @@ def export_result(
     result: CooccurrenceResult,
     output_dir: Path,
     *,
-    document_id: str,
-    ner_json_path: Path,
-    json_mention_count: int,
+    scope: str | None = None,
+    document_id: str | None = None,
+    ner_json_path: Path | None = None,
+    mention_count: int | None = None,
+    json_mention_count: int | None = None,
 ) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -686,6 +768,8 @@ def export_result(
             "document_id",
             "sentence_id",
             "mention_count",
+            "projected_mention_count",
+            "unique_entity_count",
             "unique_node_count",
             "context",
         ),
@@ -695,10 +779,43 @@ def export_result(
                 "document_id": sentence.document_id,
                 "sentence_id": sentence.sentence_id,
                 "mention_count": sentence.mention_count,
+                "projected_mention_count": sentence.projected_mention_count,
+                "unique_entity_count": sentence.unique_entity_count,
                 "unique_node_count": sentence.unique_node_count,
                 "context": sentence.context,
             }
             for sentence in result.sentences
+        ),
+    )
+
+    _write_csv(
+        output_dir / "sentence_entities.csv",
+        (
+            "sentence_row",
+            "document_id",
+            "sentence_id",
+            "canonical_id",
+            "canonical_name",
+            "category",
+            "is_projected",
+            "mention_count",
+            "texts",
+            "ambiguities",
+        ),
+        (
+            {
+                "sentence_row": entity.sentence_row,
+                "document_id": entity.document_id,
+                "sentence_id": entity.sentence_id,
+                "canonical_id": entity.canonical_id,
+                "canonical_name": entity.canonical_name,
+                "category": entity.category,
+                "is_projected": str(entity.is_projected).lower(),
+                "mention_count": entity.mention_count,
+                "texts": " | ".join(entity.texts),
+                "ambiguities": " | ".join(entity.ambiguities),
+            }
+            for entity in result.sentence_entities
         ),
     )
 
@@ -741,14 +858,7 @@ def export_result(
                 "target_name": target.canonical_name,
                 "source_category": source.category,
                 "target_category": target.category,
-                "source_layer": source.layer,
-                "target_layer": target.layer,
                 "category_pair": "--".join(category_pair),
-                "layer_pair": "--".join(
-                    sorted(
-                        (source.layer, target.layer), key=("CHAR", "L2", "LOC").index
-                    )
-                ),
                 "sentence_count": weight,
                 "document_count": len(
                     result.edge_documents[(source_index, target_index)]
@@ -767,10 +877,7 @@ def export_result(
             "target_name",
             "source_category",
             "target_category",
-            "source_layer",
-            "target_layer",
             "category_pair",
-            "layer_pair",
             "sentence_count",
             "document_count",
         ),
@@ -789,9 +896,12 @@ def export_result(
             "target_name",
             "source_category",
             "target_category",
+            "category_pair",
             "sentence_row",
             "document_id",
             "sentence_id",
+            "context",
+            "pair_context",
             "source_mention_count",
             "target_mention_count",
             "source_texts",
@@ -813,9 +923,12 @@ def export_result(
                 "target_name": nodes_by_index[observation.target_index].canonical_name,
                 "source_category": nodes_by_index[observation.source_index].category,
                 "target_category": nodes_by_index[observation.target_index].category,
+                "category_pair": "--".join(observation.category_pair),
                 "sentence_row": observation.sentence_row,
                 "document_id": observation.document_id,
                 "sentence_id": observation.sentence_id,
+                "context": observation.context,
+                "pair_context": observation.pair_context,
                 "source_mention_count": observation.source_mention_count,
                 "target_mention_count": observation.target_mention_count,
                 "source_texts": " | ".join(observation.source_texts),
@@ -827,7 +940,7 @@ def export_result(
         ),
     )
 
-    category_rows = _category_pair_rows(result)
+    category_rows = category_pair_rows(result)
     _write_csv(
         output_dir / "category_pair_summary.csv",
         (
@@ -845,7 +958,6 @@ def export_result(
         category_rows,
     )
 
-    block_manifest = _export_blocks(result, output_dir)
     category_counts = Counter(node.category for node in result.nodes)
     ambiguity_counts = Counter()
     for node in result.nodes:
@@ -854,10 +966,15 @@ def export_result(
         ambiguity_counts["high"] += node.ambiguity_high
         ambiguity_counts["other"] += node.ambiguity_other
 
+    resolved_scope = scope or f"document:{document_id}"
+    resolved_source_mention_count = (
+        mention_count
+        if mention_count is not None
+        else result.source_mention_count
+    )
     summary = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "document_id": document_id,
-        "ner_json": str(ner_json_path),
+        "scope": resolved_scope,
         "definition": {
             "node": "canonical_id",
             "unit": "(document_id, sentence_id)",
@@ -868,28 +985,45 @@ def export_result(
             "directed": False,
             "ambiguity_policy": "include_all",
             "normalization": "none",
+            "projection": {
+                "node_categories": list(result.node_categories),
+                "category_pairs": [
+                    "--".join(pair) for pair in result.allowed_category_pairs
+                ],
+                "context_categories_preserved_in_sentence_entities": True,
+            },
         },
         "indexing": {
             "csv": "base_zero",
             "matrix_market": "base_one_per_format_specification",
         },
         "counts": {
-            "json_mentions": json_mention_count,
-            "database_mentions": sum(node.mention_count for node in result.nodes),
+            "mentions": result.projected_mention_count,
+            "source_mentions": resolved_source_mention_count,
+            "projected_mentions": result.projected_mention_count,
+            "context_mentions_in_projected_sentences": sum(
+                sentence.mention_count for sentence in result.sentences
+            ),
             "sentences": len(result.sentences),
             "canonical_nodes": len(result.nodes),
             "sentence_node_presences": len(result.incidence_entries),
+            "sentence_entity_presences": len(result.sentence_entities),
             "undirected_edges": len(result.edge_weights),
             "edge_observations": len(result.observations),
             "total_sentence_cooccurrences": sum(result.edge_weights.values()),
             "max_edge_weight": max(result.edge_weights.values(), default=0),
         },
         "canonical_nodes_by_category": {
-            category: category_counts[category] for category in CATEGORY_ORDER
+            category: category_counts[category] for category in result.node_categories
         },
         "mentions_by_ambiguity": dict(ambiguity_counts),
-        "blocks": block_manifest,
     }
+    if document_id is not None:
+        summary["document_id"] = document_id
+    if ner_json_path is not None:
+        summary["ner_json"] = str(ner_json_path)
+    if json_mention_count is not None:
+        summary["counts"]["json_mentions"] = json_mention_count
     with (output_dir / "summary.json").open("w", encoding="utf-8") as file:
         json.dump(summary, file, ensure_ascii=False, indent=2)
         file.write("\n")

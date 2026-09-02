@@ -8,12 +8,14 @@ from fastapi import (
     Form,
     HTTPException,
     Query,
+    Request,
     UploadFile,
     status,
 )
 from sqlalchemy.orm import Session
 
 from src.api.schemas.documents import (
+    BatchProcessError,
     BatchProcessResponse,
     DocumentLanguageUpdate,
     DocumentListResponse,
@@ -28,7 +30,9 @@ from src.api.schemas.entities import (
     FuzzyMatchingResponse,
     MatchedEntityOut,
 )
+from src.api.schemas.network import NetworkBuildResponse, TypedNetworkBuildResponse
 from src.services.documents import DocumentService, get_db
+from src.services.network import NetworkService
 
 router = APIRouter(prefix="/documents", tags=["Documents"])
 
@@ -200,6 +204,45 @@ def fuzzy_matching(
         document_id=str(document_id),
         entities=[MatchedEntityOut(**e) for e in entidades],
     )
+
+
+@router.post("/{document_id}/network", response_model=NetworkBuildResponse)
+def build_document_network(
+    document_id: UUID,
+    request: Request,
+    db: Session = Depends(get_db),
+    minimum_weight: Annotated[int, Query(ge=1)] = 1,
+    include_isolates: bool = True,
+):
+    payload = NetworkService.build(
+        db,
+        document_id=str(document_id),
+        minimum_weight=minimum_weight,
+        include_isolates=include_isolates,
+    )
+    return NetworkService.with_public_urls(payload, str(request.base_url))
+
+
+@router.post(
+    "/{document_id}/network/projections/{projection_id}",
+    response_model=TypedNetworkBuildResponse,
+)
+def build_document_typed_projection(
+    document_id: UUID,
+    projection_id: str,
+    request: Request,
+    db: Session = Depends(get_db),
+    minimum_weight: Annotated[int, Query(ge=1)] = 1,
+    include_isolates: bool = True,
+):
+    payload = NetworkService.build_projection(
+        db,
+        projection_id,
+        document_id=str(document_id),
+        minimum_weight=minimum_weight,
+        include_isolates=include_isolates,
+    )
+    return NetworkService.with_public_urls(payload, str(request.base_url))
 
 
 @router.delete("/{document_id}", status_code=status.HTTP_204_NO_CONTENT)

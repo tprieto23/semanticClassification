@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     DATA_CLEANED: Path = Path("s3/archivosLimpiados")
     STORAGE_IMAGES: Path = Path("s3/imagenesExtraidas")
     STORAGE_NER: Path = Path("s3/archivosNER")
+    STORAGE_NETWORK: Path = Path("s3/archivosRed")
 
     ANTHROPIC_API_KEY: str = ""
     ANTHROPIC_MODEL: str = "claude-sonnet-4-5-20250929"

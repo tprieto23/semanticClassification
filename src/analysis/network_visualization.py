@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from matplotlib.lines import Line2D
 
-CATEGORY_ORDER = ("CHAR", "PRAC", "INFRA", "GOV", "LOC")
+CATEGORY_ORDER = ("CHAR", "LOC", "PRAC", "INFRA", "GOV")
 CATEGORY_STYLE = {
     "CHAR": {"color": "#E69F00", "shape": "o", "label": "CHAR"},
     "PRAC": {"color": "#009E73", "shape": "s", "label": "PRAC"},
@@ -36,42 +36,22 @@ CATEGORY_STYLE = {
     "GOV": {"color": "#CC79A7", "shape": "P", "label": "GOV"},
     "LOC": {"color": "#56B4E9", "shape": "h", "label": "LOC"},
 }
-LAYER_BY_CATEGORY = {
-    "CHAR": "CHAR",
-    "PRAC": "L2",
-    "INFRA": "L2",
-    "GOV": "L2",
-    "LOC": "LOC",
-}
-LAYERED_Y = {
-    "CHAR": 4.2,
-    "PRAC": 2.7,
-    "INFRA": 2.0,
-    "GOV": 1.3,
-    "LOC": 0.0,
-}
-
-
-@dataclass(frozen=True)
-class ComponentBand:
-    component: int
-    left: float
-    right: float
-    size: int
-
-
-@dataclass(frozen=True)
-class LayeredLayout:
-    positions: dict[str, tuple[float, float]]
-    component_bands: tuple[ComponentBand, ...]
 
 
 @dataclass(frozen=True)
 class NetworkData:
     graph: nx.Graph
-    document_id: str
+    scope: str
+    node_categories: tuple[str, ...]
+    category_pairs: tuple[str, ...]
     minimum_weight: int
     includes_isolates: bool
+
+
+@dataclass(frozen=True)
+class NetworkEvidence:
+    sentences: dict[str, dict[str, Any]]
+    edge_references: dict[tuple[str, str], list[dict[str, Any]]]
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:
@@ -87,8 +67,10 @@ def _read_summary(analysis_dir: Path) -> dict[str, Any]:
         raise FileNotFoundError(f"No existe el archivo requerido: {path}")
     with path.open(encoding="utf-8") as file:
         summary = json.load(file)
-    if not isinstance(summary, dict) or not isinstance(summary.get("document_id"), str):
-        raise ValueError("summary.json no contiene un document_id válido")
+    if not isinstance(summary, dict):
+        raise ValueError("summary.json no contiene un objeto válido")
+    if not isinstance(summary.get("scope") or summary.get("document_id"), str):
+        raise ValueError("summary.json no contiene un scope válido")
     return summary
 
 
@@ -118,6 +100,8 @@ def load_core_network(
     minimum_weight: int = 3,
     *,
     include_isolates: bool = False,
+    node_categories: Sequence[str] | None = None,
+    allowed_category_pairs: Sequence[str] | None = None,
 ) -> NetworkData:
     """Carga aristas que alcanzan el umbral y, opcionalmente, nodos aislados."""
 
@@ -125,6 +109,21 @@ def load_core_network(
         raise ValueError("minimum_weight debe ser mayor o igual a 1")
 
     summary = _read_summary(analysis_dir)
+    projection = summary.get("definition", {}).get("projection", {})
+    selected_categories = tuple(
+        node_categories or projection.get("node_categories") or CATEGORY_ORDER
+    )
+    selected_category_set = set(selected_categories)
+    selected_pairs = tuple(
+        allowed_category_pairs
+        or projection.get("category_pairs")
+        or (
+            f"{source}--{target}"
+            for source_index, source in enumerate(CATEGORY_ORDER)
+            for target in CATEGORY_ORDER[source_index:]
+        )
+    )
+    selected_pair_set = set(selected_pairs)
     nodes_path = analysis_dir / "nodes.csv"
     edges_path = analysis_dir / "edges.csv"
     node_rows = _read_csv(nodes_path)
@@ -138,16 +137,12 @@ def load_core_network(
             raise ValueError(f"canonical_id ausente o duplicado en {nodes_path}")
         if category not in CATEGORY_STYLE:
             raise ValueError(f"Categoría no permitida en {nodes_path}: {category!r}")
-        layer = row.get("layer") or LAYER_BY_CATEGORY[category]
-        if layer != LAYER_BY_CATEGORY[category]:
-            raise ValueError(
-                f"Capa incompatible para {canonical_id}: {category}/{layer}"
-            )
+        if category not in selected_category_set:
+            continue
         metadata_by_id[canonical_id] = {
             "canonical_id": canonical_id,
             "canonical_name": row.get("canonical_name", ""),
             "category": category,
-            "layer": layer,
             "matrix_index": _int_field(row, "matrix_index", nodes_path),
             "mention_count": _int_field(row, "mention_count", nodes_path),
             "sentence_count": _int_field(row, "sentence_count", nodes_path),
@@ -162,6 +157,8 @@ def load_core_network(
     for row in edge_rows:
         weight = _int_field(row, "sentence_count", edges_path)
         if weight < minimum_weight:
+            continue
+        if row.get("category_pair", "") not in selected_pair_set:
             continue
         source = row.get("source_canonical_id", "")
         target = row.get("target_canonical_id", "")
@@ -179,15 +176,11 @@ def load_core_network(
             weight=weight,
             document_count=_int_field(row, "document_count", edges_path),
             category_pair=row.get("category_pair", ""),
-            layer_pair=row.get("layer_pair", ""),
         )
 
     if include_isolates:
         for canonical_id, metadata in metadata_by_id.items():
             graph.add_node(canonical_id, **metadata)
-
-    if graph.number_of_edges() == 0:
-        raise ValueError(f"Ninguna arista alcanza el umbral de peso {minimum_weight}")
 
     for component_index, component in enumerate(_ordered_components(graph), start=1):
         for node in component:
@@ -202,121 +195,12 @@ def load_core_network(
 
     return NetworkData(
         graph=graph,
-        document_id=summary["document_id"],
+        scope=summary.get("scope") or f'document:{summary["document_id"]}',
+        node_categories=selected_categories,
+        category_pairs=selected_pairs,
         minimum_weight=minimum_weight,
         includes_isolates=include_isolates,
     )
-
-
-def _even_positions(left: float, right: float, count: int) -> list[float]:
-    if count == 1:
-        return [(left + right) / 2]
-    margin = min(0.65, (right - left) * 0.12)
-    usable_left = left + margin
-    usable_right = right - margin
-    step = (usable_right - usable_left) / (count - 1)
-    return [usable_left + step * index for index in range(count)]
-
-
-def build_layered_layout(graph: nx.Graph, seed: int = 42) -> LayeredLayout:
-    """Fija cada categoría en una fila y separa componentes horizontalmente."""
-
-    positions: dict[str, tuple[float, float]] = {}
-    bands: list[ComponentBand] = []
-    cursor = 0.0
-
-    components = _ordered_components(graph)
-    connected_components = [component for component in components if len(component) > 1]
-    isolated_nodes = [
-        node for component in components if len(component) == 1 for node in component
-    ]
-
-    for component_index, component in enumerate(connected_components, start=1):
-        subgraph = graph.subgraph(component)
-        local_positions = nx.spring_layout(
-            subgraph,
-            seed=seed + component_index,
-            weight="weight",
-            iterations=300,
-        )
-        max_row_size = max(
-            sum(1 for node in component if graph.nodes[node]["category"] == category)
-            for category in CATEGORY_ORDER
-        )
-        width = max(3.0, 1.75 * max_row_size + 0.6)
-        left = cursor
-        right = cursor + width
-        bands.append(
-            ComponentBand(
-                component=component_index,
-                left=left,
-                right=right,
-                size=len(component),
-            )
-        )
-
-        for category in CATEGORY_ORDER:
-            row_nodes = [
-                node for node in component if graph.nodes[node]["category"] == category
-            ]
-            row_nodes.sort(
-                key=lambda node: (
-                    float(local_positions[node][0]),
-                    graph.nodes[node]["canonical_name"].casefold(),
-                )
-            )
-            for node, x_position in zip(
-                row_nodes,
-                _even_positions(left, right, len(row_nodes)),
-                strict=True,
-            ):
-                positions[node] = (x_position, LAYERED_Y[category])
-
-        cursor = right + 1.4
-
-    if isolated_nodes:
-        max_row_size = max(
-            sum(
-                1
-                for node in isolated_nodes
-                if graph.nodes[node]["category"] == category
-            )
-            for category in CATEGORY_ORDER
-        )
-        width = max(6.0, 1.55 * max_row_size + 1.4)
-        left = cursor
-        right = cursor + width
-        bands.append(
-            ComponentBand(component=0, left=left, right=right, size=len(isolated_nodes))
-        )
-        for category in CATEGORY_ORDER:
-            row_nodes = sorted(
-                (
-                    node
-                    for node in isolated_nodes
-                    if graph.nodes[node]["category"] == category
-                ),
-                key=lambda node: graph.nodes[node]["canonical_name"].casefold(),
-            )
-            for node, x_position in zip(
-                row_nodes,
-                _even_positions(left, right, len(row_nodes)),
-                strict=True,
-            ):
-                positions[node] = (x_position, LAYERED_Y[category])
-
-    center = (bands[0].left + bands[-1].right) / 2
-    positions = {node: (x - center, y) for node, (x, y) in positions.items()}
-    centered_bands = tuple(
-        ComponentBand(
-            component=band.component,
-            left=band.left - center,
-            right=band.right - center,
-            size=band.size,
-        )
-        for band in bands
-    )
-    return LayeredLayout(positions=positions, component_bands=centered_bands)
 
 
 def _normalize_component_positions(
@@ -325,6 +209,9 @@ def _normalize_component_positions(
     height: float,
     center_x: float,
 ) -> dict[str, tuple[float, float]]:
+    if len(positions) == 1:
+        node = next(iter(positions))
+        return {node: (center_x, 0.0)}
     xs = [float(position[0]) for position in positions.values()]
     ys = [float(position[1]) for position in positions.values()]
     min_x, max_x = min(xs), max(xs)
@@ -343,12 +230,16 @@ def _normalize_component_positions(
 def build_free_layout(
     graph: nx.Graph, seed: int = 42
 ) -> dict[str, tuple[float, float]]:
-    """Calcula un diseño por fuerzas y empaca los componentes sin solaparlos."""
+    """Calcula un diseño plano reproducible y escalable por componentes."""
 
     positions: dict[str, tuple[float, float]] = {}
     component_specs: list[tuple[set[str], float, float]] = []
+    isolates: list[str] = []
     for component_index, component in enumerate(_ordered_components(graph), start=1):
         size = len(component)
+        if size == 1:
+            isolates.extend(component)
+            continue
         width = max(2.8, math.sqrt(size) * 2.2)
         height = max(2.5, math.sqrt(size) * 1.8)
         if component_index == 1:
@@ -366,18 +257,55 @@ def build_free_layout(
         component_specs, start=1
     ):
         subgraph = graph.subgraph(component)
-        local_positions = nx.spring_layout(
-            subgraph,
-            seed=seed + component_index,
-            weight="weight",
-            iterations=500,
-            k=1.2 / math.sqrt(max(len(component), 2)),
-        )
+        if len(component) > 500:
+            # El spring layout deja de ser práctico para corpus con miles de nodos.
+            # La espiral áurea conserva centralidad visual y tiene costo lineal.
+            ordered_nodes = sorted(
+                component,
+                key=lambda node: (
+                    -graph.nodes[node].get("strength", 0),
+                    -graph.degree(node),
+                    graph.nodes[node]["canonical_name"].casefold(),
+                ),
+            )
+            golden_angle = math.pi * (3.0 - math.sqrt(5.0))
+            local_positions = {
+                node: (
+                    math.sqrt(index) * math.cos(index * golden_angle),
+                    math.sqrt(index) * math.sin(index * golden_angle),
+                )
+                for index, node in enumerate(ordered_nodes)
+            }
+        else:
+            local_positions = nx.spring_layout(
+                subgraph,
+                seed=seed + component_index,
+                weight="weight",
+                iterations=250,
+                k=1.2 / math.sqrt(max(len(component), 2)),
+            )
         center_x = cursor + width / 2
         positions.update(
             _normalize_component_positions(local_positions, width, height, center_x)
         )
         cursor += width + 1.5
+
+    if isolates:
+        columns = max(1, math.ceil(math.sqrt(len(isolates))))
+        spacing = 1.15
+        center_offset = (columns - 1) * spacing / 2
+        bottom = min((position[1] for position in positions.values()), default=2.0) - 4.0
+        for index, node in enumerate(
+            sorted(
+                isolates,
+                key=lambda item: (
+                    CATEGORY_ORDER.index(graph.nodes[item]["category"]),
+                    graph.nodes[item]["canonical_name"].casefold(),
+                ),
+            )
+        ):
+            row, column = divmod(index, columns)
+            positions[node] = (column * spacing - center_offset, bottom - row * spacing)
     return positions
 
 
@@ -395,60 +323,6 @@ def _category_counts(graph: nx.Graph) -> Counter[str]:
     return Counter(graph.nodes[node]["category"] for node in graph)
 
 
-def _draw_layer_background(ax: Any, layout: LayeredLayout) -> None:
-    ax.axhspan(3.55, 4.85, color="#E69F00", alpha=0.075, zorder=0)
-    ax.axhspan(0.75, 3.20, color="#009E73", alpha=0.045, zorder=0)
-    ax.axhspan(-0.65, 0.55, color="#56B4E9", alpha=0.075, zorder=0)
-    for y in (LAYERED_Y["PRAC"], LAYERED_Y["INFRA"], LAYERED_Y["GOV"]):
-        ax.axhline(y, color="#64748B", alpha=0.18, linewidth=0.7, zorder=0)
-
-    x_min = min(band.left for band in layout.component_bands)
-    label_x = x_min - 0.65
-    labels = (
-        ("CHAR", LAYERED_Y["CHAR"], 10, "bold"),
-        ("L2 · PRAC", LAYERED_Y["PRAC"], 9, "bold"),
-        ("L2 · INFRA", LAYERED_Y["INFRA"], 9, "bold"),
-        ("L2 · GOV", LAYERED_Y["GOV"], 9, "bold"),
-        ("LOC", LAYERED_Y["LOC"], 10, "bold"),
-    )
-    for label, y, size, weight in labels:
-        ax.text(
-            label_x,
-            y,
-            label,
-            ha="right",
-            va="center",
-            fontsize=size,
-            fontweight=weight,
-            color="#334155",
-        )
-
-    for band in layout.component_bands:
-        label = (
-            f"Nodos aislados · {band.size} nodos"
-            if band.component == 0
-            else f"Componente {band.component} · {band.size} nodos"
-        )
-        ax.text(
-            (band.left + band.right) / 2,
-            4.73,
-            label,
-            ha="center",
-            va="center",
-            fontsize=7.7,
-            color="#64748B",
-        )
-        if band.component != 1:
-            ax.axvline(
-                band.left - 0.7,
-                color="#94A3B8",
-                linestyle=(0, (2, 4)),
-                linewidth=0.8,
-                alpha=0.55,
-                zorder=0,
-            )
-
-
 def _draw_graph(
     graph: nx.Graph,
     positions: dict[str, tuple[float, float]],
@@ -457,16 +331,40 @@ def _draw_graph(
     title: str,
     subtitle: str,
     minimum_weight: int,
-    layered_layout: LayeredLayout | None = None,
+    category_order: Sequence[str] = CATEGORY_ORDER,
     label_limit: int | None = None,
     show_edge_labels: bool = True,
 ) -> None:
-    figure_size = (20, 11) if layered_layout else (18, 12)
-    figure, ax = plt.subplots(figsize=figure_size, facecolor="#F8FAFC")
+    figure, ax = plt.subplots(figsize=(18, 12), facecolor="#F8FAFC")
     ax.set_facecolor("#FFFFFF")
 
-    if layered_layout:
-        _draw_layer_background(ax, layered_layout)
+    if graph.number_of_nodes() == 0:
+        ax.text(
+            0.5,
+            0.5,
+            "La vista no contiene nodos con los filtros seleccionados.",
+            transform=ax.transAxes,
+            ha="center",
+            va="center",
+            fontsize=14,
+            color="#475569",
+        )
+        ax.set_title(title, fontsize=18, fontweight="bold", color="#0F172A", pad=24)
+        ax.set_axis_off()
+        output_prefix.parent.mkdir(parents=True, exist_ok=True)
+        figure.savefig(
+            output_prefix.with_suffix(".png"),
+            dpi=220,
+            bbox_inches="tight",
+            facecolor=figure.get_facecolor(),
+        )
+        figure.savefig(
+            output_prefix.with_suffix(".svg"),
+            bbox_inches="tight",
+            facecolor=figure.get_facecolor(),
+        )
+        plt.close(figure)
+        return
 
     edge_list = list(graph.edges(data=True))
     nx.draw_networkx_edges(
@@ -481,7 +379,7 @@ def _draw_graph(
 
     maximum_strength = max(graph.nodes[node]["strength"] for node in graph)
     counts = _category_counts(graph)
-    for category in CATEGORY_ORDER:
+    for category in category_order:
         category_nodes = [
             node for node in graph if graph.nodes[node]["category"] == category
         ]
@@ -496,7 +394,7 @@ def _draw_graph(
             node_shape=style["shape"],
             node_size=[
                 _node_size(graph.nodes[node]["strength"], maximum_strength)
-                * (1.0 if layered_layout else 0.78)
+                * 0.78
                 for node in category_nodes
             ],
             edgecolors="#1E293B",
@@ -505,18 +403,16 @@ def _draw_graph(
             ax=ax,
         )
 
-    component_centers: dict[int, tuple[float, float]] = {}
-    if not layered_layout:
-        points_by_component: dict[int, list[tuple[float, float]]] = defaultdict(list)
-        for node, position in positions.items():
-            points_by_component[graph.nodes[node]["component"]].append(position)
-        component_centers = {
-            component: (
-                sum(point[0] for point in points) / len(points),
-                sum(point[1] for point in points) / len(points),
-            )
-            for component, points in points_by_component.items()
-        }
+    points_by_component: dict[int, list[tuple[float, float]]] = defaultdict(list)
+    for node, position in positions.items():
+        points_by_component[graph.nodes[node]["component"]].append(position)
+    component_centers = {
+        component: (
+            sum(point[0] for point in points) / len(points),
+            sum(point[1] for point in points) / len(points),
+        )
+        for component, points in points_by_component.items()
+    }
 
     labelled_nodes = set(graph)
     if label_limit is not None:
@@ -534,22 +430,20 @@ def _draw_graph(
     for node, (x, y) in positions.items():
         if node not in labelled_nodes:
             continue
-        category = graph.nodes[node]["category"]
         offset_x = 0.0
-        offset_y = -17.0 if layered_layout and category == "LOC" else 15.0
+        offset_y = 15.0
         horizontal_alignment = "center"
-        vertical_alignment = "top" if offset_y < 0 else "bottom"
-        if not layered_layout:
-            center_x, center_y = component_centers[graph.nodes[node]["component"]]
-            delta_x, delta_y = x - center_x, y - center_y
-            if abs(delta_x) > abs(delta_y) * 0.45:
-                offset_x = 13.0 if delta_x >= 0 else -13.0
-                offset_y = 2.0
-                horizontal_alignment = "left" if delta_x >= 0 else "right"
-                vertical_alignment = "center"
-            else:
-                offset_y = 16.0 if delta_y >= 0 else -17.0
-                vertical_alignment = "bottom" if delta_y >= 0 else "top"
+        vertical_alignment = "bottom"
+        center_x, center_y = component_centers[graph.nodes[node]["component"]]
+        delta_x, delta_y = x - center_x, y - center_y
+        if abs(delta_x) > abs(delta_y) * 0.45:
+            offset_x = 13.0 if delta_x >= 0 else -13.0
+            offset_y = 2.0
+            horizontal_alignment = "left" if delta_x >= 0 else "right"
+            vertical_alignment = "center"
+        else:
+            offset_y = 16.0 if delta_y >= 0 else -17.0
+            vertical_alignment = "bottom" if delta_y >= 0 else "top"
         label = textwrap.fill(graph.nodes[node]["canonical_name"], width=20)
         ax.annotate(
             label,
@@ -558,7 +452,7 @@ def _draw_graph(
             textcoords="offset points",
             ha=horizontal_alignment,
             va=vertical_alignment,
-            fontsize=8.2 if layered_layout else 7.6,
+            fontsize=7.6,
             color="#0F172A",
             bbox={
                 "boxstyle": "round,pad=0.18",
@@ -594,7 +488,7 @@ def _draw_graph(
     )
 
     legend_handles: list[Line2D] = []
-    for category in CATEGORY_ORDER:
+    for category in category_order:
         style = CATEGORY_STYLE[category]
         legend_handles.append(
             Line2D(
@@ -612,7 +506,7 @@ def _draw_graph(
         handles=legend_handles,
         loc="lower center",
         bbox_to_anchor=(0.5, -0.10),
-        ncol=5,
+        ncol=max(1, len(category_order)),
         frameon=False,
         fontsize=8.5,
     )
@@ -640,7 +534,7 @@ def _draw_graph(
         color="#64748B",
     )
 
-    ax.margins(x=0.08, y=0.13 if layered_layout else 0.20)
+    ax.margins(x=0.08, y=0.20)
     ax.set_axis_off()
     output_prefix.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(
@@ -665,6 +559,8 @@ def _normalize_for_svg(
     padding_x: int = 90,
     padding_y: int = 75,
 ) -> dict[str, dict[str, float]]:
+    if not positions:
+        return {}
     xs = [position[0] for position in positions.values()]
     ys = [position[1] for position in positions.values()]
     min_x, max_x = min(xs), max(xs)
@@ -680,64 +576,80 @@ def _normalize_for_svg(
     }
 
 
-def _interactive_layered_positions(
-    positions: dict[str, tuple[float, float]], graph: nx.Graph
-) -> dict[str, dict[str, float]]:
-    normalized = _normalize_for_svg(
-        {node: (position[0], 0.0) for node, position in positions.items()},
-        padding_x=110,
-        padding_y=0,
-    )
-    category_y = {
-        "CHAR": 105.0,
-        "PRAC": 300.0,
-        "INFRA": 390.0,
-        "GOV": 480.0,
-        "LOC": 675.0,
-    }
-    return {
-        node: {"x": position["x"], "y": category_y[graph.nodes[node]["category"]]}
-        for node, position in normalized.items()
-    }
-
-
 def _edge_key(source: str, target: str) -> tuple[str, str]:
     return tuple(sorted((source, target)))  # type: ignore[return-value]
 
 
-def load_edge_evidence(
-    analysis_dir: Path, graph: nx.Graph
-) -> dict[tuple[str, str], list[dict[str, Any]]]:
-    sentences = {
-        (row["document_id"], row["sentence_id"]): row.get("context", "")
-        for row in _read_csv(analysis_dir / "sentences.csv")
-    }
+def _sentence_key(document_id: str, sentence_id: str) -> str:
+    return f"{document_id}::{sentence_id}"
+
+
+def load_edge_evidence(analysis_dir: Path, graph: nx.Graph) -> NetworkEvidence:
+    sentences: dict[str, dict[str, Any]] = {}
+    for row in _read_csv(analysis_dir / "sentences.csv"):
+        key = _sentence_key(row["document_id"], row["sentence_id"])
+        sentences[key] = {
+            "documentId": row["document_id"],
+            "sentenceId": row["sentence_id"],
+            "context": row.get("context", ""),
+            "projectedEntities": [],
+            "contextEntities": [],
+        }
+
+    sentence_entities_path = analysis_dir / "sentence_entities.csv"
+    if sentence_entities_path.exists():
+        for row in _read_csv(sentence_entities_path):
+            key = _sentence_key(row["document_id"], row["sentence_id"])
+            sentence = sentences.get(key)
+            if sentence is None:
+                continue
+            entity = {
+                "canonicalId": row.get("canonical_id", ""),
+                "canonicalName": row.get("canonical_name", ""),
+                "category": row.get("category", ""),
+                "mentionCount": int(row.get("mention_count") or 0),
+                "texts": row.get("texts", ""),
+            }
+            sentence["contextEntities"].append(entity)
+            if row.get("is_projected", "").casefold() == "true":
+                sentence["projectedEntities"].append(entity)
+
     evidence: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for row in _read_csv(analysis_dir / "edge_observations.csv"):
         source = row.get("source_canonical_id", "")
         target = row.get("target_canonical_id", "")
         if not graph.has_edge(source, target):
             continue
-        sentence_key = (row["document_id"], row["sentence_id"])
+        sentence_key = _sentence_key(row["document_id"], row["sentence_id"])
         evidence[_edge_key(source, target)].append(
             {
-                "document_id": row["document_id"],
-                "sentence_id": row["sentence_id"],
-                "context": sentences.get(sentence_key, ""),
-                "source_texts": row.get("source_texts", ""),
-                "target_texts": row.get("target_texts", ""),
-                "source_ambiguities": row.get("source_ambiguities", ""),
-                "target_ambiguities": row.get("target_ambiguities", ""),
+                "sentenceKey": sentence_key,
+                "pairContext": row.get("pair_context") or row.get("context", ""),
+                "sourceTexts": row.get("source_texts", ""),
+                "targetTexts": row.get("target_texts", ""),
+                "sourceAmbiguities": row.get("source_ambiguities", ""),
+                "targetAmbiguities": row.get("target_ambiguities", ""),
             }
         )
-    return evidence
+    referenced_sentence_keys = {
+        item["sentenceKey"]
+        for references in evidence.values()
+        for item in references
+    }
+    return NetworkEvidence(
+        sentences={
+            key: sentence
+            for key, sentence in sentences.items()
+            if key in referenced_sentence_keys
+        },
+        edge_references=dict(evidence),
+    )
 
 
 def _interactive_payload(
     data: NetworkData,
-    layered_positions: dict[str, dict[str, float]],
-    free_positions: dict[str, dict[str, float]],
-    evidence: dict[tuple[str, str], list[dict[str, Any]]],
+    positions: dict[str, dict[str, float]],
+    evidence: NetworkEvidence,
 ) -> dict[str, Any]:
     graph = data.graph
     maximum_strength = max((graph.nodes[node]["strength"] for node in graph), default=0)
@@ -756,7 +668,6 @@ def _interactive_payload(
                 "id": node,
                 "name": attributes["canonical_name"],
                 "category": attributes["category"],
-                "layer": attributes["layer"],
                 "mentionCount": attributes["mention_count"],
                 "sentenceCount": attributes["sentence_count"],
                 "degree": attributes["degree"],
@@ -770,8 +681,7 @@ def _interactive_payload(
                     8.0 + 9.0 * math.sqrt(attributes["strength"] / size_denominator),
                     2,
                 ),
-                "layered": layered_positions[node],
-                "free": free_positions[node],
+                "position": positions[node],
             }
         )
 
@@ -789,14 +699,16 @@ def _interactive_payload(
                 "source": source,
                 "target": target,
                 "weight": attributes["weight"],
+                "documentCount": attributes["document_count"],
                 "categoryPair": attributes["category_pair"],
-                "layerPair": attributes["layer_pair"],
-                "evidence": evidence.get(_edge_key(source, target), []),
+                "evidence": evidence.edge_references.get(
+                    _edge_key(source, target), []
+                ),
             }
         )
 
     return {
-        "documentId": data.document_id,
+        "scope": data.scope,
         "networkLabel": f"G{data.minimum_weight}",
         "networkTitle": _network_title(data.minimum_weight),
         "includesIsolates": data.includes_isolates,
@@ -808,8 +720,10 @@ def _interactive_payload(
         "nodeCount": graph.number_of_nodes(),
         "edgeCount": graph.number_of_edges(),
         "componentCount": nx.number_connected_components(graph),
-        "categoryOrder": list(CATEGORY_ORDER),
+        "categoryOrder": list(data.node_categories),
+        "categoryPairs": list(data.category_pairs),
         "styles": CATEGORY_STYLE,
+        "sentencesByKey": evidence.sentences,
         "nodes": nodes,
         "edges": edges,
     }
@@ -824,7 +738,9 @@ def _network_title(minimum_weight: int) -> str:
 
 
 def write_interactive_html(path: Path, payload: dict[str, Any]) -> None:
-    serialized = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
+    serialized = json.dumps(
+        payload, ensure_ascii=False, separators=(",", ":")
+    ).replace("</", "<\\/")
     html = INTERACTIVE_HTML.replace("__NETWORK_DATA__", serialized)
     path.write_text(html, encoding="utf-8")
 
@@ -841,7 +757,7 @@ def _write_csv(
 def export_filtered_data(
     data: NetworkData,
     output_dir: Path,
-    evidence: dict[tuple[str, str], list[dict[str, Any]]],
+    evidence: NetworkEvidence,
 ) -> dict[str, Any]:
     graph = data.graph
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -851,7 +767,6 @@ def export_filtered_data(
         "canonical_id",
         "canonical_name",
         "category",
-        "layer",
         "matrix_index",
         "mention_count",
         "sentence_count",
@@ -887,8 +802,8 @@ def export_filtered_data(
         "source_category",
         "target_category",
         "category_pair",
-        "layer_pair",
         "sentence_count",
+        "document_count",
         "evidence_count",
     )
     edge_rows = []
@@ -904,9 +819,11 @@ def export_filtered_data(
                 "source_category": graph.nodes[source]["category"],
                 "target_category": graph.nodes[target]["category"],
                 "category_pair": attributes["category_pair"],
-                "layer_pair": attributes["layer_pair"],
                 "sentence_count": attributes["weight"],
-                "evidence_count": len(evidence.get(_edge_key(source, target), [])),
+                "document_count": attributes["document_count"],
+                "evidence_count": len(
+                    evidence.edge_references.get(_edge_key(source, target), [])
+                ),
             }
         )
     _write_csv(output_dir / f"{network_slug}_edges.csv", edge_fields, edge_rows)
@@ -914,15 +831,22 @@ def export_filtered_data(
     graph_for_export = nx.Graph()
     graph_for_export.graph.update(
         {
-            "document_id": data.document_id,
+            "scope": data.scope,
             "minimum_weight": data.minimum_weight,
             "edge_definition": "same_sentence_cooccurrence",
+            "node_categories": ",".join(data.node_categories),
+            "category_pairs": ",".join(data.category_pairs),
         }
     )
     for node, attributes in graph.nodes(data=True):
         graph_for_export.add_node(node, **attributes)
     for source, target, attributes in graph.edges(data=True):
-        graph_for_export.add_edge(source, target, **attributes)
+        graph_for_export.add_edge(
+            source,
+            target,
+            edge_key="::".join(_edge_key(source, target)),
+            **attributes,
+        )
     nx.write_graphml(graph_for_export, output_dir / f"{network_slug}.graphml")
 
     category_counts = _category_counts(graph)
@@ -944,10 +868,14 @@ def export_filtered_data(
         key=lambda row: (-row["strength"], -row["degree"], row["canonical_name"]),
     )
     summary = {
-        "document_id": data.document_id,
+        "scope": data.scope,
         "network": f"G{data.minimum_weight}",
         "minimum_edge_weight": data.minimum_weight,
         "includes_isolates": data.includes_isolates,
+        "projection": {
+            "node_categories": list(data.node_categories),
+            "category_pairs": list(data.category_pairs),
+        },
         "definition": (
             "Red con todas las aristas cuyo sentence_count >= umbral; "
             "incluye nodos aislados"
@@ -959,16 +887,15 @@ def export_filtered_data(
         "components": len(components),
         "component_sizes": [len(component) for component in components],
         "nodes_by_category": {
-            category: category_counts[category] for category in CATEGORY_ORDER
+            category: category_counts[category] for category in data.node_categories
         },
         "edges_by_category_pair": dict(sorted(category_pair_counts.items())),
         "top_nodes_by_strength": top_nodes[:10],
         "outputs": {
-            "layered_png": f"{network_slug}_layered.png",
-            "layered_svg": f"{network_slug}_layered.svg",
             "free_png": f"{network_slug}_free.png",
             "free_svg": f"{network_slug}_free.svg",
             "interactive_html": f"{network_slug}_interactive.html",
+            "graph_json": f"{network_slug}_graph.json",
             "graphml": f"{network_slug}.graphml",
             "nodes_csv": f"{network_slug}_nodes.csv",
             "edges_csv": f"{network_slug}_edges.csv",
@@ -989,12 +916,17 @@ def generate_visualizations(
     minimum_weight: int = 3,
     seed: int = 42,
     include_isolates: bool = False,
+    node_categories: Sequence[str] | None = None,
+    allowed_category_pairs: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     data = load_core_network(
-        analysis_dir, minimum_weight, include_isolates=include_isolates
+        analysis_dir,
+        minimum_weight,
+        include_isolates=include_isolates,
+        node_categories=node_categories,
+        allowed_category_pairs=allowed_category_pairs,
     )
     graph = data.graph
-    layered = build_layered_layout(graph, seed)
     free_positions = build_free_layout(graph, seed)
     evidence = load_edge_evidence(analysis_dir, graph)
 
@@ -1010,33 +942,23 @@ def generate_visualizations(
     )
     _draw_graph(
         graph,
-        layered.positions,
-        output_dir / f"{network_slug}_layered",
-        title=title,
-        subtitle=subtitle,
-        minimum_weight=minimum_weight,
-        layered_layout=layered,
-        label_limit=label_limit,
-        show_edge_labels=not is_large_network,
-    )
-    _draw_graph(
-        graph,
         free_positions,
         output_dir / f"{network_slug}_free",
         title=f"{title} · Disposición libre por fuerzas",
         subtitle=subtitle,
         minimum_weight=minimum_weight,
+        category_order=data.node_categories,
         label_limit=label_limit,
         show_edge_labels=not is_large_network,
     )
 
-    layered_svg_positions = _interactive_layered_positions(layered.positions, graph)
     free_svg_positions = _normalize_for_svg(free_positions)
-    payload = _interactive_payload(
-        data, layered_svg_positions, free_svg_positions, evidence
-    )
+    payload = _interactive_payload(data, free_svg_positions, evidence)
     output_dir.mkdir(parents=True, exist_ok=True)
     write_interactive_html(output_dir / f"{network_slug}_interactive.html", payload)
+    with (output_dir / f"{network_slug}_graph.json").open("w", encoding="utf-8") as file:
+        json.dump(payload, file, ensure_ascii=False, separators=(",", ":"))
+        file.write("\n")
     return export_filtered_data(data, output_dir, evidence)
 
 
@@ -1110,7 +1032,6 @@ INTERACTIVE_HTML = r"""<!doctype html>
     .group { display: flex; gap: 7px; align-items: center; }
     button, input { font: inherit; }
     button { border: 1px solid #cbd5e1; background: white; border-radius: 7px; padding: 6px 10px; cursor: pointer; color: #334155; }
-    button.active { color: white; background: #334155; border-color: #334155; }
     button:hover { border-color: #64748b; }
     .category-filter { display: inline-flex; gap: 4px; align-items: center; padding: 3px 6px; border-radius: 6px; }
     .swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
@@ -1140,8 +1061,6 @@ INTERACTIVE_HTML = r"""<!doctype html>
     .evidence code { color: #64748b; font-size: 10px; }
     .legend-note { color: #64748b; }
     .tooltip { position: fixed; pointer-events: none; display: none; padding: 6px 8px; border-radius: 6px; color: white; background: rgba(15,23,42,.92); font-size: 12px; z-index: 20; max-width: 280px; }
-    .band-label { fill: #475569; font-size: 12px; font-weight: 700; }
-    .empty-note { fill: #94a3b8; font-size: 10px; font-style: italic; }
     @media (max-width: 900px) { main { grid-template-columns: 1fr; height: auto; } .canvas { height: 620px; } aside { border-left: 0; border-top: 1px solid #e2e8f0; } }
   </style>
 </head>
@@ -1151,7 +1070,6 @@ INTERACTIVE_HTML = r"""<!doctype html>
     <p id="subtitle"></p>
   </header>
   <div class="toolbar">
-    <div class="group"><strong>Diseño</strong><button id="layered" class="active">Capas</button><button id="free">Libre</button></div>
     <div class="group"><label><input id="labels" type="checkbox"> Mostrar etiquetas</label></div>
     <div class="group"><strong>Peso mínimo</strong><input id="weight" type="range"><span id="weight-value"></span></div>
     <div class="group" id="categories"><strong>Categorías</strong></div>
@@ -1173,7 +1091,6 @@ INTERACTIVE_HTML = r"""<!doctype html>
     const tooltip = document.getElementById('tooltip');
     const nodeById = new Map(DATA.nodes.map(node => [node.id, node]));
     const visibleCategories = new Set(DATA.categoryOrder);
-    let layout = 'layered';
     let selected = null;
     let showLabels = DATA.nodeCount <= 80;
     let viewBox = {x: 0, y: 0, w: 1200, h: 780};
@@ -1203,29 +1120,10 @@ INTERACTIVE_HTML = r"""<!doctype html>
 
     const NS = 'http://www.w3.org/2000/svg';
     const make = (tag, attrs = {}) => { const element = document.createElementNS(NS, tag); Object.entries(attrs).forEach(([key, value]) => element.setAttribute(key, value)); return element; };
-    const bands = make('g');
     const edgeGroup = make('g');
     const labelGroup = make('g');
     const nodeGroup = make('g');
-    svg.append(bands, edgeGroup, labelGroup, nodeGroup);
-
-    function drawBands() {
-      bands.replaceChildren();
-      if (layout !== 'layered') return;
-      const specs = [
-        {y: 45, h: 120, fill: '#E69F00', opacity: .075, label: 'CHAR'},
-        {y: 230, h: 300, fill: '#009E73', opacity: .045, label: 'L2 · PRAC / INFRA / GOV'},
-        {y: 610, h: 125, fill: '#56B4E9', opacity: .075, label: 'LOC'}
-      ];
-      specs.forEach(spec => {
-        bands.appendChild(make('rect', {x: 20, y: spec.y, width: 1160, height: spec.h, rx: 10, fill: spec.fill, 'fill-opacity': spec.opacity}));
-        const text = make('text', {x: 35, y: spec.y + 22, class: 'band-label'}); text.textContent = spec.label; bands.appendChild(text);
-      });
-      [['PRAC',300],['INFRA',390],['GOV',480]].forEach(([name,y]) => {
-        const text = make('text', {x: 50, y: Number(y)+4, class: 'band-label'}); text.textContent = name; bands.appendChild(text);
-      });
-      if (counts.GOV === 0) { const note = make('text', {x: 110, y: 484, class: 'empty-note'}); note.textContent = `sin nodos con peso ≥ ${DATA.minimumWeight}`; bands.appendChild(note); }
-    }
+    svg.append(edgeGroup, labelGroup, nodeGroup);
 
     function shapeFor(node) {
       const color = DATA.styles[node.category].color;
@@ -1265,10 +1163,9 @@ INTERACTIVE_HTML = r"""<!doctype html>
     });
 
     function updatePositions() {
-      drawBands();
-      nodeElements.forEach(({node,group}) => { const p=node[layout]; group.setAttribute('transform',`translate(${p.x},${p.y})`); });
+      nodeElements.forEach(({node,group}) => { const p=node.position; group.setAttribute('transform',`translate(${p.x},${p.y})`); });
       edgeElements.forEach(item => {
-        const a=nodeById.get(item.edge.source)[layout], b=nodeById.get(item.edge.target)[layout];
+        const a=nodeById.get(item.edge.source).position, b=nodeById.get(item.edge.target).position;
         [item.line,item.hit].forEach(line => { line.setAttribute('x1',a.x); line.setAttribute('y1',a.y); line.setAttribute('x2',b.x); line.setAttribute('y2',b.y); });
         item.label.setAttribute('x',(a.x+b.x)/2); item.label.setAttribute('y',(a.y+b.y)/2-5);
       });
@@ -1296,21 +1193,23 @@ INTERACTIVE_HTML = r"""<!doctype html>
     function selectNode(node, group) {
       clearSelection(); group.classList.add('selected'); selected=node.id;
       const neighbors = DATA.edges.filter(edge => edge.source===node.id || edge.target===node.id).sort((a,b)=>b.weight-a.weight).map(edge => { const other=nodeById.get(edge.source===node.id?edge.target:edge.source); return `<li><strong>${escapeHtml(other.name)}</strong> (${other.category}) · peso ${edge.weight}</li>`; }).join('');
-      details.innerHTML = `<h2>${escapeHtml(node.name)}</h2><dl class="meta"><dt>Categoría</dt><dd>${node.category}</dd><dt>Macrocapa</dt><dd>${node.layer}</dd><dt>Componente</dt><dd>${node.component}</dd><dt>Grado</dt><dd>${node.degree}</dd><dt>Fuerza</dt><dd>${node.strength}</dd><dt>Menciones</dt><dd>${node.mentionCount}</dd><dt>Oraciones</dt><dd>${node.sentenceCount}</dd></dl><h3>Vecinos en ${DATA.networkLabel}</h3><ul>${neighbors}</ul><h3>Identificador canónico</h3><p><code>${escapeHtml(node.id)}</code></p>`;
+      details.innerHTML = `<h2>${escapeHtml(node.name)}</h2><dl class="meta"><dt>Categoría</dt><dd>${node.category}</dd><dt>Componente</dt><dd>${node.component}</dd><dt>Grado</dt><dd>${node.degree}</dd><dt>Fuerza</dt><dd>${node.strength}</dd><dt>Menciones</dt><dd>${node.mentionCount}</dd><dt>Oraciones</dt><dd>${node.sentenceCount}</dd></dl><h3>Vecinos en ${DATA.networkLabel}</h3><ul>${neighbors}</ul><h3>Identificador canónico</h3><p><code>${escapeHtml(node.id)}</code></p>`;
     }
     function selectEdge(edge, group) {
       clearSelection(); group.classList.add('selected');
       const source=nodeById.get(edge.source), target=nodeById.get(edge.target);
-      const evidence=edge.evidence.map((item,index)=>`<article class="evidence"><code>${escapeHtml(item.sentence_id)}</code><p>${escapeHtml(item.context)}</p></article>`).join('');
-      details.innerHTML=`<h2>${escapeHtml(source.name)} — ${escapeHtml(target.name)}</h2><dl class="meta"><dt>Categorías</dt><dd>${source.category}–${target.category}</dd><dt>Peso</dt><dd>${edge.weight} oraciones</dd><dt>Dirección</dt><dd>No dirigida</dd></dl><h3>Evidencia textual (${edge.evidence.length})</h3>${evidence || '<p>No se encontró evidencia exportada.</p>'}`;
+      const evidence=edge.evidence.map(item=>{
+        const sentence=DATA.sentencesByKey[item.sentenceKey] || {};
+        const entities=(sentence.contextEntities || []).map(entity=>`${escapeHtml(entity.canonicalName)} <small>(${escapeHtml(entity.category)})</small>`).join(' · ');
+        return `<article class="evidence"><code>Documento: ${escapeHtml(sentence.documentId || '')}<br>Oración: ${escapeHtml(sentence.sentenceId || '')}</code><p>${escapeHtml(sentence.context || item.pairContext || '')}</p><p><strong>Entidades:</strong> ${entities || 'Sin entidades exportadas'}</p></article>`;
+      }).join('');
+      details.innerHTML=`<h2>${escapeHtml(source.name)} — ${escapeHtml(target.name)}</h2><dl class="meta"><dt>category_pair</dt><dd>${escapeHtml(edge.categoryPair)}</dd><dt>Peso</dt><dd>${edge.weight} oraciones</dd><dt>Documentos</dt><dd>${edge.documentCount}</dd><dt>Dirección</dt><dd>No dirigida</dd></dl><h3>Evidencia textual (${edge.evidence.length})</h3>${evidence || '<p>No se encontró evidencia exportada.</p>'}`;
     }
     function showTooltip(event, html) { tooltip.innerHTML=html; tooltip.style.display='block'; tooltip.style.left=`${event.clientX+12}px`; tooltip.style.top=`${event.clientY+12}px`; }
     function hideTooltip(){ tooltip.style.display='none'; }
     function setViewBox(){ svg.setAttribute('viewBox',`${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`); }
     function resetView(){ viewBox={x:0,y:0,w:1200,h:780}; setViewBox(); clearSelection(); }
 
-    document.getElementById('layered').addEventListener('click',()=>{layout='layered'; document.getElementById('layered').classList.add('active'); document.getElementById('free').classList.remove('active'); updatePositions();});
-    document.getElementById('free').addEventListener('click',()=>{layout='free'; document.getElementById('free').classList.add('active'); document.getElementById('layered').classList.remove('active'); updatePositions();});
     document.getElementById('labels').addEventListener('change', event=>{showLabels=event.target.checked; applyFilters();});
     weightInput.addEventListener('input',applyFilters);
     document.getElementById('search').addEventListener('input',applyFilters);

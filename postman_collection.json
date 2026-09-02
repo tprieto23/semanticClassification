@@ -15,6 +15,16 @@
       "key": "document_id",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "source_canonical_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "target_canonical_id",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -224,6 +234,205 @@
               ]
             },
             "description": "Listar entidades con filtros opcionales por categoría y documento"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analysis",
+      "item": [
+        {
+          "name": "POST Build Network by Filters",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"incubator_number\": 4,\n  \"language\": \"es\",\n  \"minimum_weight\": 1,\n  \"include_isolates\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/analysis/network",
+              "host": ["{{base_url}}"],
+              "path": ["analysis", "network"]
+            },
+            "description": "Construye una red plana. incubator_number y language aceptan un valor concreto o 'all'. Los filtros se combinan con AND."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Build Full Network",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/analysis/network",
+              "host": ["{{base_url}}"],
+              "path": ["analysis", "network"]
+            },
+            "description": "Sin body: construye el corpus completo con minimum_weight=1 e include_isolates=true."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Latest Network by Filters",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analysis/network/latest?incubator_number=4&language=es&minimum_weight=1&include_isolates=true",
+              "host": ["{{base_url}}"],
+              "path": ["analysis", "network", "latest"],
+              "query": [
+                {"key": "incubator_number", "value": "4"},
+                {"key": "language", "value": "es"},
+                {"key": "minimum_weight", "value": "1"},
+                {"key": "include_isolates", "value": "true"}
+              ]
+            },
+            "description": "Recupera sin recalcular la red generada para la combinación exacta de filtros y parámetros."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Build Typed PRAC INFRA GOV Projection",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"incubator_number\": \"all\",\n  \"language\": \"all\",\n  \"minimum_weight\": 1,\n  \"include_isolates\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1",
+              "host": ["{{base_url}}"],
+              "path": ["analysis", "network", "projections", "prac-infra-gov-v1"]
+            },
+            "description": "Construye la proyección tipada PRAC + INFRA + GOV y sus nueve vistas sin sobrescribir la red histórica."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Build Document Recurrent Core",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"incubator_number\": \"all\",\n  \"language\": \"es\",\n  \"construction\": {\n    \"method\": \"document-recurrent-core-v1\",\n    \"minimum_node_document_count\": 2,\n    \"edge_weighting\": \"fractional-document\",\n    \"include_minor_components\": true\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1",
+              "host": ["{{base_url}}"],
+              "path": ["analysis", "network", "projections", "prac-infra-gov-v1"]
+            },
+            "description": "Construye el núcleo de entidades recurrentes por documento, calcula pesos analíticos y exporta vistas para todos los componentes y la componente principal."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Latest Typed Projection",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1/latest?incubator_number=all&language=all&minimum_weight=1&include_isolates=true",
+              "host": ["{{base_url}}"],
+              "path": ["analysis", "network", "projections", "prac-infra-gov-v1", "latest"],
+              "query": [
+                {"key": "incubator_number", "value": "all"},
+                {"key": "language", "value": "all"},
+                {"key": "minimum_weight", "value": "1"},
+                {"key": "include_isolates", "value": "true"}
+              ]
+            },
+            "description": "Lee la proyección tipada ya generada y devuelve URLs para la evidencia y las nueve vistas."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Calculate Leiden Clusters",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"incubator_number\": \"all\",\n  \"language\": \"es\",\n  \"construction\": {\n    \"method\": \"document-recurrent-core-v1\",\n    \"minimum_node_document_count\": 2,\n    \"edge_weighting\": \"fractional-document\",\n    \"include_minor_components\": true\n  },\n  \"component_scope\": \"main-component\",\n  \"view\": \"all\",\n  \"configuration\": {\n    \"method\": \"leiden-v1\",\n    \"objective_function\": \"modularity\",\n    \"resolution\": 1.0,\n    \"seed\": 42,\n    \"iterations\": -1,\n    \"weight_attribute\": \"weight\"\n  },\n  \"force_recompute\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1/clusterings/leiden",
+              "host": ["{{base_url}}"],
+              "path": ["analysis", "network", "projections", "prac-infra-gov-v1", "clusterings", "leiden"]
+            },
+            "description": "Calcula Leiden sobre una vista ya construida, genera un GraphML para Gephi con modularity_class y exporta el resumen de comunidades."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Typed Projection Views",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1/views",
+              "host": ["{{base_url}}"],
+              "path": ["analysis", "network", "projections", "prac-infra-gov-v1", "views"]
+            },
+            "description": "Enumera la vista completa, cruzada, intratipo y las seis vistas por category_pair."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Typed Edge Evidence",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1/edges/{{source_canonical_id}}/{{target_canonical_id}}/evidence?minimum_weight=1&limit=100&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["analysis", "network", "projections", "prac-infra-gov-v1", "edges", "{{source_canonical_id}}", "{{target_canonical_id}}", "evidence"],
+              "query": [
+                {"key": "minimum_weight", "value": "1"},
+                {"key": "limit", "value": "100"},
+                {"key": "offset", "value": "0"}
+              ]
+            },
+            "description": "Recupera documentos, oraciones, contexto y entidades involucradas en una arista."
           },
           "response": []
         }
