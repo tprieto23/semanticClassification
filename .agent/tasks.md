@@ -208,13 +208,40 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - [x] Primer experimento de coocurrencia por `(document_id, sentence_id)`
 - [x] Nodos definidos por `canonical_id`; menciones repetidas en una oración cuentan una sola presencia
 - [x] Matriz de incidencia oración–nodo y adyacencia sparse simétrica
-- [x] Bloques CHAR, L2, LOC y subbloques PRAC/INFRA/GOV
+- [x] Red plana única de CHAR, LOC, PRAC, INFRA y GOV; eliminadas capas/bloques L2
 - [x] Exportaciones CSV/Matrix Market con observaciones auditables
 - [x] Visualización de G₃ (`peso >= 3`) en PNG, HTML interactivo y GraphML
 - [x] Matrices regeneradas después de aplicar resolución v2: 523 nodos y 1.216 aristas
 - [x] Visualización G₁ completa: peso mínimo 1, 523 nodos, 1.216 aristas y 28 aislados
 - [x] Visualizador: aislados preservados, etiquetas bajo demanda en HTML y top 25 en figuras estáticas
-- [ ] Evaluar normalizaciones de peso y relaciones semánticas explícitas
+- [x] Contexto de cada arista compuesto desde sus menciones, compatible con contextos distintos dentro de una oración
+- [x] Relaciones intra-categoría explícitas (incluidas CHAR–CHAR y LOC–LOC)
+- [x] `POST /analysis/network` para corpus completo o incubadora
+- [x] Body de red con `incubator_number` y `language`, ambos con valor concreto o `"all"`
+- [x] Intersección AND de incubadora/idioma y artefactos separados por combinación
+- [x] `GET /analysis/network/latest` para lectura sin recálculo
+- [x] `POST /documents/{id}/network` para inspección puntual
+- [x] Artefactos aislados por scope, umbral y opción de aislados; publicación restringida a `/files/networks`
+- [x] Exportaciones GraphML, JSON, HTML interactivo, PNG/SVG, CSV y Matrix Market
+- [x] Escritura atómica y bloqueo por destino para evitar resultados parciales/concurrentes
+- [x] Validación real: 78 documentos, 41.148 menciones, red G₁ de 16.527 nodos y 45.866 aristas
+- [x] Suite automatizada: 47 pruebas exitosas
+- [x] Proyección versionada `prac-infra-gov-v1` centrada en PRAC, INFRA y GOV
+- [x] Seis relaciones: PRAC–PRAC, PRAC–INFRA, PRAC–GOV, INFRA–INFRA, INFRA–GOV y GOV–GOV
+- [x] Nueve vistas derivadas sin recalcular la coocurrencia maestra
+- [x] Evidencia normalizada oración–entidad con CHAR/LOC contextuales preservados
+- [x] Endpoint paginado de evidencia por arista
+- [x] Validación real: 9.518 nodos, 13.196 aristas, 10.310 oraciones y 14.657 observaciones
+- [x] Suite automatizada ampliada: 57 pruebas exitosas
+- [x] Contrato `construction` discriminado y retrocompatible en la proyección tipada
+- [x] Método `document-recurrent-core-v1` por recurrencia documental de nodos
+- [x] Pesos `sentence-count`, `document-count`, `fractional` y `fractional-document`
+- [x] Auditoría de nodos/aristas excluidos y soporte contextual independiente
+- [x] Vistas all/main component × nueve vistas tipadas, con Weight analítico para Gephi
+- [x] Suite automatizada ampliada: 63 pruebas exitosas
+- [x] Ejecutar Leiden sobre el GraphML del backbone validado
+- [x] Endpoint desacoplado de Leiden con semilla, resolución, pesos y caché
+- [x] Exportación GraphML/CSV de comunidades compatible con Gephi
 
 ## Reentrada vigente — 12 Ago 2026
 

@@ -1,5 +1,8 @@
 # Plan — Endpoint de red por documento (por id)
 
+**Estado: implementado y validado el 19 Ago 2026.** La ruta de almacenamiento
+real es `s3/archivosRed/documents/{id}/w{peso}-{isolates|no-isolates}/`.
+
 ## Objetivo
 
 Igual que el endpoint de corpus, pero para **un solo documento**. Útil para

@@ -57,6 +57,68 @@ http://localhost:8000/docs
 | POST | `/documents/{id}/revert` | Revertir al estado anterior |
 | POST | `/documents/{id}/extract-entities` | Extraer entidades NER (Anthropic) |
 | POST | `/documents/{id}/fuzzy-matching` | Resolver menciones v2, registrar evidencia y asociar canónicos |
+| POST | `/documents/{id}/network` | Construir la red plana de un documento en `fuzzyMatching` |
+| POST | `/documents/{id}/network/projections/prac-infra-gov-v1` | Construir la proyección tipada por documento |
+| POST | `/analysis/network` | Construir red filtrada por incubadora e idioma desde el body |
+| GET | `/analysis/network/latest` | Leer la última red ya generada para los mismos parámetros |
+| POST | `/analysis/network/projections/prac-infra-gov-v1` | Construir la red semántica tipada y sus nueve vistas |
+| POST | `/analysis/network/projections/{projection_id}/clusterings/leiden` | Calcular comunidades Leiden sobre una vista ya construida |
+| GET | `/analysis/network/projections/prac-infra-gov-v1/latest` | Leer la última proyección sin recalcular |
+| GET | `/analysis/network/projections/prac-infra-gov-v1/views` | Enumerar vistas completa, cruzada, intratipo y por par |
+| GET | `/analysis/network/projections/prac-infra-gov-v1/edges/{source}/{target}/evidence` | Recuperar oraciones, documentos y entidades de una arista |
+
+El POST de corpus acepta este body opcional:
+
+```json
+{
+  "incubator_number": 4,
+  "language": "es",
+  "minimum_weight": 1,
+  "include_isolates": true
+}
+```
+
+`incubator_number` admite `1..8` o `"all"`; `language` admite un idioma o
+`"all"`. Los filtros se combinan con AND. Sin body se usa `all/all`, peso 1 y
+aislados incluidos. Los artefactos se sirven únicamente bajo `/files/networks/`.
+
+La proyección analítica principal se construye aparte de la red histórica de cinco
+categorías y no la sobrescribe. Incluye nodos `PRAC`, `INFRA` y `GOV` y los seis
+pares no dirigidos posibles, incluidas las relaciones intratipo. Una sola llamada
+genera las vistas `all`, `cross`, `intra`, `prac-prac`, `infra-infra`, `gov-gov`,
+`prac-infra`, `prac-gov` e `infra-gov`. La evidencia maestra se conserva en
+`sentences.csv`, `sentence_entities.csv` y `edge_observations.csv`.
+
+El mismo POST admite una construcción analítica discriminada y retrocompatible:
+
+```json
+{
+  "incubator_number": "all",
+  "language": "es",
+  "construction": {
+    "method": "document-recurrent-core-v1",
+    "minimum_node_document_count": 2,
+    "edge_weighting": "fractional-document",
+    "include_minor_components": true
+  }
+}
+```
+
+El método selecciona entidades que aparecen en el mínimo de documentos dentro del
+scope solicitado, conserva las aristas entre ellas y exporta `sentence_count`,
+`document_count`, soporte independiente, pesos fraccionales y `analysis_weight`.
+Genera las nueve vistas para todos los componentes y para la componente principal.
+Sin `construction`, el endpoint mantiene el contrato histórico por umbral W1/W2/W3.
+
+El clustering se ejecuta por separado sobre una vista GraphML existente. La
+solicitud recibe la misma selección de construcción, además de `view`,
+`component_scope` y una configuración reproducible de Leiden. La respuesta publica
+`network_clustered.graphml`, `communities.csv`, `community_members.csv` y
+`clustering_summary.json`. El GraphML conserva la red fuente y añade
+`modularity_class`, `community_id`, `community_size` y `community_color`; en Gephi
+se puede usar `modularity_class` en Appearance → Partition. La misma combinación de
+GraphML, configuración y semilla se reutiliza desde caché mientras no cambie el
+hash SHA-256 de la red fuente.
 
 ## Estados del documento
 

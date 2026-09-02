@@ -8,10 +8,12 @@ src/
 ├── api/
 │   ├── main.py                ← FastAPI + CORS + /health + exception handler + router
 │   ├── routers/
-│   │   └── documents.py       ← todos los endpoints bajo /documents
+│   │   ├── documents.py       ← endpoints bajo /documents
+│   │   └── analysis.py        ← build/latest de la red de corpus
 │   └── schemas/
 │       ├── documents.py       ← DocumentRead, DocumentListResponse, BatchProcess*
-│       └── entities.py        ← EntityOut, ExtractEntitiesResponse
+│       ├── entities.py        ← EntityOut, ExtractEntitiesResponse
+│       └── network.py         ← respuesta tipada de red, cobertura y artefactos
 data/
 ├── ner/annotations/a251048a.json  ← anotaciones históricas reservadas para evaluación futura
 └── prompts/
@@ -34,12 +36,13 @@ data/
       ├── llm_client.py          ← Cliente Anthropic compartido
       ├── ner.py                 ← Extracción few-shot (Anthropic + ejemplos curados + tool schema)
       ├── fuzzy_matching.py      ← resolución determinista de entidades v2
+      ├── network.py             ← orquestación por corpus/incubadora/documento
       └── pdf_converter.py       ← PdfConverter: PyMuPDF fast path + Docling OCR fallback
 
 src/analysis/
 ├── cooccurrence.py               ← incidencia y matrices de coocurrencia por oración
 ├── entity_resolution_audit.py    ← simulación reversible antes/después
-└── network_visualization.py      ← red G₃ estática, HTML y GraphML
+└── network_visualization.py      ← red plana estática, JSON, HTML y GraphML
 ```
 
 ## Capas
@@ -201,6 +204,138 @@ python -m src.analysis.entity_resolution_audit \
   --output-dir data/output/entity_resolution/{document_id}
 ```
 
+## Flujo Objetivo 5: Red plana de coocurrencia
+
+```
+POST /analysis/network
+POST /documents/{id}/network
+
+  → solo incluye documentos con status = 'fuzzyMatching'
+  → el POST de corpus recibe incubator_number y language en JSON
+  → cada filtro admite un valor concreto o "all"; ambos se combinan con AND
+  → consulta entities + canonical_entities sin modificar PostgreSQL
+  → nodo = canonical_id, con categoría CHAR/LOC/PRAC/INFRA/GOV
+  → arista no dirigida = dos canónicos presentes en la misma
+    (document_id, sentence_id), incluso CHAR–CHAR y LOC–LOC
+  → peso = número de oraciones distintas donde coocurre el par
+  → una sola red: no hay layers, macrocapa L2 ni bloques separados
+  → el contexto de evidencia se compone a partir de las menciones del par
+  → exportación atómica por incubadora + idioma + minimum_weight + include_isolates
+  → archivos CSV, Matrix Market, GraphML, JSON, PNG/SVG y HTML interactivo
+  → respuesta con cobertura, conteos, 15 pares de categorías, top nodos y URLs
+
+GET /analysis/network/latest
+  → recibe incubadora/idioma como query params y lee la combinación exacta
+  → no recalcula la red
+```
+
+El layout usa fuerzas para componentes pequeños y una disposición determinista
+lineal para componentes de más de 500 nodos. Así la configuración predeterminada
+del corpus completo sigue siendo operable con miles de nodos.
+
+## Proyección analítica tipada PRAC + INFRA + GOV
+
+La red histórica de cinco categorías continúa disponible. La proyección analítica
+principal se registra por separado como `prac-infra-gov-v1`:
+
+```
+entities + canonical_entities
+  → agrupar todas las menciones por (document_id, sentence_id)
+  → conservar todas las entidades de la oración como evidencia contextual
+  → proyectar únicamente nodos PRAC, INFRA y GOV
+  → permitir los seis category_pair, incluidas relaciones intratipo
+  → exportar una evidencia maestra W1
+  → derivar nueve vistas sin recalcular la coocurrencia
+```
+
+Los artefactos se separan de los históricos:
+
+```
+s3/archivosRed/<scope>/projections/prac-infra-gov-v1/w{peso}-{isolates}/
+├── evidence/
+│   ├── nodes.csv
+│   ├── edges.csv
+│   ├── sentences.csv
+│   ├── sentence_entities.csv
+│   └── edge_observations.csv
+├── views/
+│   ├── all/
+│   ├── cross/
+│   ├── intra/
+│   └── <seis vistas individuales>/
+├── projection_manifest.json
+└── api_response.json
+```
+
+`CHAR` y `LOC` no son nodos de esta proyección. Permanecen en
+`sentence_entities.csv` con `is_projected=false`, lo que permite asociarlos más
+adelante con clusters sin introducirlos en la topología inicial. El endpoint de
+evidencia reconstruye cada arista desde `document_id`, `sentence_id`, `context`,
+entidades proyectadas y todas las entidades contextuales.
+
+### Construcción analítica parametrizada
+
+El POST de la proyección acepta opcionalmente un objeto `construction` discriminado
+por `method`. `document-recurrent-core-v1` siempre vuelve a producir la evidencia W1
+del scope y después deriva una red analítica sin modificar PostgreSQL:
+
+```
+evidencia W1
+  → nodo elegible si node.document_count >= minimum_node_document_count
+  → arista incluida si ambos extremos son elegibles
+  → métricas: sentence_count, document_count, independent_support_count
+  → fractional_weight = Σ 1/(N_s - 1)
+  → fractional_document_weight = Σ_doc min(1, Σ contribuciones)
+  → Weight de GraphML = analysis_weight seleccionado
+  → nueve vistas para all-components y main-component
+```
+
+Las salidas viven bajo una ruta determinista que codifica todos los parámetros:
+
+```
+<scope>/projections/<projection>/constructions/<method>/
+  node-documents-<n>/edge-weight-<weighting>/<component-mode>/
+├── evidence/                 # evidencia W1 completa
+├── backbone/                 # incluidos y auditoría de exclusiones
+├── views/all-components/     # nueve vistas
+├── views/main-component/     # nueve vistas
+├── construction_manifest.json
+└── api_response.json
+```
+
+Sin `construction` se conserva el contrato W1/W2/W3 anterior. La construcción no
+ejecuta Leiden; deja el GraphML preparado para esa fase posterior.
+
+### Clustering Leiden desacoplado
+
+`POST /analysis/network/projections/{projection_id}/clusterings/leiden` recibe la
+misma selección de construcción, además de una vista, un alcance de componentes y
+una configuración reproducible. Resuelve internamente el GraphML versionado; el
+cliente nunca envía rutas de filesystem.
+
+```
+GraphML existente
+  → hash SHA-256 de la fuente
+  → conversión estable a igraph
+  → Leiden ponderado (seed + resolution + iterations)
+  → IDs estables por tamaño/nombre
+  → GraphML derivado + CSV de comunidades/miembros + resumen JSON
+```
+
+El artefacto fuente no se modifica. El GraphML derivado conserva `weight` y añade
+`modularity_class` entero para la partición de Gephi, además de `community_id`,
+`community_size` y `community_color`. Los identificadores son estables únicamente
+dentro de la partición exacta; no deben compararse entre filtros o resoluciones.
+La ruta de salida codifica objetivo, resolución, semilla, iteraciones y atributo de
+peso. Si la fuente y la configuración coinciden, el POST devuelve el resultado
+existente con `cached=true`; `force_recompute=true` permite regenerarlo.
+
+La configuración `objective_function=modularity` usa la partición generalizada de
+modularidad con parámetro de resolución; `cpm` queda disponible para análisis de
+sensibilidad. Las comunidades resultantes no se presentan automáticamente como
+configuraciones semánticas: la validación de tamaño, evidencia y composición sigue
+siendo una fase posterior.
+
 ## Flujo Revertir
 
 ```
@@ -225,7 +360,8 @@ s3/
 ├── archivosCrudos/           ← upload (POST /documents)
 ├── archivosConvertidos/      ← conversión (POST /documents/{id}/process)
 ├── archivosLimpiados/        ← limpieza (POST /documents/{id}/clean)
-└── archivosNER/              ← extracción NER (POST /documents/{id}/extract-entities)
+├── archivosNER/              ← extracción NER (POST /documents/{id}/extract-entities)
+└── archivosRed/              ← artefactos derivados, separados por scope/parámetros
 ```
 
 ## Endpoints activos
@@ -244,4 +380,9 @@ s3/
 | POST | `/documents/{id}/revert` | Revertir al estado anterior |
 | POST | `/documents/{id}/extract-entities` | Extraer entidades NER (Anthropic LLM) |
 | POST | `/documents/{id}/fuzzy-matching` | Normalizar y persistir menciones con canonical_id |
+| POST | `/documents/{id}/network` | Construir red plana por documento |
+| POST | `/analysis/network` | Construir red de corpus/incubadora |
+| GET | `/analysis/network/latest` | Leer resumen/URLs sin recalcular |
+| POST | `/analysis/network/projections/{projection_id}` | Construir proyección tipada o construcción analítica parametrizada |
+| GET | `/files/networks/{path}` | Servir solo artefactos de red |
 | GET | `/health` | Health check |

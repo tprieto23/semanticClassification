@@ -1,5 +1,9 @@
 # Plan — Endpoint de red de coocurrencia (corpus completo)
 
+**Estado: implementado y validado el 19 Ago 2026.** Los artefactos se guardan
+por variante (`corpus/w{peso}-{isolates|no-isolates}`) y se publican desde el
+mount restringido `/files/networks`, no desde todo `s3/`.
+
 ## Objetivo
 
 Exponer como endpoint HTTP la generación del grafo de coocurrencia de **todo el
@@ -24,43 +28,50 @@ por una sola llamada.
 POST /analysis/network
 ```
 
-Query params opcionales:
+Body JSON opcional:
 - `minimum_weight: int = 1` — filtra aristas por peso en la exportación (g1, g3, …).
 - `include_isolates: bool = true` — incluye nodos sin aristas que alcancen el umbral.
-- `incubator_number: int | None` (1..8) — opcional; grafo de una sola incubadora.
+- `incubator_number: 1..8 | "all" = "all"` — una incubadora o todas.
+- `language: str | "all" = "all"` — un idioma o todos.
+
+Incubadora e idioma se combinan con AND. Sin body se conserva el corpus completo.
 
 ## Flujo
 
 1. **Reunir menciones.** Nueva consulta que trae **todas** las menciones de
    documentos con `status = 'fuzzyMatching'` (join `entities` → `canonical_entities`),
-   opcionalmente filtradas por `incubator_number`.
+   opcionalmente filtradas por `incubator_number` y `language`.
 2. **Cobertura.** Contar documentos incluidos vs total del corpus.
-3. `build_sentence_cooccurrence(menciones)` — **sin cambios**, ya soporta N documentos.
+3. `build_sentence_cooccurrence(menciones)` — soporta N documentos y compone el
+   contexto específico de cada par cuando las menciones de una oración difieren.
 4. **Exportar artefactos (versión plana):** `nodes.csv`, `edges.csv`,
    `sentences.csv`, `edge_observations.csv`, `category_pair_summary.csv`,
    `cooccurrence_adjacency.mtx`, `sentence_node_incidence.mtx`, `summary.json`.
    → **sin** carpeta `blocks/` (decomposición L2 eliminada).
 5. **Visualizar (solo layout libre):** `g{w}.graphml`, `g{w}_free.png/svg`,
    `g{w}_interactive.html`, `g{w}_nodes.csv`, `g{w}_edges.csv`, `g{w}_summary.json`.
-6. **Guardar** en `s3/archivosRed/corpus/` (o carpeta fechada si se quiere historial).
+6. **Guardar** en una ruta distinta por incubadora, idioma, peso y aislados.
    Devolver el resumen.
 
 ## Respuesta HTTP (schema `NetworkBuildResponse`)
 
 ```
 generated_at
-scope: "corpus" | "incubator:{n}"
+scope: "corpus" | "incubator:{n}" | "language:{lang}" |
+       "incubator:{n},language:{lang}"
+filters: { incubator_number: 1..8 | "all", language: str | "all" }
 coverage: { documents_included, documents_total, excluded_by_status }
 counts:   { canonical_nodes, sentences, undirected_edges, max_edge_weight }
 nodes_by_category: { CHAR, LOC, PRAC, INFRA, GOV }
 category_pair_summary: [ 15 combinaciones con observed_edges, density,
-                         total_cooccurrences, mean_weight, max_weight ]   ← LAS CORRELACIONES
+                         total_cooccurrences, mean_weight, max_weight ]
 top_nodes_by_strength: [ { canonical_name, category, degree, strength } ]
 outputs: { graphml, interactive_html, free_png, nodes_csv, edges_csv, summary_json }
 ```
 
 `category_pair_summary` es la respuesta directa a la pregunta de investigación
-("¿qué categorías se asocian con qué?"). Ya lo calcula `_category_pair_rows`.
+("¿qué categorías se asocian con qué?"). Es asociación por coocurrencia, no
+correlación estadística. Ya lo calcula `category_pair_rows`.
 
 ## Cambios de código
 
@@ -108,18 +119,19 @@ artefactos tengan **URLs abribles en el navegador** (efecto "S3 real"), se monta
 como estáticos y se agrega un endpoint de lectura que devuelve esas URLs. Esto
 concreta el patrón **generar antes / leer durante** (ideal para demos).
 
-### 1. Montar `s3/` como estático
+### 1. Montar únicamente los artefactos de red como estáticos
 
 En `src/api/main.py`:
 
 ```python
 from fastapi.staticfiles import StaticFiles
+from src.config import settings
 
-app.mount("/files", StaticFiles(directory="s3"), name="files")
+app.mount("/files/networks", StaticFiles(directory=settings.STORAGE_NETWORK), name="network-files")
 ```
 
-Con esto, `s3/archivosRed/corpus/g1.graphml` se sirve en
-`http://<host>/files/archivosRed/corpus/g1.graphml`. Según el tipo, el navegador:
+Con esto, `s3/archivosRed/corpus/w1-isolates/g1.graphml` se sirve en
+`http://<host>/files/networks/corpus/w1-isolates/g1.graphml`. Según el tipo, el navegador:
 
 | Archivo | Comportamiento |
 |---|---|
@@ -131,10 +143,11 @@ Con esto, `s3/archivosRed/corpus/g1.graphml` se sirve en
 ### 2. Endpoint de lectura (instantáneo, no recalcula)
 
 ```
-GET /analysis/network/latest        (opcional: ?incubator_number=N)
+GET /analysis/network/latest
+    ?incubator_number=4&language=es&minimum_weight=1&include_isolates=true
 ```
 
-Lee el `summary.json` ya generado en disco y devuelve el resumen + las **URLs**
+Lee el `api_response.json` ya generado en disco y devuelve el resumen + las **URLs**
 (no rutas de disco). Respuesta instantánea; no dispara ningún build.
 
 ```python
@@ -143,8 +156,8 @@ from fastapi import Request
 @router.get("/analysis/network/latest")
 def latest(request: Request):
     base = str(request.base_url).rstrip("/")            # http://localhost:8000
-    prefix = f"{base}/files/archivosRed/corpus"
-    # leer s3/archivosRed/corpus/summary.json y mapear cada output a su URL
+    prefix = f"{base}/files/networks/corpus/w1-isolates"
+    # leer api_response.json para la variante pedida y mapear sus outputs a URLs
     return { "coverage": ..., "category_pair_summary": ..., "outputs": {
         "graphml":          f"{prefix}/g1.graphml",
         "interactive_html": f"{prefix}/g1_interactive.html",
@@ -159,7 +172,7 @@ host/puerto.
 ### Flujo de demo resultante
 
 ```
-(antes)   POST /analysis/network        → hornea archivos en s3/archivosRed/corpus/
+(antes)   POST /analysis/network        → hornea la variante en s3/archivosRed/corpus/
 (en vivo) GET  /analysis/network/latest → resumen + URLs (instantáneo)
 (clic)    URL del .html                 → explorador renderizado en el navegador
 (clic)    URL del .graphml              → Gephi
