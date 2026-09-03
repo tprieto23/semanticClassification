@@ -27,6 +27,7 @@ class FuzzyMatchingPreparationTests(unittest.TestCase):
         self.document_id = "9b17bd36-b502-497f-8e9d-412c480f0424"
 
     @patch("src.services.documents.EntityRepo.reemplazar_entidades")
+    @patch("src.services.documents.SentenceRepo.reemplazar_por_documento")
     @patch("src.services.documents.asociar_entidades_canonicas")
     @patch("src.services.documents.Storage.leer")
     @patch("src.services.documents.DocumentRepo.leer_uno")
@@ -35,6 +36,7 @@ class FuzzyMatchingPreparationTests(unittest.TestCase):
         leer_uno: Mock,
         leer: Mock,
         asociar: Mock,
+        reemplazar_oraciones: Mock,
         reemplazar: Mock,
     ) -> None:
         doc = SimpleNamespace(
@@ -49,7 +51,7 @@ class FuzzyMatchingPreparationTests(unittest.TestCase):
                 "start": 10,
                 "end": 23,
                 "sentence_id": "s-000000010",
-                "context": None,
+                "context": "La región Madre de Dios es amazónica.",
                 "ambiguity": "low",
             }
         ]
@@ -68,9 +70,31 @@ class FuzzyMatchingPreparationTests(unittest.TestCase):
         self.assertEqual(result, matched_entities)
         leer.assert_called_once_with(doc.ner_path)
         asociar.assert_called_once_with(self.db, entities, document_id=doc.id)
+        reemplazar_oraciones.assert_called_once_with(
+            self.db,
+            doc.id,
+            [{"sentence_id": "s-000000010", "text": entities[0]["context"]}],
+        )
         reemplazar.assert_called_once_with(self.db, doc.id, matched_entities)
         self.assertEqual(doc.status, "fuzzyMatching")
         self.db.commit.assert_called_once_with()
+
+    def test_sentence_extraction_uses_sentence_id_as_the_unique_key(self) -> None:
+        sentences = DocumentService._extraer_oraciones_de_entidades(
+            [
+                {"sentence_id": "s-1", "context": "Primer contexto"},
+                {"sentence_id": "s-1", "context": "Contexto alternativo"},
+                {"sentence_id": "s-2", "context": "Segundo contexto"},
+            ]
+        )
+
+        self.assertEqual(
+            sentences,
+            [
+                {"sentence_id": "s-1", "text": "Primer contexto"},
+                {"sentence_id": "s-2", "text": "Segundo contexto"},
+            ],
+        )
 
     @patch("src.services.documents.DocumentRepo.leer_uno")
     def test_requires_ner_status(self, leer_uno: Mock) -> None:

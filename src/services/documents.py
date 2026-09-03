@@ -11,6 +11,7 @@ from src.models.database import get_db  # noqa: F401 — pasamanos para api
 from src.models.documents import Document
 from src.models.documents_repo import DocumentRepo
 from src.models.entities_repo import EntityRepo
+from src.models.sentences_repo import SentenceRepo
 from src.models.storage import Storage
 from src.services.cleaning import CleaningService
 from src.services.fuzzy_matching import (
@@ -316,6 +317,30 @@ class DocumentService:
         return {"processed": processed, "errors": errors}
 
     @staticmethod
+    def _extraer_oraciones_de_entidades(
+        entidades: list[dict],
+    ) -> list[dict[str, object]]:
+        """Devuelve oraciones únicas a partir del contexto de las menciones NER."""
+        vistas: set[str] = set()
+        oraciones: list[dict[str, object]] = []
+        for ent in entidades:
+            sentence_id = ent.get("sentence_id")
+            context = ent.get("context")
+            if not sentence_id or not context:
+                continue
+            clave = str(sentence_id)
+            if clave in vistas:
+                continue
+            vistas.add(clave)
+            oraciones.append(
+                {
+                    "sentence_id": sentence_id,
+                    "text": context,
+                }
+            )
+        return oraciones
+
+    @staticmethod
     def preparar_fuzzy_matching(db: Session, document_id: str) -> list[dict]:
         doc = DocumentRepo.leer_uno(db, document_id)
         if doc is None:
@@ -354,6 +379,10 @@ class DocumentService:
             entidades, estadisticas = asociar_entidades_canonicas(
                 db, resultado["entities"], document_id=doc.id
             )
+            oraciones = DocumentService._extraer_oraciones_de_entidades(
+                resultado["entities"]
+            )
+            SentenceRepo.reemplazar_por_documento(db, doc.id, oraciones)
             EntityRepo.reemplazar_entidades(db, doc.id, entidades)
             doc.status = "fuzzyMatching"
             db.commit()
@@ -385,6 +414,8 @@ class DocumentService:
             raise DocumentoNoEncontrado(document_id)
 
         if doc.status == "fuzzyMatching":
+            SentenceRepo.eliminar_por_documento(db, doc.id)
+            EntityRepo.eliminar_por_documento(db, doc.id)
             DocumentRepo.actualizar_status(db, doc, "ner")
         elif doc.status == "ner":
             EntityRepo.eliminar_por_documento(db, doc.id)

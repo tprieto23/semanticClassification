@@ -12,6 +12,7 @@ import src.models.canonical_entities  # noqa: F401 — registra el modelo en Bas
 import src.models.canonical_entity_aliases  # noqa: F401 — registra aliases
 import src.models.documents  # noqa: F401 — registra el modelo en Base.metadata
 import src.models.entities  # noqa: F401 — registra Entity en Base.metadata
+import src.models.sentences  # noqa: F401 — registra Sentence en Base.metadata
 from src.config import settings
 from src.models.database import Base
 
