@@ -29,6 +29,8 @@ data/
 │   ├── canonical_entity_aliases_repo.py ← consulta y registro idempotente de alias
 │   ├── entities.py                ← mención + identidad + trazabilidad de resolución
 │   ├── entities_repo.py           ← eliminar_por_documento, reemplazar_entidades
+│   ├── sentences.py               ← ORM Sentence (evidencia oración–entidad)
+│   ├── sentences_repo.py          ← reemplazo/elimina oraciones por documento
 │   └── storage.py                 ← guardar, leer, eliminar, preparar_nombre
  └── services/
       ├── cleaning.py            ← CleaningService: structuralCleaning(regex) + linguisticCleaning(Anthropic)
@@ -40,8 +42,12 @@ data/
       └── pdf_converter.py       ← PdfConverter: PyMuPDF fast path + Docling OCR fallback
 
 src/analysis/
+├── backbone.py                   ← construcción de backbone analítico y exportación canónica
 ├── cooccurrence.py               ← incidencia y matrices de coocurrencia por oración
 ├── entity_resolution_audit.py    ← simulación reversible antes/después
+├── graph_export.py               ← exportación mínima GraphML + CSV + metadata JSON
+├── graph_paths.py                ← rutas y nombres estables de artefactos en s3/graphs/
+├── leiden.py                     ← clustering reproducible con atributos para Gephi
 └── network_visualization.py      ← red plana estática, JSON, HTML y GraphML
 ```
 
@@ -244,34 +250,30 @@ entities + canonical_entities
   → conservar todas las entidades de la oración como evidencia contextual
   → proyectar únicamente nodos PRAC, INFRA y GOV
   → permitir los seis category_pair, incluidas relaciones intratipo
-  → exportar una evidencia maestra W1
-  → derivar nueve vistas sin recalcular la coocurrencia
+  → calcular las nueve vistas como resúmenes en memoria
+  → publicar únicamente la vista canónica main-component/all
 ```
 
-Los artefactos se separan de los históricos:
+La publicación oficial se organiza primero por formato y luego por alcance:
 
 ```
-s3/archivosRed/<scope>/projections/prac-infra-gov-v1/w{peso}-{isolates}/
-├── evidence/
-│   ├── nodes.csv
-│   ├── edges.csv
-│   ├── sentences.csv
-│   ├── sentence_entities.csv
-│   └── edge_observations.csv
-├── views/
-│   ├── all/
-│   ├── cross/
-│   ├── intra/
-│   └── <seis vistas individuales>/
-├── projection_manifest.json
-└── api_response.json
+s3/graphs/
+├── graphml/<scope>/{main_network,backbone_<projection>,leiden_<projection>}.graphml
+├── json/<scope>/{main_network,backbone_<projection>,leiden_<projection>}.json
+└── csv/<scope>/
+    ├── {main_network,backbone_<projection>}_{nodes,edges}.csv
+    └── leiden_<projection>_{communities,members}.csv
 ```
 
-`CHAR` y `LOC` no son nodos de esta proyección. Permanecen en
-`sentence_entities.csv` con `is_projected=false`, lo que permite asociarlos más
-adelante con clusters sin introducirlos en la topología inicial. El endpoint de
-evidencia reconstruye cada arista desde `document_id`, `sentence_id`, `context`,
-entidades proyectadas y todas las entidades contextuales.
+`<scope>` es `corpus/{language|all}`, `incubators/{number}/{language|all}` o
+`documents/{document_id}`. Los nombres son estables y cada ejecución reemplaza
+atómicamente los archivos oficiales. Los parámetros exactos quedan en el JSON.
+
+`CHAR` y `LOC` no son nodos de esta proyección, pero siguen disponibles en
+PostgreSQL. La tabla `sentences` almacena el texto normalizado de cada oración;
+las entidades proyectadas y contextuales se consultan en `entities`. El endpoint
+de evidencia combina ambas fuentes bajo demanda para reconstruir la arista, sus
+oraciones y entidades contextuales.
 
 ### Construcción analítica parametrizada
 
@@ -287,31 +289,29 @@ evidencia W1
   → fractional_weight = Σ 1/(N_s - 1)
   → fractional_document_weight = Σ_doc min(1, Σ contribuciones)
   → Weight de GraphML = analysis_weight seleccionado
-  → nueve vistas para all-components y main-component
+  → resúmenes de nueve vistas para all-components y main-component
+  → GraphML canónico de main-component/all
 ```
 
-Las salidas viven bajo una ruta determinista que codifica todos los parámetros:
+La configuración completa se registra en el JSON, pero no se codifica en carpetas.
+La construcción publica únicamente:
 
 ```
-<scope>/projections/<projection>/constructions/<method>/
-  node-documents-<n>/edge-weight-<weighting>/<component-mode>/
-├── evidence/                 # evidencia W1 completa
-├── backbone/                 # incluidos y auditoría de exclusiones
-├── views/all-components/     # nueve vistas
-├── views/main-component/     # nueve vistas
-├── construction_manifest.json
-└── api_response.json
+graphml/<scope>/backbone_<projection>.graphml
+json/<scope>/backbone_<projection>.json
+csv/<scope>/backbone_<projection>_nodes.csv
+csv/<scope>/backbone_<projection>_edges.csv
 ```
 
-Sin `construction` se conserva el contrato W1/W2/W3 anterior. La construcción no
-ejecuta Leiden; deja el GraphML preparado para esa fase posterior.
+Sin `construction`, la proyección usa los mismos nombres oficiales y registra el
+método `raw-threshold-v1` en sus metadatos. La construcción no ejecuta Leiden.
 
 ### Clustering Leiden desacoplado
 
 `POST /analysis/network/projections/{projection_id}/clusterings/leiden` recibe la
-misma selección de construcción, además de una vista, un alcance de componentes y
-una configuración reproducible. Resuelve internamente el GraphML versionado; el
-cliente nunca envía rutas de filesystem.
+misma selección de construcción y una configuración reproducible. La publicación
+simplificada acepta la vista canónica `main-component/all`; el cliente nunca envía
+rutas de filesystem.
 
 ```
 GraphML existente
@@ -326,9 +326,9 @@ El artefacto fuente no se modifica. El GraphML derivado conserva `weight` y aña
 `modularity_class` entero para la partición de Gephi, además de `community_id`,
 `community_size` y `community_color`. Los identificadores son estables únicamente
 dentro de la partición exacta; no deben compararse entre filtros o resoluciones.
-La ruta de salida codifica objetivo, resolución, semilla, iteraciones y atributo de
-peso. Si la fuente y la configuración coinciden, el POST devuelve el resultado
-existente con `cached=true`; `force_recompute=true` permite regenerarlo.
+El JSON registra objetivo, resolución, semilla, iteraciones y atributo de peso. Si
+la fuente y la configuración coinciden, el POST devuelve el resultado existente
+con `cached=true`; otra configuración reemplaza atómicamente los nombres oficiales.
 
 La configuración `objective_function=modularity` usa la partición generalizada de
 modularidad con parámetro de resolución; `cpm` queda disponible para análisis de
@@ -361,7 +361,7 @@ s3/
 ├── archivosConvertidos/      ← conversión (POST /documents/{id}/process)
 ├── archivosLimpiados/        ← limpieza (POST /documents/{id}/clean)
 ├── archivosNER/              ← extracción NER (POST /documents/{id}/extract-entities)
-└── archivosRed/              ← artefactos derivados, separados por scope/parámetros
+└── graphs/                   ← GraphML, JSON y CSV oficiales por formato y scope
 ```
 
 ## Endpoints activos
@@ -384,5 +384,5 @@ s3/
 | POST | `/analysis/network` | Construir red de corpus/incubadora |
 | GET | `/analysis/network/latest` | Leer resumen/URLs sin recalcular |
 | POST | `/analysis/network/projections/{projection_id}` | Construir proyección tipada o construcción analítica parametrizada |
-| GET | `/files/networks/{path}` | Servir solo artefactos de red |
+| GET | `/files/graphs/{path}` | Servir solo artefactos oficiales de grafos |
 | GET | `/health` | Health check |

@@ -6,7 +6,7 @@ Este documento resume el estado metodológico y técnico del proyecto de clasifi
 
 El proyecto transforma documentos de los incubadores en una base de entidades canónicas y redes semánticas auditables. La unidad de evidencia es la oración: las relaciones entre entidades se derivan de su coocurrencia dentro de `(document_id, sentence_id)` y deben poder rastrearse hasta el documento, la oración, el contexto y las entidades originales.
 
-La fase actual es la preparación de una red tipada centrada en `PRAC`, `INFRA` y `GOV`, con una construcción parametrizable de recurrencia documental. Ya existe una construcción española generada y auditada. Todavía no se han ejecutado Leiden, la validación sistemática de clusters ni la meta-red de clusters.
+La fase actual es la validación de comunidades Leiden sobre una red tipada centrada en `PRAC`, `INFRA` y `GOV`. Ya existe una construcción española generada y auditada, y Leiden está implementado y ejecutado sobre su componente principal. La validación sistemática de clusters, la asociación de `CHAR`/`LOC` y la meta-red siguen pendientes.
 
 ## 2. Arquitectura general
 
@@ -24,7 +24,7 @@ documentos
   -> evidencia entidad–oración
   -> proyecciones de coocurrencia
   -> backbone/configuración
-  -> Leiden y clusters semánticos (pendiente)
+  -> Leiden y clusters semánticos
   -> asociación de CHAR/LOC y meta-red (pendiente)
 ```
 
@@ -93,60 +93,75 @@ También se mantiene la construcción compatible `raw-threshold-v1`. La construc
 - niveles `transversal`, `recurrent-local` y `exploratory`;
 - selección de `analysis_weight` para el atributo GraphML estándar `weight`.
 
-`include_minor_components` define el alcance primario de la respuesta. Siempre se generan las vistas de todos los componentes y del componente principal, sin modificar destructivamente W1.
+Las métricas de todas las vistas continúan en la respuesta, pero la publicación
+oficial usa una única vista canónica: `main-component/all`.
 
-## 7. Construcción española ya generada
+## 7. Almacenamiento oficial de grafos
 
-Ruta raíz:
+La raíz vigente es `s3/graphs/`, dividida en `graphml/`, `json/` y `csv/`.
+Cada formato repite la misma jerarquía de alcance:
 
-`s3/archivosRed/corpus/language-es/projections/prac-infra-gov-v1/constructions/document-recurrent-core-v1/node-documents-2/edge-weight-fractional-document/with-minor-components/`
+```text
+corpus/{es|en|all}/
+incubators/{number}/{es|en|all}/
+documents/{document_id}/
+```
 
-La evidencia base de W1 contiene 6.465 nodos canónicos maestros, 7.364 oraciones y 8.781 aristas undirected. Tras aplicar `document_count >= 2`:
+Los nombres oficiales son `main_network`, `backbone_<projection_id>` y
+`leiden_<projection_id>`. Los parámetros viven en el JSON de metadatos. Los CSV
+de red usan los sufijos `_nodes` y `_edges`; los de Leiden, `_communities` y
+`_members`.
 
-- 1.068 nodos son elegibles;
-- el backbone analítico de todos los componentes tiene 840 nodos, 2.205 aristas y 47 componentes;
-- el componente principal tiene 732 nodos, 2.121 aristas y un componente;
-- los seis `category_pair` están presentes;
-- en todos los GraphML auditados `weight == fractional_document_weight` y `fractional_document_weight <= fractional_weight`.
+Cada ejecución reemplaza atómicamente el nombre estable. Ya no se publican PNG,
+SVG, HTML, Matrix Market, JSON completos del grafo, manifiestos duplicados,
+vistas materializadas ni CSV de evidencia. La evidencia se consulta directamente
+en PostgreSQL.
 
-La construcción exporta `evidence/`, `backbone/`, 9 vistas de todos los componentes, 9 vistas del componente principal, `construction_manifest.json` y `api_response.json`. Cada vista contiene `network.graphml`, `nodes.csv`, `edges.csv` y `summary.json`.
-
-GraphML principal:
-
-- [todos los componentes](../s3/archivosRed/corpus/language-es/projections/prac-infra-gov-v1/constructions/document-recurrent-core-v1/node-documents-2/edge-weight-fractional-document/with-minor-components/views/all-components/all/network.graphml)
-- [componente principal](../s3/archivosRed/corpus/language-es/projections/prac-infra-gov-v1/constructions/document-recurrent-core-v1/node-documents-2/edge-weight-fractional-document/with-minor-components/views/main-component/all/network.graphml)
+`s3/archivosRed/` conserva los artefactos históricos y no se elimina hasta
+validar las nuevas ejecuciones; no es la ubicación usada por el código vigente.
 
 ## 8. Estado de implementación y calidad
 
 Implementado en código:
 
-- `src/analysis/backbone.py`;
+- `src/analysis/backbone.py` — construcción de backbones analíticos;
+- `src/analysis/graph_export.py` — exportación mínima GraphML + CSV + JSON;
+- `src/analysis/graph_paths.py` — rutas y nombres estables de `s3/graphs/`;
+- `src/analysis/leiden.py` — clustering reproducible con atributos para Gephi;
 - esquemas de red en `src/api/schemas/network.py`;
 - integración de servicio en `src/services/network.py`;
 - rutas en `src/api/routers/analysis.py`;
-- pruebas unitarias en `tests/test_backbone.py` y `tests/test_network_service.py`;
+- tabla `sentences` en `src/models/sentences.py` y `src/models/sentences_repo.py`;
+- persistencia de oraciones durante fuzzy matching en `src/services/documents.py`;
+- migración `d7e8f9a0b1c2_add_sentences_table.py`;
+- pruebas en `tests/test_backbone.py`, `tests/test_leiden.py`,
+  `tests/test_network_service.py`, `tests/test_graph_paths.py`,
+  `tests/test_sentences_repo.py` y `tests/test_network_visualization.py`;
 - ejemplo del contrato en `postman_collection.json`.
 
-La suite actual tiene 63 pruebas y todas pasan. También pasan `git diff --check` y el chequeo de formato Black sobre los archivos modificados. La construcción real española respondió HTTP 200 y su respuesta fue validada con el esquema Pydantic correspondiente; los conteos GraphML/CSV/manifiestos fueron contrastados entre sí.
+La suite contiene 81 pruebas: 79 pasan localmente y 2 se omiten porque este entorno
+no tiene instalados `igraph` y `leidenalg` (ambos ya están en `requirements.txt`).
+La generación bajo `s3/graphs/` está implementada y validada por tests; la
+ejecución real sobre el corpus completo queda pendiente antes de retirar el
+almacenamiento histórico.
 
 ## 9. Próximos pasos técnicos
 
-1. Elegir y documentar la implementación de Leiden, fijando semilla, parámetro de resolución y criterio de reproducibilidad.
-2. Ejecutar Leiden sobre la vista principal y comparar sensibilidades de resolución, peso y alcance de componentes.
-3. Validar clusters con evidencia: tamaño mínimo, número de aristas, oraciones y documentos de soporte, concentración documental y lectura de contextos.
-4. Clasificar configuraciones como tri-tipo, bi-tipo o intratipo sin confundirlas con clusters pequeños o fragmentos.
-5. Asociar `CHAR` y `LOC` a cada configuración usando las oraciones únicas que soportan sus nodos, con conteos y enriquecimiento frente al corpus.
-6. Diseñar la meta-red de clusters únicamente después de validar que los clusters semánticos son estables y trazables.
-7. Añadir, si procede, endpoints o artefactos específicos para ejecutar y consultar Leiden, validación y asociaciones sin romper el contrato existente.
+1. Comparar sensibilidades de resolución, peso y alcance de componentes en Leiden.
+2. Validar clusters con evidencia: tamaño mínimo, aristas, oraciones, documentos, concentración documental y lectura de contextos.
+3. Clasificar configuraciones como tri-tipo, bi-tipo o intratipo.
+4. Asociar `CHAR` y `LOC` a cada configuración usando las oraciones únicas que soportan sus nodos.
+5. Diseñar la meta-red únicamente después de validar clusters estables y trazables.
 
-No se debe presentar Leiden, la meta-red ni la validación de clusters como funcionalidades ya terminadas.
+Leiden está implementado; la validación metodológica de clusters y la meta-red aún no están terminadas.
 
 ## 10. Referencias de trabajo
 
-- Arquitectura: `.agent/architecture.md`
-- Tareas: `.agent/tasks.md`
+- Arquitectura: `.agent/context/architecture.md`
+- Tareas: `.agent/context/tasks.md`
+- Deuda técnica: `.agent/tech-debt.md`
 - Sesiones: `.agent/sessions/`
-- Artefactos de redes: `s3/archivosRed/corpus/`
+- Artefactos oficiales de grafos: `s3/graphs/`
 - Código de servicios: `src/services/network.py`
 - Router: `src/api/routers/analysis.py`
 - Esquemas: `src/api/schemas/network.py`

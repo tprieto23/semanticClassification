@@ -81,7 +81,7 @@
 
 ### 6. Actualización de documentación
 
-**Archivos:** `.agent/tasks.md` y `.agent/README.md`
+**Archivos:** `.agent/context/tasks.md` y `.agent/README.md`
 - Documentados todos los cambios en la sección "Objetivo 2"
 - Actualizado stack y dependencias del sistema
 

@@ -1,47 +1,32 @@
 # Semantic Classification
 
-<!-- Breve descripción del proyecto -->
+API de clasificación semántica para documentos no estructurados y análisis de
+redes semánticas auditables.
 
-## 🤖 Información para Agentes
+## Para agentes
 
-**Toda la documentación del proyecto está en `.agent/`**
+La documentación operativa y el historial están en [`.agent/`](.agent/).
+Empezar por [`.agent/README.md`](.agent/README.md), que define el orden de
+lectura y la organización de las fuentes.
 
-Si sos un agente o estás iniciando una sesión nueva:
-
-1. **Leé primero:** `.agent/README.md`
-2. **Seguí el orden de lectura** especificado allí
-3. **Mantené actualizada** la documentación después de cada sesión
-
-La carpeta `.agent/` contiene:
-- Contexto completo del proyecto
-- Arquitectura y decisiones técnicas
-- Estado actual de tareas
-- Deuda técnica conocida
-- Historial de sesiones
-
-## 📁 Estructura del proyecto
-
-```
-```
-
-## 🚀 Quick start
+## Inicio rápido
 
 ```bash
+docker compose up -d
+docker compose exec api alembic upgrade head
 ```
 
-## 📚 Documentación
+API local: <http://localhost:8000/docs>
+Salud: <http://localhost:8000/health>
 
-- **Documentación técnica:** Ver `.agent/README.md`
-- **Deuda técnica:** `.agent/tech-debt.md`
+## Código principal
 
-## 🛠️ Tecnologías
+- API: `src/api/`
+- Servicios: `src/services/`
+- Modelos y repositorios: `src/models/`
+- Análisis de redes: `src/analysis/`
+- Pruebas: `tests/`
+- Migraciones: `migrations/`
 
-<!-- Stack tecnológico principal -->
-
-## 📝 Estado del proyecto
-
-<!-- Estado actual: en desarrollo, producción, etc. -->
-
----
-
-> **Nota:** Para más detalles técnicos, ver la documentación en `.agent/`
+Para el contexto técnico vigente, consultar
+[`.agent/context/PROJECT_CONTEXT.md`](.agent/context/PROJECT_CONTEXT.md).

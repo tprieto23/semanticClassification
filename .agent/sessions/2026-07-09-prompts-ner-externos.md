@@ -63,11 +63,11 @@
 
 ### 5. Actualización de documentación `.agent/`
 
-**Archivo:** `.agent/architecture.md`
+**Archivo:** `.agent/context/architecture.md`
 - Agregada carpeta `data/prompts/` al diagrama de estructura.
 - Actualizado el flujo de NER para reflejar prompts externos y nueva estructura de salida.
 
-**Archivo:** `.agent/tasks.md`
+**Archivo:** `.agent/context/tasks.md`
 - Actualizada la sección del Objetivo 4 con los nuevos detalles de `src/services/ner.py`.
 - Actualizado `EntityOut` y `src/config.py`.
 - Reemplazado el "Status de sesión — Jul 08 2026" por "Status de sesión — Jul 09 2026".

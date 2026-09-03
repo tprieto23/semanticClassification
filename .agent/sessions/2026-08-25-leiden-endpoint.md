@@ -31,12 +31,15 @@ se modifica.
 
 ## Artefactos
 
-- `network_clustered.graphml`: red para Gephi con `modularity_class`, `community_id`,
+Los artefactos se publican bajo `s3/graphs/` con nombres estables que codifican
+la construcción y la configuración de Leiden:
+
+- `<base_name>.graphml`: red para Gephi con `modularity_class`, `community_id`,
   `community_size` y `community_color` en nodos.
-- `communities.csv`: una fila por comunidad con tamaño, composición, aristas
-  internas/externas y pesos.
-- `community_members.csv`: pertenencia de cada entidad y atributos originales.
-- `clustering_summary.json`: parámetros, versiones, hash, calidad, modularidad y
+- `<base_name>_communities.csv`: una fila por comunidad con tamaño, composición,
+  aristas internas/externas y pesos.
+- `<base_name>_members.csv`: pertenencia de cada entidad y atributos originales.
+- `<base_name>.json`: parámetros, versiones, hash, calidad, modularidad y
   advertencias.
 
 ## Validación española

@@ -48,7 +48,11 @@ las 15 combinaciones de categorías, nodos con mayor fuerza y URLs absolutas.
 
 ## Reentrada
 
-El código está en la rama local `feat/endpoints-red-coocurrencia`, sin commit
+Al cierre de esta sesión el código estaba en la rama local
+`feat/endpoints-red-coocurrencia`, sin commit
 porque no fue solicitado. El archivo `.DS_Store` ya estaba modificado y se dejó
 intacto. Próximo paso funcional: usar el HTML generado para explorar asociaciones
 o decidir si una UI v2a necesita filtros/comparaciones adicionales.
+
+> Nota de archivo: posteriormente esta entrega quedó registrada en commits de
+> la rama; la frase anterior conserva el estado de aquella sesión.

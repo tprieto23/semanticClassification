@@ -221,73 +221,43 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - [x] Intersección AND de incubadora/idioma y artefactos separados por combinación
 - [x] `GET /analysis/network/latest` para lectura sin recálculo
 - [x] `POST /documents/{id}/network` para inspección puntual
-- [x] Artefactos aislados por scope, umbral y opción de aislados; publicación restringida a `/files/networks`
-- [x] Exportaciones GraphML, JSON, HTML interactivo, PNG/SVG, CSV y Matrix Market
+- [x] Artefactos oficiales por formato y scope; publicación restringida a `/files/graphs`
+- [x] Persistencia simplificada a GraphML, JSON de metadatos y CSV canónicos
 - [x] Escritura atómica y bloqueo por destino para evitar resultados parciales/concurrentes
 - [x] Validación real: 78 documentos, 41.148 menciones, red G₁ de 16.527 nodos y 45.866 aristas
 - [x] Suite automatizada: 47 pruebas exitosas
 - [x] Proyección versionada `prac-infra-gov-v1` centrada en PRAC, INFRA y GOV
 - [x] Seis relaciones: PRAC–PRAC, PRAC–INFRA, PRAC–GOV, INFRA–INFRA, INFRA–GOV y GOV–GOV
 - [x] Nueve vistas derivadas sin recalcular la coocurrencia maestra
-- [x] Evidencia normalizada oración–entidad con CHAR/LOC contextuales preservados
-- [x] Endpoint paginado de evidencia por arista
+- [x] Evidencia normalizada oración–entidad con CHAR/LOC contextuales preservados en PostgreSQL
+- [x] Endpoint paginado de evidencia por arista consultado bajo demanda en PostgreSQL
 - [x] Validación real: 9.518 nodos, 13.196 aristas, 10.310 oraciones y 14.657 observaciones
 - [x] Suite automatizada ampliada: 57 pruebas exitosas
 - [x] Contrato `construction` discriminado y retrocompatible en la proyección tipada
 - [x] Método `document-recurrent-core-v1` por recurrencia documental de nodos
 - [x] Pesos `sentence-count`, `document-count`, `fractional` y `fractional-document`
-- [x] Auditoría de nodos/aristas excluidos y soporte contextual independiente
-- [x] Vistas all/main component × nueve vistas tipadas, con Weight analítico para Gephi
+- [x] Auditoría calculada de nodos/aristas excluidos y soporte contextual independiente
+- [x] Resúmenes all/main component × nueve vistas; GraphML canónico main-component/all
 - [x] Suite automatizada ampliada: 63 pruebas exitosas
 - [x] Ejecutar Leiden sobre el GraphML del backbone validado
 - [x] Endpoint desacoplado de Leiden con semilla, resolución, pesos y caché
 - [x] Exportación GraphML/CSV de comunidades compatible con Gephi
 
-## Reentrada vigente — 12 Ago 2026
+## Objetivo 9: Migración de almacenamiento de grafos a `s3/graphs/` ✅
 
-- Leer `.agent/sessions/2026-08-12-redisenio-resolucion-entidades-v2.md`.
-- Resolución v2 implementada, migrada y simulada; todavía no aplicada al documento real.
-- Siguiente prioridad: revisar `created_canonicals.csv` y `decisions_person_alias.csv`.
+**Fecha:** 03 Sep 2026
 
-## Reentrada histórica — 5 Ago 2026
-
-- Leer `.agent/sessions/2026-08-05-ner-y-fuzzy-matching-canonico.md`.
-- Estado validado: 1.111 menciones y 539 canónicos para `Relatos mineros.docx`.
-- Siguiente prioridad: auditoría cualitativa de falsas fusiones y falsas separaciones antes de ajustar umbrales o construir relaciones.
-
-## Status histórico — Jul 27 2026 (superado)
-
-> Este bloque se conserva como trazabilidad. El problema `entities: []` fue resuelto
-> posteriormente con tool use estructurado, `sentence_id` y cálculo backend de offsets.
-> Para el estado vigente leer la sección **Reentrada — 5 Ago 2026** y la bitácora allí enlazada.
-
-**Stack actual:**
-- Conversión: PyMuPDF (fast path) + Docling OCR (fallback)
-- Limpieza estructural: regex + ftfy + markdown-it-py
-- Limpieza lingüística: Anthropic Claude
-- NER: Anthropic Claude few-shot con prompt externo, ejemplos curados y tool schema (sin catálogos)
-- Prompts NER: `data/prompts/ner_prompt.md` (system) y `data/prompts/ner_user_prompt.md` (user template)
-- Cliente LLM compartido: `src/services/llm_client.py`
-- DB: PostgreSQL 16 + pgvector
-- 31 documentos en DB (varios en cleaned)
-
-**Etiquetas NER:** 5 — CHAR, LOC, INFRA, GOV, PRAC
-
-**Cambios recientes:**
-- Catálogos eliminados: la extracción NER ahora es en dos fases (fase 1: prompt puro, fase 2: filtro futuro sin catálogos tradicionales).
-- ACT eliminado: objetivos, visiones e intenciones no son entidades por sí mismos; las entidades nominales autónomas contenidas en ellos conservan una de las cinco etiquetas válidas.
-- `src/services/ner.py`: sin carga de catálogos, JSON de entrada simplificado (`document_id`, `title`, `text`), salida parseada con `label`, `text`, `context`, `ambiguity`.
-- `src/models/entities.py`: sin FKs a catálogos; conserva `category`, `text`, offsets, `context` y `ambiguity`.
-- Offsets restaurados: el backend calcula posiciones absolutas, las persiste como `position_start`/`position_end` y las expone como `start`/`end`.
-- `src/api/schemas/entities.py`: simplificado a `text`, `category`, `context`, `ambiguity`.
-- Migración de eliminación de tablas y FKs de catálogos aplicada.
-- Instrucción de exhaustividad agregada al prompt ("recorre de principio a fin, ante duda anota").
-- `max_tokens` en 16384.
-
-**Problema activo en ese momento (resuelto):**
-- El endpoint `extract-entities` responde 200 pero con `entities: []`. El parseo de la respuesta del LLM falla (`json.JSONDecodeError`). Se agregó logging detallado para diagnosticar. Pendiente de debug.
-
-**Siguiente objetivo histórico (completado/superado):**
-- Diagnosticar y corregir el parseo de la respuesta JSON del LLM.
-- Probar extracción exitosa con el prompt de cinco etiquetas y sin catálogos.
-- Objetivo 5: Vectores, matrices, grafos, métricas ⏳
+- [x] Nueva tabla `sentences` con `(document_id, sentence_id, text)`
+- [x] `src/models/sentences.py` y `src/models/sentences_repo.py`
+- [x] Persistir oraciones durante `POST /documents/{id}/fuzzy-matching` y eliminarlas al revertir
+- [x] Endpoint de evidencia por arista consulta PostgreSQL en lugar de CSV
+- [x] Migración Alembic `d7e8f9a0b1c2_add_sentences_table.py`
+- [x] `src/analysis/graph_paths.py` con nombres oficiales estables y parámetros en JSON
+- [x] `src/analysis/graph_export.py` para exportación mínima GraphML + CSV + JSON
+- [x] `src/analysis/backbone.py` con `export_backbone_to_files`
+- [x] `src/analysis/leiden.py` acepta `base_name` y exporta `_communities.csv` y `_members.csv`
+- [x] `src/services/network.py` reescrito para `s3/graphs/`, escritura atómica y rutas relativas
+- [x] `src/config.py` con `STORAGE_GRAPHS` y alias legado `STORAGE_NETWORK`
+- [x] `src/api/main.py` monta `/files/graphs` y conserva `/files/networks` como legado
+- [x] `src/api/schemas/network.py` conserva campos adicionales de metadatos
+- [x] Suite ampliada a 81 pruebas: 79 pasan y 2 se omiten sin dependencias Leiden

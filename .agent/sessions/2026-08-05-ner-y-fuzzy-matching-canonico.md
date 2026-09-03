@@ -5,8 +5,8 @@
 Este archivo es el punto de reentrada para la próxima sesión. Al retomar, leer primero:
 
 1. `.agent/README.md`
-2. `.agent/architecture.md`
-3. `.agent/tasks.md`
+2. `.agent/context/architecture.md`
+3. `.agent/context/tasks.md`
 4. Este archivo
 
 Solicitud sugerida al agente: **“Contextualicémonos con el proyecto, lee `.agent` y dime en qué estado vamos y en qué debemos seguir.”**
