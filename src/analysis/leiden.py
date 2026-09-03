@@ -415,12 +415,17 @@ def export_leiden_clustering(
     output_dir: Path,
     *,
     config: LeidenConfig,
+    base_name: str = "network_clustered",
 ) -> dict[str, Any]:
     """Calcula Leiden y exporta artefactos derivados, sin tocar el GraphML fuente."""
 
     config.validate()
     source_hash = graph_file_sha256(source_graphml)
     graph = _read_source_graph(source_graphml)
+    # Validar pesos antes de cargar las dependencias opcionales permite devolver
+    # un 422 determinista aun cuando Leiden no esté instalado en este entorno.
+    for source, target, attributes in graph.edges(data=True):
+        _edge_weight(attributes, config.weight_attribute, source, target)
     warnings: list[str] = []
     algorithm_versions = _dependency_versions()
 
@@ -470,10 +475,10 @@ def export_leiden_clustering(
     )
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    clustered_graphml_path = output_dir / "network_clustered.graphml"
-    communities_path = output_dir / "communities.csv"
-    members_path = output_dir / "community_members.csv"
-    summary_path = output_dir / "clustering_summary.json"
+    clustered_graphml_path = output_dir / f"{base_name}.graphml"
+    communities_path = output_dir / f"{base_name}_communities.csv"
+    members_path = output_dir / f"{base_name}_members.csv"
+    summary_path = output_dir / f"{base_name}.json"
     nx.write_graphml(clustered_graph, clustered_graphml_path)
     _write_csv(communities_path, COMMUNITY_FIELDS, community_rows)
     member_fields, member_rows = _member_rows(clustered_graph)

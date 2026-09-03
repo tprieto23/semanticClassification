@@ -463,6 +463,67 @@ def _export_view(
     return summary
 
 
+def export_backbone_to_files(
+    build: BackboneBuildResult,
+    *,
+    graphml_path: Path,
+    nodes_csv_path: Path,
+    edges_csv_path: Path,
+    json_path: Path,
+    metadata: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Exporta un backbone ya construido a GraphML + CSVs + metadata JSON."""
+
+    graphml_path.parent.mkdir(parents=True, exist_ok=True)
+    nodes_csv_path.parent.mkdir(parents=True, exist_ok=True)
+    edges_csv_path.parent.mkdir(parents=True, exist_ok=True)
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+
+    graph_for_export = nx.Graph()
+    graph_metadata = {
+        **(metadata or {}).get("graph", {}),
+        "edge_definition": "same_sentence_cooccurrence",
+    }
+    graph_for_export.graph.update(
+        {k: v for k, v in graph_metadata.items() if v is not None}
+    )
+    graph_for_export.add_nodes_from(build.graph.nodes(data=True))
+    for source, target, attributes in build.graph.edges(data=True):
+        graph_for_export.add_edge(
+            source,
+            target,
+            edge_key="::".join(sorted((source, target))),
+            **attributes,
+        )
+    nx.write_graphml(graph_for_export, graphml_path)
+
+    _write_csv(nodes_csv_path, NODE_EXPORT_FIELDS, _node_rows(build.graph))
+    _write_csv(edges_csv_path, EDGE_EXPORT_FIELDS, _edge_rows(build.graph))
+
+    output_paths = (metadata or {}).get(
+        "outputs",
+        {
+            "graphml": graphml_path.name,
+            "nodes_csv": nodes_csv_path.name,
+            "edges_csv": edges_csv_path.name,
+        },
+    )
+    summary = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        **(metadata or {}),
+        "counts": _graph_summary(build.graph),
+        "excluded_nodes": len(build.excluded_nodes),
+        "excluded_edges": len(build.excluded_edges),
+        "eligible_node_count": build.eligible_node_count,
+        "outputs": output_paths,
+    }
+    with json_path.open("w", encoding="utf-8") as file:
+        json.dump(summary, file, ensure_ascii=False, indent=2)
+        file.write("\n")
+
+    return summary
+
+
 def export_document_recurrent_core(
     result: CooccurrenceResult,
     output_dir: Path,
@@ -472,38 +533,10 @@ def export_document_recurrent_core(
     config: DocumentRecurrentCoreConfig,
     filters: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Exporta el backbone, auditoría de exclusiones y todas sus vistas."""
+    """Build all summaries and export only the canonical main-component view."""
 
     build = build_document_recurrent_core(result, config)
-    backbone_dir = output_dir / "backbone"
-    backbone_dir.mkdir(parents=True, exist_ok=True)
-    _write_csv(backbone_dir / "nodes.csv", NODE_EXPORT_FIELDS, _node_rows(build.graph))
-    _write_csv(backbone_dir / "edges.csv", EDGE_EXPORT_FIELDS, _edge_rows(build.graph))
-
-    excluded_node_fields = (*NODE_EXPORT_FIELDS[:8], "exclusion_reason")
-    _write_csv(
-        backbone_dir / "excluded_nodes.csv",
-        excluded_node_fields,
-        (
-            {field: row.get(field, "") for field in excluded_node_fields}
-            for row in build.excluded_nodes
-        ),
-    )
-    excluded_edge_fields = (
-        "source_canonical_id",
-        "target_canonical_id",
-        "source_name",
-        "target_name",
-        "category_pair",
-        "sentence_count",
-        "document_count",
-        "exclusion_reason",
-    )
-    _write_csv(
-        backbone_dir / "excluded_edges.csv",
-        excluded_edge_fields,
-        build.excluded_edges,
-    )
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     component_graphs = {
         "all-components": build.graph,
@@ -514,25 +547,36 @@ def export_document_recurrent_core(
         semantic_views: dict[str, Any] = {}
         for view in projection.views:
             graph = _view_graph(component_graph, view)
-            relative = Path("views") / component_scope / view.view_id
-            summary = _export_view(
-                graph,
-                output_dir / relative,
-                scope=scope,
-                projection=projection,
-                config=config,
-                component_scope=component_scope,
-                view=view,
-            )
+            summary = {
+                "view": {
+                    "id": view.view_id,
+                    "label": view.label,
+                    "node_categories": list(view.node_categories),
+                    "category_pairs": list(view.category_pair_labels),
+                },
+                "counts": _graph_summary(graph),
+                "outputs": {},
+            }
             semantic_views[view.view_id] = {
                 **summary["view"],
                 "counts": summary["counts"],
-                "outputs": {
-                    name: (relative / filename).as_posix()
-                    for name, filename in summary["outputs"].items()
-                },
+                "outputs": {},
             }
         component_views[component_scope] = semantic_views
+
+    canonical_view = next(view for view in projection.views if view.view_id == "all")
+    canonical_summary = _export_view(
+        _view_graph(build.main_component_graph, canonical_view),
+        output_dir,
+        scope=scope,
+        projection=projection,
+        config=config,
+        component_scope="main-component",
+        view=canonical_view,
+    )
+    component_views["main-component"]["all"]["outputs"] = dict(
+        canonical_summary["outputs"]
+    )
 
     edge_incident_indexes = {
         node_index for edge in result.edge_weights for node_index in edge
@@ -547,9 +591,7 @@ def export_document_recurrent_core(
     }
     all_counts = _graph_summary(build.graph)
     main_counts = _graph_summary(build.main_component_graph)
-    primary_scope = (
-        "all-components" if config.include_minor_components else "main-component"
-    )
+    primary_scope = "main-component"
     primary = component_views[primary_scope]["all"]
     manifest = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -581,21 +623,9 @@ def export_document_recurrent_core(
         "main_component": main_counts,
         "primary_component_scope": primary_scope,
     }
-    manifest_path = output_dir / "construction_manifest.json"
-    with manifest_path.open("w", encoding="utf-8") as file:
-        json.dump(manifest, file, ensure_ascii=False, indent=2)
-        file.write("\n")
-
     return {
         **manifest,
         "primary_view": primary,
         "component_views": component_views,
-        "outputs": {
-            "construction_manifest_json": "construction_manifest.json",
-            "backbone_nodes_csv": "backbone/nodes.csv",
-            "backbone_edges_csv": "backbone/edges.csv",
-            "excluded_nodes_csv": "backbone/excluded_nodes.csv",
-            "excluded_edges_csv": "backbone/excluded_edges.csv",
-            **primary["outputs"],
-        },
+        "outputs": dict(primary["outputs"]),
     }

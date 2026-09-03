@@ -12,6 +12,12 @@ app = FastAPI(
     version="0.1.0",
 )
 
+settings.STORAGE_GRAPHS.mkdir(parents=True, exist_ok=True)
+app.mount(
+    "/files/graphs",
+    StaticFiles(directory=settings.STORAGE_GRAPHS),
+    name="graph-files",
+)
 settings.STORAGE_NETWORK.mkdir(parents=True, exist_ok=True)
 app.mount(
     "/files/networks",

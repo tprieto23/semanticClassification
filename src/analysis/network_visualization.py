@@ -294,7 +294,9 @@ def build_free_layout(
         columns = max(1, math.ceil(math.sqrt(len(isolates))))
         spacing = 1.15
         center_offset = (columns - 1) * spacing / 2
-        bottom = min((position[1] for position in positions.values()), default=2.0) - 4.0
+        bottom = (
+            min((position[1] for position in positions.values()), default=2.0) - 4.0
+        )
         for index, node in enumerate(
             sorted(
                 isolates,
@@ -393,8 +395,7 @@ def _draw_graph(
             node_color=style["color"],
             node_shape=style["shape"],
             node_size=[
-                _node_size(graph.nodes[node]["strength"], maximum_strength)
-                * 0.78
+                _node_size(graph.nodes[node]["strength"], maximum_strength) * 0.78
                 for node in category_nodes
             ],
             edgecolors="#1E293B",
@@ -632,9 +633,7 @@ def load_edge_evidence(analysis_dir: Path, graph: nx.Graph) -> NetworkEvidence:
             }
         )
     referenced_sentence_keys = {
-        item["sentenceKey"]
-        for references in evidence.values()
-        for item in references
+        item["sentenceKey"] for references in evidence.values() for item in references
     }
     return NetworkEvidence(
         sentences={
@@ -701,9 +700,7 @@ def _interactive_payload(
                 "weight": attributes["weight"],
                 "documentCount": attributes["document_count"],
                 "categoryPair": attributes["category_pair"],
-                "evidence": evidence.edge_references.get(
-                    _edge_key(source, target), []
-                ),
+                "evidence": evidence.edge_references.get(_edge_key(source, target), []),
             }
         )
 
@@ -738,9 +735,9 @@ def _network_title(minimum_weight: int) -> str:
 
 
 def write_interactive_html(path: Path, payload: dict[str, Any]) -> None:
-    serialized = json.dumps(
-        payload, ensure_ascii=False, separators=(",", ":")
-    ).replace("</", "<\\/")
+    serialized = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).replace(
+        "</", "<\\/"
+    )
     html = INTERACTIVE_HTML.replace("__NETWORK_DATA__", serialized)
     path.write_text(html, encoding="utf-8")
 
@@ -757,11 +754,14 @@ def _write_csv(
 def export_filtered_data(
     data: NetworkData,
     output_dir: Path,
-    evidence: NetworkEvidence,
+    evidence: NetworkEvidence | None = None,
+    *,
+    filename_stem: str | None = None,
 ) -> dict[str, Any]:
     graph = data.graph
     output_dir.mkdir(parents=True, exist_ok=True)
-    network_slug = f"g{data.minimum_weight}"
+    network_slug = filename_stem or f"g{data.minimum_weight}"
+    evidence = evidence or NetworkEvidence(sentences={}, edge_references={})
 
     node_fields = (
         "canonical_id",
@@ -892,10 +892,6 @@ def export_filtered_data(
         "edges_by_category_pair": dict(sorted(category_pair_counts.items())),
         "top_nodes_by_strength": top_nodes[:10],
         "outputs": {
-            "free_png": f"{network_slug}_free.png",
-            "free_svg": f"{network_slug}_free.svg",
-            "interactive_html": f"{network_slug}_interactive.html",
-            "graph_json": f"{network_slug}_graph.json",
             "graphml": f"{network_slug}.graphml",
             "nodes_csv": f"{network_slug}_nodes.csv",
             "edges_csv": f"{network_slug}_edges.csv",
@@ -956,7 +952,9 @@ def generate_visualizations(
     payload = _interactive_payload(data, free_svg_positions, evidence)
     output_dir.mkdir(parents=True, exist_ok=True)
     write_interactive_html(output_dir / f"{network_slug}_interactive.html", payload)
-    with (output_dir / f"{network_slug}_graph.json").open("w", encoding="utf-8") as file:
+    with (output_dir / f"{network_slug}_graph.json").open(
+        "w", encoding="utf-8"
+    ) as file:
         json.dump(payload, file, ensure_ascii=False, separators=(",", ":"))
         file.write("\n")
     return export_filtered_data(data, output_dir, evidence)

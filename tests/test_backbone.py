@@ -1,5 +1,4 @@
 import csv
-import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -123,7 +122,7 @@ class DocumentRecurrentCoreTests(unittest.TestCase):
         self.assertEqual(build.graph.edges["p", "i"]["weight"], 2.0)
         self.assertEqual(build.graph.nodes["p"]["strength"], 4.0)
 
-    def test_export_creates_component_and_semantic_views(self):
+    def test_export_summarizes_views_and_writes_only_canonical_files(self):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary)
             payload = export_document_recurrent_core(
@@ -141,7 +140,7 @@ class DocumentRecurrentCoreTests(unittest.TestCase):
             self.assertEqual(payload["base_network"]["canonical_nodes"], 4)
             self.assertEqual(payload["base_network"]["edge_incident_nodes"], 4)
             self.assertEqual(payload["base_network"]["isolated_nodes"], 0)
-            graphml = output / "views/all-components/all/network.graphml"
+            graphml = output / "network.graphml"
             self.assertTrue(graphml.exists())
             graph = nx.read_graphml(graphml)
             self.assertEqual(
@@ -149,16 +148,12 @@ class DocumentRecurrentCoreTests(unittest.TestCase):
             )
             self.assertEqual(graph.graph["edge_weighting"], "fractional-document")
             self.assertIn("analysis_weight", next(iter(graph.edges(data=True)))[2])
-            self.assertTrue((output / "backbone/excluded_nodes.csv").exists())
-            with (output / "backbone/edges.csv").open(
-                encoding="utf-8", newline=""
-            ) as file:
+            self.assertFalse((output / "backbone").exists())
+            with (output / "edges.csv").open(encoding="utf-8", newline="") as file:
                 fields = csv.DictReader(file).fieldnames
             self.assertIn("fractional_document_weight", fields)
-            manifest = json.loads(
-                (output / "construction_manifest.json").read_text(encoding="utf-8")
-            )
-            self.assertEqual(manifest["primary_component_scope"], "all-components")
+            self.assertEqual(payload["primary_component_scope"], "main-component")
+            self.assertEqual(len(list(output.rglob("*.*"))), 4)
 
 
 if __name__ == "__main__":

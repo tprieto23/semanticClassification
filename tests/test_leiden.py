@@ -1,4 +1,5 @@
 import csv
+from importlib.util import find_spec
 import tempfile
 import unittest
 from pathlib import Path
@@ -53,6 +54,10 @@ class LeidenAnalysisTests(unittest.TestCase):
             )
         return graph
 
+    @unittest.skipUnless(
+        find_spec("igraph") is not None and find_spec("leidenalg") is not None,
+        "igraph/leidenalg no instalado en el entorno de test",
+    )
     def test_export_is_reproducible_and_gephi_ready(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             source = Path(temporary) / "network.graphml"
@@ -77,7 +82,7 @@ class LeidenAnalysisTests(unittest.TestCase):
             self.assertIn("modularity_class", attributes)
             self.assertIn("community_id", attributes)
             self.assertIn("community_color", attributes)
-            with (first_dir / "community_members.csv").open(
+            with (first_dir / "network_clustered_members.csv").open(
                 encoding="utf-8", newline=""
             ) as file:
                 fields = csv.DictReader(file).fieldnames

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -152,16 +152,12 @@ class TopNetworkNode(BaseModel):
 
 
 class NetworkBuildResponse(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
     generated_at: datetime
     scope: str
-    filters: NetworkFilters
-    minimum_weight: int
-    includes_isolates: bool
-    coverage: NetworkCoverage
-    counts: NetworkCounts
-    nodes_by_category: dict[str, int]
-    category_pair_summary: list[CategoryPairSummary]
-    top_nodes_by_strength: list[TopNetworkNode]
+    filters: dict[str, Any]
+    counts: dict[str, Any]
     outputs: dict[str, str]
 
 
@@ -179,128 +175,37 @@ class NetworkViewDefinition(BaseModel):
     category_pairs: list[str]
 
 
-class NetworkViewCounts(BaseModel):
-    canonical_nodes: int
-    undirected_edges: int
-    components: int
-    edge_observations: int
-    max_edge_weight: int
-
-
-class NetworkViewSummary(NetworkViewDefinition):
-    counts: NetworkViewCounts
-    nodes_by_category: dict[str, int]
-    edges_by_category_pair: dict[str, int]
-    outputs: dict[str, str]
-
-
-class TypedNetworkCounts(NetworkCounts):
-    source_mentions: int
-    projected_mentions: int
-    context_mentions_in_projected_sentences: int
-    sentence_entity_presences: int
-    sentences_with_edges: int
-
-
 class TypedNetworkBuildResponse(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
     generated_at: datetime
     scope: str
     projection: NetworkProjectionDefinition
-    view: NetworkViewDefinition
-    filters: NetworkFilters
-    minimum_weight: int
-    includes_isolates: bool
-    coverage: NetworkCoverage
-    counts: TypedNetworkCounts
-    nodes_by_category: dict[str, int]
-    category_pair_summary: list[CategoryPairSummary]
-    top_nodes_by_strength: list[TopNetworkNode]
-    outputs: dict[str, str]
-    views: dict[str, NetworkViewSummary]
-
-
-class BackboneGraphCounts(BaseModel):
-    canonical_nodes: int
-    undirected_edges: int
-    components: int
-    component_sizes: list[int]
-    nodes_by_category: dict[str, int]
-    edges_by_category_pair: dict[str, int]
-    edges_by_confidence_tier: dict[str, int]
-    max_analysis_weight: float
-
-
-class BackboneBaseCounts(BaseModel):
-    canonical_nodes: int
-    edge_incident_nodes: int
-    isolated_nodes: int
-    undirected_edges: int
-    sentences: int
-    edge_observations: int
-
-
-class BackboneEligibility(BaseModel):
-    eligible_nodes_before_edge_induction: int
-    excluded_nodes: int
-    excluded_edges: int
-
-
-class BackboneViewSummary(NetworkViewDefinition):
-    counts: BackboneGraphCounts
+    filters: dict[str, Any]
+    counts: dict[str, Any]
     outputs: dict[str, str]
 
 
 class AnalyticalNetworkBuildResponse(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
     generated_at: datetime
     scope: str
-    filters: NetworkFilters
     projection_id: str
-    construction: DocumentRecurrentCoreConstruction
-    definitions: dict[str, str]
-    base_network: BackboneBaseCounts
-    eligibility: BackboneEligibility
-    analytical_network: BackboneGraphCounts
-    main_component: BackboneGraphCounts
-    primary_component_scope: Literal["all-components", "main-component"]
-    primary_view: BackboneViewSummary
-    component_views: dict[str, dict[str, BackboneViewSummary]]
-    coverage: NetworkCoverage
+    filters: dict[str, Any]
+    configuration: dict[str, Any]
+    counts: dict[str, Any]
     outputs: dict[str, str]
-
-
-class LeidenSourceGraph(BaseModel):
-    component_scope: ComponentScope
-    view: NetworkViewDefinition
-    graphml_sha256: str
-    canonical_nodes: int
-    undirected_edges: int
-    outputs: dict[str, str]
-
-
-class LeidenClusteringCounts(BaseModel):
-    communities: int
-    singleton_communities: int
-    largest_community_size: int
-    smallest_community_size: int
 
 
 class LeidenClusteringResponse(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
     generated_at: datetime
-    status: Literal["completed", "trivial", "empty"]
-    cached: bool
     scope: str
-    filters: NetworkFilters
     projection_id: str
-    construction: DocumentRecurrentCoreConstruction
-    configuration: LeidenConfiguration
-    algorithm_versions: dict[str, str]
-    source: LeidenSourceGraph
-    counts: LeidenClusteringCounts
-    community_sizes: list[int]
-    objective_quality: float
-    modularity: float
-    definitions: dict[str, str]
-    warnings: list[str]
+    configuration: dict[str, Any]
+    counts: dict[str, Any]
     outputs: dict[str, str]
 
 
@@ -309,39 +214,27 @@ class ProjectionViewsResponse(BaseModel):
     views: list[NetworkViewDefinition]
 
 
-class SentenceEvidenceEntity(BaseModel):
+class EdgeEvidenceEntity(BaseModel):
     canonical_id: str
     canonical_name: str
     category: str
     is_projected: bool
-    mention_count: int
-    texts: list[str]
-    ambiguities: list[str]
+    mention_text: str | None = None
+    ambiguity: str | None = None
 
 
 class EdgeEvidenceItem(BaseModel):
     document_id: str
     sentence_id: str
     context: str
-    pair_context: str
-    projected_entities: list[SentenceEvidenceEntity]
-    context_entities: list[SentenceEvidenceEntity]
-
-
-class EdgeEvidenceSummary(BaseModel):
-    source_canonical_id: str
-    target_canonical_id: str
-    source_name: str
-    target_name: str
-    category_pair: str
-    weight: int
-    document_count: int
+    projected_entities: list[EdgeEvidenceEntity]
+    context_entities: list[EdgeEvidenceEntity]
 
 
 class EdgeEvidenceResponse(BaseModel):
     projection_id: str
     scope: str
-    edge: EdgeEvidenceSummary
+    edge: dict[str, str]
     total: int
     offset: int
     limit: int

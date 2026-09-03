@@ -172,6 +172,7 @@ def typed_edge_evidence(
     language: Annotated[str, Query(min_length=2, max_length=10)] = "all",
     offset: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=500)] = 100,
+    db: Session = Depends(get_db),
 ):
     selection = NetworkBuildRequest(
         incubator_number=incubator_number,
@@ -180,6 +181,7 @@ def typed_edge_evidence(
         include_isolates=include_isolates,
     )
     return NetworkService.edge_evidence(
+        db,
         projection_id,
         source_id,
         target_id,

@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import csv
 import json
 import shutil
 import tempfile
 import threading
 from collections import Counter
-from dataclasses import asdict
 from pathlib import Path
+from typing import Any
 from uuid import UUID
 
 from sqlalchemy import func, select
@@ -16,14 +15,32 @@ from sqlalchemy.orm import Session
 from src.analysis.backbone import (
     DOCUMENT_RECURRENT_CORE_METHOD,
     DocumentRecurrentCoreConfig,
-    export_document_recurrent_core,
+    build_document_recurrent_core,
+    export_backbone_to_files,
 )
 from src.analysis.cooccurrence import (
     CATEGORY_ORDER,
+    CooccurrenceResult,
     build_sentence_cooccurrence,
     category_pair_rows,
-    export_result,
     load_db_mentions,
+)
+from src.analysis.graph_export import (
+    build_metadata,
+    export_cooccurrence_graph,
+    write_metadata_json,
+)
+from src.analysis.graph_paths import (
+    backbone_filename,
+    communities_csv_path,
+    edges_csv_path,
+    graph_scope_dir,
+    graphml_path,
+    json_path,
+    leiden_filename,
+    members_csv_path,
+    nodes_csv_path,
+    red_plana_filename,
 )
 from src.analysis.leiden import (
     LeidenConfig,
@@ -34,17 +51,19 @@ from src.analysis.leiden import (
 )
 from src.analysis.projections import (
     ProjectionDefinition,
-    ProjectionView,
     get_projection,
     projection_manifest,
 )
 from src.config import settings
+from src.models.canonical_entities import CanonicalEntity
 from src.models.documents import Document
+from src.models.entities import Entity
+from src.models.sentences import Sentence
 from src.services.documents import DocumentoError, DocumentoNoEncontrado
 
 READY_STATUS = "fuzzyMatching"
-_locks_guard = threading.Lock()
-_target_locks: dict[str, threading.Lock] = {}
+_graph_locks_guard = threading.Lock()
+_graph_target_locks: dict[str, threading.Lock] = {}
 
 
 class NetworkDataUnavailable(DocumentoError):
@@ -71,13 +90,6 @@ class NetworkEdgeEvidenceNotFound(DocumentoError):
         )
 
 
-class NetworkViewNotFound(DocumentoError):
-    def __init__(self, projection_id: str, view_id: str):
-        super().__init__(
-            f"Vista '{view_id}' no encontrada en la proyección {projection_id}", 404
-        )
-
-
 class NetworkClusteringDependencyUnavailable(DocumentoError):
     def __init__(self):
         super().__init__(
@@ -88,151 +100,222 @@ class NetworkClusteringDependencyUnavailable(DocumentoError):
 
 def _lock_for(path: Path) -> threading.Lock:
     key = str(path.resolve())
-    with _locks_guard:
-        return _target_locks.setdefault(key, threading.Lock())
+    with _graph_locks_guard:
+        return _graph_target_locks.setdefault(key, threading.Lock())
+
+
+def _graph_scope(
+    *,
+    document_id: str | None = None,
+    incubator_number: int | None = None,
+    language: str | None = None,
+) -> tuple[str, str | int | None, str]:
+    """Devuelve (scope_type, scope_id, language) para graph_paths."""
+    if document_id is not None:
+        return "documents", str(UUID(document_id)), language or "all"
+    if incubator_number is not None:
+        return "incubators", incubator_number, language or "all"
+    return "corpus", None, language or "all"
+
+
+def _scope_label(scope_type: str, scope_id: str | int | None, language: str) -> str:
+    parts = [scope_type]
+    if scope_id is not None:
+        parts.append(str(scope_id))
+    parts.append(language)
+    return ":".join(parts)
+
+
+def _replace_file(source: Path, target: Path) -> None:
+    """Reemplaza ``target`` por ``source`` de forma atómica."""
+    target.parent.mkdir(parents=True, exist_ok=True)
+    backup = target.with_name(f".{target.name}.previous")
+    if backup.exists():
+        backup.unlink()
+    if target.exists():
+        target.replace(backup)
+    try:
+        source.replace(target)
+    except Exception:
+        if backup.exists() and not target.exists():
+            backup.replace(target)
+        raise
+    if backup.exists():
+        backup.unlink()
+
+
+def _atomic_write_files(
+    writers: dict[Path, Any | None],
+    lock_path: Path,
+) -> None:
+    """Escribe cada archivo en un temporal y lo mueve atómicamente bajo lock.
+
+    Si un writer es ``None``, se asume que el archivo ya fue creado en el
+    directorio temporal por otro writer (por ejemplo, los CSVs generados junto
+    al GraphML).
+    """
+    temporary = Path(tempfile.mkdtemp(prefix=".graph-build-"))
+    try:
+        temp_files: dict[Path, Path] = {}
+        for target_path, writer in writers.items():
+            temp_path = temporary / target_path.name
+            if writer is not None:
+                writer(temp_path)
+            if not temp_path.exists():
+                raise FileNotFoundError(
+                    f"Archivo temporal no generado: {temp_path.name}"
+                )
+            temp_files[target_path] = temp_path
+
+        with _lock_for(lock_path):
+            for target_path, temp_path in temp_files.items():
+                _replace_file(temp_path, target_path)
+    finally:
+        if temporary.exists():
+            shutil.rmtree(temporary)
+
+
+def _coverage(
+    db: Session,
+    *,
+    document_id: str | None,
+    incubator_number: int | None,
+    language: str | None,
+) -> dict:
+    if document_id is not None:
+        return {
+            "documents_included": 1,
+            "documents_total": 1,
+            "excluded_by_status": {},
+        }
+
+    statement = select(Document.status, func.count(Document.id)).group_by(
+        Document.status
+    )
+    if incubator_number is not None:
+        statement = statement.where(Document.incubator_number == incubator_number)
+    if language is not None:
+        statement = statement.where(Document.language == language)
+    status_counts = Counter(dict(db.execute(statement).all()))
+    included = status_counts.pop(READY_STATUS, 0)
+    return {
+        "documents_included": included,
+        "documents_total": included + sum(status_counts.values()),
+        "excluded_by_status": dict(sorted(status_counts.items())),
+    }
+
+
+def _validate_document(db: Session, document_id: str) -> None:
+    document = db.get(Document, UUID(document_id))
+    if document is None:
+        raise DocumentoNoEncontrado(document_id)
+    if document.status != READY_STATUS:
+        raise NetworkDataUnavailable(
+            f"Documento {document_id} debe estar en estado '{READY_STATUS}' "
+            f"para construir su red (estado actual: '{document.status}')"
+        )
+
+
+def _load_mentions(
+    db: Session,
+    *,
+    document_id: str | None,
+    incubator_number: int | None,
+    language: str | None,
+) -> list:
+    return load_db_mentions(
+        document_id,
+        status=None if document_id is not None else READY_STATUS,
+        incubator_number=incubator_number,
+        language=language,
+        db=db,
+    )
+
+
+def _build_red_plana_result(
+    db: Session,
+    *,
+    document_id: str | None,
+    incubator_number: int | None,
+    language: str | None,
+) -> tuple[CooccurrenceResult, dict]:
+    if document_id is not None:
+        _validate_document(db, document_id)
+    mentions = _load_mentions(
+        db,
+        document_id=document_id,
+        incubator_number=incubator_number,
+        language=language,
+    )
+    if not mentions:
+        scope_label = _scope_label(
+            *_graph_scope(
+                document_id=document_id,
+                incubator_number=incubator_number,
+                language=language,
+            )
+        )
+        raise NetworkDataUnavailable(
+            f"No hay menciones canonicalizadas disponibles para {scope_label}"
+        )
+    result = build_sentence_cooccurrence(mentions)
+    coverage = _coverage(
+        db,
+        document_id=document_id,
+        incubator_number=incubator_number,
+        language=language,
+    )
+    return result, coverage
+
+
+def _incubator_filter_value(scope_type: str, scope_id: str | int | None) -> Any:
+    if scope_type == "incubators" and isinstance(scope_id, int):
+        return scope_id
+    return "all"
+
+
+def _relative_output_path(path: Path) -> str:
+    """Devuelve la ruta del artefacto relativa a STORAGE_GRAPHS."""
+    return str(path.relative_to(settings.STORAGE_GRAPHS))
+
+
+def _graph_summary_for_red_plana(
+    result: CooccurrenceResult,
+    minimum_weight: int,
+    include_isolates: bool,
+) -> dict:
+    active_indexes = set(range(len(result.nodes)))
+    if not include_isolates:
+        active_indexes = {
+            node_index
+            for edge, weight in result.edge_weights.items()
+            if weight >= minimum_weight
+            for node_index in edge
+        }
+    included_edges = [
+        (source, target, weight)
+        for (source, target), weight in result.edge_weights.items()
+        if weight >= minimum_weight
+        and source in active_indexes
+        and target in active_indexes
+    ]
+    return {
+        "canonical_nodes": len(active_indexes),
+        "undirected_edges": len(included_edges),
+        "max_edge_weight": max(
+            (weight for _, _, weight in included_edges),
+            default=0,
+        ),
+    }
 
 
 class NetworkService:
-    @staticmethod
-    def _scope(
-        *,
-        document_id: str | None = None,
-        incubator_number: int | None = None,
-        language: str | None = None,
-    ) -> tuple[str, Path]:
-        if document_id is not None:
-            normalized = str(UUID(document_id))
-            return f"document:{normalized}", Path("documents") / normalized
-        if incubator_number is not None:
-            scope = f"incubator:{incubator_number}"
-            path = Path(f"incubator-{incubator_number}")
-            if language is not None:
-                return f"{scope},language:{language}", path / f"language-{language}"
-            return scope, path
-        if language is not None:
-            return f"language:{language}", Path("corpus") / f"language-{language}"
-        return "corpus", Path("corpus")
-
-    @staticmethod
-    def _target_dir(
-        *,
-        minimum_weight: int,
-        include_isolates: bool,
-        document_id: str | None = None,
-        incubator_number: int | None = None,
-        language: str | None = None,
-    ) -> tuple[str, Path]:
-        scope, scope_path = NetworkService._scope(
-            document_id=document_id,
-            incubator_number=incubator_number,
-            language=language,
-        )
-        isolate_slug = "isolates" if include_isolates else "no-isolates"
-        target = (
-            settings.STORAGE_NETWORK / scope_path / f"w{minimum_weight}-{isolate_slug}"
-        )
-        return scope, target
-
     @staticmethod
     def _projection(projection_id: str) -> ProjectionDefinition:
         projection = get_projection(projection_id)
         if projection is None:
             raise NetworkProjectionNotFound(projection_id)
         return projection
-
-    @staticmethod
-    def _projection_target_dir(
-        projection_id: str,
-        *,
-        minimum_weight: int,
-        include_isolates: bool,
-        document_id: str | None = None,
-        incubator_number: int | None = None,
-        language: str | None = None,
-    ) -> tuple[str, Path]:
-        NetworkService._projection(projection_id)
-        scope, scope_path = NetworkService._scope(
-            document_id=document_id,
-            incubator_number=incubator_number,
-            language=language,
-        )
-        isolate_slug = "isolates" if include_isolates else "no-isolates"
-        target = (
-            settings.STORAGE_NETWORK
-            / scope_path
-            / "projections"
-            / projection_id
-            / f"w{minimum_weight}-{isolate_slug}"
-        )
-        return scope, target
-
-    @staticmethod
-    def _construction_target_dir(
-        projection_id: str,
-        config: DocumentRecurrentCoreConfig,
-        *,
-        document_id: str | None = None,
-        incubator_number: int | None = None,
-        language: str | None = None,
-    ) -> tuple[str, Path]:
-        NetworkService._projection(projection_id)
-        scope, scope_path = NetworkService._scope(
-            document_id=document_id,
-            incubator_number=incubator_number,
-            language=language,
-        )
-        component_slug = (
-            "with-minor-components"
-            if config.include_minor_components
-            else "main-component-only"
-        )
-        target = (
-            settings.STORAGE_NETWORK
-            / scope_path
-            / "projections"
-            / projection_id
-            / "constructions"
-            / config.method
-            / f"node-documents-{config.minimum_node_document_count}"
-            / f"edge-weight-{config.edge_weighting}"
-            / component_slug
-        )
-        return scope, target
-
-    @staticmethod
-    def _leiden_target_dir(source_view_dir: Path, config: LeidenConfig) -> Path:
-        resolution_slug = format(config.resolution, ".12g")
-        iterations_slug = (
-            "converge" if config.iterations == -1 else str(config.iterations)
-        )
-        return (
-            source_view_dir
-            / "clusterings"
-            / config.method
-            / f"objective-{config.objective_function}"
-            / f"resolution-{resolution_slug}"
-            / f"seed-{config.seed}"
-            / f"iterations-{iterations_slug}"
-            / f"weight-{config.weight_attribute}"
-        )
-
-    @staticmethod
-    def _qualify_output_paths(payload: dict, relative_dir: Path) -> dict:
-        """Prefija únicamente valores contenidos en objetos ``outputs``."""
-
-        def qualify(value, *, outputs: bool = False):
-            if isinstance(value, dict):
-                return {
-                    key: qualify(item, outputs=outputs or key == "outputs")
-                    for key, item in value.items()
-                }
-            if isinstance(value, list):
-                return [qualify(item, outputs=outputs) for item in value]
-            if outputs and isinstance(value, str):
-                return (relative_dir / value).as_posix()
-            return value
-
-        return qualify(payload)
 
     @staticmethod
     def projection_views(projection_id: str) -> dict:
@@ -247,63 +330,6 @@ class NetworkService:
         }
 
     @staticmethod
-    def _coverage(
-        db: Session,
-        *,
-        document_id: str | None,
-        incubator_number: int | None,
-        language: str | None,
-    ) -> dict:
-        if document_id is not None:
-            return {
-                "documents_included": 1,
-                "documents_total": 1,
-                "excluded_by_status": {},
-            }
-
-        statement = select(Document.status, func.count(Document.id)).group_by(
-            Document.status
-        )
-        if incubator_number is not None:
-            statement = statement.where(Document.incubator_number == incubator_number)
-        if language is not None:
-            statement = statement.where(Document.language == language)
-        status_counts = Counter(dict(db.execute(statement).all()))
-        included = status_counts.pop(READY_STATUS, 0)
-        return {
-            "documents_included": included,
-            "documents_total": included + sum(status_counts.values()),
-            "excluded_by_status": dict(sorted(status_counts.items())),
-        }
-
-    @staticmethod
-    def _validate_document(db: Session, document_id: str) -> None:
-        document = db.get(Document, UUID(document_id))
-        if document is None:
-            raise DocumentoNoEncontrado(document_id)
-        if document.status != READY_STATUS:
-            raise NetworkDataUnavailable(
-                f"Documento {document_id} debe estar en estado '{READY_STATUS}' "
-                f"para construir su red (estado actual: '{document.status}')"
-            )
-
-    @staticmethod
-    def _replace_directory(source: Path, target: Path) -> None:
-        backup = target.with_name(f".{target.name}.previous")
-        if backup.exists():
-            shutil.rmtree(backup)
-        if target.exists():
-            target.replace(backup)
-        try:
-            source.replace(target)
-        except Exception:
-            if backup.exists() and not target.exists():
-                backup.replace(target)
-            raise
-        if backup.exists():
-            shutil.rmtree(backup)
-
-    @staticmethod
     def build(
         db: Session,
         *,
@@ -313,132 +339,99 @@ class NetworkService:
         incubator_number: int | None = None,
         language: str | None = None,
     ) -> dict:
-        # Matplotlib/NetworkX son dependencias del análisis, no del arranque de la API.
-        # La importación diferida mantiene disponibles los demás endpoints aunque el
-        # entorno de despliegue todavía no haya instalado el extra de visualización.
-        from src.analysis.network_visualization import generate_visualizations
-
-        if document_id is not None:
-            NetworkService._validate_document(db, document_id)
-
-        scope, target = NetworkService._target_dir(
-            minimum_weight=minimum_weight,
-            include_isolates=include_isolates,
+        scope_type, scope_id, lang = _graph_scope(
             document_id=document_id,
             incubator_number=incubator_number,
             language=language,
         )
-        coverage = NetworkService._coverage(
+        result, coverage = _build_red_plana_result(
             db,
             document_id=document_id,
             incubator_number=incubator_number,
             language=language,
         )
-        mentions = load_db_mentions(
-            document_id,
-            status=None if document_id is not None else READY_STATUS,
-            incubator_number=incubator_number,
-            language=language,
-            db=db,
+        base_name = red_plana_filename(minimum_weight, include_isolates)
+        g_path = graphml_path(scope_type, scope_id, lang, base_name)
+        n_path = nodes_csv_path(scope_type, scope_id, lang, base_name)
+        e_path = edges_csv_path(scope_type, scope_id, lang, base_name)
+        j_path = json_path(scope_type, scope_id, lang, base_name)
+        lock_path = (
+            settings.STORAGE_GRAPHS
+            / "graphml"
+            / graph_scope_dir(scope_type, scope_id, lang)
         )
-        if not mentions:
-            raise NetworkDataUnavailable(
-                f"No hay menciones canonicalizadas disponibles para {scope}"
+
+        def _write_graphml(temp_path: Path) -> None:
+            export_cooccurrence_graph(
+                result,
+                temp_path.parent,
+                base_name,
+                graph_metadata={
+                    "scope_type": scope_type,
+                    "scope_id": str(scope_id) if scope_id is not None else None,
+                    "language": lang,
+                    "edge_definition": "same_sentence_cooccurrence",
+                    "directed": "false",
+                },
+                minimum_weight=minimum_weight,
+                include_isolates=include_isolates,
             )
 
-        result = build_sentence_cooccurrence(mentions)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        with _lock_for(target):
-            temporary = Path(
-                tempfile.mkdtemp(prefix=".network-build-", dir=target.parent)
+        def _write_json(temp_path: Path) -> None:
+            pair_summary = category_pair_rows(
+                result,
+                minimum_weight=minimum_weight,
+                include_isolates=include_isolates,
             )
-            try:
-                analysis_summary = export_result(
-                    result,
-                    temporary,
-                    scope=scope,
-                    document_id=document_id,
-                    mention_count=len(mentions),
-                )
-                visual_summary = generate_visualizations(
-                    temporary,
-                    temporary,
-                    minimum_weight=minimum_weight,
-                    include_isolates=include_isolates,
-                )
-                relative_dir = target.relative_to(settings.STORAGE_NETWORK)
-                output_names = {
-                    **visual_summary["outputs"],
-                    "analysis_summary_json": "summary.json",
-                    "analysis_nodes_csv": "nodes.csv",
-                    "analysis_edges_csv": "edges.csv",
-                    "sentences_csv": "sentences.csv",
-                    "sentence_entities_csv": "sentence_entities.csv",
-                    "edge_observations_csv": "edge_observations.csv",
-                    "category_pair_summary_csv": "category_pair_summary.csv",
-                    "cooccurrence_matrix": "cooccurrence_adjacency.mtx",
-                    "incidence_matrix": "sentence_node_incidence.mtx",
-                }
-                outputs = {
-                    name: (relative_dir / filename).as_posix()
-                    for name, filename in output_names.items()
-                }
-                pair_summary = category_pair_rows(
-                    result,
-                    minimum_weight,
-                    include_isolates=include_isolates,
-                )
-                response = {
-                    "generated_at": analysis_summary["generated_at"],
-                    "scope": scope,
-                    "filters": {
-                        "incubator_number": incubator_number or "all",
-                        "language": language or "all",
-                    },
+            summary = _graph_summary_for_red_plana(
+                result, minimum_weight, include_isolates
+            )
+            metadata = build_metadata(
+                scope_type=scope_type,
+                scope_id=scope_id,
+                language=lang,
+                base_name=base_name,
+                filters={
+                    "incubator_number": _incubator_filter_value(scope_type, scope_id),
+                    "language": lang,
                     "minimum_weight": minimum_weight,
-                    "includes_isolates": include_isolates,
-                    "coverage": coverage,
-                    "counts": {
-                        "mentions": len(mentions),
-                        "canonical_nodes": visual_summary["nodes"],
-                        "sentences": analysis_summary["counts"]["sentences"],
-                        "undirected_edges": visual_summary["edges"],
-                        "edge_observations": sum(
-                            1
-                            for observation in result.observations
-                            if result.edge_weights[
-                                (observation.source_index, observation.target_index)
-                            ]
-                            >= minimum_weight
-                        ),
-                        "max_edge_weight": max(
-                            (
-                                weight
-                                for weight in result.edge_weights.values()
-                                if weight >= minimum_weight
-                            ),
-                            default=0,
-                        ),
-                        "components": visual_summary["components"],
-                    },
-                    "nodes_by_category": {
-                        category: visual_summary["nodes_by_category"][category]
-                        for category in CATEGORY_ORDER
-                    },
-                    "category_pair_summary": pair_summary,
-                    "top_nodes_by_strength": visual_summary["top_nodes_by_strength"],
-                    "outputs": outputs,
-                }
-                with (temporary / "api_response.json").open(
-                    "w", encoding="utf-8"
-                ) as file:
-                    json.dump(response, file, ensure_ascii=False, indent=2)
-                    file.write("\n")
-                NetworkService._replace_directory(temporary, target)
-            finally:
-                if temporary.exists():
-                    shutil.rmtree(temporary)
-        return response
+                    "include_isolates": include_isolates,
+                },
+                configuration={
+                    "type": "red-plana",
+                    "minimum_weight": minimum_weight,
+                    "include_isolates": include_isolates,
+                },
+                counts={
+                    "mentions": result.source_mention_count,
+                    "projected_mentions": result.projected_mention_count,
+                    "canonical_nodes": summary["canonical_nodes"],
+                    "undirected_edges": summary["undirected_edges"],
+                    "max_edge_weight": summary["max_edge_weight"],
+                    "documents_included": coverage["documents_included"],
+                    "documents_total": coverage["documents_total"],
+                },
+                outputs={
+                    "graphml": _relative_output_path(g_path),
+                    "nodes_csv": _relative_output_path(n_path),
+                    "edges_csv": _relative_output_path(e_path),
+                },
+            )
+            metadata["category_pair_summary"] = pair_summary
+            write_metadata_json(temp_path, metadata)
+
+        _atomic_write_files(
+            {
+                g_path: _write_graphml,
+                n_path: None,
+                e_path: None,
+                j_path: _write_json,
+            },
+            lock_path,
+        )
+
+        with j_path.open(encoding="utf-8") as file:
+            return json.load(file)
 
     @staticmethod
     def build_projection(
@@ -452,69 +445,24 @@ class NetworkService:
         language: str | None = None,
         construction: dict | None = None,
     ) -> dict:
-        """Construye una proyección maestra y todas sus vistas registradas."""
-
-        if construction is not None:
-            method = construction.get("method")
-            if method == "raw-threshold-v1":
-                minimum_weight = int(construction.get("minimum_weight", 1))
-                include_isolates = bool(construction.get("include_isolates", True))
-            elif method == DOCUMENT_RECURRENT_CORE_METHOD:
-                config = DocumentRecurrentCoreConfig(
-                    method=method,
-                    minimum_node_document_count=int(
-                        construction.get("minimum_node_document_count", 2)
-                    ),
-                    edge_weighting=str(
-                        construction.get("edge_weighting", "fractional-document")
-                    ),
-                    include_minor_components=bool(
-                        construction.get("include_minor_components", True)
-                    ),
-                )
-                return NetworkService._build_projection_construction(
-                    db,
-                    projection_id,
-                    config=config,
-                    document_id=document_id,
-                    incubator_number=incubator_number,
-                    language=language,
-                )
-            else:
-                raise NetworkDataUnavailable(
-                    f"Método de construcción no soportado: {method}"
-                )
-
-        from src.analysis.network_visualization import generate_visualizations
-
         projection = NetworkService._projection(projection_id)
-        if document_id is not None:
-            NetworkService._validate_document(db, document_id)
-
-        scope, target = NetworkService._projection_target_dir(
-            projection_id,
-            minimum_weight=minimum_weight,
-            include_isolates=include_isolates,
+        scope_type, scope_id, lang = _graph_scope(
             document_id=document_id,
             incubator_number=incubator_number,
             language=language,
         )
-        coverage = NetworkService._coverage(
+        if document_id is not None:
+            _validate_document(db, document_id)
+        mentions = _load_mentions(
             db,
             document_id=document_id,
             incubator_number=incubator_number,
             language=language,
         )
-        mentions = load_db_mentions(
-            document_id,
-            status=None if document_id is not None else READY_STATUS,
-            incubator_number=incubator_number,
-            language=language,
-            db=db,
-        )
         if not mentions:
             raise NetworkDataUnavailable(
-                f"No hay menciones canonicalizadas disponibles para {scope}"
+                "No hay menciones canonicalizadas disponibles para "
+                f"{_scope_label(scope_type, scope_id, lang)}"
             )
         try:
             result = build_sentence_cooccurrence(
@@ -524,332 +472,279 @@ class NetworkService:
             )
         except ValueError as exc:
             raise NetworkDataUnavailable(str(exc)) from exc
+        coverage = _coverage(
+            db,
+            document_id=document_id,
+            incubator_number=incubator_number,
+            language=language,
+        )
 
-        target.parent.mkdir(parents=True, exist_ok=True)
-        with _lock_for(target):
-            temporary = Path(
-                tempfile.mkdtemp(prefix=".projection-build-", dir=target.parent)
+        if construction is not None:
+            return NetworkService._build_projection_construction(
+                projection_id,
+                result,
+                coverage,
+                construction,
+                scope_type=scope_type,
+                scope_id=scope_id,
+                language=lang,
+                incubator_number=incubator_number,
             )
-            try:
-                evidence_dir = temporary / "evidence"
-                analysis_summary = export_result(
-                    result,
-                    evidence_dir,
-                    scope=scope,
-                    document_id=document_id,
-                    mention_count=len(mentions),
-                )
 
-                relative_dir = target.relative_to(settings.STORAGE_NETWORK)
-                view_payloads: dict[str, dict] = {}
-                view_summaries: dict[str, dict] = {}
-                for view in projection.views:
-                    view_dir = temporary / "views" / view.view_id
-                    visual_summary = generate_visualizations(
-                        evidence_dir,
-                        view_dir,
-                        minimum_weight=minimum_weight,
-                        include_isolates=include_isolates,
-                        node_categories=view.node_categories,
-                        allowed_category_pairs=view.category_pair_labels,
-                    )
-                    view_outputs = {
-                        name: (
-                            relative_dir / "views" / view.view_id / filename
-                        ).as_posix()
-                        for name, filename in visual_summary["outputs"].items()
-                    }
-                    pair_set = set(view.category_pairs)
-                    qualifying_observations = [
-                        observation
-                        for observation in result.observations
-                        if observation.category_pair in pair_set
-                        and result.edge_weights[
-                            (observation.source_index, observation.target_index)
-                        ]
-                        >= minimum_weight
-                    ]
-                    view_definition = {
-                        "id": view.view_id,
-                        "label": view.label,
-                        "node_categories": list(view.node_categories),
-                        "category_pairs": list(view.category_pair_labels),
-                    }
-                    view_payloads[view.view_id] = {
-                        **view_definition,
-                        "counts": {
-                            "canonical_nodes": visual_summary["nodes"],
-                            "undirected_edges": visual_summary["edges"],
-                            "components": visual_summary["components"],
-                            "edge_observations": len(qualifying_observations),
-                            "max_edge_weight": max(
-                                (
-                                    result.edge_weights[
-                                        (
-                                            observation.source_index,
-                                            observation.target_index,
-                                        )
-                                    ]
-                                    for observation in qualifying_observations
-                                ),
-                                default=0,
-                            ),
-                        },
-                        "nodes_by_category": visual_summary["nodes_by_category"],
-                        "edges_by_category_pair": visual_summary[
-                            "edges_by_category_pair"
-                        ],
-                        "outputs": view_outputs,
-                    }
-                    view_summaries[view.view_id] = visual_summary
+        base_name = backbone_filename(
+            projection_id,
+            {
+                "method": "raw-threshold-v1",
+                "minimum_weight": minimum_weight,
+                "include_isolates": include_isolates,
+            },
+        )
+        return NetworkService._export_projection_backbone(
+            result,
+            projection,
+            coverage,
+            base_name,
+            scope_type,
+            scope_id,
+            lang,
+            minimum_weight=minimum_weight,
+            include_isolates=include_isolates,
+        )
 
-                all_view = next(
-                    view for view in projection.views if view.view_id == "all"
-                )
-                all_summary = view_summaries[all_view.view_id]
-                all_payload = view_payloads[all_view.view_id]
-                qualifying_edge_keys = {
-                    edge
-                    for edge, weight in result.edge_weights.items()
-                    if weight >= minimum_weight
-                }
-                qualifying_observations = [
-                    observation
-                    for observation in result.observations
-                    if (
-                        observation.source_index,
-                        observation.target_index,
-                    )
-                    in qualifying_edge_keys
-                ]
-                projection_data = projection_manifest(projection)
-                projection_definition = {
-                    key: projection_data[key]
-                    for key in (
-                        "id",
-                        "label",
-                        "node_categories",
-                        "category_pairs",
-                    )
-                }
-                evidence_outputs = {
-                    "projection_manifest_json": (
-                        relative_dir / "projection_manifest.json"
-                    ).as_posix(),
-                    "analysis_summary_json": (
-                        relative_dir / "evidence" / "summary.json"
-                    ).as_posix(),
-                    "master_nodes_csv": (
-                        relative_dir / "evidence" / "nodes.csv"
-                    ).as_posix(),
-                    "master_edges_csv": (
-                        relative_dir / "evidence" / "edges.csv"
-                    ).as_posix(),
-                    "sentences_csv": (
-                        relative_dir / "evidence" / "sentences.csv"
-                    ).as_posix(),
-                    "sentence_entities_csv": (
-                        relative_dir / "evidence" / "sentence_entities.csv"
-                    ).as_posix(),
-                    "edge_observations_csv": (
-                        relative_dir / "evidence" / "edge_observations.csv"
-                    ).as_posix(),
-                    "category_pair_summary_csv": (
-                        relative_dir / "evidence" / "category_pair_summary.csv"
-                    ).as_posix(),
-                    "cooccurrence_matrix": (
-                        relative_dir / "evidence" / "cooccurrence_adjacency.mtx"
-                    ).as_posix(),
-                    "incidence_matrix": (
-                        relative_dir / "evidence" / "sentence_node_incidence.mtx"
-                    ).as_posix(),
-                }
-                response = {
-                    "generated_at": analysis_summary["generated_at"],
-                    "scope": scope,
-                    "projection": projection_definition,
-                    "view": {
-                        "id": all_view.view_id,
-                        "label": all_view.label,
-                        "node_categories": list(all_view.node_categories),
-                        "category_pairs": list(all_view.category_pair_labels),
-                    },
-                    "filters": {
-                        "incubator_number": incubator_number or "all",
-                        "language": language or "all",
-                    },
+    @staticmethod
+    def _export_projection_backbone(
+        result: CooccurrenceResult,
+        projection: ProjectionDefinition,
+        coverage: dict,
+        base_name: str,
+        scope_type: str,
+        scope_id: str | int | None,
+        language: str,
+        *,
+        minimum_weight: int = 1,
+        include_isolates: bool = True,
+        config: dict | None = None,
+    ) -> dict:
+        g_path = graphml_path(scope_type, scope_id, language, base_name)
+        n_path = nodes_csv_path(scope_type, scope_id, language, base_name)
+        e_path = edges_csv_path(scope_type, scope_id, language, base_name)
+        j_path = json_path(scope_type, scope_id, language, base_name)
+        lock_path = (
+            settings.STORAGE_GRAPHS
+            / "graphml"
+            / graph_scope_dir(scope_type, scope_id, language)
+        )
+
+        def _write_graphml(temp_path: Path) -> None:
+            export_cooccurrence_graph(
+                result,
+                temp_path.parent,
+                base_name,
+                graph_metadata={
+                    "scope_type": scope_type,
+                    "scope_id": str(scope_id) if scope_id is not None else None,
+                    "language": language,
+                    "projection_id": projection.projection_id,
+                    "edge_definition": "same_sentence_cooccurrence",
+                    "directed": "false",
+                },
+                minimum_weight=minimum_weight,
+                include_isolates=include_isolates,
+            )
+
+        def _write_json(temp_path: Path) -> None:
+            pair_summary = category_pair_rows(
+                result,
+                minimum_weight=minimum_weight,
+                include_isolates=include_isolates,
+            )
+            summary = _graph_summary_for_red_plana(
+                result, minimum_weight, include_isolates
+            )
+            metadata = build_metadata(
+                scope_type=scope_type,
+                scope_id=scope_id,
+                language=language,
+                base_name=base_name,
+                filters={
+                    "incubator_number": _incubator_filter_value(scope_type, scope_id),
+                    "language": language,
                     "minimum_weight": minimum_weight,
-                    "includes_isolates": include_isolates,
-                    "coverage": coverage,
-                    "counts": {
-                        "mentions": result.projected_mention_count,
-                        "source_mentions": result.source_mention_count,
-                        "projected_mentions": result.projected_mention_count,
-                        "context_mentions_in_projected_sentences": analysis_summary[
-                            "counts"
-                        ]["context_mentions_in_projected_sentences"],
-                        "canonical_nodes": all_summary["nodes"],
-                        "sentences": analysis_summary["counts"]["sentences"],
-                        "sentences_with_edges": len(
-                            {
-                                observation.sentence_row
-                                for observation in qualifying_observations
-                            }
-                        ),
-                        "sentence_entity_presences": analysis_summary["counts"][
-                            "sentence_entity_presences"
-                        ],
-                        "undirected_edges": all_summary["edges"],
-                        "edge_observations": len(qualifying_observations),
-                        "max_edge_weight": max(
-                            (
-                                weight
-                                for weight in result.edge_weights.values()
-                                if weight >= minimum_weight
-                            ),
-                            default=0,
-                        ),
-                        "components": all_summary["components"],
-                    },
-                    "nodes_by_category": all_summary["nodes_by_category"],
-                    "category_pair_summary": category_pair_rows(
-                        result,
-                        minimum_weight,
-                        include_isolates=include_isolates,
-                    ),
-                    "top_nodes_by_strength": all_summary["top_nodes_by_strength"],
-                    "outputs": {**all_payload["outputs"], **evidence_outputs},
-                    "views": view_payloads,
-                }
-                manifest_payload = {
-                    "generated_at": analysis_summary["generated_at"],
-                    "scope": scope,
-                    "projection": projection_data,
-                    "filters": response["filters"],
+                    "include_isolates": include_isolates,
+                },
+                configuration=config
+                or {
+                    "type": "raw-threshold-v1",
                     "minimum_weight": minimum_weight,
-                    "includes_isolates": include_isolates,
-                    "evidence_directory": "evidence",
-                    "views_directory": "views",
-                }
-                with (temporary / "projection_manifest.json").open(
-                    "w", encoding="utf-8"
-                ) as file:
-                    json.dump(manifest_payload, file, ensure_ascii=False, indent=2)
-                    file.write("\n")
-                with (temporary / "api_response.json").open(
-                    "w", encoding="utf-8"
-                ) as file:
-                    json.dump(response, file, ensure_ascii=False, indent=2)
-                    file.write("\n")
-                NetworkService._replace_directory(temporary, target)
-            finally:
-                if temporary.exists():
-                    shutil.rmtree(temporary)
-        return response
+                    "include_isolates": include_isolates,
+                },
+                counts={
+                    "mentions": result.source_mention_count,
+                    "projected_mentions": result.projected_mention_count,
+                    "canonical_nodes": summary["canonical_nodes"],
+                    "undirected_edges": summary["undirected_edges"],
+                    "max_edge_weight": summary["max_edge_weight"],
+                    "documents_included": coverage["documents_included"],
+                    "documents_total": coverage["documents_total"],
+                },
+                outputs={
+                    "graphml": _relative_output_path(g_path),
+                    "nodes_csv": _relative_output_path(n_path),
+                    "edges_csv": _relative_output_path(e_path),
+                },
+            )
+            metadata["projection"] = {
+                "id": projection.projection_id,
+                "label": projection.label,
+                "node_categories": list(projection.node_categories),
+                "category_pairs": [
+                    "--".join(pair) for pair in projection.category_pairs
+                ],
+            }
+            metadata["category_pair_summary"] = pair_summary
+            write_metadata_json(temp_path, metadata)
+
+        _atomic_write_files(
+            {
+                g_path: _write_graphml,
+                n_path: None,
+                e_path: None,
+                j_path: _write_json,
+            },
+            lock_path,
+        )
+
+        with j_path.open(encoding="utf-8") as file:
+            return json.load(file)
 
     @staticmethod
     def _build_projection_construction(
-        db: Session,
         projection_id: str,
+        result: CooccurrenceResult,
+        coverage: dict,
+        construction: dict,
         *,
-        config: DocumentRecurrentCoreConfig,
-        document_id: str | None = None,
-        incubator_number: int | None = None,
-        language: str | None = None,
+        scope_type: str,
+        scope_id: str | int | None,
+        language: str,
+        incubator_number: int | None,
     ) -> dict:
-        """Construye evidencia W1 y deriva un backbone parametrizado."""
-
-        try:
-            config.validate()
-        except ValueError as exc:
-            raise NetworkDataUnavailable(str(exc)) from exc
-        projection = NetworkService._projection(projection_id)
-        if document_id is not None:
-            NetworkService._validate_document(db, document_id)
-        scope, target = NetworkService._construction_target_dir(
-            projection_id,
-            config,
-            document_id=document_id,
-            incubator_number=incubator_number,
-            language=language,
-        )
-        coverage = NetworkService._coverage(
-            db,
-            document_id=document_id,
-            incubator_number=incubator_number,
-            language=language,
-        )
-        mentions = load_db_mentions(
-            document_id,
-            status=None if document_id is not None else READY_STATUS,
-            incubator_number=incubator_number,
-            language=language,
-            db=db,
-        )
-        if not mentions:
-            raise NetworkDataUnavailable(
-                f"No hay menciones canonicalizadas disponibles para {scope}"
+        method = construction.get("method")
+        if method == "raw-threshold-v1":
+            minimum_weight = int(construction.get("minimum_weight", 1))
+            include_isolates = bool(construction.get("include_isolates", True))
+            base_name = backbone_filename(
+                projection_id,
+                {
+                    "method": "raw-threshold-v1",
+                    "minimum_weight": minimum_weight,
+                    "include_isolates": include_isolates,
+                },
             )
-        try:
-            result = build_sentence_cooccurrence(
-                mentions,
-                node_categories=projection.node_categories,
-                allowed_category_pairs=projection.category_pairs,
+            return NetworkService._export_projection_backbone(
+                result,
+                NetworkService._projection(projection_id),
+                coverage,
+                base_name,
+                scope_type,
+                scope_id,
+                language,
+                minimum_weight=minimum_weight,
+                include_isolates=include_isolates,
             )
-        except ValueError as exc:
-            raise NetworkDataUnavailable(str(exc)) from exc
 
-        target.parent.mkdir(parents=True, exist_ok=True)
-        with _lock_for(target):
-            temporary = Path(
-                tempfile.mkdtemp(prefix=".construction-build-", dir=target.parent)
+        if method == DOCUMENT_RECURRENT_CORE_METHOD:
+            config = DocumentRecurrentCoreConfig(
+                method=method,
+                minimum_node_document_count=int(
+                    construction.get("minimum_node_document_count", 2)
+                ),
+                edge_weighting=str(
+                    construction.get("edge_weighting", "fractional-document")
+                ),
+                include_minor_components=bool(
+                    construction.get("include_minor_components", True)
+                ),
             )
             try:
-                evidence_dir = temporary / "evidence"
-                export_result(
-                    result,
-                    evidence_dir,
-                    scope=scope,
-                    document_id=document_id,
-                    mention_count=len(mentions),
-                )
-                payload = export_document_recurrent_core(
-                    result,
-                    temporary,
-                    scope=scope,
-                    projection=projection,
-                    config=config,
-                    filters={
-                        "incubator_number": incubator_number or "all",
-                        "language": language or "all",
+                config.validate()
+            except ValueError as exc:
+                raise NetworkDataUnavailable(str(exc)) from exc
+
+            build = build_document_recurrent_core(result, config)
+            base_name = backbone_filename(projection_id, construction)
+            g_path = graphml_path(scope_type, scope_id, language, base_name)
+            n_path = nodes_csv_path(scope_type, scope_id, language, base_name)
+            e_path = edges_csv_path(scope_type, scope_id, language, base_name)
+            j_path = json_path(scope_type, scope_id, language, base_name)
+            lock_path = (
+                settings.STORAGE_GRAPHS
+                / "graphml"
+                / graph_scope_dir(scope_type, scope_id, language)
+            )
+
+            def _write_graphml(temp_path: Path) -> None:
+                export_backbone_to_files(
+                    build,
+                    graphml_path=temp_path,
+                    nodes_csv_path=temp_path.with_name(f"{base_name}_nodes.csv"),
+                    edges_csv_path=temp_path.with_name(f"{base_name}_edges.csv"),
+                    json_path=temp_path.with_name(f"{base_name}.json"),
+                    metadata={
+                        "projection_id": projection_id,
+                        "graph": {
+                            "scope_type": scope_type,
+                            "scope_id": str(scope_id) if scope_id is not None else "",
+                            "language": language,
+                            "projection_id": projection_id,
+                            "construction_method": config.method,
+                            "minimum_node_document_count": config.minimum_node_document_count,
+                            "edge_weighting": config.edge_weighting,
+                        },
+                        "scope": _scope_label(scope_type, scope_id, language),
+                        "filters": {
+                            "incubator_number": (
+                                incubator_number
+                                if incubator_number is not None
+                                else "all"
+                            ),
+                            "language": language,
+                        },
+                        "configuration": {
+                            "type": config.method,
+                            "minimum_node_document_count": config.minimum_node_document_count,
+                            "edge_weighting": config.edge_weighting,
+                            "include_minor_components": config.include_minor_components,
+                        },
+                        "base_counts": {
+                            "canonical_nodes": len(result.nodes),
+                            "undirected_edges": len(result.edge_weights),
+                            "sentences": len(result.sentences),
+                            "edge_observations": len(result.observations),
+                        },
+                        "coverage": coverage,
+                        "outputs": {
+                            "graphml": _relative_output_path(g_path),
+                            "nodes_csv": _relative_output_path(n_path),
+                            "edges_csv": _relative_output_path(e_path),
+                        },
                     },
                 )
-                payload["coverage"] = coverage
-                payload["outputs"].update(
-                    {
-                        "base_analysis_summary_json": "evidence/summary.json",
-                        "base_nodes_csv": "evidence/nodes.csv",
-                        "base_edges_csv": "evidence/edges.csv",
-                        "sentences_csv": "evidence/sentences.csv",
-                        "sentence_entities_csv": "evidence/sentence_entities.csv",
-                        "edge_observations_csv": "evidence/edge_observations.csv",
-                        "category_pair_summary_csv": (
-                            "evidence/category_pair_summary.csv"
-                        ),
-                    }
-                )
-                relative_dir = target.relative_to(settings.STORAGE_NETWORK)
-                response = NetworkService._qualify_output_paths(payload, relative_dir)
-                with (temporary / "api_response.json").open(
-                    "w", encoding="utf-8"
-                ) as file:
-                    json.dump(response, file, ensure_ascii=False, indent=2)
-                    file.write("\n")
-                NetworkService._replace_directory(temporary, target)
-            finally:
-                if temporary.exists():
-                    shutil.rmtree(temporary)
-        return response
+
+            _atomic_write_files(
+                {
+                    g_path: _write_graphml,
+                    n_path: None,
+                    e_path: None,
+                    j_path: None,
+                },
+                lock_path,
+            )
+
+            with j_path.open(encoding="utf-8") as file:
+                return json.load(file)
+
+        raise NetworkDataUnavailable(f"Método de construcción no soportado: {method}")
 
     @staticmethod
     def cluster_projection_leiden(
@@ -863,24 +758,20 @@ class NetworkService:
         incubator_number: int | None = None,
         language: str | None = None,
     ) -> dict:
-        """Calcula Leiden sobre una vista existente sin reconstruir la red."""
-
-        projection = NetworkService._projection(projection_id)
-        view = next(
-            (
-                candidate
-                for candidate in projection.views
-                if candidate.view_id == view_id
-            ),
-            None,
-        )
-        if view is None:
-            raise NetworkViewNotFound(projection_id, view_id)
+        NetworkService._projection(projection_id)
         if component_scope not in {"all-components", "main-component"}:
             raise NetworkDataUnavailable(
                 "component_scope debe ser all-components o main-component"
             )
+        if component_scope != "main-component" or view_id != "all":
+            raise NetworkDataUnavailable(
+                "La publicación simplificada usa únicamente main-component/all"
+            )
 
+        scope_type, scope_id, lang = _graph_scope(
+            incubator_number=incubator_number,
+            language=language,
+        )
         construction_config = DocumentRecurrentCoreConfig(
             method=str(construction.get("method", "")),
             minimum_node_document_count=int(
@@ -910,112 +801,99 @@ class NetworkService:
         except (ValueError, LeidenError) as exc:
             raise NetworkDataUnavailable(str(exc)) from exc
 
-        scope, construction_target = NetworkService._construction_target_dir(
-            projection_id,
-            construction_config,
-            incubator_number=incubator_number,
-            language=language,
+        backbone_name = backbone_filename(projection_id, construction)
+        leiden_name = leiden_filename(backbone_name, clustering_values)
+        source_graphml = graphml_path(scope_type, scope_id, lang, backbone_name)
+        g_path = graphml_path(scope_type, scope_id, lang, leiden_name)
+        j_path = json_path(scope_type, scope_id, lang, leiden_name)
+        c_path = communities_csv_path(scope_type, scope_id, lang, leiden_name)
+        m_path = members_csv_path(scope_type, scope_id, lang, leiden_name)
+        lock_path = (
+            settings.STORAGE_GRAPHS
+            / "graphml"
+            / graph_scope_dir(scope_type, scope_id, lang)
         )
-        source_view_dir = construction_target / "views" / component_scope / view.view_id
-        source_graphml = source_view_dir / "network.graphml"
-        clustering_target = NetworkService._leiden_target_dir(
-            source_view_dir, clustering_config
-        )
-        construction_target.parent.mkdir(parents=True, exist_ok=True)
 
-        # El mismo bloqueo que usa la construcción impide leer el GraphML mientras
-        # su directorio raíz está siendo reemplazado atómicamente.
-        with _lock_for(construction_target):
+        with _lock_for(lock_path):
             if not source_graphml.is_file():
                 raise NetworkArtifactsNotFound(
-                    f"{scope},projection:{projection_id},"
-                    f"construction:{construction_config.method},"
-                    f"component_scope:{component_scope},view:{view.view_id}"
+                    f"{projection_id}/{construction}/{component_scope}/{view_id}"
                 )
             source_hash = graph_file_sha256(source_graphml)
-            cached_path = clustering_target / "api_response.json"
-            if not force_recompute and cached_path.is_file():
+            if not force_recompute and j_path.is_file():
                 try:
-                    with cached_path.open(encoding="utf-8") as file:
+                    with j_path.open(encoding="utf-8") as file:
                         cached = json.load(file)
                 except (OSError, json.JSONDecodeError):
                     cached = None
                 if (
                     isinstance(cached, dict)
                     and cached.get("source", {}).get("graphml_sha256") == source_hash
-                    and cached.get("configuration") == asdict(clustering_config)
+                    and cached.get("configuration") == clustering_config.__dict__
                 ):
                     cached["cached"] = True
                     return cached
 
-            clustering_target.parent.mkdir(parents=True, exist_ok=True)
-            temporary = Path(
-                tempfile.mkdtemp(prefix=".leiden-build-", dir=clustering_target.parent)
-            )
+            temporary = Path(tempfile.mkdtemp(prefix=".leiden-build-"))
             try:
                 try:
                     payload = export_leiden_clustering(
                         source_graphml,
                         temporary,
                         config=clustering_config,
+                        base_name=leiden_name,
                     )
                 except LeidenDependencyError as exc:
                     raise NetworkClusteringDependencyUnavailable() from exc
                 except LeidenError as exc:
                     raise NetworkDataUnavailable(str(exc)) from exc
 
-                filters = {
-                    "incubator_number": incubator_number or "all",
-                    "language": language or "all",
-                }
-                view_definition = {
-                    "id": view.view_id,
-                    "label": view.label,
-                    "node_categories": list(view.node_categories),
-                    "category_pairs": list(view.category_pair_labels),
-                }
-                source_relative = source_graphml.relative_to(
-                    settings.STORAGE_NETWORK
-                ).as_posix()
-                clustering_relative = clustering_target.relative_to(
-                    settings.STORAGE_NETWORK
-                )
-                local_outputs = dict(payload["outputs"])
-                local_outputs["api_response_json"] = "api_response.json"
-                response = {
-                    **payload,
-                    "scope": scope,
-                    "filters": filters,
-                    "projection_id": projection_id,
-                    "construction": asdict(construction_config),
-                    "source": {
-                        **payload["source"],
+                metadata = build_metadata(
+                    scope_type=scope_type,
+                    scope_id=scope_id,
+                    language=lang,
+                    base_name=leiden_name,
+                    filters={
+                        "incubator_number": (
+                            incubator_number if incubator_number is not None else "all"
+                        ),
+                        "language": lang,
                         "component_scope": component_scope,
-                        "view": view_definition,
-                        "outputs": {"graphml": source_relative},
+                        "view_id": view_id,
                     },
-                    "outputs": {
-                        name: (clustering_relative / filename).as_posix()
-                        for name, filename in local_outputs.items()
+                    configuration=clustering_config.__dict__,
+                    counts=payload["counts"],
+                    outputs={
+                        "graphml": _relative_output_path(g_path),
+                        "communities_csv": _relative_output_path(c_path),
+                        "members_csv": _relative_output_path(m_path),
                     },
-                }
-                # El resumen persistido usa rutas relativas al mount público; la
-                # capa HTTP será la única que les anteponga host y /files/networks.
-                with (temporary / "clustering_summary.json").open(
-                    "w", encoding="utf-8"
-                ) as file:
-                    json.dump(response, file, ensure_ascii=False, indent=2)
-                    file.write("\n")
-                with (temporary / "api_response.json").open(
-                    "w", encoding="utf-8"
-                ) as file:
-                    json.dump(response, file, ensure_ascii=False, indent=2)
-                    file.write("\n")
-                NetworkService._replace_directory(temporary, clustering_target)
+                    graph_hash=source_hash,
+                    metrics={
+                        "modularity": payload["modularity"],
+                        "objective_quality": payload["objective_quality"],
+                    },
+                )
+                metadata["projection_id"] = projection_id
+                metadata["source"] = payload["source"]
+                metadata["status"] = payload["status"]
+                metadata["cached"] = False
+                write_metadata_json(temporary / f"{leiden_name}.json", metadata)
+
+                _replace_file(
+                    temporary / payload["outputs"]["clustered_graphml"], g_path
+                )
+                _replace_file(temporary / payload["outputs"]["communities_csv"], c_path)
+                _replace_file(
+                    temporary / payload["outputs"]["community_members_csv"], m_path
+                )
+                _replace_file(temporary / f"{leiden_name}.json", j_path)
             finally:
                 if temporary.exists():
                     shutil.rmtree(temporary)
-        return response
+
+        with j_path.open(encoding="utf-8") as file:
+            return json.load(file)
 
     @staticmethod
     def latest(
@@ -1025,19 +903,18 @@ class NetworkService:
         incubator_number: int | None = None,
         language: str | None = None,
     ) -> dict:
-        scope, target = NetworkService._target_dir(
-            minimum_weight=minimum_weight,
-            include_isolates=include_isolates,
+        scope_type, scope_id, lang = _graph_scope(
             incubator_number=incubator_number,
             language=language,
         )
-        path = target / "api_response.json"
-        if not path.exists():
-            raise NetworkArtifactsNotFound(scope)
-        with path.open(encoding="utf-8") as file:
+        base_name = red_plana_filename(minimum_weight, include_isolates)
+        j_path = json_path(scope_type, scope_id, lang, base_name)
+        if not j_path.exists():
+            raise NetworkArtifactsNotFound(_scope_label(scope_type, scope_id, lang))
+        with j_path.open(encoding="utf-8") as file:
             payload = json.load(file)
         if not isinstance(payload, dict):
-            raise NetworkArtifactsNotFound(scope)
+            raise NetworkArtifactsNotFound(_scope_label(scope_type, scope_id, lang))
         return payload
 
     @staticmethod
@@ -1050,25 +927,36 @@ class NetworkService:
         incubator_number: int | None = None,
         language: str | None = None,
     ) -> dict:
-        scope, target = NetworkService._projection_target_dir(
-            projection_id,
-            minimum_weight=minimum_weight,
-            include_isolates=include_isolates,
+        NetworkService._projection(projection_id)
+        scope_type, scope_id, lang = _graph_scope(
             document_id=document_id,
             incubator_number=incubator_number,
             language=language,
         )
-        path = target / "api_response.json"
-        if not path.exists():
-            raise NetworkArtifactsNotFound(f"{scope},projection:{projection_id}")
-        with path.open(encoding="utf-8") as file:
+        base_name = backbone_filename(
+            projection_id,
+            {
+                "method": "raw-threshold-v1",
+                "minimum_weight": minimum_weight,
+                "include_isolates": include_isolates,
+            },
+        )
+        j_path = json_path(scope_type, scope_id, lang, base_name)
+        if not j_path.exists():
+            raise NetworkArtifactsNotFound(
+                f"{projection_id}/{_scope_label(scope_type, scope_id, lang)}"
+            )
+        with j_path.open(encoding="utf-8") as file:
             payload = json.load(file)
         if not isinstance(payload, dict):
-            raise NetworkArtifactsNotFound(f"{scope},projection:{projection_id}")
+            raise NetworkArtifactsNotFound(
+                f"{projection_id}/{_scope_label(scope_type, scope_id, lang)}"
+            )
         return payload
 
     @staticmethod
     def edge_evidence(
+        db: Session,
         projection_id: str,
         source_id: str,
         target_id: str,
@@ -1081,112 +969,127 @@ class NetworkService:
         offset: int = 0,
         limit: int = 100,
     ) -> dict:
-        scope, target = NetworkService._projection_target_dir(
-            projection_id,
-            minimum_weight=minimum_weight,
-            include_isolates=include_isolates,
+        projection = NetworkService._projection(projection_id)
+        scope_type, scope_id, lang = _graph_scope(
             document_id=document_id,
             incubator_number=incubator_number,
             language=language,
         )
-        evidence_dir = target / "evidence"
-        if not (target / "api_response.json").exists():
-            raise NetworkArtifactsNotFound(f"{scope},projection:{projection_id}")
-
-        def read_rows(filename: str) -> list[dict[str, str]]:
-            path = evidence_dir / filename
-            if not path.exists():
-                raise NetworkArtifactsNotFound(f"{scope},projection:{projection_id}")
-            with path.open(encoding="utf-8", newline="") as file:
-                return list(csv.DictReader(file))
-
-        edge_row = next(
-            (
-                row
-                for row in read_rows("edges.csv")
-                if {
-                    row.get("source_canonical_id", ""),
-                    row.get("target_canonical_id", ""),
-                }
-                == {source_id, target_id}
-                and int(row.get("sentence_count") or 0) >= minimum_weight
-            ),
-            None,
+        base_name = backbone_filename(
+            projection_id,
+            {
+                "method": "raw-threshold-v1",
+                "minimum_weight": minimum_weight,
+                "include_isolates": include_isolates,
+            },
         )
-        if edge_row is None:
+        j_path = json_path(scope_type, scope_id, lang, base_name)
+        if not j_path.exists():
+            raise NetworkArtifactsNotFound(
+                f"{projection_id}/{_scope_label(scope_type, scope_id, lang)}"
+            )
+
+        source_uuid = UUID(source_id)
+        target_uuid = UUID(target_id)
+        projected_categories = set(projection.node_categories)
+
+        def scoped_entity_sentences(canonical_id: UUID):
+            statement = (
+                select(Entity.document_id, Entity.sentence_id)
+                .join(Document, Document.id == Entity.document_id)
+                .where(Entity.canonical_id == canonical_id)
+            )
+            if document_id is not None:
+                statement = statement.where(Document.id == UUID(document_id))
+            else:
+                statement = statement.where(Document.status == READY_STATUS)
+            if incubator_number is not None:
+                statement = statement.where(
+                    Document.incubator_number == incubator_number
+                )
+            if language is not None:
+                statement = statement.where(Document.language == language)
+            return statement
+
+        sentence_subquery = (
+            scoped_entity_sentences(source_uuid)
+            .intersect(scoped_entity_sentences(target_uuid))
+            .subquery("common_sentences")
+        )
+
+        statement = (
+            select(
+                Sentence.document_id,
+                Sentence.sentence_id,
+                Sentence.text.label("context"),
+                Entity.canonical_id,
+                CanonicalEntity.canonical_name,
+                Entity.category,
+                Entity.text.label("mention_text"),
+                Entity.ambiguity,
+            )
+            .join(
+                sentence_subquery,
+                (Sentence.document_id == sentence_subquery.c.document_id)
+                & (Sentence.sentence_id == sentence_subquery.c.sentence_id),
+            )
+            .join(
+                Entity,
+                (Entity.document_id == Sentence.document_id)
+                & (Entity.sentence_id == Sentence.sentence_id),
+            )
+            .join(CanonicalEntity, CanonicalEntity.id == Entity.canonical_id)
+            .order_by(Sentence.document_id, Sentence.sentence_id, Entity.position_start)
+        )
+
+        rows = db.execute(statement).all()
+
+        sentences_map: dict[tuple[str, str], dict] = {}
+        for row in rows:
+            key = (str(row.document_id), row.sentence_id)
+            sentence = sentences_map.setdefault(
+                key,
+                {
+                    "document_id": str(row.document_id),
+                    "sentence_id": row.sentence_id,
+                    "context": row.context,
+                    "projected_entities": [],
+                    "context_entities": [],
+                },
+            )
+            entity = {
+                "canonical_id": str(row.canonical_id),
+                "canonical_name": row.canonical_name,
+                "category": row.category,
+                "is_projected": row.category in projected_categories,
+                "mention_text": row.mention_text,
+                "ambiguity": row.ambiguity,
+            }
+            if entity not in sentence["context_entities"]:
+                sentence["context_entities"].append(entity)
+            if entity["is_projected"] and entity not in sentence["projected_entities"]:
+                sentence["projected_entities"].append(entity)
+
+        items = list(sentences_map.values())
+        if len(items) < minimum_weight:
             raise NetworkEdgeEvidenceNotFound(source_id, target_id)
 
-        observations = [
-            row
-            for row in read_rows("edge_observations.csv")
-            if {
-                row.get("source_canonical_id", ""),
-                row.get("target_canonical_id", ""),
-            }
-            == {source_id, target_id}
-        ]
-        sentences = {
-            (row["document_id"], row["sentence_id"]): row
-            for row in read_rows("sentences.csv")
-        }
-        entities_by_sentence: dict[tuple[str, str], list[dict]] = {}
-        for row in read_rows("sentence_entities.csv"):
-            key = (row["document_id"], row["sentence_id"])
-            entities_by_sentence.setdefault(key, []).append(
-                {
-                    "canonical_id": row["canonical_id"],
-                    "canonical_name": row["canonical_name"],
-                    "category": row["category"],
-                    "is_projected": row["is_projected"].casefold() == "true",
-                    "mention_count": int(row["mention_count"]),
-                    "texts": [
-                        item for item in row.get("texts", "").split(" | ") if item
-                    ],
-                    "ambiguities": [
-                        item for item in row.get("ambiguities", "").split(" | ") if item
-                    ],
-                }
-            )
-
-        items = []
-        for observation in observations[offset : offset + limit]:
-            key = (observation["document_id"], observation["sentence_id"])
-            sentence = sentences.get(key, {})
-            context_entities = entities_by_sentence.get(key, [])
-            items.append(
-                {
-                    "document_id": observation["document_id"],
-                    "sentence_id": observation["sentence_id"],
-                    "context": sentence.get("context")
-                    or observation.get("context", ""),
-                    "pair_context": observation.get("pair_context", ""),
-                    "projected_entities": [
-                        entity for entity in context_entities if entity["is_projected"]
-                    ],
-                    "context_entities": context_entities,
-                }
-            )
         return {
             "projection_id": projection_id,
-            "scope": scope,
+            "scope": _scope_label(scope_type, scope_id, lang),
             "edge": {
-                "source_canonical_id": edge_row["source_canonical_id"],
-                "target_canonical_id": edge_row["target_canonical_id"],
-                "source_name": edge_row["source_name"],
-                "target_name": edge_row["target_name"],
-                "category_pair": edge_row["category_pair"],
-                "weight": int(edge_row["sentence_count"]),
-                "document_count": int(edge_row["document_count"]),
+                "source_canonical_id": source_id,
+                "target_canonical_id": target_id,
             },
-            "total": len(observations),
+            "total": len(items),
             "offset": offset,
             "limit": limit,
-            "items": items,
+            "items": items[offset : offset + limit],
         }
 
     @staticmethod
     def with_public_urls(payload: dict, base_url: str) -> dict:
-        prefix = f"{base_url.rstrip('/')}/files/networks"
+        prefix = f"{base_url.rstrip('/')}/files/graphs"
 
         def rewrite(value, *, outputs: bool = False):
             if isinstance(value, dict):

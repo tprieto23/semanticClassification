@@ -3,31 +3,39 @@ import tempfile
 import unittest
 from dataclasses import replace
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import Mock, patch
+from uuid import UUID
 
 import networkx as nx
 from pydantic import ValidationError
 
+from src.analysis.cooccurrence import MentionRecord
 from src.api.main import app
 from src.api.schemas.network import (
     AnalyticalNetworkBuildResponse,
     LeidenClusteringRequest,
     LeidenClusteringResponse,
     NetworkBuildRequest,
+    NetworkBuildResponse,
     TypedNetworkBuildRequest,
     TypedNetworkBuildResponse,
 )
-from src.analysis.backbone import DocumentRecurrentCoreConfig
-from src.analysis.cooccurrence import MentionRecord
 from src.config import settings
-from src.services.network import NetworkArtifactsNotFound, NetworkService
+from src.services.network import NetworkArtifactsNotFound, NetworkService, _graph_scope
 
 
 class NetworkServiceTests(unittest.TestCase):
     @staticmethod
-    def _mention(node_id: str, name: str, category: str, start: int) -> MentionRecord:
+    def _mention(
+        node_id: str,
+        name: str,
+        category: str,
+        start: int,
+        document_id: str | None = None,
+    ) -> MentionRecord:
         return MentionRecord(
-            document_id="00000000-0000-0000-0000-000000000001",
+            document_id=document_id or "00000000-0000-0000-0000-000000000001",
             sentence_id="s-1",
             canonical_id=node_id,
             canonical_name=name,
@@ -66,8 +74,6 @@ class NetworkServiceTests(unittest.TestCase):
             "post",
             paths["/analysis/network/projections/{projection_id}/clusterings/leiden"],
         )
-        request_schema = paths["/analysis/network"]["post"]["requestBody"]
-        self.assertIn("application/json", request_schema["content"])
 
     def test_build_request_accepts_all_or_specific_filters(self) -> None:
         all_incubators = NetworkBuildRequest(incubator_number="all", language=" ES ")
@@ -139,105 +145,91 @@ class NetworkServiceTests(unittest.TestCase):
                 }
             )
 
-    def test_scope_separates_incubator_and_language_combinations(self) -> None:
-        self.assertEqual(NetworkService._scope(), ("corpus", Path("corpus")))
+    def test_graph_scope_helper(self) -> None:
+        self.assertEqual(_graph_scope(), ("corpus", None, "all"))
+        self.assertEqual(_graph_scope(language="es"), ("corpus", None, "es"))
+        self.assertEqual(_graph_scope(incubator_number=4), ("incubators", 4, "all"))
         self.assertEqual(
-            NetworkService._scope(language="es"),
-            ("language:es", Path("corpus/language-es")),
-        )
-        self.assertEqual(
-            NetworkService._scope(incubator_number=4),
-            ("incubator:4", Path("incubator-4")),
-        )
-        self.assertEqual(
-            NetworkService._scope(incubator_number=4, language="es"),
-            (
-                "incubator:4,language:es",
-                Path("incubator-4/language-es"),
-            ),
+            _graph_scope(incubator_number=4, language="es"),
+            ("incubators", 4, "es"),
         )
 
-    def test_latest_is_parameter_specific(self) -> None:
+    def test_latest_reads_the_stable_official_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            target = root / "corpus" / "w3-no-isolates"
+            target = root / "json" / "corpus" / "all"
             target.mkdir(parents=True)
             expected = {
                 "scope": "corpus",
-                "outputs": {"graphml": "corpus/w3-no-isolates/g3.graphml"},
+                "outputs": {"graphml": "graphml/corpus/all/main_network.graphml"},
             }
-            (target / "api_response.json").write_text(
+            (target / "main_network.json").write_text(
                 json.dumps(expected), encoding="utf-8"
             )
 
-            with patch.object(settings, "STORAGE_NETWORK", root):
-                self.assertEqual(
-                    NetworkService.latest(minimum_weight=3, include_isolates=False),
-                    expected,
-                )
-                with self.assertRaises(NetworkArtifactsNotFound):
-                    NetworkService.latest(minimum_weight=1, include_isolates=True)
+            with patch.object(settings, "STORAGE_GRAPHS", root):
+                self.assertEqual(NetworkService.latest(), expected)
 
     def test_latest_resolves_language_specific_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            target = root / "corpus" / "language-es" / "w1-isolates"
+            target = root / "json" / "corpus" / "es"
             target.mkdir(parents=True)
             expected = {
-                "scope": "language:es",
-                "outputs": {"graphml": "corpus/language-es/w1-isolates/g1.graphml"},
+                "scope": "corpus:all:es",
+                "outputs": {"graphml": "graphml/corpus/es/main_network.graphml"},
             }
-            (target / "api_response.json").write_text(
+            (target / "main_network.json").write_text(
                 json.dumps(expected), encoding="utf-8"
             )
 
-            with patch.object(settings, "STORAGE_NETWORK", root):
-                self.assertEqual(NetworkService.latest(language="es"), expected)
-
-    def test_projection_paths_do_not_collide_with_historical_networks(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            with patch.object(settings, "STORAGE_NETWORK", root):
-                scope, target = NetworkService._projection_target_dir(
-                    "prac-infra-gov-v1",
-                    minimum_weight=1,
-                    include_isolates=True,
-                    language="es",
+            with patch.object(settings, "STORAGE_GRAPHS", root):
+                self.assertEqual(
+                    NetworkService.latest(
+                        minimum_weight=3, include_isolates=False, language="es"
+                    ),
+                    expected,
                 )
 
-        self.assertEqual(scope, "language:es")
+    def test_main_network_publishes_only_canonical_format_artifacts(self) -> None:
+        mentions = [
+            self._mention("p", "Práctica", "PRAC", 0),
+            self._mention("i", "Infraestructura", "INFRA", 20),
+        ]
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with (
+                patch.object(settings, "STORAGE_GRAPHS", root),
+                patch("src.services.network.load_db_mentions", return_value=mentions),
+                patch(
+                    "src.services.network._coverage",
+                    return_value={
+                        "documents_included": 1,
+                        "documents_total": 1,
+                        "excluded_by_status": {},
+                    },
+                ),
+            ):
+                payload = NetworkService.build(Mock(), language="es")
+
+            base = "main_network"
+            self.assertTrue((root / "graphml/corpus/es" / f"{base}.graphml").exists())
+            self.assertTrue((root / "json/corpus/es" / f"{base}.json").exists())
+            self.assertTrue((root / "csv/corpus/es" / f"{base}_nodes.csv").exists())
+            self.assertTrue((root / "csv/corpus/es" / f"{base}_edges.csv").exists())
+            self.assertEqual(len(list(root.rglob("*.*"))), 4)
+        NetworkBuildResponse.model_validate(payload)
+
+    def test_projection_paths_are_stable_by_name(self) -> None:
+        from src.analysis.graph_paths import graphml_path, json_path
+
         self.assertEqual(
-            target,
-            root
-            / "corpus"
-            / "language-es"
-            / "projections"
-            / "prac-infra-gov-v1"
-            / "w1-isolates",
+            graphml_path("corpus", None, "es", "backbone_prac-infra-gov-v1"),
+            Path("s3/graphs/graphml/corpus/es/backbone_prac-infra-gov-v1.graphml"),
         )
-
-    def test_construction_path_encodes_all_method_parameters(self) -> None:
-        from src.analysis.backbone import DocumentRecurrentCoreConfig
-
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            config = DocumentRecurrentCoreConfig(
-                minimum_node_document_count=3,
-                edge_weighting="document-count",
-                include_minor_components=False,
-            )
-            with patch.object(settings, "STORAGE_NETWORK", root):
-                scope, target = NetworkService._construction_target_dir(
-                    "prac-infra-gov-v1", config, language="es"
-                )
-
-        self.assertEqual(scope, "language:es")
         self.assertEqual(
-            target,
-            root
-            / "corpus/language-es/projections/prac-infra-gov-v1/constructions"
-            / "document-recurrent-core-v1/node-documents-3"
-            / "edge-weight-document-count/main-component-only",
+            json_path("corpus", None, "es", "backbone_prac-infra-gov-v1"),
+            Path("s3/graphs/json/corpus/es/backbone_prac-infra-gov-v1.json"),
         )
 
     def test_projection_registry_exposes_master_and_partial_views(self) -> None:
@@ -262,30 +254,28 @@ class NetworkServiceTests(unittest.TestCase):
             },
         )
 
-    def test_latest_projection_is_parameter_specific(self) -> None:
+    def test_latest_projection_reads_the_stable_backbone(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            target = (
-                root / "corpus" / "projections" / "prac-infra-gov-v1" / "w1-isolates"
-            )
+            target = root / "json" / "corpus" / "all"
             target.mkdir(parents=True)
             expected = {
                 "scope": "corpus",
                 "outputs": {
-                    "graphml": "corpus/projections/prac-infra-gov-v1/w1-isolates/views/all/g1.graphml"
+                    "graphml": "graphml/corpus/all/backbone_prac-infra-gov-v1.graphml"
                 },
             }
-            (target / "api_response.json").write_text(
+            (target / "backbone_prac-infra-gov-v1.json").write_text(
                 json.dumps(expected), encoding="utf-8"
             )
 
-            with patch.object(settings, "STORAGE_NETWORK", root):
+            with patch.object(settings, "STORAGE_GRAPHS", root):
                 self.assertEqual(
                     NetworkService.latest_projection("prac-infra-gov-v1"),
                     expected,
                 )
 
-    def test_projection_build_exports_master_evidence_and_nine_views(self) -> None:
+    def test_projection_build_publishes_only_canonical_format_artifacts(self) -> None:
         mentions = [
             self._mention("p", "Práctica", "PRAC", 0),
             self._mention("i", "Infraestructura", "INFRA", 20),
@@ -293,69 +283,31 @@ class NetworkServiceTests(unittest.TestCase):
             self._mention("c", "Actor", "CHAR", 60),
             self._mention("l", "Lugar", "LOC", 80),
         ]
-        visual_summary = {
-            "nodes": 3,
-            "edges": 3,
-            "components": 1,
-            "nodes_by_category": {"PRAC": 1, "INFRA": 1, "GOV": 1},
-            "edges_by_category_pair": {
-                "PRAC--INFRA": 1,
-                "PRAC--GOV": 1,
-                "INFRA--GOV": 1,
-            },
-            "top_nodes_by_strength": [],
-            "outputs": {"graphml": "g1.graphml"},
-        }
-
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with (
-                patch.object(settings, "STORAGE_NETWORK", root),
+                patch.object(settings, "STORAGE_GRAPHS", root),
                 patch("src.services.network.load_db_mentions", return_value=mentions),
-                patch.object(
-                    NetworkService,
-                    "_coverage",
+                patch(
+                    "src.services.network._coverage",
                     return_value={
                         "documents_included": 1,
                         "documents_total": 1,
                         "excluded_by_status": {},
                     },
                 ),
-                patch(
-                    "src.analysis.network_visualization.generate_visualizations",
-                    return_value=visual_summary,
-                ) as generate,
             ):
                 payload = NetworkService.build_projection(Mock(), "prac-infra-gov-v1")
-                evidence = NetworkService.edge_evidence("prac-infra-gov-v1", "p", "i")
 
-            target = (
-                root / "corpus" / "projections" / "prac-infra-gov-v1" / "w1-isolates"
-            )
-            self.assertTrue((target / "evidence" / "sentence_entities.csv").exists())
-            self.assertTrue((target / "evidence" / "edge_observations.csv").exists())
-            self.assertTrue((target / "projection_manifest.json").exists())
+            stem = "backbone_prac-infra-gov-v1"
+            self.assertTrue((root / "graphml/corpus/all" / f"{stem}.graphml").exists())
+            self.assertTrue((root / "json/corpus/all" / f"{stem}.json").exists())
+            self.assertTrue((root / "csv/corpus/all" / f"{stem}_nodes.csv").exists())
+            self.assertTrue((root / "csv/corpus/all" / f"{stem}_edges.csv").exists())
+            self.assertEqual(len(list(root.rglob("*.*"))), 4)
 
-        self.assertEqual(generate.call_count, 9)
-        self.assertEqual(
-            set(payload["views"]),
-            {
-                "all",
-                "cross",
-                "intra",
-                "prac-prac",
-                "infra-infra",
-                "gov-gov",
-                "prac-infra",
-                "prac-gov",
-                "infra-gov",
-            },
-        )
-        self.assertEqual(payload["counts"]["source_mentions"], 5)
+        self.assertEqual(payload["counts"]["mentions"], 5)
         self.assertEqual(payload["counts"]["projected_mentions"], 3)
-        self.assertEqual(evidence["edge"]["category_pair"], "PRAC--INFRA")
-        self.assertEqual(len(evidence["items"][0]["projected_entities"]), 3)
-        self.assertEqual(len(evidence["items"][0]["context_entities"]), 5)
         TypedNetworkBuildResponse.model_validate(payload)
 
     def test_projection_build_can_construct_document_recurrent_core(self) -> None:
@@ -377,11 +329,10 @@ class NetworkServiceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with (
-                patch.object(settings, "STORAGE_NETWORK", root),
+                patch.object(settings, "STORAGE_GRAPHS", root),
                 patch("src.services.network.load_db_mentions", return_value=mentions),
-                patch.object(
-                    NetworkService,
-                    "_coverage",
+                patch(
+                    "src.services.network._coverage",
                     return_value={
                         "documents_included": 2,
                         "documents_total": 2,
@@ -401,24 +352,24 @@ class NetworkServiceTests(unittest.TestCase):
                     },
                 )
 
-            target = (
-                root
-                / "corpus/language-es/projections/prac-infra-gov-v1/constructions"
-                / "document-recurrent-core-v1/node-documents-2"
-                / "edge-weight-fractional-document/with-minor-components"
-            )
-            self.assertTrue((target / "evidence/edge_observations.csv").exists())
-            self.assertTrue(
-                (target / "views/all-components/all/network.graphml").exists()
-            )
-            self.assertTrue((target / "construction_manifest.json").exists())
+            stem = "backbone_prac-infra-gov-v1"
+            self.assertTrue((root / "graphml/corpus/es" / f"{stem}.graphml").exists())
+            self.assertTrue((root / "json/corpus/es" / f"{stem}.json").exists())
+            self.assertTrue((root / "csv/corpus/es" / f"{stem}_nodes.csv").exists())
+            self.assertTrue((root / "csv/corpus/es" / f"{stem}_edges.csv").exists())
+            self.assertEqual(len(list(root.rglob("*.*"))), 4)
 
-        self.assertEqual(payload["analytical_network"]["canonical_nodes"], 3)
-        self.assertEqual(payload["analytical_network"]["undirected_edges"], 3)
-        self.assertEqual(len(payload["component_views"]["all-components"]), 9)
+        self.assertEqual(payload["counts"]["canonical_nodes"], 3)
+        self.assertEqual(payload["counts"]["undirected_edges"], 3)
         AnalyticalNetworkBuildResponse.model_validate(payload)
 
     def test_leiden_service_clusters_existing_graph_and_uses_cache(self) -> None:
+        try:
+            import igraph  # noqa: F401
+            import leidenalg  # noqa: F401
+        except ImportError:
+            self.skipTest("igraph/leidenalg no instalado en el entorno de test")
+
         graph = nx.Graph()
         for node in ("a", "b", "c", "d", "e", "f"):
             graph.add_node(
@@ -465,15 +416,10 @@ class NetworkServiceTests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            with patch.object(settings, "STORAGE_NETWORK", root):
-                _, target = NetworkService._construction_target_dir(
-                    "prac-infra-gov-v1",
-                    DocumentRecurrentCoreConfig(minimum_node_document_count=2),
-                    language="es",
-                )
-                source = target / "views" / "main-component" / "all"
-                source.mkdir(parents=True)
-                nx.write_graphml(graph, source / "network.graphml")
+            with patch.object(settings, "STORAGE_GRAPHS", root):
+                source = root / "graphml/corpus/es/backbone_prac-infra-gov-v1.graphml"
+                source.parent.mkdir(parents=True)
+                nx.write_graphml(graph, source)
                 payload = NetworkService.cluster_projection_leiden(
                     "prac-infra-gov-v1",
                     construction=construction,
@@ -490,7 +436,7 @@ class NetworkServiceTests(unittest.TestCase):
                     configuration=configuration,
                     language="es",
                 )
-                clustered_path = root / payload["outputs"]["clustered_graphml"]
+                clustered_path = root / payload["outputs"]["graphml"]
                 self.assertTrue(clustered_path.exists())
 
         self.assertEqual(payload["status"], "completed")
@@ -498,12 +444,11 @@ class NetworkServiceTests(unittest.TestCase):
         self.assertTrue(cached["cached"])
         LeidenClusteringResponse.model_validate(payload)
 
-    def test_public_urls_only_expose_network_mount(self) -> None:
+    def test_public_urls_expose_graphs_mount(self) -> None:
         payload = {
             "scope": "corpus",
             "outputs": {
-                "graphml": "corpus/w1-isolates/g1.graphml",
-                "interactive_html": "corpus/w1-isolates/g1_interactive.html",
+                "graphml": "graphml/corpus/es/main_network.graphml",
             },
         }
 
@@ -511,26 +456,52 @@ class NetworkServiceTests(unittest.TestCase):
 
         self.assertEqual(
             response["outputs"]["graphml"],
-            "http://testserver/files/networks/corpus/w1-isolates/g1.graphml",
+            "http://testserver/files/graphs/graphml/corpus/es/main_network.graphml",
         )
-        self.assertNotIn("s3/", response["outputs"]["interactive_html"])
 
-    def test_public_urls_are_rewritten_inside_projection_views(self) -> None:
-        payload = {
-            "outputs": {"sentences_csv": "corpus/projection/sentences.csv"},
-            "views": {
-                "all": {
-                    "outputs": {"graphml": "corpus/projection/views/all/g1.graphml"}
-                }
-            },
-        }
+    def test_edge_evidence_queries_postgres(self) -> None:
+        rows = [
+            SimpleNamespace(
+                document_id=UUID("00000000-0000-0000-0000-000000000001"),
+                sentence_id="s-1",
+                context="Los mineros trabajan en la comunidad.",
+                canonical_id=UUID("00000000-0000-0000-0000-000000000010"),
+                canonical_name="minero",
+                category="CHAR",
+                mention_text="mineros",
+                ambiguity="low",
+            ),
+            SimpleNamespace(
+                document_id=UUID("00000000-0000-0000-0000-000000000001"),
+                sentence_id="s-1",
+                context="Los mineros trabajan en la comunidad.",
+                canonical_id=UUID("00000000-0000-0000-0000-000000000011"),
+                canonical_name="comunidad",
+                category="CHAR",
+                mention_text="comunidad",
+                ambiguity="low",
+            ),
+        ]
+        db = Mock()
+        db.execute.return_value.all.return_value = rows
 
-        response = NetworkService.with_public_urls(payload, "http://testserver/")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            target = root / "json" / "corpus" / "all"
+            target.mkdir(parents=True)
+            (target / "backbone_prac-infra-gov-v1.json").write_text(
+                json.dumps({"scope": "corpus"}), encoding="utf-8"
+            )
+            with patch.object(settings, "STORAGE_GRAPHS", root):
+                evidence = NetworkService.edge_evidence(
+                    db=db,
+                    projection_id="prac-infra-gov-v1",
+                    source_id="00000000-0000-0000-0000-000000000010",
+                    target_id="00000000-0000-0000-0000-000000000011",
+                )
 
-        self.assertEqual(
-            response["views"]["all"]["outputs"]["graphml"],
-            "http://testserver/files/networks/corpus/projection/views/all/g1.graphml",
-        )
+        self.assertEqual(evidence["total"], 1)
+        self.assertEqual(len(evidence["items"][0]["context_entities"]), 2)
 
 
 if __name__ == "__main__":
