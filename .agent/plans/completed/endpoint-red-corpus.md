@@ -79,7 +79,7 @@ correlación estadística. Ya lo calcula `category_pair_rows`.
 - `src/services/network.py` — servicio orquestador. Recibe un **scope**
   (`corpus` | `incubadora N` | `document_id`) y de ahí en adelante el pipeline
   es idéntico. Reutilizado por el endpoint por-documento.
-- `src/api/routers/analysis.py` — router `POST /analysis/network`.
+- `src/api/routers/analysis_networks.py` — router `POST /analysis/network`.
 - `src/api/schemas/network.py` — `NetworkBuildResponse` + sub-modelos.
 - `src/config.py` — `STORAGE_NETWORK = s3/archivosRed`.
 

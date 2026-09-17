@@ -9,7 +9,7 @@ src/
 │   ├── main.py                ← FastAPI + CORS + /health + exception handler + router
 │   ├── routers/
 │   │   ├── documents.py       ← endpoints bajo /documents
-│   │   └── analysis.py        ← build/latest de la red de corpus
+│   │   └── analysis_networks.py ← build/latest de la red de corpus
 │   └── schemas/
 │       ├── documents.py       ← DocumentRead, DocumentListResponse, BatchProcess*
 │       ├── entities.py        ← EntityOut, ExtractEntitiesResponse

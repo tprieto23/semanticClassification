@@ -130,7 +130,7 @@ Implementado en código:
 - `src/analysis/leiden.py` — clustering reproducible con atributos para Gephi;
 - esquemas de red en `src/api/schemas/network.py`;
 - integración de servicio en `src/services/network.py`;
-- rutas en `src/api/routers/analysis.py`;
+- rutas en `src/api/routers/analysis_networks.py`;
 - tabla `sentences` en `src/models/sentences.py` y `src/models/sentences_repo.py`;
 - persistencia de oraciones durante fuzzy matching en `src/services/documents.py`;
 - migración `d7e8f9a0b1c2_add_sentences_table.py`;
@@ -163,6 +163,6 @@ Leiden está implementado; la validación metodológica de clusters y la meta-re
 - Sesiones: `.agent/sessions/`
 - Artefactos oficiales de grafos: `s3/graphs/`
 - Código de servicios: `src/services/network.py`
-- Router: `src/api/routers/analysis.py`
+- Router: `src/api/routers/analysis_networks.py`
 - Esquemas: `src/api/schemas/network.py`
 - Construcción backbone: `src/analysis/backbone.py`

@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from src.api.routers import analysis, documents
+from src.api.routers import analysis_networks, documents
 from src.config import settings
 from src.services.documents import DocumentoError
 
@@ -50,4 +50,4 @@ def health() -> dict[str, str]:
 
 
 app.include_router(documents.router)
-app.include_router(analysis.router)
+app.include_router(analysis_networks.router)
