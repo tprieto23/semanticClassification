@@ -6,7 +6,7 @@ Este documento resume el estado metodológico y técnico del proyecto de clasifi
 
 El proyecto transforma documentos de los incubadores en una base de entidades canónicas y redes semánticas auditables. La unidad de evidencia es la oración: las relaciones entre entidades se derivan de su coocurrencia dentro de `(document_id, sentence_id)` y deben poder rastrearse hasta el documento, la oración, el contexto y las entidades originales.
 
-La fase actual es la validación de comunidades Leiden sobre una red tipada centrada en `PRAC`, `INFRA` y `GOV`. Ya existe una construcción española generada y auditada, y Leiden está implementado y ejecutado sobre su componente principal. La validación sistemática de clusters, la asociación de `CHAR`/`LOC` y la meta-red siguen pendientes.
+La fase actual es la promoción de comunidades Leiden aceptadas a nodos semánticos con título y descripción auditables. La auditoría y aceptación metodológica de los clusters ya concluyó. La construcción determinista de conexiones intercluster está implementada y validada para los meta-nodes registrados y aceptados. Siguen pendientes la revisión humana de los textos editoriales, el prompt para describir las conexiones ya calculadas y la asociación de `CHAR`/`LOC`.
 
 ## 2. Arquitectura general
 
@@ -139,21 +139,64 @@ Implementado en código:
   `tests/test_sentences_repo.py` y `tests/test_network_visualization.py`;
 - ejemplo del contrato en `postman_collection.json`.
 
-La suite contiene 81 pruebas: 79 pasan localmente y 2 se omiten porque este entorno
-no tiene instalados `igraph` y `leidenalg` (ambos ya están en `requirements.txt`).
+La suite contiene 93 pruebas: 91 pasan y 2 se omiten porque este entorno no tiene
+instalados `igraph` y `leidenalg` (ambos están en `requirements.txt`).
 La generación bajo `s3/graphs/` está implementada y validada por tests; la
 ejecución real sobre el corpus completo queda pendiente antes de retirar el
 almacenamiento histórico.
 
 ## 9. Próximos pasos técnicos
 
-1. Comparar sensibilidades de resolución, peso y alcance de componentes en Leiden.
-2. Validar clusters con evidencia: tamaño mínimo, aristas, oraciones, documentos, concentración documental y lectura de contextos.
-3. Clasificar configuraciones como tri-tipo, bi-tipo o intratipo.
-4. Asociar `CHAR` y `LOC` a cada configuración usando las oraciones únicas que soportan sus nodos.
-5. Diseñar la meta-red únicamente después de validar clusters estables y trazables.
+1. Revisar humanamente los títulos y descripciones generados para los meta-nodes;
+   corregirlos y aceptarlos cuando corresponda.
+2. Crear el prompt editorial separado para describir conexiones intercluster ya
+   calculadas, usando evidencia trazable y sin atribuir causalidad por coocurrencia.
+3. Asociar `CHAR` y `LOC` a cada configuración mediante las oraciones que soportan
+   sus entidades miembro.
 
-Leiden está implementado; la validación metodológica de clusters y la meta-red aún no están terminadas.
+Leiden y la construcción de la meta-red están implementados. La metodología
+aprobada para las conexiones intercluster se describe en la sección 11.
+
+## 11. Promoción de comunidades a nodos semánticos
+
+El prompt editorial está en `data/prompts/semantic_node_prompt.md`. Describe las
+relaciones internas respaldadas por entidades, aristas y oraciones; no clasifica
+pathways ni evalúa el carácter transformador.
+
+La implementación actual añade `semantic_nodes` y `semantic_node_members` mediante
+la migración `f2b3c4d5e6f7`. Los endpoints especializados bajo `/semantic-nodes`
+permiten consultar la partición Leiden publicada y su SHA-256, promover una
+comunidad explícita, listar/leer/editar nodos y generar su título y descripción
+con Claude. La promoción conserva miembros, alcance, configuración, huellas de
+procedencia y soporte documental por incubadora. El texto generado queda en
+`draft` hasta su aceptación humana. La construcción determinista de relaciones
+entre nodos usa la fórmula `meta-network-relationship-v1`, importa la instantánea
+del GraphML exacto a `semantic_network_source_edges` y agrega en PostgreSQL hacia
+`semantic_node_relationships`. Claude no participa en la existencia ni el peso de
+estas relaciones.
+
+Una conexión no dirigida entre dos meta-nodes registrados existe si al menos una
+arista fuente que supera `minimum_source_edge_weight` conecta entidades miembro de
+ambos meta-nodes. El umbral predeterminado es `0`, por lo que cualquier arista
+fuente positiva basta. El peso de la conexión es la suma de los atributos `weight`
+de sus aristas fuente. `source_edge_count` cuenta aristas entre pares de entidades;
+`sentence_support_sum` y `document_support_sum` son sumas de los soportes de esas
+aristas, no cantidades únicas de oraciones o documentos. La conexión es una
+agregación estructural de coocurrencias entre entidades miembro: no afirma una
+relación causal, funcional ni una coocurrencia literal entre los meta-nodes.
+
+La configuración metodológica aprobada exige `require_accepted_nodes=true`:
+participan solo meta-nodes registrados y aceptados. Las comunidades no promovidas
+quedan fuera de esta meta-red; su ausencia no significa que carezcan de aristas en
+el grafo fuente. La validación del corpus español registró 40 meta-nodes, 96
+conexiones y 836 aristas fuente contraídas.
+
+Los artefactos oficiales usan nombres estables y pueden reemplazarse. Por ello
+la promoción exige el hash del GraphML Leiden exacto. El artefacto español
+publicado al 22 Sep 2026 contiene 66 comunidades; la bitácora del 25 Ago registra
+una ejecución histórica de 21 que aún está disponible en `s3/archivosRed/`.
+La API ofrece las fuentes `official` y `accepted-2026-08-25` para seleccionar
+explícitamente la partición y evitar confundirlas.
 
 ## 10. Referencias de trabajo
 

@@ -91,6 +91,13 @@ def leiden_filename(backbone_name: str, configuration: dict) -> str:
     return f"leiden_{projection_id}"
 
 
+def semantic_network_filename(projection_id: str) -> str:
+    """Nombre oficial estable para la meta-red de nodos semánticos."""
+    if not projection_id:
+        raise ValueError("projection_id es obligatorio")
+    return f"semantic_network_{projection_id}"
+
+
 def graphml_path(
     scope_type: str,
     scope_id: str | int | UUID | None,

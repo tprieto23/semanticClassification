@@ -33,6 +33,7 @@ services:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      ANTHROPIC_WORKSPACE_ID: ${ANTHROPIC_WORKSPACE_ID:-}
     volumes:
       - ./src:/app/src
       - ./s3:/app/s3

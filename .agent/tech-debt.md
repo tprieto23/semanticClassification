@@ -21,10 +21,11 @@ los próximos pasos metodológicos se mantienen en `context/tasks.md`.
 
 ## Análisis
 
-- Validar cualitativamente la estabilidad de las comunidades Leiden.
-- Comparar sensibilidad a resolución, peso y alcance de componentes.
 - Asociar `CHAR` y `LOC` a clusters con evidencia de oraciones.
-- Diseñar la meta-red solo después de validar clusters estables y trazables.
+- Reforzar la construcción de relaciones para validar que cada miembro persistido
+  coincide con la comunidad exacta del GraphML y no está asignado a dos meta-nodes
+  en la misma partición. La instantánea española actualmente validada no presenta
+  discrepancias, pero el servicio no verifica explícitamente todas esas invariantes.
 
 ## Infraestructura y seguridad
 

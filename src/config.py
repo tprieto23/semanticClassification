@@ -15,11 +15,13 @@ class Settings(BaseSettings):
     STORAGE_NETWORK: Path = Path("s3/archivosRed")  # legado: preservado temporalmente
 
     ANTHROPIC_API_KEY: str = ""
+    ANTHROPIC_WORKSPACE_ID: str = ""
     ANTHROPIC_MODEL: str = "claude-sonnet-4-5-20250929"
     NER_MAX_CHUNK_LEN: int = 12_000
     NER_FEW_SHOT_PATH: Path = Path("data/ner/few_shot_examples.json")
     NER_PROMPT_PATH: Path = Path("data/prompts/ner_prompt.md")
     NER_USER_PROMPT_PATH: Path = Path("data/prompts/ner_user_prompt.md")
+    SEMANTIC_NODE_PROMPT_PATH: Path = Path("data/prompts/semantic_node_prompt.md")
 
     class Config:
         env_file = ".env"

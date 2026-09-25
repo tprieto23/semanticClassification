@@ -51,6 +51,45 @@ src/analysis/
 └── network_visualization.py      ← red plana estática, JSON, HTML y GraphML
 ```
 
+La capa de meta-red añade `src/models/semantic_nodes.py`,
+`src/services/semantic_nodes.py`, `src/api/schemas/semantic_nodes.py` y
+`src/api/routers/semantic_nodes.py`. Su primera entrega registra comunidades
+Leiden aceptadas como nodos titulables. Las relaciones entre nodos se construyen
+determinísticamente con `src/models/semantic_relationships.py`,
+`src/services/semantic_relationships.py` y `src/api/routers/semantic_relationships.py`.
+
+Flujo de nodos semánticos:
+
+```text
+GET  /semantic-nodes/leiden-source?language=es&artifact_source=accepted-2026-08-25
+  → partición vigente, SHA-256 del GraphML y comunidades disponibles
+POST /semantic-nodes/from-leiden
+  → registra una comunidad aceptada con fuente, community_id y expected_clustering_sha256
+GET  /semantic-nodes
+GET  /semantic-nodes/{node_id}
+POST /semantic-nodes/{node_id}/generate-description
+  → usa el prompt editorial y evidencia interna; genera título/descripcion draft
+PATCH /semantic-nodes/{node_id}
+  → permite corregir título, descripción o aceptar el nodo
+```
+
+Ejemplo de promoción:
+
+```json
+{
+  "projection_id": "prac-infra-gov-v1",
+  "community_id": "C001",
+  "artifact_source": "accepted-2026-08-25",
+  "incubator_number": "all",
+  "language": "es",
+  "expected_clustering_sha256": "<SHA-256 recibido en leiden-source>"
+}
+```
+
+La promoción conserva por incubadora los documentos y miembros que aportan
+soporte en el alcance elegido. La generación no modifica nodos `accepted` ni
+`retired`; para regenerar uno aceptado, primero se devuelve a `draft`.
+
 ## Capas
 
 ```
@@ -386,3 +425,6 @@ s3/
 | POST | `/analysis/network/projections/{projection_id}` | Construir proyección tipada o construcción analítica parametrizada |
 | GET | `/files/graphs/{path}` | Servir solo artefactos oficiales de grafos |
 | GET | `/health` | Health check |
+| POST | `/semantic-network/relationships/build` | Construir relaciones deterministas entre nodos semánticos |
+| GET | `/semantic-network/relationships` | Listar relaciones semánticas persistidas |
+| POST | `/semantic-network/export/graphml` | Exportar la meta-red persistida a GraphML descargable |

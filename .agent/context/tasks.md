@@ -205,6 +205,24 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 
 ## Objetivos 5–8: Vectores, matrices, grafos, métricas 🔧
 
+### Punto de control de validación Postman — 23 septiembre 2026
+
+- El endpoint `GET /semantic-nodes/leiden-source?language=es&artifact_source=official` fue validado correctamente.
+- Clustering validado: `5b0fbd7a7b89c9a00bd6876afce066016195135764ecf66e7f984ef6694ea7f6`.
+- Grafo fuente validado: `704bf158c3138a42733a5c466d45055534626d79a5b7521776431955129ac0f7`.
+- Se promovió correctamente `C001` a nodo semántico.
+- UUID del nodo `C001`: `2e73cadf-6799-46f8-9ba2-ac0a1a5dd40c`.
+- El endpoint `GET /semantic-nodes` confirmó `total: 1`.
+- El siguiente endpoint en el checklist es el número 4: `GET /semantic-nodes/{node_id}`; su respuesta detallada fue revisada.
+- El 24 Sep se verificaron dos credenciales obsoletas cargadas en Docker y se recreó el servicio `api` con la llave vigente.
+- `POST /semantic-nodes/{node_id}/generate-description` quedó validado con `HTTP 200`; Anthropic generó y persistió el título y la descripción de `C001` con estado `draft`.
+- La generación usa ahora un tool schema forzado en lugar de depender de JSON como texto libre; conserva el fallback de texto para compatibilidad y registra errores del proveedor sin exponer credenciales al cliente HTTP.
+- El cliente compartido y Docker Compose admiten además `ANTHROPIC_WORKSPACE_ID` para llaves organizacionales que requieran seleccionar workspace.
+- Siguiente paso: revisión humana del título y la descripción generados; después corregir mediante `PATCH /semantic-nodes/{node_id}` o aceptar el nodo con `status: accepted`.
+- `POST /semantic-network/relationships/build` validado con 40 nodos registrados: 96 relaciones calculadas a partir de 836 aristas fuente; migración `f3c4d5e6f7a8` aplicada.
+- `POST /semantic-network/export/graphml` exporta la meta-red persistida con atributos auditables y aislados a `s3/graphs/graphml/<scope>/semantic_network_<projection>.graphml`.
+- Validación real del GraphML: 40 nodos, 96 relaciones, 20 aislados y descarga pública `HTTP 200`.
+
 - [x] Primer experimento de coocurrencia por `(document_id, sentence_id)`
 - [x] Nodos definidos por `canonical_id`; menciones repetidas en una oración cuentan una sola presencia
 - [x] Matriz de incidencia oración–nodo y adyacencia sparse simétrica
@@ -261,3 +279,20 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - [x] `src/api/main.py` monta `/files/graphs` y conserva `/files/networks` como legado
 - [x] `src/api/schemas/network.py` conserva campos adicionales de metadatos
 - [x] Suite ampliada a 81 pruebas: 79 pasan y 2 se omiten sin dependencias Leiden
+
+## Objetivo 10: Nodos semánticos para la meta-red 🔧
+
+- [x] Prompt experto para título y descripción internos: `data/prompts/semantic_node_prompt.md`
+- [x] Modelo y migración para nodos, miembros, procedencia y soporte por incubadora
+- [x] Consulta de partición Leiden y hash del GraphML exacto
+- [x] Promoción explícita e idempotente de una comunidad a nodo semántico
+- [x] Consulta, listado, edición y generación LLM de título y descripción
+- [x] Aplicar las migraciones y validar los endpoints contra PostgreSQL y Claude en Docker
+- [x] Limitar la meta-red a meta-nodes aceptados y registrados; las comunidades no promovidas quedan fuera
+- [x] Definir e implementar conexiones intercluster deterministas: basta una arista fuente positiva entre miembros de dos meta-nodes distintos; el peso es la suma de los pesos fuente
+- [x] Definición matemática `data/prompts/meta_network_relationships_math.md`
+- [x] Instantánea de aristas fuente y agregación SQL de relaciones intercluster
+- [x] `POST /semantic-network/relationships/build` y consulta de relaciones
+- [x] Exportación GraphML de la meta-red
+- [ ] Revisión humana y aceptación de los títulos/descripciones de los meta-nodes
+- [ ] Prompt editorial separado para describir conexiones ya calculadas
