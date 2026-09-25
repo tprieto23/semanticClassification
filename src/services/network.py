@@ -144,6 +144,17 @@ def _replace_file(source: Path, target: Path) -> None:
         backup.unlink()
 
 
+def _graph_build_directory(prefix: str) -> Path:
+    """Crea temporales en el volumen de grafos para que ``replace`` sea atómico.
+
+    En Docker, ``/tmp`` y el volumen que contiene ``s3/graphs`` pueden estar en
+    sistemas de archivos distintos. ``os.replace`` no puede cruzar esa frontera
+    (EXDEV), por lo que el temporal debe vivir en el mismo volumen de destino.
+    """
+    settings.STORAGE_GRAPHS.mkdir(parents=True, exist_ok=True)
+    return Path(tempfile.mkdtemp(prefix=prefix, dir=settings.STORAGE_GRAPHS))
+
+
 def _atomic_write_files(
     writers: dict[Path, Any | None],
     lock_path: Path,
@@ -154,7 +165,7 @@ def _atomic_write_files(
     directorio temporal por otro writer (por ejemplo, los CSVs generados junto
     al GraphML).
     """
-    temporary = Path(tempfile.mkdtemp(prefix=".graph-build-"))
+    temporary = _graph_build_directory(".graph-build-")
     try:
         temp_files: dict[Path, Path] = {}
         for target_path, writer in writers.items():
@@ -834,7 +845,7 @@ class NetworkService:
                     cached["cached"] = True
                     return cached
 
-            temporary = Path(tempfile.mkdtemp(prefix=".leiden-build-"))
+            temporary = _graph_build_directory(".leiden-build-")
             try:
                 try:
                     payload = export_leiden_clustering(

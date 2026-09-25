@@ -1,4 +1,5 @@
 import json
+import shutil
 import tempfile
 import unittest
 from dataclasses import replace
@@ -22,7 +23,12 @@ from src.api.schemas.network import (
     TypedNetworkBuildResponse,
 )
 from src.config import settings
-from src.services.network import NetworkArtifactsNotFound, NetworkService, _graph_scope
+from src.services.network import (
+    NetworkArtifactsNotFound,
+    NetworkService,
+    _graph_build_directory,
+    _graph_scope,
+)
 
 
 class NetworkServiceTests(unittest.TestCase):
@@ -153,6 +159,17 @@ class NetworkServiceTests(unittest.TestCase):
             _graph_scope(incubator_number=4, language="es"),
             ("incubators", 4, "es"),
         )
+
+    def test_graph_build_directory_lives_in_the_graph_storage_volume(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "graphs"
+            with patch.object(settings, "STORAGE_GRAPHS", root):
+                build_directory = _graph_build_directory(".graph-build-")
+                try:
+                    self.assertEqual(build_directory.parent, root)
+                    self.assertTrue(build_directory.is_dir())
+                finally:
+                    shutil.rmtree(build_directory)
 
     def test_latest_reads_the_stable_official_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
