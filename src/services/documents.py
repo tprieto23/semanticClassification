@@ -64,6 +64,15 @@ class DocumentoNoReversible(DocumentoError):
         )
 
 
+class ClasificacionVacia(DocumentoError):
+    def __init__(self):
+        super().__init__(
+            "Debe enviar al menos uno de estos campos: year, productive_sector o "
+            "document_type",
+            422,
+        )
+
+
 class DocumentService:
 
     @staticmethod
@@ -71,10 +80,10 @@ class DocumentService:
         db: Session,
         file: UploadFile,
         incubator_number: int,
-        year: int,
-        productive_sector: str,
-        document_type: str,
-        metadata_json: str | None,
+        year: int | None = None,
+        productive_sector: str | None = None,
+        document_type: str | None = None,
+        metadata_json: str | None = None,
         language: str | None = None,
     ) -> Document:
         if not file.filename:
@@ -142,10 +151,10 @@ class DocumentService:
         db: Session,
         files: list[UploadFile],
         incubator_number: int,
-        year: int,
-        productive_sector: str,
-        document_type: str,
-        metadata_json: str | None,
+        year: int | None = None,
+        productive_sector: str | None = None,
+        document_type: str | None = None,
+        metadata_json: str | None = None,
         language: str | None = None,
     ) -> list[Document]:
         return [
@@ -171,6 +180,26 @@ class DocumentService:
             raise DocumentoNoEncontrado(document_id)
 
         DocumentRepo.actualizar_language(db, doc, language)
+        return doc
+
+    @staticmethod
+    def actualizar_clasificacion(
+        db: Session,
+        document_id: str,
+        year: int | None,
+        productive_sector: str | None,
+        document_type: str | None,
+    ) -> Document:
+        if year is None and productive_sector is None and document_type is None:
+            raise ClasificacionVacia()
+
+        doc = DocumentRepo.leer_uno(db, document_id)
+        if doc is None:
+            raise DocumentoNoEncontrado(document_id)
+
+        DocumentRepo.actualizar_clasificacion(
+            db, doc, year, productive_sector, document_type
+        )
         return doc
 
     @staticmethod

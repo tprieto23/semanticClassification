@@ -23,13 +23,14 @@
 - [x] `POST /documents/set-language-batch` — registrar idioma en lote
 - [x] `GET /documents?language=...` — filtrar documentos por idioma
 - [x] Migración `d5e6f7a8b9c0` aplicada; todos los documentos existentes quedan con `language = NULL`
-- [x] Atributos obligatorios para cargas nuevas: `year`, `productive_sector` y `document_type`
+- [x] Atributos opcionales en cargas nuevas: `year`, `productive_sector` y `document_type`
 - [x] `year` validado como entero de cuatro dígitos (`1000..9999`)
 - [x] `productive_sector` usa vocabulario controlado; opción vigente: `Agroforestry`
 - [x] `document_type` usa las opciones `academic`, `technical_report`, `project_report`,
   `policy_document`, `manual_or_guide`, `institutional_document` y `other`
 - [x] Migración `a4b5c6d7e8f9` aplicada; las columnas son nullable únicamente para compatibilidad histórica
 - [x] Colección de Postman actualizada para ingesta individual y por lote
+- [x] `PATCH /documents/{id}/classification` con `form-data` para completar o corregir parcialmente esos atributos
 
 ## Objetivo 2: Conversión a Markdown ✅
 
@@ -143,7 +144,7 @@
 | LOC | Lugares geográficos, territorios, regiones, países, ciudades |
 | INFRA | Infraestructura física, técnica o soportes estables |
 | PRAC | Prácticas, actividades productivas, cadenas de valor |
-| GOV | Instrumentos de gobernanza, políticas, normas, acuerdos |
+| RUL | Reglas, normas e instrumentos institucionales concretos |
 
 Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entidad nominal autónoma contenida en ellos conserva la etiqueta que le corresponda.
 
@@ -233,7 +234,7 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - [x] Primer experimento de coocurrencia por `(document_id, sentence_id)`
 - [x] Nodos definidos por `canonical_id`; menciones repetidas en una oración cuentan una sola presencia
 - [x] Matriz de incidencia oración–nodo y adyacencia sparse simétrica
-- [x] Red plana única de CHAR, LOC, PRAC, INFRA y GOV; eliminadas capas/bloques L2
+- [x] Red plana única de CHAR, LOC, PRAC, INFRA y RUL; eliminadas capas/bloques L2
 - [x] Exportaciones CSV/Matrix Market con observaciones auditables
 - [x] Visualización de G₃ (`peso >= 3`) en PNG, HTML interactivo y GraphML
 - [x] Matrices regeneradas después de aplicar resolución v2: 523 nodos y 1.216 aristas
@@ -251,8 +252,8 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - [x] Escritura atómica y bloqueo por destino para evitar resultados parciales/concurrentes
 - [x] Validación real: 78 documentos, 41.148 menciones, red G₁ de 16.527 nodos y 45.866 aristas
 - [x] Suite automatizada: 47 pruebas exitosas
-- [x] Proyección versionada `prac-infra-gov-v1` centrada en PRAC, INFRA y GOV
-- [x] Seis relaciones: PRAC–PRAC, PRAC–INFRA, PRAC–GOV, INFRA–INFRA, INFRA–GOV y GOV–GOV
+- [x] Proyección versionada `prac-infra-rul-v2` centrada en PRAC, INFRA y RUL
+- [x] Seis relaciones: PRAC–PRAC, PRAC–INFRA, PRAC–RUL, INFRA–INFRA, INFRA–RUL y RUL–RUL
 - [x] Nueve vistas derivadas sin recalcular la coocurrencia maestra
 - [x] Evidencia normalizada oración–entidad con CHAR/LOC contextuales preservados en PostgreSQL
 - [x] Endpoint paginado de evidencia por arista consultado bajo demanda en PostgreSQL
@@ -301,5 +302,7 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - [x] Instantánea de aristas fuente y agregación SQL de relaciones intercluster
 - [x] `POST /semantic-network/relationships/build` y consulta de relaciones
 - [x] Exportación GraphML de la meta-red
+- [ ] Regenerar backbone y Leiden oficiales para `prac-infra-rul-v2`; volver a
+  vincular los meta-nodes con el nuevo `clustering_sha256`
 - [ ] Revisión humana y aceptación de los títulos/descripciones de los meta-nodes
 - [ ] Prompt editorial separado para describir conexiones ya calculadas

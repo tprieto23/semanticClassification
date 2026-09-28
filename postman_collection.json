@@ -96,19 +96,19 @@
                   "key": "year",
                   "type": "text",
                   "value": "2025",
-                  "description": "Año del documento, con cuatro dígitos"
+                  "description": "(Opcional) Año del documento, con cuatro dígitos. Puede completarse después."
                 },
                 {
                   "key": "productive_sector",
                   "type": "text",
                   "value": "Agroforestry",
-                  "description": "Sector productivo controlado; actualmente solo Agroforestry"
+                  "description": "(Opcional) Sector productivo controlado; actualmente solo Agroforestry"
                 },
                 {
                   "key": "document_type",
                   "type": "text",
                   "value": "technical_report",
-                  "description": "academic, technical_report, project_report, policy_document, manual_or_guide, institutional_document u other"
+                  "description": "(Opcional) academic, technical_report, project_report, policy_document, manual_or_guide, institutional_document u other"
                 },
                 {
                   "key": "metadata",
@@ -118,7 +118,7 @@
                 }
               ]
             },
-            "description": "Subir un documento individual y registrar sus atributos de ingesta"
+            "description": "Subir un documento individual. Año, sector y tipo documental pueden omitirse y completarse después."
           },
           "response": []
         },
@@ -156,19 +156,19 @@
                   "key": "year",
                   "type": "text",
                   "value": "2025",
-                  "description": "Año común para todo el lote, con cuatro dígitos"
+                  "description": "(Opcional) Año común para todo el lote, con cuatro dígitos"
                 },
                 {
                   "key": "productive_sector",
                   "type": "text",
                   "value": "Agroforestry",
-                  "description": "Sector productivo común; actualmente solo Agroforestry"
+                  "description": "(Opcional) Sector productivo común; actualmente solo Agroforestry"
                 },
                 {
                   "key": "document_type",
                   "type": "text",
                   "value": "technical_report",
-                  "description": "Tipo documental común para todo el lote"
+                  "description": "(Opcional) Tipo documental común para todo el lote"
                 }
               ]
             },
@@ -206,6 +206,42 @@
               "path": ["documents", "{{document_id}}"]
             },
             "description": "Obtener detalle de un documento específico"
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH Complete Document Classification",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/documents/{{document_id}}/classification",
+              "host": ["{{base_url}}"],
+              "path": ["documents", "{{document_id}}", "classification"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "year",
+                  "type": "text",
+                  "value": "2025",
+                  "description": "(Opcional) Año del documento, entre 1000 y 9999"
+                },
+                {
+                  "key": "productive_sector",
+                  "type": "text",
+                  "value": "Agroforestry",
+                  "description": "(Opcional) Sector productivo controlado"
+                },
+                {
+                  "key": "document_type",
+                  "type": "text",
+                  "value": "technical_report",
+                  "description": "(Opcional) Tipo documental controlado"
+                }
+              ]
+            },
+            "description": "Completar o corregir uno o varios atributos sin reprocesar el documento. Debe enviarse al menos un campo."
           },
           "response": []
         },
@@ -351,7 +387,7 @@
           "response": []
         },
         {
-          "name": "POST Build Typed PRAC INFRA GOV Projection",
+          "name": "POST Build Typed PRAC INFRA RUL Projection",
           "request": {
             "method": "POST",
             "header": [
@@ -370,11 +406,11 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1",
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-rul-v2",
               "host": ["{{base_url}}"],
-              "path": ["analysis", "network", "projections", "prac-infra-gov-v1"]
+              "path": ["analysis", "network", "projections", "prac-infra-rul-v2"]
             },
-            "description": "Construye la proyección tipada PRAC + INFRA + GOV y sus nueve vistas sin sobrescribir la red histórica."
+            "description": "Construye la proyección tipada PRAC + INFRA + RUL y sus nueve vistas sin sobrescribir la red histórica."
           },
           "response": []
         },
@@ -398,9 +434,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1",
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-rul-v2",
               "host": ["{{base_url}}"],
-              "path": ["analysis", "network", "projections", "prac-infra-gov-v1"]
+              "path": ["analysis", "network", "projections", "prac-infra-rul-v2"]
             },
             "description": "Construye el núcleo de entidades recurrentes por documento, calcula pesos analíticos y exporta vistas para todos los componentes y la componente principal."
           },
@@ -411,9 +447,9 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1/latest?incubator_number=all&language=all&minimum_weight=1&include_isolates=true",
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-rul-v2/latest?incubator_number=all&language=all&minimum_weight=1&include_isolates=true",
               "host": ["{{base_url}}"],
-              "path": ["analysis", "network", "projections", "prac-infra-gov-v1", "latest"],
+              "path": ["analysis", "network", "projections", "prac-infra-rul-v2", "latest"],
               "query": [
                 {"key": "incubator_number", "value": "all"},
                 {"key": "language", "value": "all"},
@@ -445,9 +481,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1/clusterings/leiden",
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-rul-v2/clusterings/leiden",
               "host": ["{{base_url}}"],
-              "path": ["analysis", "network", "projections", "prac-infra-gov-v1", "clusterings", "leiden"]
+              "path": ["analysis", "network", "projections", "prac-infra-rul-v2", "clusterings", "leiden"]
             },
             "description": "Calcula Leiden sobre una vista ya construida, genera un GraphML para Gephi con modularity_class y exporta el resumen de comunidades."
           },
@@ -458,9 +494,9 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1/views",
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-rul-v2/views",
               "host": ["{{base_url}}"],
-              "path": ["analysis", "network", "projections", "prac-infra-gov-v1", "views"]
+              "path": ["analysis", "network", "projections", "prac-infra-rul-v2", "views"]
             },
             "description": "Enumera la vista completa, cruzada, intratipo y las seis vistas por category_pair."
           },
@@ -471,9 +507,9 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{base_url}}/analysis/network/projections/prac-infra-gov-v1/edges/{{source_canonical_id}}/{{target_canonical_id}}/evidence?minimum_weight=1&limit=100&offset=0",
+              "raw": "{{base_url}}/analysis/network/projections/prac-infra-rul-v2/edges/{{source_canonical_id}}/{{target_canonical_id}}/evidence?minimum_weight=1&limit=100&offset=0",
               "host": ["{{base_url}}"],
-              "path": ["analysis", "network", "projections", "prac-infra-gov-v1", "edges", "{{source_canonical_id}}", "{{target_canonical_id}}", "evidence"],
+              "path": ["analysis", "network", "projections", "prac-infra-rul-v2", "edges", "{{source_canonical_id}}", "{{target_canonical_id}}", "evidence"],
               "query": [
                 {"key": "minimum_weight", "value": "1"},
                 {"key": "limit", "value": "100"},

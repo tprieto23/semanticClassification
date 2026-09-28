@@ -77,7 +77,7 @@ Ejemplo de promoción:
 
 ```json
 {
-  "projection_id": "prac-infra-gov-v1",
+  "projection_id": "prac-infra-rul-v2",
   "community_id": "C001",
   "artifact_source": "accepted-2026-08-25",
   "incubator_number": "all",
@@ -105,9 +105,9 @@ POST /documents
   multipart:
     file
     incubator_number (1..8)
-    year (1000..9999)
-    productive_sector (Agroforestry)
-    document_type (vocabulario controlado)
+    year opcional (1000..9999)
+    productive_sector opcional (Agroforestry)
+    document_type opcional (vocabulario controlado)
     metadata opcional
     language opcional
   → FastAPI/OpenAPI valida que la incubadora esté entre 1 y 8
@@ -118,8 +118,13 @@ POST /documents
   ← 201 + DocumentRead (incluye incubadora, idioma, año, sector y tipo documental)
 
 POST /documents/batch
-  multipart: files[] + incubadora, año, sector y tipo documental comunes al lote
+  multipart: files[] + incubadora; año, sector y tipo documental opcionales comunes al lote
   → cada documento conserva sus propios campos en PostgreSQL
+
+PATCH /documents/{document_id}/classification
+  multipart form-data: uno o más de year, productive_sector, document_type
+  → solo modifica los campos enviados
+  → no cambia status ni repite conversión, limpieza o NER
 
 PATCH /documents/{id}/language
   → registra el idioma de un documento ya cargado
@@ -244,9 +249,16 @@ La tabla `canonical_entities` contiene `id`, `canonical_name` y `category`; cada
 de `entities` referencia una entidad canónica mediante `canonical_id` no nulo. La
 versión `deterministic-v2` usa los métodos `exact`, `morphology`, `person_alias`,
 `stored_alias`, `person_name`, `fuzzy` y `new`. Los umbrales fuzzy siguen siendo 93
-para CHAR/LOC y 96 para INFRA/GOV/PRAC, con margen mínimo de 5 puntos. La forma
+para CHAR/LOC y 96 para INFRA/RUL/PRAC, con margen mínimo de 5 puntos. La forma
 minúscula/singular se aplica a actores genéricos controlados; los nombres propios
 conservan una etiqueta legible. Los UUID no se transforman.
+
+La categoría activa `RUL` representa reglas, normas e instrumentos
+institucionales concretos. La gobernanza puede describirse en el análisis, pero
+no se etiqueta por sí sola. Al leer JSON o particiones históricas, el servicio
+normaliza `GOV` a `RUL` en memoria; no reescribe esos artefactos. La migración
+`b5c6d7e8f9a0` actualiza las categorías persistidas y cambia la proyección activa
+de `prac-infra-gov-v1` a `prac-infra-rul-v2`.
 
 Antes de reprocesar un documento puede ejecutarse una auditoría transaccional que
 siempre hace rollback y compara también la red G₁/G₃:
@@ -267,7 +279,7 @@ POST /documents/{id}/network
   → el POST de corpus recibe incubator_number y language en JSON
   → cada filtro admite un valor concreto o "all"; ambos se combinan con AND
   → consulta entities + canonical_entities sin modificar PostgreSQL
-  → nodo = canonical_id, con categoría CHAR/LOC/PRAC/INFRA/GOV
+  → nodo = canonical_id, con categoría CHAR/LOC/PRAC/INFRA/RUL
   → arista no dirigida = dos canónicos presentes en la misma
     (document_id, sentence_id), incluso CHAR–CHAR y LOC–LOC
   → peso = número de oraciones distintas donde coocurre el par
@@ -286,16 +298,16 @@ El layout usa fuerzas para componentes pequeños y una disposición determinista
 lineal para componentes de más de 500 nodos. Así la configuración predeterminada
 del corpus completo sigue siendo operable con miles de nodos.
 
-## Proyección analítica tipada PRAC + INFRA + GOV
+## Proyección analítica tipada PRAC + INFRA + RUL
 
 La red histórica de cinco categorías continúa disponible. La proyección analítica
-principal se registra por separado como `prac-infra-gov-v1`:
+principal se registra por separado como `prac-infra-rul-v2`:
 
 ```
 entities + canonical_entities
   → agrupar todas las menciones por (document_id, sentence_id)
   → conservar todas las entidades de la oración como evidencia contextual
-  → proyectar únicamente nodos PRAC, INFRA y GOV
+  → proyectar únicamente nodos PRAC, INFRA y RUL
   → permitir los seis category_pair, incluidas relaciones intratipo
   → calcular las nueve vistas como resúmenes en memoria
   → publicar únicamente la vista canónica main-component/all
@@ -415,8 +427,9 @@ s3/
 
 | Método | Ruta | Objetivo |
 |---|---|---|
-| POST | `/documents` | Subir archivo con incubadora, año, sector y tipo documental |
-| POST | `/documents/batch` | Subir múltiples con atributos de ingesta comunes |
+| POST | `/documents` | Subir archivo; clasificación documental opcional |
+| POST | `/documents/batch` | Subir múltiples con clasificación opcional común |
+| PATCH | `/documents/{id}/classification` | Completar o corregir clasificación mediante form-data |
 | GET | `/documents` | Listar + filtros, incluido `incubator_number` |
 | GET | `/documents/{id}` | Ver uno |
 | DELETE | `/documents/{id}` | Eliminar |

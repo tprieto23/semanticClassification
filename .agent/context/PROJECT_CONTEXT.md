@@ -8,17 +8,33 @@ El proyecto transforma documentos de los incubadores en una base de entidades ca
 
 La fase actual es la promoción de comunidades Leiden aceptadas a nodos semánticos con título y descripción auditables. La auditoría y aceptación metodológica de los clusters ya concluyó. La construcción determinista de conexiones intercluster está implementada y validada para los meta-nodes registrados y aceptados. Siguen pendientes la revisión humana de los textos editoriales, el prompt para describir las conexiones ya calculadas y la asociación de `CHAR`/`LOC`.
 
+### Punto de reanudación operativo — 28 Sep 2026
+
+La sesión más reciente volvió temporalmente al Objetivo 1 para preparar una
+nueva ingesta en Postman. La API y PostgreSQL están activos en Docker y la
+migración vigente es `c6d7e8f9a0b1 (head)`. Ya se puede iniciar la carga de
+documentos. El siguiente paso de la usuaria es ejecutar una carga real con
+`POST /documents`, revisar la respuesta `201` y conservar el `document_id`.
+
+En esa carga solo son obligatorios el archivo y `incubator_number`. `language`,
+`year`, `productive_sector`, `document_type` y `metadata` pueden omitirse. Los
+tres atributos de clasificación pueden completarse posteriormente con el PATCH
+descrito en la sección de arquitectura. No se debe añadir `incubator_number` a
+la URL ni fijar manualmente `Content-Type`; los datos se envían por `form-data`.
+
 ## 2. Arquitectura general
 
 La aplicación es un servicio FastAPI ejecutado con Uvicorn, PostgreSQL 16 con pgvector, SQLAlchemy 2 y Alembic. Docker Compose coordina los servicios. El almacenamiento local de artefactos usa `s3/`.
 
-La ingesta exige para cada carga nueva `incubator_number`, `year`,
-`productive_sector` y `document_type`; `language` y `metadata` permanecen
-opcionales. `year` admite cuatro dígitos, el sector controlado vigente es
-`Agroforestry` y el tipo documental se elige entre `academic`,
+La ingesta exige `incubator_number`; `year`, `productive_sector`,
+`document_type`, `language` y `metadata` son opcionales. Los tres atributos de
+clasificación pueden completarse después mediante
+`PATCH /documents/{document_id}/classification` con cuerpo `form-data`, sin
+reprocesar el documento. `year` admite cuatro dígitos, el sector controlado
+vigente es `Agroforestry` y el tipo documental se elige entre `academic`,
 `technical_report`, `project_report`, `policy_document`, `manual_or_guide`,
 `institutional_document` y `other`. Las columnas nuevas permiten `NULL` solo
-para conservar los registros históricos.
+para conservar los registros sin clasificación disponible.
 
 El flujo principal es:
 
@@ -32,17 +48,25 @@ documentos
   -> evidencia entidad–oración
   -> proyecciones de coocurrencia
   -> backbone/configuración
-  -> Leiden y clusters semánticos
-  -> asociación de CHAR/LOC y meta-red (pendiente)
+  -> proyección PRAC/INFRA/RUL y Leiden
+  -> nodos semánticos y conexiones intercluster
+  -> asociación de CHAR/LOC y descripción editorial de conexiones (pendiente)
 ```
 
-Las categorías NER actuales son `CHAR`, `LOC`, `PRAC`, `INFRA` y `GOV`.
+Las categorías NER actuales son `CHAR`, `LOC`, `PRAC`, `INFRA` y `RUL`.
+`RUL` identifica reglas, normas e instrumentos institucionales concretos, tanto
+formales como informales: leyes, reglamentos, políticas, planes, acuerdos,
+contratos, permisos, estándares y reglas comunitarias. La gobernanza permanece
+como concepto de análisis, pero no como categoría NER. `GOV` es una etiqueta
+histórica sustituida por `RUL`; solo se conserva en migraciones, procedencia y
+lectura compatible de artefactos anteriores. La proyección activa es
+`prac-infra-rul-v2`.
 
 ## 3. Evidencia y modelo de coocurrencia
 
 - La coocurrencia se agrupa por `(document_id, sentence_id)`.
 - Una oración con `N` entidades proyectadas genera la clique completa de pares no dirigidos.
-- `sentence_entities` conserva todas las entidades de la oración, incluidas `CHAR` y `LOC` aunque no pertenezcan a la topología PRAC–INFRA–GOV.
+- `sentence_entities` conserva todas las entidades de la oración, incluidas `CHAR` y `LOC` aunque no pertenezcan a la topología PRAC–INFRA–RUL.
 - `edge_observations` conserva la evidencia de cada pareja: documento, oración, contexto, pareja de entidades, texto y ambigüedad.
 - Las aristas agregadas conservan `sentence_count`, `document_count`, métricas fraccionales, `category_pair` y niveles de confianza; por tanto, la arista puede remontarse a sus observaciones sin depender únicamente de `weight`.
 
@@ -57,9 +81,9 @@ La base de datos persiste las menciones canonicalizadas con `document_id`, `sent
 
 ## 5. Decisiones metodológicas de la red tipada
 
-La proyección `prac-infra-gov-v1` incluye los seis pares no dirigidos:
+La proyección `prac-infra-rul-v2` incluye los seis pares no dirigidos:
 
-`PRAC--PRAC`, `PRAC--INFRA`, `PRAC--GOV`, `INFRA--INFRA`, `INFRA--GOV` y `GOV--GOV`.
+`PRAC--PRAC`, `PRAC--INFRA`, `PRAC--RUL`, `INFRA--INFRA`, `INFRA--RUL` y `RUL--RUL`.
 
 Se permiten relaciones intratipo y entre tipos. Las vistas disponibles son `all`, `cross`, `intra` y las seis vistas de pares individuales. `CHAR` y `LOC` quedan fuera de la topología inicial para evitar ruido, pero permanecen en la evidencia y se asociarán después a los clusters mediante sus oraciones de soporte.
 
@@ -147,7 +171,7 @@ Implementado en código:
   `tests/test_sentences_repo.py` y `tests/test_network_visualization.py`;
 - ejemplo del contrato en `postman_collection.json`.
 
-La suite contiene 93 pruebas: 91 pasan y 2 se omiten porque este entorno no tiene
+La suite contiene 98 pruebas: 96 pasan y 2 se omiten porque este entorno no tiene
 instalados `igraph` y `leidenalg` (ambos están en `requirements.txt`).
 La generación bajo `s3/graphs/` está implementada y validada por tests; la
 ejecución real sobre el corpus completo queda pendiente antes de retirar el
@@ -155,11 +179,14 @@ almacenamiento histórico.
 
 ## 9. Próximos pasos técnicos
 
-1. Revisar humanamente los títulos y descripciones generados para los meta-nodes;
+1. Regenerar los artefactos oficiales del backbone y Leiden para
+   `prac-infra-rul-v2`, registrar su nuevo SHA-256 y volver a vincular los
+   meta-nodes a esa partición exacta.
+2. Revisar humanamente los títulos y descripciones generados para los meta-nodes;
    corregirlos y aceptarlos cuando corresponda.
-2. Crear el prompt editorial separado para describir conexiones intercluster ya
+3. Crear el prompt editorial separado para describir conexiones intercluster ya
    calculadas, usando evidencia trazable y sin atribuir causalidad por coocurrencia.
-3. Asociar `CHAR` y `LOC` a cada configuración mediante las oraciones que soportan
+4. Asociar `CHAR` y `LOC` a cada configuración mediante las oraciones que soportan
    sus entidades miembro.
 
 Leiden y la construcción de la meta-red están implementados. La metodología
@@ -197,14 +224,19 @@ La configuración metodológica aprobada exige `require_accepted_nodes=true`:
 participan solo meta-nodes registrados y aceptados. Las comunidades no promovidas
 quedan fuera de esta meta-red; su ausencia no significa que carezcan de aristas en
 el grafo fuente. La validación del corpus español registró 40 meta-nodes, 96
-conexiones y 836 aristas fuente contraídas.
+conexiones y 836 aristas fuente contraídas sobre la partición histórica GOV v1.
 
-Los artefactos oficiales usan nombres estables y pueden reemplazarse. Por ello
-la promoción exige el hash del GraphML Leiden exacto. El artefacto español
-publicado al 22 Sep 2026 contiene 66 comunidades; la bitácora del 25 Ago registra
-una ejecución histórica de 21 que aún está disponible en `s3/archivosRed/`.
-La API ofrece las fuentes `official` y `accepted-2026-08-25` para seleccionar
-explícitamente la partición y evitar confundirlas.
+La migración `b5c6d7e8f9a0` cambia las categorías persistidas y la proyección
+semántica a `prac-infra-rul-v2`; `c6d7e8f9a0b1` normaliza también los pares de
+categoría en la instantánea de aristas. No se modificaron los artefactos de
+`s3/`: allí sigue el GraphML oficial español `prac-infra-gov-v1` de 66
+comunidades. Por eso `GET /semantic-nodes/leiden-source` con `artifact_source=official`
+responde 404 hasta regenerar los artefactos oficiales RUL v2.
+
+Las filas existentes de nodos y relaciones conservan los hashes de sus GraphML
+GOV v1 aunque su `projection_id` se haya migrado. No constituyen una partición
+RUL v2 regenerada. La fuente histórica `accepted-2026-08-25` sigue disponible y
+el servicio normaliza `GOV` a `RUL` en memoria al leerla; contiene 21 comunidades.
 
 ## 10. Referencias de trabajo
 

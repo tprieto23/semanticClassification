@@ -20,6 +20,7 @@ if "src.services.pdf_converter" not in sys.modules:
 
 from src.api.main import app
 from src.api.schemas.documents import DocumentType, IncubatorNumber, ProductiveSector
+from src.models.documents_repo import DocumentRepo
 from src.models.storage import Storage
 from src.services.documents import DocumentService
 
@@ -30,7 +31,7 @@ class DocumentIngestionTests(unittest.TestCase):
             [member.value for member in IncubatorNumber], list(range(1, 9))
         )
 
-    def test_upload_openapi_requires_ingestion_attributes(self) -> None:
+    def test_upload_openapi_allows_deferred_classification(self) -> None:
         schema = app.openapi()
         body_ref = schema["paths"]["/documents"]["post"]["requestBody"]["content"][
             "multipart/form-data"
@@ -38,19 +39,21 @@ class DocumentIngestionTests(unittest.TestCase):
         body_name = body_ref.rsplit("/", 1)[-1]
         upload_body = schema["components"]["schemas"][body_name]
 
+        self.assertTrue({"file", "incubator_number"}.issubset(upload_body["required"]))
         self.assertTrue(
-            {
-                "file",
-                "incubator_number",
-                "year",
-                "productive_sector",
-                "document_type",
-            }.issubset(upload_body["required"])
+            {"year", "productive_sector", "document_type"}.isdisjoint(
+                upload_body["required"]
+            )
         )
         self.assertEqual(
             schema["components"]["schemas"]["IncubatorNumber"]["enum"],
             list(range(1, 9)),
         )
+
+        patch_content = schema["paths"][
+            "/documents/{document_id}/classification"
+        ]["patch"]["requestBody"]["content"]
+        self.assertIn("multipart/form-data", patch_content)
 
     def test_controlled_ingestion_vocabularies(self) -> None:
         self.assertEqual(
@@ -112,6 +115,53 @@ class DocumentIngestionTests(unittest.TestCase):
         self.assertEqual(
             crear.call_args.kwargs["document_type"], "technical_report"
         )
+
+    @patch("src.services.documents.DocumentRepo.actualizar_clasificacion")
+    @patch("src.services.documents.DocumentRepo.leer_uno")
+    def test_classification_can_be_completed_later(
+        self,
+        leer_uno: Mock,
+        actualizar_clasificacion: Mock,
+    ) -> None:
+        documento = SimpleNamespace(
+            id="document-id",
+            year=None,
+            productive_sector=None,
+            document_type=None,
+        )
+        leer_uno.return_value = documento
+
+        resultado = DocumentService.actualizar_clasificacion(
+            Mock(), "document-id", 2021, None, "academic"
+        )
+
+        self.assertIs(resultado, documento)
+        actualizar_clasificacion.assert_called_once_with(
+            unittest.mock.ANY, documento, 2021, None, "academic"
+        )
+
+    def test_classification_update_requires_at_least_one_value(self) -> None:
+        with self.assertRaisesRegex(Exception, "Debe enviar al menos uno"):
+            DocumentService.actualizar_clasificacion(
+                Mock(), "document-id", None, None, None
+            )
+
+    def test_repository_only_changes_classification_values_received(self) -> None:
+        db = Mock()
+        documento = SimpleNamespace(
+            year=None,
+            productive_sector="Agroforestry",
+            document_type="project_report",
+        )
+
+        DocumentRepo.actualizar_clasificacion(
+            db, documento, 2021, None, "technical_report"
+        )
+
+        self.assertEqual(documento.year, 2021)
+        self.assertEqual(documento.productive_sector, "Agroforestry")
+        self.assertEqual(documento.document_type, "technical_report")
+        db.commit.assert_called_once_with()
 
     def test_optional_storage_path_can_be_deleted(self) -> None:
         Storage.eliminar(None)

@@ -43,9 +43,9 @@ router = APIRouter(prefix="/documents", tags=["Documents"])
 def upload(
     file: Annotated[UploadFile, File()],
     incubator_number: Annotated[IncubatorNumber, Form()],
-    year: Annotated[int, Form(ge=1000, le=9999)],
-    productive_sector: Annotated[ProductiveSector, Form()],
-    document_type: Annotated[DocumentType, Form()],
+    year: Annotated[int | None, Form(ge=1000, le=9999)] = None,
+    productive_sector: Annotated[ProductiveSector | None, Form()] = None,
+    document_type: Annotated[DocumentType | None, Form()] = None,
     metadata: Annotated[str | None, Form()] = None,
     language: Annotated[str | None, Form(min_length=2, max_length=10)] = None,
     db: Session = Depends(get_db),
@@ -56,8 +56,8 @@ def upload(
         file,
         int(incubator_number),
         year,
-        productive_sector.value,
-        document_type.value,
+        productive_sector.value if productive_sector else None,
+        document_type.value if document_type else None,
         metadata,
         language_limpio,
     )
@@ -69,9 +69,9 @@ def upload(
 def upload_batch(
     files: Annotated[list[UploadFile], File()],
     incubator_number: Annotated[IncubatorNumber, Form()],
-    year: Annotated[int, Form(ge=1000, le=9999)],
-    productive_sector: Annotated[ProductiveSector, Form()],
-    document_type: Annotated[DocumentType, Form()],
+    year: Annotated[int | None, Form(ge=1000, le=9999)] = None,
+    productive_sector: Annotated[ProductiveSector | None, Form()] = None,
+    document_type: Annotated[DocumentType | None, Form()] = None,
     metadata: Annotated[str | None, Form()] = None,
     language: Annotated[str | None, Form(min_length=2, max_length=10)] = None,
     db: Session = Depends(get_db),
@@ -82,8 +82,8 @@ def upload_batch(
         files,
         int(incubator_number),
         year,
-        productive_sector.value,
-        document_type.value,
+        productive_sector.value if productive_sector else None,
+        document_type.value if document_type else None,
         metadata,
         language_limpio,
     )
@@ -132,6 +132,52 @@ def update_document_language(
 ):
     doc = DocumentService.actualizar_language(db, str(document_id), body.language)
     return doc
+
+
+@router.patch(
+    "/{document_id}/classification",
+    response_model=DocumentRead,
+    openapi_extra={
+        "requestBody": {
+            "content": {
+                "multipart/form-data": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "year": {
+                                "type": "integer",
+                                "minimum": 1000,
+                                "maximum": 9999,
+                            },
+                            "productive_sector": {
+                                "type": "string",
+                                "enum": ["Agroforestry"],
+                            },
+                            "document_type": {
+                                "type": "string",
+                                "enum": [item.value for item in DocumentType],
+                            },
+                        },
+                    }
+                }
+            }
+        }
+    },
+)
+def update_document_classification(
+    document_id: UUID,
+    year: Annotated[int | None, Form(ge=1000, le=9999)] = None,
+    productive_sector: Annotated[ProductiveSector | None, Form()] = None,
+    document_type: Annotated[DocumentType | None, Form()] = None,
+    db: Session = Depends(get_db),
+):
+    return DocumentService.actualizar_clasificacion(
+        db,
+        str(document_id),
+        year,
+        productive_sector.value if productive_sector else None,
+        document_type.value if document_type else None,
+    )
 
 
 @router.post("/set-language-batch", response_model=SetLanguageBatchResponse)

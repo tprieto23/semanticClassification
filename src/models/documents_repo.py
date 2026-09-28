@@ -66,3 +66,19 @@ class DocumentRepo:
     ) -> None:
         documento.language = language
         db.commit()
+
+    @staticmethod
+    def actualizar_clasificacion(
+        db: Session,
+        documento: Document,
+        year: int | None,
+        productive_sector: str | None,
+        document_type: str | None,
+    ) -> None:
+        if year is not None:
+            documento.year = year
+        if productive_sector is not None:
+            documento.productive_sector = productive_sector
+        if document_type is not None:
+            documento.document_type = document_type
+        db.commit()
