@@ -102,16 +102,24 @@ api/routers → services → models/{repo, storage}
 
 ```
 POST /documents
-  multipart: file + incubator_number (1..8) + metadata opcional + language opcional
+  multipart:
+    file
+    incubator_number (1..8)
+    year (1000..9999)
+    productive_sector (Agroforestry)
+    document_type (vocabulario controlado)
+    metadata opcional
+    language opcional
   → FastAPI/OpenAPI valida que la incubadora esté entre 1 y 8
   → DocumentService.cargar_documento()
     → Storage.preparar_nombre() → nombre seguro, ext, UUID
     → Storage.guardar()         → s3/archivosCrudos/{uuid}.{ext}
-    → DocumentRepo.crear()      → INSERT con status=raw e incubator_number
-  ← 201 + DocumentRead (incluye incubator_number y language)
+    → DocumentRepo.crear()      → INSERT con status=raw y atributos de ingesta
+  ← 201 + DocumentRead (incluye incubadora, idioma, año, sector y tipo documental)
 
 POST /documents/batch
-  multipart: files[] + una incubator_number común al lote + language opcional
+  multipart: files[] + incubadora, año, sector y tipo documental comunes al lote
+  → cada documento conserva sus propios campos en PostgreSQL
 
 PATCH /documents/{id}/language
   → registra el idioma de un documento ya cargado
@@ -407,8 +415,8 @@ s3/
 
 | Método | Ruta | Objetivo |
 |---|---|---|
-| POST | `/documents` | Subir archivo con incubadora obligatoria 1..8 |
-| POST | `/documents/batch` | Subir múltiples bajo una incubadora común |
+| POST | `/documents` | Subir archivo con incubadora, año, sector y tipo documental |
+| POST | `/documents/batch` | Subir múltiples con atributos de ingesta comunes |
 | GET | `/documents` | Listar + filtros, incluido `incubator_number` |
 | GET | `/documents/{id}` | Ver uno |
 | DELETE | `/documents/{id}` | Eliminar |

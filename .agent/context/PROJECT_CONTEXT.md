@@ -12,6 +12,14 @@ La fase actual es la promoción de comunidades Leiden aceptadas a nodos semánti
 
 La aplicación es un servicio FastAPI ejecutado con Uvicorn, PostgreSQL 16 con pgvector, SQLAlchemy 2 y Alembic. Docker Compose coordina los servicios. El almacenamiento local de artefactos usa `s3/`.
 
+La ingesta exige para cada carga nueva `incubator_number`, `year`,
+`productive_sector` y `document_type`; `language` y `metadata` permanecen
+opcionales. `year` admite cuatro dígitos, el sector controlado vigente es
+`Agroforestry` y el tipo documental se elige entre `academic`,
+`technical_report`, `project_report`, `policy_document`, `manual_or_guide`,
+`institutional_document` y `other`. Las columnas nuevas permiten `NULL` solo
+para conservar los registros históricos.
+
 El flujo principal es:
 
 ```text

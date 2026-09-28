@@ -71,12 +71,6 @@
               "host": ["{{base_url}}"],
               "path": ["documents"]
             },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "multipart/form-data"
-              }
-            ],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -87,6 +81,36 @@
                   "description": "Archivo a subir (PDF, DOCX, etc.)"
                 },
                 {
+                  "key": "incubator_number",
+                  "type": "text",
+                  "value": "1",
+                  "description": "Incubadora del documento (1 a 8)"
+                },
+                {
+                  "key": "language",
+                  "type": "text",
+                  "value": "es",
+                  "description": "Idioma del documento (por ejemplo: es, en, pt)"
+                },
+                {
+                  "key": "year",
+                  "type": "text",
+                  "value": "2025",
+                  "description": "Año del documento, con cuatro dígitos"
+                },
+                {
+                  "key": "productive_sector",
+                  "type": "text",
+                  "value": "Agroforestry",
+                  "description": "Sector productivo controlado; actualmente solo Agroforestry"
+                },
+                {
+                  "key": "document_type",
+                  "type": "text",
+                  "value": "technical_report",
+                  "description": "academic, technical_report, project_report, policy_document, manual_or_guide, institutional_document u other"
+                },
+                {
                   "key": "metadata",
                   "type": "text",
                   "value": "",
@@ -94,7 +118,7 @@
                 }
               ]
             },
-            "description": "Subir un documento individual"
+            "description": "Subir un documento individual y registrar sus atributos de ingesta"
           },
           "response": []
         },
@@ -107,12 +131,6 @@
               "host": ["{{base_url}}"],
               "path": ["documents", "batch"]
             },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "multipart/form-data"
-              }
-            ],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -121,10 +139,40 @@
                   "type": "file",
                   "src": "",
                   "description": "Múltiples archivos (PDF, DOCX). Usar el mismo key 'files' para todos."
+                },
+                {
+                  "key": "incubator_number",
+                  "type": "text",
+                  "value": "1",
+                  "description": "Incubadora común para todo el lote (1 a 8)"
+                },
+                {
+                  "key": "language",
+                  "type": "text",
+                  "value": "es",
+                  "description": "Idioma común para todo el lote"
+                },
+                {
+                  "key": "year",
+                  "type": "text",
+                  "value": "2025",
+                  "description": "Año común para todo el lote, con cuatro dígitos"
+                },
+                {
+                  "key": "productive_sector",
+                  "type": "text",
+                  "value": "Agroforestry",
+                  "description": "Sector productivo común; actualmente solo Agroforestry"
+                },
+                {
+                  "key": "document_type",
+                  "type": "text",
+                  "value": "technical_report",
+                  "description": "Tipo documental común para todo el lote"
                 }
               ]
             },
-            "description": "Subir y procesar múltiples archivos en un solo request"
+            "description": "Subir múltiples archivos con los mismos atributos de ingesta"
           },
           "response": []
         },

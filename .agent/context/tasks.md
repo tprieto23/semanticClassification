@@ -23,6 +23,13 @@
 - [x] `POST /documents/set-language-batch` — registrar idioma en lote
 - [x] `GET /documents?language=...` — filtrar documentos por idioma
 - [x] Migración `d5e6f7a8b9c0` aplicada; todos los documentos existentes quedan con `language = NULL`
+- [x] Atributos obligatorios para cargas nuevas: `year`, `productive_sector` y `document_type`
+- [x] `year` validado como entero de cuatro dígitos (`1000..9999`)
+- [x] `productive_sector` usa vocabulario controlado; opción vigente: `Agroforestry`
+- [x] `document_type` usa las opciones `academic`, `technical_report`, `project_report`,
+  `policy_document`, `manual_or_guide`, `institutional_document` y `other`
+- [x] Migración `a4b5c6d7e8f9` aplicada; las columnas son nullable únicamente para compatibilidad histórica
+- [x] Colección de Postman actualizada para ingesta individual y por lote
 
 ## Objetivo 2: Conversión a Markdown ✅
 

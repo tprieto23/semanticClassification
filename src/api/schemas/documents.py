@@ -1,5 +1,5 @@
 from datetime import datetime
-from enum import IntEnum
+from enum import Enum, IntEnum
 from typing import Any
 from uuid import UUID
 
@@ -15,6 +15,20 @@ class IncubatorNumber(IntEnum):
     SIX = 6
     SEVEN = 7
     EIGHT = 8
+
+
+class ProductiveSector(str, Enum):
+    AGROFORESTRY = "Agroforestry"
+
+
+class DocumentType(str, Enum):
+    ACADEMIC = "academic"
+    TECHNICAL_REPORT = "technical_report"
+    PROJECT_REPORT = "project_report"
+    POLICY_DOCUMENT = "policy_document"
+    MANUAL_OR_GUIDE = "manual_or_guide"
+    INSTITUTIONAL_DOCUMENT = "institutional_document"
+    OTHER = "other"
 
 
 class BatchProcessError(BaseModel):
@@ -33,6 +47,9 @@ class DocumentRead(BaseModel):
     status: str
     incubator_number: int | None = None
     language: str | None = None
+    year: int | None = None
+    productive_sector: ProductiveSector | None = None
+    document_type: DocumentType | None = None
     uploaded_at: datetime
     metadata: dict[str, Any] | None = Field(None, validation_alias="metadata_")
     converted_path: str | None = None

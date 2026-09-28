@@ -30,7 +30,22 @@ class Document(Base):
             "incubator_number BETWEEN 1 AND 8",
             name="ck_documents_incubator_number",
         ),
+        CheckConstraint(
+            "year BETWEEN 1000 AND 9999",
+            name="ck_documents_year",
+        ),
+        CheckConstraint(
+            "productive_sector IN ('Agroforestry')",
+            name="ck_documents_productive_sector",
+        ),
+        CheckConstraint(
+            "document_type IN ('academic', 'technical_report', 'project_report', "
+            "'policy_document', 'manual_or_guide', 'institutional_document', 'other')",
+            name="ck_documents_document_type",
+        ),
         Index("ix_documents_incubator_number", "incubator_number"),
+        Index("ix_documents_year", "year"),
+        Index("ix_documents_document_type", "document_type"),
     )
 
     id: Mapped[UUID] = mapped_column(
@@ -48,6 +63,9 @@ class Document(Base):
     )
     incubator_number: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
     language: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    year: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    productive_sector: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    document_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
     uploaded_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=True, default=_utcnow
     )

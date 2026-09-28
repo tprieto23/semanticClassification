@@ -71,6 +71,9 @@ class DocumentService:
         db: Session,
         file: UploadFile,
         incubator_number: int,
+        year: int,
+        productive_sector: str,
+        document_type: str,
         metadata_json: str | None,
         language: str | None = None,
     ) -> Document:
@@ -101,6 +104,9 @@ class DocumentService:
             file_size_bytes=len(content),
             incubator_number=incubator_number,
             language=language,
+            year=year,
+            productive_sector=productive_sector,
+            document_type=document_type,
             metadata_=metadata,
         )
 
@@ -136,12 +142,22 @@ class DocumentService:
         db: Session,
         files: list[UploadFile],
         incubator_number: int,
+        year: int,
+        productive_sector: str,
+        document_type: str,
         metadata_json: str | None,
         language: str | None = None,
     ) -> list[Document]:
         return [
             DocumentService.cargar_documento(
-                db, file, incubator_number, metadata_json, language
+                db,
+                file,
+                incubator_number,
+                year,
+                productive_sector,
+                document_type,
+                metadata_json,
+                language,
             )
             for file in files
         ]

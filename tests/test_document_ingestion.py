@@ -19,7 +19,7 @@ if "src.services.pdf_converter" not in sys.modules:
     sys.modules["src.services.pdf_converter"] = pdf_converter_stub
 
 from src.api.main import app
-from src.api.schemas.documents import IncubatorNumber
+from src.api.schemas.documents import DocumentType, IncubatorNumber, ProductiveSector
 from src.models.storage import Storage
 from src.services.documents import DocumentService
 
@@ -30,7 +30,7 @@ class DocumentIngestionTests(unittest.TestCase):
             [member.value for member in IncubatorNumber], list(range(1, 9))
         )
 
-    def test_upload_openapi_requires_incubator_selection(self) -> None:
+    def test_upload_openapi_requires_ingestion_attributes(self) -> None:
         schema = app.openapi()
         body_ref = schema["paths"]["/documents"]["post"]["requestBody"]["content"][
             "multipart/form-data"
@@ -38,10 +38,35 @@ class DocumentIngestionTests(unittest.TestCase):
         body_name = body_ref.rsplit("/", 1)[-1]
         upload_body = schema["components"]["schemas"][body_name]
 
-        self.assertIn("incubator_number", upload_body["required"])
+        self.assertTrue(
+            {
+                "file",
+                "incubator_number",
+                "year",
+                "productive_sector",
+                "document_type",
+            }.issubset(upload_body["required"])
+        )
         self.assertEqual(
             schema["components"]["schemas"]["IncubatorNumber"]["enum"],
             list(range(1, 9)),
+        )
+
+    def test_controlled_ingestion_vocabularies(self) -> None:
+        self.assertEqual(
+            [sector.value for sector in ProductiveSector], ["Agroforestry"]
+        )
+        self.assertEqual(
+            [document_type.value for document_type in DocumentType],
+            [
+                "academic",
+                "technical_report",
+                "project_report",
+                "policy_document",
+                "manual_or_guide",
+                "institutional_document",
+                "other",
+            ],
         )
 
     @patch("src.services.documents.DocumentRepo.crear")
@@ -67,10 +92,26 @@ class DocumentIngestionTests(unittest.TestCase):
             file=io.BytesIO(b"contenido"),
         )
 
-        resultado = DocumentService.cargar_documento(Mock(), archivo, 3, None)
+        resultado = DocumentService.cargar_documento(
+            Mock(),
+            archivo,
+            3,
+            2025,
+            "Agroforestry",
+            "technical_report",
+            None,
+            "es",
+        )
 
         self.assertIs(resultado, creado)
         self.assertEqual(crear.call_args.kwargs["incubator_number"], 3)
+        self.assertEqual(crear.call_args.kwargs["year"], 2025)
+        self.assertEqual(
+            crear.call_args.kwargs["productive_sector"], "Agroforestry"
+        )
+        self.assertEqual(
+            crear.call_args.kwargs["document_type"], "technical_report"
+        )
 
     def test_optional_storage_path_can_be_deleted(self) -> None:
         Storage.eliminar(None)

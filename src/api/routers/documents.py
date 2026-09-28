@@ -20,7 +20,9 @@ from src.api.schemas.documents import (
     DocumentLanguageUpdate,
     DocumentListResponse,
     DocumentRead,
+    DocumentType,
     IncubatorNumber,
+    ProductiveSector,
     SetLanguageBatchRequest,
     SetLanguageBatchResponse,
 )
@@ -41,13 +43,23 @@ router = APIRouter(prefix="/documents", tags=["Documents"])
 def upload(
     file: Annotated[UploadFile, File()],
     incubator_number: Annotated[IncubatorNumber, Form()],
+    year: Annotated[int, Form(ge=1000, le=9999)],
+    productive_sector: Annotated[ProductiveSector, Form()],
+    document_type: Annotated[DocumentType, Form()],
     metadata: Annotated[str | None, Form()] = None,
     language: Annotated[str | None, Form(min_length=2, max_length=10)] = None,
     db: Session = Depends(get_db),
 ):
     language_limpio = language.lower().strip() if language else None
     return DocumentService.cargar_documento(
-        db, file, int(incubator_number), metadata, language_limpio
+        db,
+        file,
+        int(incubator_number),
+        year,
+        productive_sector.value,
+        document_type.value,
+        metadata,
+        language_limpio,
     )
 
 
@@ -57,13 +69,23 @@ def upload(
 def upload_batch(
     files: Annotated[list[UploadFile], File()],
     incubator_number: Annotated[IncubatorNumber, Form()],
+    year: Annotated[int, Form(ge=1000, le=9999)],
+    productive_sector: Annotated[ProductiveSector, Form()],
+    document_type: Annotated[DocumentType, Form()],
     metadata: Annotated[str | None, Form()] = None,
     language: Annotated[str | None, Form(min_length=2, max_length=10)] = None,
     db: Session = Depends(get_db),
 ):
     language_limpio = language.lower().strip() if language else None
     return DocumentService.cargar_documentos(
-        db, files, int(incubator_number), metadata, language_limpio
+        db,
+        files,
+        int(incubator_number),
+        year,
+        productive_sector.value,
+        document_type.value,
+        metadata,
+        language_limpio,
     )
 
 
