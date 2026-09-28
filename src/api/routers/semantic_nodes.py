@@ -22,7 +22,7 @@ router = APIRouter(prefix="/semantic-nodes", tags=["Semantic nodes"])
 
 @router.get("/leiden-source", response_model=SemanticNodeLeidenSource)
 def get_leiden_source(
-    projection_id: Annotated[str, Query(pattern=r"^[a-z0-9-]+$")] = "prac-infra-gov-v1",
+    projection_id: Annotated[str, Query(pattern=r"^[a-z0-9-]+$")] = "prac-infra-rul-v2",
     artifact_source: ArtifactSource = "official",
     incubator_number: IncubatorFilter = "all",
     language: Annotated[str, Query(pattern=r"^(es|en|all)$")] = "es",

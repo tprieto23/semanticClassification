@@ -60,20 +60,20 @@ class GraphPathsTests(unittest.TestCase):
     def test_backbone_filename_raw_threshold(self) -> None:
         self.assertEqual(
             backbone_filename(
-                "prac-infra-gov-v1",
+                "prac-infra-rul-v2",
                 {
                     "method": "raw-threshold-v1",
                     "minimum_weight": 2,
                     "include_isolates": False,
                 },
             ),
-            "backbone_prac-infra-gov-v1",
+            "backbone_prac-infra-rul-v2",
         )
 
     def test_backbone_filename_document_recurrent_core(self) -> None:
         self.assertEqual(
             backbone_filename(
-                "prac-infra-gov-v1",
+                "prac-infra-rul-v2",
                 {
                     "method": "document-recurrent-core-v1",
                     "minimum_node_document_count": 2,
@@ -81,12 +81,12 @@ class GraphPathsTests(unittest.TestCase):
                     "include_minor_components": True,
                 },
             ),
-            "backbone_prac-infra-gov-v1",
+            "backbone_prac-infra-rul-v2",
         )
 
     def test_leiden_filename(self) -> None:
         backbone = backbone_filename(
-            "prac-infra-gov-v1",
+            "prac-infra-rul-v2",
             {
                 "method": "document-recurrent-core-v1",
                 "minimum_node_document_count": 2,
@@ -106,7 +106,7 @@ class GraphPathsTests(unittest.TestCase):
                     "weight_attribute": "weight",
                 },
             ),
-            "leiden_prac-infra-gov-v1",
+            "leiden_prac-infra-rul-v2",
         )
 
     def test_path_helpers(self) -> None:
