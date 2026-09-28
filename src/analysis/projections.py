@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 from src.analysis.cooccurrence import SEMANTIC_CORE_CATEGORIES, all_category_pairs
 
-SEMANTIC_PROJECTION_ID = "prac-infra-gov-v1"
+SEMANTIC_PROJECTION_ID = "prac-infra-rul-v2"
 SEMANTIC_CORE_PAIRS = all_category_pairs(SEMANTIC_CORE_CATEGORIES)
 
 
@@ -40,7 +40,7 @@ _INTRA_PAIRS = tuple(pair for pair in SEMANTIC_CORE_PAIRS if pair[0] == pair[1])
 
 SEMANTIC_PROJECTION = ProjectionDefinition(
     projection_id=SEMANTIC_PROJECTION_ID,
-    label="Red semántica tipada PRAC + INFRA + GOV",
+    label="Red semántica tipada PRAC + INFRA + RUL",
     node_categories=SEMANTIC_CORE_CATEGORIES,
     category_pairs=SEMANTIC_CORE_PAIRS,
     views=(
@@ -66,7 +66,7 @@ SEMANTIC_PROJECTION = ProjectionDefinition(
         ProjectionView(
             "infra-infra", "INFRA–INFRA", ("INFRA",), (("INFRA", "INFRA"),)
         ),
-        ProjectionView("gov-gov", "GOV–GOV", ("GOV",), (("GOV", "GOV"),)),
+        ProjectionView("rul-rul", "RUL–RUL", ("RUL",), (("RUL", "RUL"),)),
         ProjectionView(
             "prac-infra",
             "PRAC–INFRA",
@@ -74,13 +74,13 @@ SEMANTIC_PROJECTION = ProjectionDefinition(
             (("PRAC", "INFRA"),),
         ),
         ProjectionView(
-            "prac-gov", "PRAC–GOV", ("PRAC", "GOV"), (("PRAC", "GOV"),)
+            "prac-rul", "PRAC–RUL", ("PRAC", "RUL"), (("PRAC", "RUL"),)
         ),
         ProjectionView(
-            "infra-gov",
-            "INFRA–GOV",
-            ("INFRA", "GOV"),
-            (("INFRA", "GOV"),),
+            "infra-rul",
+            "INFRA–RUL",
+            ("INFRA", "RUL"),
+            (("INFRA", "RUL"),),
         ),
     ),
 )

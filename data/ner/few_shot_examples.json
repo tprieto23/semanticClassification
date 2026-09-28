@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "codebook_version": "1.1",
+  "codebook_version": "2.0",
   "source": "data/ner/annotations/a251048a.json",
-  "labels": ["CHAR", "LOC", "INFRA", "GOV", "PRAC"],
+  "labels": ["CHAR", "LOC", "INFRA", "RUL", "PRAC"],
   "examples": [
     {
       "id": "char-001",
@@ -110,38 +110,38 @@
       ]
     },
     {
-      "id": "gov-001",
+      "id": "rul-001",
       "text": "Contribuciones Nacionalmente Determinadas (CND)",
       "annotations": [
-        {"label": "GOV", "text": "Contribuciones Nacionalmente Determinadas (CND)", "ambiguity": "low"}
+        {"label": "RUL", "text": "Contribuciones Nacionalmente Determinadas (CND)", "ambiguity": "low"}
       ]
     },
     {
-      "id": "gov-002",
+      "id": "rul-002",
       "text": "Ley Marco sobre Cambio Climático - Ley n.º 30754",
       "annotations": [
-        {"label": "GOV", "text": "Ley Marco sobre Cambio Climático - Ley n.º 30754", "ambiguity": "low"}
+        {"label": "RUL", "text": "Ley Marco sobre Cambio Climático - Ley n.º 30754", "ambiguity": "low"}
       ]
     },
     {
-      "id": "gov-003",
+      "id": "rul-003",
       "text": "Estrategia Nacional sobre Bosques y Cambio Climático (ENBCC)",
       "annotations": [
-        {"label": "GOV", "text": "Estrategia Nacional sobre Bosques y Cambio Climático (ENBCC)", "ambiguity": "low"}
+        {"label": "RUL", "text": "Estrategia Nacional sobre Bosques y Cambio Climático (ENBCC)", "ambiguity": "low"}
       ]
     },
     {
-      "id": "gov-004",
+      "id": "rul-004",
       "text": "Declaración Conjunta de Intención (DCI)",
       "annotations": [
-        {"label": "GOV", "text": "Declaración Conjunta de Intención (DCI)", "ambiguity": "low"}
+        {"label": "RUL", "text": "Declaración Conjunta de Intención (DCI)", "ambiguity": "low"}
       ]
     },
     {
-      "id": "gov-005",
+      "id": "rul-005",
       "text": "Acuerdo Cacao, Bosque y Diversidad",
       "annotations": [
-        {"label": "GOV", "text": "Acuerdo Cacao, Bosque y Diversidad", "ambiguity": "low"}
+        {"label": "RUL", "text": "Acuerdo Cacao, Bosque y Diversidad", "ambiguity": "low"}
       ]
     },
     {

@@ -10,7 +10,7 @@ from src.services.llm_client import get_anthropic_client
 
 logger = logging.getLogger(__name__)
 
-VALID_LABELS = {"CHAR", "LOC", "INFRA", "GOV", "PRAC"}
+VALID_LABELS = {"CHAR", "LOC", "INFRA", "RUL", "PRAC"}
 NER_TOOL_NAME = "submit_entity_annotations"
 
 NER_TOOL = {

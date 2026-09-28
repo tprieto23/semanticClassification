@@ -241,19 +241,19 @@ class NetworkServiceTests(unittest.TestCase):
         from src.analysis.graph_paths import graphml_path, json_path
 
         self.assertEqual(
-            graphml_path("corpus", None, "es", "backbone_prac-infra-gov-v1"),
-            Path("s3/graphs/graphml/corpus/es/backbone_prac-infra-gov-v1.graphml"),
+            graphml_path("corpus", None, "es", "backbone_prac-infra-rul-v2"),
+            Path("s3/graphs/graphml/corpus/es/backbone_prac-infra-rul-v2.graphml"),
         )
         self.assertEqual(
-            json_path("corpus", None, "es", "backbone_prac-infra-gov-v1"),
-            Path("s3/graphs/json/corpus/es/backbone_prac-infra-gov-v1.json"),
+            json_path("corpus", None, "es", "backbone_prac-infra-rul-v2"),
+            Path("s3/graphs/json/corpus/es/backbone_prac-infra-rul-v2.json"),
         )
 
     def test_projection_registry_exposes_master_and_partial_views(self) -> None:
-        payload = NetworkService.projection_views("prac-infra-gov-v1")
+        payload = NetworkService.projection_views("prac-infra-rul-v2")
 
         self.assertEqual(
-            payload["projection"]["node_categories"], ["PRAC", "INFRA", "GOV"]
+            payload["projection"]["node_categories"], ["PRAC", "INFRA", "RUL"]
         )
         self.assertEqual(len(payload["projection"]["category_pairs"]), 6)
         self.assertEqual(
@@ -264,10 +264,10 @@ class NetworkServiceTests(unittest.TestCase):
                 "intra",
                 "prac-prac",
                 "infra-infra",
-                "gov-gov",
+                "rul-rul",
                 "prac-infra",
-                "prac-gov",
-                "infra-gov",
+                "prac-rul",
+                "infra-rul",
             },
         )
 
@@ -279,16 +279,16 @@ class NetworkServiceTests(unittest.TestCase):
             expected = {
                 "scope": "corpus",
                 "outputs": {
-                    "graphml": "graphml/corpus/all/backbone_prac-infra-gov-v1.graphml"
+                    "graphml": "graphml/corpus/all/backbone_prac-infra-rul-v2.graphml"
                 },
             }
-            (target / "backbone_prac-infra-gov-v1.json").write_text(
+            (target / "backbone_prac-infra-rul-v2.json").write_text(
                 json.dumps(expected), encoding="utf-8"
             )
 
             with patch.object(settings, "STORAGE_GRAPHS", root):
                 self.assertEqual(
-                    NetworkService.latest_projection("prac-infra-gov-v1"),
+                    NetworkService.latest_projection("prac-infra-rul-v2"),
                     expected,
                 )
 
@@ -296,7 +296,7 @@ class NetworkServiceTests(unittest.TestCase):
         mentions = [
             self._mention("p", "Práctica", "PRAC", 0),
             self._mention("i", "Infraestructura", "INFRA", 20),
-            self._mention("g", "Gobernanza", "GOV", 40),
+            self._mention("g", "Regla", "RUL", 40),
             self._mention("c", "Actor", "CHAR", 60),
             self._mention("l", "Lugar", "LOC", 80),
         ]
@@ -314,9 +314,9 @@ class NetworkServiceTests(unittest.TestCase):
                     },
                 ),
             ):
-                payload = NetworkService.build_projection(Mock(), "prac-infra-gov-v1")
+                payload = NetworkService.build_projection(Mock(), "prac-infra-rul-v2")
 
-            stem = "backbone_prac-infra-gov-v1"
+            stem = "backbone_prac-infra-rul-v2"
             self.assertTrue((root / "graphml/corpus/all" / f"{stem}.graphml").exists())
             self.assertTrue((root / "json/corpus/all" / f"{stem}.json").exists())
             self.assertTrue((root / "csv/corpus/all" / f"{stem}_nodes.csv").exists())
@@ -333,7 +333,7 @@ class NetworkServiceTests(unittest.TestCase):
         base_mentions = [
             self._mention("p", "Práctica", "PRAC", 0),
             self._mention("i", "Infraestructura", "INFRA", 20),
-            self._mention("g", "Gobernanza", "GOV", 40),
+            self._mention("g", "Regla", "RUL", 40),
         ]
         mentions = [
             replace(mention, document_id=first_document, sentence_id="s-1")
@@ -359,7 +359,7 @@ class NetworkServiceTests(unittest.TestCase):
             ):
                 payload = NetworkService.build_projection(
                     Mock(),
-                    "prac-infra-gov-v1",
+                    "prac-infra-rul-v2",
                     language="es",
                     construction={
                         "method": "document-recurrent-core-v1",
@@ -369,7 +369,7 @@ class NetworkServiceTests(unittest.TestCase):
                     },
                 )
 
-            stem = "backbone_prac-infra-gov-v1"
+            stem = "backbone_prac-infra-rul-v2"
             self.assertTrue((root / "graphml/corpus/es" / f"{stem}.graphml").exists())
             self.assertTrue((root / "json/corpus/es" / f"{stem}.json").exists())
             self.assertTrue((root / "csv/corpus/es" / f"{stem}_nodes.csv").exists())
@@ -434,11 +434,11 @@ class NetworkServiceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(settings, "STORAGE_GRAPHS", root):
-                source = root / "graphml/corpus/es/backbone_prac-infra-gov-v1.graphml"
+                source = root / "graphml/corpus/es/backbone_prac-infra-rul-v2.graphml"
                 source.parent.mkdir(parents=True)
                 nx.write_graphml(graph, source)
                 payload = NetworkService.cluster_projection_leiden(
-                    "prac-infra-gov-v1",
+                    "prac-infra-rul-v2",
                     construction=construction,
                     component_scope="main-component",
                     view_id="all",
@@ -446,7 +446,7 @@ class NetworkServiceTests(unittest.TestCase):
                     language="es",
                 )
                 cached = NetworkService.cluster_projection_leiden(
-                    "prac-infra-gov-v1",
+                    "prac-infra-rul-v2",
                     construction=construction,
                     component_scope="main-component",
                     view_id="all",
@@ -506,13 +506,13 @@ class NetworkServiceTests(unittest.TestCase):
             root = Path(temporary)
             target = root / "json" / "corpus" / "all"
             target.mkdir(parents=True)
-            (target / "backbone_prac-infra-gov-v1.json").write_text(
+            (target / "backbone_prac-infra-rul-v2.json").write_text(
                 json.dumps({"scope": "corpus"}), encoding="utf-8"
             )
             with patch.object(settings, "STORAGE_GRAPHS", root):
                 evidence = NetworkService.edge_evidence(
                     db=db,
-                    projection_id="prac-infra-gov-v1",
+                    projection_id="prac-infra-rul-v2",
                     source_id="00000000-0000-0000-0000-000000000010",
                     target_id="00000000-0000-0000-0000-000000000011",
                 )

@@ -109,14 +109,14 @@ class FuzzyMatchingLogicTests(unittest.TestCase):
         self, leer_todas: Mock, crear: Mock, _puntaje: Mock
     ) -> None:
         leer_todas.return_value = [
-            canonical("Ministerio del Ambiente", "GOV"),
-            canonical("Ministerio de Ambiente", "GOV"),
+            canonical("Ley Marco del Ambiente", "RUL"),
+            canonical("Ley Marco Ambiental", "RUL"),
         ]
-        new = canonical("Ministerio Ambiente", "GOV")
+        new = canonical("Ley Marco Ambiente", "RUL")
         crear.return_value = new
 
         result, _ = asociar_entidades_canonicas(
-            self.db, [mention("Ministerio Ambiente", "GOV")]
+            self.db, [mention("Ley Marco Ambiente", "RUL")]
         )
 
         self.assertEqual(result[0]["canonical_id"], new.id)
@@ -135,6 +135,25 @@ class FuzzyMatchingLogicTests(unittest.TestCase):
 
         self.assertEqual(result[0]["canonical_id"], new.id)
         self.assertEqual(result[0]["match_type"], "new")
+
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.crear")
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.leer_todas")
+    def test_legacy_gov_mentions_are_normalized_to_rul(
+        self, leer_todas: Mock, crear: Mock
+    ) -> None:
+        leer_todas.return_value = []
+        created = canonical("Ley Forestal", "RUL")
+        crear.return_value = created
+        legacy_mention = mention("Ley Forestal", "GOV")
+
+        result, _ = asociar_entidades_canonicas(self.db, [legacy_mention])
+
+        self.assertEqual(legacy_mention["category"], "RUL")
+        self.assertEqual(result[0]["category"], "RUL")
+        self.assertEqual(result[0]["canonical_id"], created.id)
+        crear.assert_called_once_with(
+            self.db, canonical_name="Ley Forestal", category="RUL"
+        )
 
     def test_controlled_singularization_preserves_gender_and_phrase(self) -> None:
         self.assertEqual(canonicalizar_actor_generico("MINEROS"), "minero")

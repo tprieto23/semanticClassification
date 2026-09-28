@@ -11,7 +11,7 @@ from src.api.schemas.network import IncubatorFilter
 class MetaRelationshipBuildRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    projection_id: str = Field(default="prac-infra-gov-v1", pattern=r"^[a-z0-9-]+$")
+    projection_id: str = Field(default="prac-infra-rul-v2", pattern=r"^[a-z0-9-]+$")
     artifact_source: ArtifactSource
     clustering_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     incubator_number: IncubatorFilter = "all"

@@ -19,9 +19,9 @@ from pathlib import Path
 from typing import Any, Iterable, Sequence
 from uuid import UUID
 
-CATEGORY_ORDER = ("CHAR", "LOC", "PRAC", "INFRA", "GOV")
+CATEGORY_ORDER = ("CHAR", "LOC", "PRAC", "INFRA", "RUL")
 CATEGORY_RANK = {category: index for index, category in enumerate(CATEGORY_ORDER)}
-SEMANTIC_CORE_CATEGORIES = ("PRAC", "INFRA", "GOV")
+SEMANTIC_CORE_CATEGORIES = ("PRAC", "INFRA", "RUL")
 
 
 def ordered_category_pair(category_a: str, category_b: str) -> tuple[str, str]:

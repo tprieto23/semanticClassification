@@ -25,9 +25,12 @@ class SemanticNodeTests(unittest.TestCase):
             metadata_path = Path(temporary) / "leiden.json"
             graph = nx.Graph()
             graph.graph["source_graph_sha256"] = "source-hash"
-            graph.add_node(str(uuid4()), community_id="C001")
-            graph.add_node(str(uuid4()), community_id="C001")
+            first_id = str(uuid4())
+            second_id = str(uuid4())
+            graph.add_node(first_id, community_id="C001", category="GOV")
+            graph.add_node(second_id, community_id="C001", category="PRAC")
             graph.add_node(str(uuid4()), community_id="C002")
+            graph.add_edge(first_id, second_id, category_pair="PRAC--GOV")
             nx.write_graphml(graph, graph_path)
             metadata_path.write_text(json.dumps({
                 "status": "completed",
@@ -39,7 +42,7 @@ class SemanticNodeTests(unittest.TestCase):
                 graph_path, metadata_path
             )):
                 source = SemanticNodeService.leiden_source(
-                    projection_id="prac-infra-gov-v1",
+                    projection_id="prac-infra-rul-v2",
                     artifact_source="official",
                     incubator_number=None,
                     language="es",
@@ -49,13 +52,21 @@ class SemanticNodeTests(unittest.TestCase):
                 {"community_id": "C001", "member_count": 2},
                 {"community_id": "C002", "member_count": 1},
             ])
+            normalized_graph, _ = _read_partition(
+                graph_path, metadata_path, graph_file_sha256(graph_path)
+            )
+            self.assertEqual(normalized_graph.nodes[first_id]["category"], "RUL")
+            self.assertEqual(
+                normalized_graph.edges[first_id, second_id]["category_pair"],
+                "PRAC--RUL",
+            )
             with self.assertRaises(SemanticNodeError):
                 _read_partition(graph_path, metadata_path, "0" * 64)
 
     def test_generated_description_rejects_unknown_sentence_without_writing(self):
         member_id = uuid4()
         node = SimpleNamespace(
-            id=uuid4(), status="pending_description", projection_id="prac-infra-gov-v1",
+            id=uuid4(), status="pending_description", projection_id="prac-infra-rul-v2",
             scope_type="corpus", scope_id=None, language="es",
             artifact_source="official",
             clustering_sha256="0" * 64,
@@ -108,7 +119,7 @@ class SemanticNodeTests(unittest.TestCase):
         member_id = uuid4()
         document_id = uuid4()
         node = SimpleNamespace(
-            id=uuid4(), status="pending_description", projection_id="prac-infra-gov-v1",
+            id=uuid4(), status="pending_description", projection_id="prac-infra-rul-v2",
             scope_type="corpus", scope_id=None, language="es",
             artifact_source="official",
             clustering_sha256="0" * 64, updated_at=datetime.now(timezone.utc),

@@ -13,13 +13,14 @@ from src.models.canonical_entities_repo import CanonicalEntityRepo
 from src.models.canonical_entity_aliases import CanonicalEntityAlias
 from src.models.canonical_entity_aliases_repo import CanonicalEntityAliasRepo
 
-VALID_CATEGORIES = frozenset({"CHAR", "LOC", "INFRA", "GOV", "PRAC"})
+VALID_CATEGORIES = frozenset({"CHAR", "LOC", "INFRA", "RUL", "PRAC"})
+LEGACY_CATEGORY_ALIASES = {"GOV": "RUL"}
 RESOLUTION_VERSION = "deterministic-v2"
 FUZZY_THRESHOLDS = {
     "CHAR": 93.0,
     "LOC": 93.0,
     "INFRA": 96.0,
-    "GOV": 96.0,
+    "RUL": 96.0,
     "PRAC": 96.0,
 }
 MIN_SCORE_MARGIN = 5.0
@@ -316,6 +317,9 @@ def asociar_entidades_canonicas(
 ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     """Resuelve todas las menciones después de analizar el documento completo."""
     for index, mencion in enumerate(menciones):
+        legacy_category = LEGACY_CATEGORY_ALIASES.get(mencion.get("category"))
+        if legacy_category is not None:
+            mencion["category"] = legacy_category
         _validar_mencion(mencion, index)
 
     source_document_id = _normalizar_document_id(document_id)

@@ -74,7 +74,7 @@ SEMANTIC_NODE_TOOL = {
         "required": ["title", "description", "supporting_evidence", "uncertainties"],
     },
 }
-VALID_CATEGORIES = {"PRAC", "INFRA", "GOV"}
+VALID_CATEGORIES = {"PRAC", "INFRA", "RUL"}
 LEGACY_ACCEPTED_DIR = Path(
     "corpus/language-es/projections/prac-infra-gov-v1/"
     "constructions/document-recurrent-core-v1/node-documents-2/"
@@ -102,7 +102,7 @@ def _artifacts(
 ) -> tuple[Path, Path]:
     if artifact_source == "accepted-2026-08-25":
         if (projection_id, scope_type, scope_id, language) != (
-            "prac-infra-gov-v1", "corpus", None, "es"
+            "prac-infra-rul-v2", "corpus", None, "es"
         ):
             raise SemanticNodeError(
                 "La partición histórica aceptada solo corresponde al corpus español"
@@ -136,6 +136,13 @@ def _read_partition(graph_path: Path, metadata_path: Path, expected_hash: str):
         raise SemanticNodeError("La partición Leiden no está completa")
     if graph.is_directed() or graph.is_multigraph():
         raise SemanticNodeError("El grafo Leiden debe ser simple y no dirigido")
+    for _, attributes in graph.nodes(data=True):
+        if attributes.get("category") == "GOV":
+            attributes["category"] = "RUL"
+    for _, _, attributes in graph.edges(data=True):
+        category_pair = attributes.get("category_pair")
+        if isinstance(category_pair, str) and "GOV" in category_pair:
+            attributes["category_pair"] = category_pair.replace("GOV", "RUL")
     if metadata.get("source", {}).get("graphml_sha256") != graph.graph.get(
         "source_graph_sha256"
     ):
@@ -320,7 +327,7 @@ class SemanticNodeService:
         *, projection_id: str, artifact_source: str,
         incubator_number: int | None, language: str
     ) -> dict:
-        if projection_id != "prac-infra-gov-v1":
+        if projection_id != "prac-infra-rul-v2":
             raise SemanticNodeError("Proyección no soportada", 404)
         scope_type, scope_id = _scope(incubator_number, language)
         graph_path, metadata_path = _artifacts(
@@ -353,7 +360,7 @@ class SemanticNodeService:
         db: Session, *, projection_id: str, artifact_source: str, community_id: str,
         incubator_number: int | None, language: str, expected_hash: str,
     ) -> dict:
-        if projection_id != "prac-infra-gov-v1":
+        if projection_id != "prac-infra-rul-v2":
             raise SemanticNodeError("Proyección no soportada", 404)
         scope_type, scope_id = _scope(incubator_number, language)
         graph_path, metadata_path = _artifacts(

@@ -134,7 +134,7 @@ class SentenceCooccurrenceTests(unittest.TestCase):
             mention("l2", "Territorio", "LOC", "s-1", 120),
             mention("p", "Minería", "PRAC", "s-1", 0),
             mention("i", "Draga", "INFRA", "s-1", 20),
-            mention("g", "Ley minera", "GOV", "s-1", 40),
+            mention("g", "Ley minera", "RUL", "s-1", 40),
         ]
         result = build_sentence_cooccurrence(mentions)
 
@@ -157,8 +157,8 @@ class SentenceCooccurrenceTests(unittest.TestCase):
             for row in rows
         }
         self.assertEqual(observed[("PRAC", "INFRA")], 1)
-        self.assertEqual(observed[("PRAC", "GOV")], 1)
-        self.assertEqual(observed[("INFRA", "GOV")], 1)
+        self.assertEqual(observed[("PRAC", "RUL")], 1)
+        self.assertEqual(observed[("INFRA", "RUL")], 1)
         self.assertEqual(observed[("CHAR", "CHAR")], 1)
         self.assertEqual(observed[("LOC", "LOC")], 1)
 
@@ -168,15 +168,15 @@ class SentenceCooccurrenceTests(unittest.TestCase):
             mention("p2", "Práctica dos", "PRAC", "s-1", 20),
             mention("i1", "Infraestructura uno", "INFRA", "s-1", 40),
             mention("i2", "Infraestructura dos", "INFRA", "s-1", 60),
-            mention("g1", "Gobernanza uno", "GOV", "s-1", 80),
-            mention("g2", "Gobernanza dos", "GOV", "s-1", 100),
+            mention("g1", "Regla uno", "RUL", "s-1", 80),
+            mention("g2", "Regla dos", "RUL", "s-1", 100),
             mention("c1", "Actor contextual", "CHAR", "s-1", 120),
             mention("l1", "Lugar contextual", "LOC", "s-1", 140),
         ]
 
         result = build_sentence_cooccurrence(
             mentions,
-            node_categories=("PRAC", "INFRA", "GOV"),
+            node_categories=("PRAC", "INFRA", "RUL"),
         )
 
         self.assertEqual(len(result.nodes), 6)
@@ -186,15 +186,15 @@ class SentenceCooccurrenceTests(unittest.TestCase):
             {
                 "PRAC--PRAC",
                 "PRAC--INFRA",
-                "PRAC--GOV",
+                "PRAC--RUL",
                 "INFRA--INFRA",
-                "INFRA--GOV",
-                "GOV--GOV",
+                "INFRA--RUL",
+                "RUL--RUL",
             },
         )
         self.assertEqual(
             {entity.category for entity in result.sentence_entities},
-            {"CHAR", "LOC", "PRAC", "INFRA", "GOV"},
+            {"CHAR", "LOC", "PRAC", "INFRA", "RUL"},
         )
         self.assertEqual(
             {
@@ -239,21 +239,21 @@ class SentenceCooccurrenceTests(unittest.TestCase):
             [
                 mention("p", "Práctica", "PRAC", "s-1", 0),
                 mention("i", "Infraestructura", "INFRA", "s-1", 20),
-                mention("g", "Gobernanza", "GOV", "s-1", 40),
+                mention("g", "Regla", "RUL", "s-1", 40),
             ],
-            node_categories=("PRAC", "GOV"),
-            allowed_category_pairs=(("PRAC", "GOV"),),
+            node_categories=("PRAC", "RUL"),
+            allowed_category_pairs=(("PRAC", "RUL"),),
         )
 
-        self.assertEqual({node.category for node in result.nodes}, {"PRAC", "GOV"})
+        self.assertEqual({node.category for node in result.nodes}, {"PRAC", "RUL"})
         self.assertEqual(len(result.edge_weights), 1)
-        self.assertEqual(result.allowed_category_pairs, (("PRAC", "GOV"),))
+        self.assertEqual(result.allowed_category_pairs, (("PRAC", "RUL"),))
 
         with self.assertRaisesRegex(ValueError, "fuera de node_categories"):
             build_sentence_cooccurrence(
                 [mention("p", "Práctica", "PRAC", "s-1", 0)],
                 node_categories=("PRAC",),
-                allowed_category_pairs=(("PRAC", "GOV"),),
+                allowed_category_pairs=(("PRAC", "RUL"),),
             )
 
     def test_different_contexts_in_one_sentence_are_preserved_per_edge(self) -> None:

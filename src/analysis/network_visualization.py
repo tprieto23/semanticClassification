@@ -28,12 +28,12 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from matplotlib.lines import Line2D
 
-CATEGORY_ORDER = ("CHAR", "LOC", "PRAC", "INFRA", "GOV")
+CATEGORY_ORDER = ("CHAR", "LOC", "PRAC", "INFRA", "RUL")
 CATEGORY_STYLE = {
     "CHAR": {"color": "#E69F00", "shape": "o", "label": "CHAR"},
     "PRAC": {"color": "#009E73", "shape": "s", "label": "PRAC"},
     "INFRA": {"color": "#0072B2", "shape": "D", "label": "INFRA"},
-    "GOV": {"color": "#CC79A7", "shape": "P", "label": "GOV"},
+    "RUL": {"color": "#CC79A7", "shape": "P", "label": "RUL"},
     "LOC": {"color": "#56B4E9", "shape": "h", "label": "LOC"},
 }
 
@@ -1129,7 +1129,7 @@ INTERACTIVE_HTML = r"""<!doctype html>
       if (node.category === 'CHAR') shape = make('circle', {r: node.radius});
       else if (node.category === 'PRAC') shape = make('rect', {x: -node.radius, y: -node.radius, width: node.radius*2, height: node.radius*2, rx: 3});
       else if (node.category === 'INFRA') shape = make('polygon', {points: `0,${-node.radius} ${node.radius},0 0,${node.radius} ${-node.radius},0`});
-      else if (node.category === 'GOV') shape = make('polygon', {points: `0,${-node.radius} ${node.radius*.95},${-node.radius*.3} ${node.radius*.6},${node.radius} ${-node.radius*.6},${node.radius} ${-node.radius*.95},${-node.radius*.3}`});
+      else if (node.category === 'RUL') shape = make('polygon', {points: `0,${-node.radius} ${node.radius*.95},${-node.radius*.3} ${node.radius*.6},${node.radius} ${-node.radius*.6},${node.radius} ${-node.radius*.95},${-node.radius*.3}`});
       else { const r=node.radius; shape=make('polygon',{points:`${-r*.87},${-r*.5} 0,${-r} ${r*.87},${-r*.5} ${r*.87},${r*.5} 0,${r} ${-r*.87},${r*.5}`}); }
       shape.setAttribute('fill', color); shape.setAttribute('class','node-shape');
       return shape;

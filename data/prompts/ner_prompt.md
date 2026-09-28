@@ -1,4 +1,4 @@
-# Codebook few-shot para extracción semántica de spans
+# Codebook para extracción semántica utilizando como sistema de etiquetas categorías representativas en el marco de conservación de la naturaleza, vida sostenible y gobernanza territorial en la amazonia peruana.
 
 ## Propósito y alcance
 
@@ -15,7 +15,7 @@ Solo existen cinco etiquetas válidas:
 - `CHAR`: actor individual o colectivo.
 - `LOC`: lugar o unidad territorial.
 - `INFRA`: infraestructura o soporte estable.
-- `GOV`: regla o instrumento de gobernanza.
+- `RUL`: regla, norma o instrumento institucional.
 - `PRAC`: práctica, actividad o proceso.
 
 Si una expresión no cumple la definición de ninguna etiqueta, no la anotes. Nunca inventes etiquetas ni fuerces una clasificación.
@@ -28,7 +28,7 @@ Incluye personas nombradas, cargos personales, grupos sociales u ocupacionales, 
 
 Un actor genérico se anota únicamente cuando participa, decide, ejecuta, recibe, padece consecuencias o desempeña otro rol concreto. No anotes palabras abstractas como “actores”, “grupos” o “instituciones” cuando solo enumeran categorías sin rol contextual.
 
-Una comunidad entendida como colectivo con agencia es `CHAR`; entendida como territorio es `LOC`. Una institución que actúa es `CHAR`; una regla o arreglo institucional es `GOV`.
+Una comunidad entendida como colectivo con agencia es `CHAR`; entendida como territorio es `LOC`. Una institución que actúa es `CHAR`; una regla o arreglo institucional es `RUL`.
 
 ## LOC — lugares
 
@@ -36,7 +36,7 @@ Espacio geográfico, territorial, administrativo, ecológico o sociocultural.
 
 Incluye países, regiones, provincias, distritos, ciudades, centros poblados, territorios indígenas, comunidades entendidas como territorio, reservas, áreas protegidas, ríos, cuencas, bosques, corredores, paisajes, zonas mineras, áreas degradadas y territorios de intervención.
 
-Un gobierno, municipalidad u organización que contiene el nombre de un lugar es `CHAR`, no `LOC`. Un instrumento formal que contiene un lugar es `GOV`. Cuando un topónimo pueda referirse a varias unidades territoriales y el texto no permita resolverlo, conserva el span y usa ambigüedad media o alta.
+Un gobierno, municipalidad u organización que contiene el nombre de un lugar es `CHAR`, no `LOC`. Un instrumento formal que contiene un lugar es `RUL`. Cuando un topónimo pueda referirse a varias unidades territoriales y el texto no permita resolverlo, conserva el span y usa ambigüedad media o alta.
 
 ## INFRA — infraestructuras
 
@@ -44,19 +44,30 @@ Soporte material, técnico, digital, logístico, financiero, informacional o de 
 
 Incluye instalaciones, carreteras, puertos, centros de procesamiento o formación, viveros, bancos de semillas, laboratorios, plantas, equipamiento, redes energéticas, sistemas de monitoreo, plataformas digitales, bases de datos, sistemas de trazabilidad y soportes financieros operativos estables.
 
-Clasifica el soporte como `INFRA` y la actividad realizada mediante ese soporte como `PRAC`. Una organización propietaria u operadora es `CHAR`. Una regla que organiza su uso es `GOV`.
+Clasifica el soporte como `INFRA` y la actividad realizada mediante ese soporte como `PRAC`. Una organización propietaria u operadora es `CHAR`. Una regla que organiza su uso es `RUL`.
 
 Una incubadora es `CHAR` si actúa como organización y `INFRA` si el texto la presenta como instalación, plataforma o soporte estable. Una referencia puramente administrativa no se anota.
 
-## GOV — gobernanza
+## RUL — reglas, normas e instrumentos institucionales
 
-Regla, derecho, política, acuerdo, plan, estrategia, estándar, procedimiento, fondo o mecanismo formal o informal mediante el cual se organizan autoridad, participación, decisiones, acceso a recursos, responsabilidades, derechos territoriales o coordinación institucional.
+Regla formal o informal, norma o instrumento institucional que establece
+obligaciones, permisos, prohibiciones, procedimientos, competencias, derechos o
+criterios para orientar decisiones y prácticas.
 
-Incluye leyes, decretos, políticas públicas, planes, estrategias, acuerdos, compromisos oficiales, derechos, tenencia, consulta previa, estándares, certificaciones, instrumentos de planificación, mecanismos de participación y arreglos institucionales.
+Incluye leyes, decretos, reglamentos, ordenanzas, resoluciones, políticas
+públicas, planes, estrategias, acuerdos, convenios, contratos, protocolos,
+lineamientos, estándares, certificaciones, permisos, licencias, reglas
+comunitarias o consuetudinarias y mecanismos formales de decisión.
 
-Clasifica como `CHAR` a quien actúa, decide, firma o implementa; clasifica como `GOV` el instrumento mediante el cual se organiza esa actuación. Un comité con agencia es `CHAR`; un comité presentado como espacio estable de decisión es `GOV`.
+Clasifica como `CHAR` a quien actúa, decide, firma o implementa; clasifica como
+`RUL` la regla o el instrumento que regula esa actuación. Un comité, consejo o
+mesa es `CHAR` cuando actúa como colectivo. Su reglamento, acuerdo o mecanismo
+formal de decisión es `RUL`.
 
-Un fondo, incentivo o mecanismo financiero que determina acceso, asignación o gobierno de recursos es `GOV`. Un sistema técnico para operar recursos es `INFRA`. Una actividad económica recurrente es `PRAC`.
+Un fondo o sistema financiero operativo es `INFRA`; sus criterios de acceso,
+asignación o cumplimiento son `RUL`. Una actividad económica recurrente es
+`PRAC`. La gobernanza como proceso abstracto no se anota si el texto no nombra
+una regla o instrumento concreto.
 
 ## PRAC — prácticas
 
@@ -66,7 +77,7 @@ Incluye actividades productivas, cadenas de valor, minería, agroforestería, re
 
 No anotes un producto aislado como práctica, salvo que el contexto lo utilice inequívocamente como abreviatura de una actividad o cadena de valor.
 
-Clasifica la actividad como `PRAC`, su soporte estable como `INFRA`, la regla que la organiza como `GOV`, el actor que la ejecuta como `CHAR` y el lugar donde ocurre como `LOC`.
+Clasifica la actividad como `PRAC`, su soporte estable como `INFRA`, la regla que la organiza como `RUL`, el actor que la ejecuta como `CHAR` y el lugar donde ocurre como `LOC`.
 
 ## Objetivos y modalidad
 
@@ -74,7 +85,7 @@ Una intención, objetivo, visión, propuesta o idea-fuerza no es una entidad por
 
 Negación, hipótesis, futuro, deseo u obligación no cambian la etiqueta de una entidad válida. Dentro de una construcción modal o intencional, anota solamente el sintagma nominal explícito que constituya por sí mismo un actor, lugar, infraestructura, instrumento o práctica. No anotes como entidades verbos genéricos de cambio como mejorar, fortalecer, promover, impulsar, mitigar o reducir.
 
-Los proyectos y programas no reciben una etiqueta por su nombre. Usa su función contextual: `CHAR` si funcionan como unidad ejecutora con agencia; `GOV` si son instrumentos institucionales; `INFRA` si son soportes estables; omítelos si son únicamente una iniciativa temporal, título u objetivo sin función clasificable.
+Los proyectos y programas no reciben una etiqueta por su nombre. Usa su función contextual: `CHAR` si funcionan como unidad ejecutora con agencia; `RUL` si son instrumentos institucionales; `INFRA` si son soportes estables; omítelos si son únicamente una iniciativa temporal, título u objetivo sin función clasificable.
 
 ## Límites y solapamientos
 

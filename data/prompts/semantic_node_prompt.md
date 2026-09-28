@@ -66,8 +66,8 @@ Este es el contrato previsto para preparar la entrada del prompt:
   las entidades, aristas y oraciones incluidas, si se proporciona.
 
 Las entidades miembro son `PRAC` (prácticas o actividades), `INFRA`
-(infraestructuras o soportes estables) y `GOV` (reglas o instrumentos de
-gobernanza). Conserva las categorías recibidas. Un cluster puede contener una,
+(infraestructuras o soportes estables) y `RUL` (reglas, normas o instrumentos
+institucionales). Conserva las categorías recibidas. Un cluster puede contener una,
 dos o las tres categorías; no inventes componentes para completar una tríada.
 
 El texto puede mencionar actores `CHAR` y lugares `LOC`. Úsalos únicamente como

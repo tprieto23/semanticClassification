@@ -313,7 +313,7 @@ def _community_rows(
                 "category_profile": ",".join(sorted(categories)),
                 "prac_nodes": categories.get("PRAC", 0),
                 "infra_nodes": categories.get("INFRA", 0),
-                "gov_nodes": categories.get("GOV", 0),
+                "rul_nodes": categories.get("RUL", 0),
                 "category_counts_json": json.dumps(
                     dict(sorted(categories.items())), ensure_ascii=False
                 ),
@@ -354,7 +354,7 @@ COMMUNITY_FIELDS = (
     "category_profile",
     "prac_nodes",
     "infra_nodes",
-    "gov_nodes",
+    "rul_nodes",
     "category_counts_json",
     "internal_edges",
     "boundary_edges",

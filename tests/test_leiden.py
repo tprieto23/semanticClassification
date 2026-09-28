@@ -20,10 +20,10 @@ class LeidenAnalysisTests(unittest.TestCase):
         for node, category in (
             ("a", "PRAC"),
             ("b", "PRAC"),
-            ("c", "GOV"),
+            ("c", "RUL"),
             ("d", "INFRA"),
             ("e", "INFRA"),
-            ("f", "GOV"),
+            ("f", "RUL"),
         ):
             graph.add_node(
                 node,

@@ -93,8 +93,8 @@ class SemanticRelationshipTests(unittest.TestCase):
         self.assertEqual(request.minimum_source_edge_weight, 0.0)
         self.assertTrue(request.include_isolates)
         self.assertEqual(
-            semantic_network_filename("prac-infra-gov-v1"),
-            "semantic_network_prac-infra-gov-v1",
+            semantic_network_filename("prac-infra-rul-v2"),
+            "semantic_network_prac-infra-rul-v2",
         )
 
 
@@ -130,7 +130,7 @@ class SemanticRelationshipServiceTests(unittest.TestCase):
 
         self.graph = self._seed_partition()
         self.metadata = {
-            "projection_id": "prac-infra-gov-v1",
+            "projection_id": "prac-infra-rul-v2",
             "source": {"graphml_sha256": self.source_graph_sha256},
         }
 
@@ -140,10 +140,10 @@ class SemanticRelationshipServiceTests(unittest.TestCase):
         communities = {
             "a1": ("C001", "PRAC", "Práctica A"),
             "a2": ("C001", "INFRA", "Infraestructura A"),
-            "b1": ("C002", "GOV", "Gobernanza B"),
+            "b1": ("C002", "RUL", "Regla B"),
             "b2": ("C002", "PRAC", "Práctica B"),
             "isolated": ("C003", "INFRA", "Infraestructura aislada"),
-            "unregistered": ("C004", "GOV", "Comunidad no registrada"),
+            "unregistered": ("C004", "RUL", "Comunidad no registrada"),
         }
         canonical_ids = {key: uuid4() for key in communities}
         canonical_entities = []
@@ -168,7 +168,7 @@ class SemanticRelationshipServiceTests(unittest.TestCase):
         ):
             node = SemanticNode(
                 id=uuid4(),
-                projection_id="prac-infra-gov-v1",
+                projection_id="prac-infra-rul-v2",
                 artifact_source="official",
                 community_id=community_id,
                 clustering_sha256=self.clustering_sha256,
@@ -230,7 +230,7 @@ class SemanticRelationshipServiceTests(unittest.TestCase):
         ):
             return SemanticRelationshipService.build(
                 self.db,
-                projection_id="prac-infra-gov-v1",
+                projection_id="prac-infra-rul-v2",
                 artifact_source="official",
                 clustering_sha256=self.clustering_sha256,
                 incubator_number=None,

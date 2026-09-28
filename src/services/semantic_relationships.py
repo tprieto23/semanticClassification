@@ -84,7 +84,7 @@ class SemanticRelationshipService:
         require_accepted_nodes: bool,
         force_recompute: bool,
     ) -> dict:
-        if projection_id != "prac-infra-gov-v1":
+        if projection_id != "prac-infra-rul-v2":
             raise SemanticRelationshipError("Proyección no soportada", 404)
         scope_type, scope_id = _scope(incubator_number)
         try:
@@ -97,7 +97,13 @@ class SemanticRelationshipService:
         except SemanticNodeError as exc:
             raise SemanticRelationshipError(exc.mensaje, exc.codigo_http) from exc
 
-        if metadata.get("projection_id", projection_id) != projection_id:
+        metadata_projection = metadata.get("projection_id", projection_id)
+        compatible_legacy = (
+            artifact_source == "accepted-2026-08-25"
+            and metadata_projection == "prac-infra-gov-v1"
+            and projection_id == "prac-infra-rul-v2"
+        )
+        if metadata_projection != projection_id and not compatible_legacy:
             raise SemanticRelationshipError("La proyección del clustering no coincide")
         source_graph_sha256 = str(metadata["source"]["graphml_sha256"])
         node_statement = select(SemanticNode).where(
@@ -426,7 +432,7 @@ class SemanticRelationshipService:
             "generated_at": datetime.now(timezone.utc).isoformat(),
         })
         for node in exported_nodes:
-            category_counts = {category: 0 for category in ("PRAC", "INFRA", "GOV")}
+            category_counts = {category: 0 for category in ("PRAC", "INFRA", "RUL")}
             for member in node.members:
                 if member.category in category_counts:
                     category_counts[member.category] += 1
@@ -444,7 +450,7 @@ class SemanticRelationshipService:
                 member_count=len(node.members),
                 prac_count=category_counts["PRAC"],
                 infra_count=category_counts["INFRA"],
-                gov_count=category_counts["GOV"],
+                rul_count=category_counts["RUL"],
             )
         for relationship in relationships:
             if (

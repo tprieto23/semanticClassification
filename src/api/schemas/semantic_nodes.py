@@ -14,7 +14,7 @@ ArtifactSource = Literal["official", "accepted-2026-08-25"]
 class PromoteSemanticNodeRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    projection_id: str = Field(default="prac-infra-gov-v1", pattern=r"^[a-z0-9-]+$")
+    projection_id: str = Field(default="prac-infra-rul-v2", pattern=r"^[a-z0-9-]+$")
     community_id: str = Field(pattern=r"^C[0-9]{3,}$")
     artifact_source: ArtifactSource
     incubator_number: IncubatorFilter = "all"

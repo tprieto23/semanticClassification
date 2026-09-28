@@ -39,7 +39,7 @@ class NetworkVisualizationTests(unittest.TestCase):
             self._node("a", "Actores", "CHAR", 0),
             self._node("p", "Minería", "PRAC", 1),
             self._node("i", "Draga", "INFRA", 2),
-            self._node("g", "Ley", "GOV", 3),
+            self._node("g", "Ley", "RUL", 3),
             self._node("l", "Territorio", "LOC", 4),
         ]
         self._write_csv(self.analysis_dir / "nodes.csv", NODE_FIELDS, self.nodes)
@@ -54,7 +54,7 @@ class NetworkVisualizationTests(unittest.TestCase):
             self._edge("a", "p", "CHAR--PRAC", 5),
             self._edge("p", "l", "LOC--PRAC", 3),
             self._edge("p", "i", "PRAC--INFRA", 2),
-            self._edge("i", "g", "INFRA--GOV", 1),
+            self._edge("i", "g", "INFRA--RUL", 1),
         ]
         self._write_csv(self.analysis_dir / "edges.csv", edge_fields, self.edges)
         self._write_evidence()
@@ -200,7 +200,7 @@ class NetworkVisualizationTests(unittest.TestCase):
                     "canonical_name": node["canonical_name"],
                     "category": node["category"],
                     "is_projected": str(
-                        node["category"] in {"PRAC", "INFRA", "GOV"}
+                        node["category"] in {"PRAC", "INFRA", "RUL"}
                     ).lower(),
                     "mention_count": 1,
                     "texts": node["canonical_name"],
@@ -285,20 +285,20 @@ class NetworkVisualizationTests(unittest.TestCase):
             output_dir,
             minimum_weight=1,
             include_isolates=True,
-            node_categories=("PRAC", "INFRA", "GOV"),
-            allowed_category_pairs=("PRAC--INFRA", "INFRA--GOV"),
+            node_categories=("PRAC", "INFRA", "RUL"),
+            allowed_category_pairs=("PRAC--INFRA", "INFRA--RUL"),
         )
 
         self.assertEqual(summary["nodes"], 3)
         self.assertEqual(summary["edges"], 2)
         self.assertEqual(
             set(summary["edges_by_category_pair"]),
-            {"PRAC--INFRA", "INFRA--GOV"},
+            {"PRAC--INFRA", "INFRA--RUL"},
         )
         payload = json.loads(
             (output_dir / "g1_graph.json").read_text(encoding="utf-8")
         )
-        self.assertEqual(payload["categoryOrder"], ["PRAC", "INFRA", "GOV"])
+        self.assertEqual(payload["categoryOrder"], ["PRAC", "INFRA", "RUL"])
         self.assertTrue(all(edge["documentCount"] == 1 for edge in payload["edges"]))
         sentence = payload["sentencesByKey"][f"{self.document_id}::s-1"]
         self.assertEqual(len(sentence["projectedEntities"]), 3)

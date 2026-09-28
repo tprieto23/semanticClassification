@@ -48,7 +48,7 @@ class DocumentRecurrentCoreTests(unittest.TestCase):
                 (
                     ("p", "Práctica", "PRAC"),
                     ("i", "Infraestructura", "INFRA"),
-                    ("g", "Gobernanza", "GOV"),
+                    ("g", "Regla", "RUL"),
                     ("x", "Práctica rara", "PRAC"),
                 ),
             ),
@@ -62,13 +62,13 @@ class DocumentRecurrentCoreTests(unittest.TestCase):
                 "d2",
                 "s3",
                 "P se articula con G.",
-                (("p", "Práctica", "PRAC"), ("g", "Gobernanza", "GOV")),
+                (("p", "Práctica", "PRAC"), ("g", "Regla", "RUL")),
             ),
             (
                 "d3",
                 "s4",
                 "I se articula con G.",
-                (("i", "Infraestructura", "INFRA"), ("g", "Gobernanza", "GOV")),
+                (("i", "Infraestructura", "INFRA"), ("g", "Regla", "RUL")),
             ),
         )
         for document, sentence, context, entities in specs:
