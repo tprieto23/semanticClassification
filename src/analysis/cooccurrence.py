@@ -19,8 +19,15 @@ from pathlib import Path
 from typing import Any, Iterable, Sequence
 from uuid import UUID
 
-CATEGORY_ORDER = ("CHAR", "LOC", "PRAC", "INFRA", "RUL")
-CATEGORY_RANK = {category: index for index, category in enumerate(CATEGORY_ORDER)}
+from src.categories import ACTIVE_CATEGORIES, LEGACY_CATEGORIES, STORED_CATEGORY_ORDER
+
+CATEGORY_ORDER = tuple(
+    category for category in STORED_CATEGORY_ORDER if category in ACTIVE_CATEGORIES
+)
+CATEGORY_RANK = {
+    category: index for index, category in enumerate(STORED_CATEGORY_ORDER)
+}
+# Selección de la proyección histórica prac-infra-rul-v2, no taxonomía NER.
 SEMANTIC_CORE_CATEGORIES = ("PRAC", "INFRA", "RUL")
 
 
@@ -254,6 +261,10 @@ def build_sentence_cooccurrence(
     """
 
     _validate_mentions(mentions)
+    if node_categories is None:
+        # La red completa incluye legado solo si aparece en sus datos fuente.
+        legacy_present = {mention.category for mention in mentions} & LEGACY_CATEGORIES
+        node_categories = CATEGORY_ORDER + tuple(sorted(legacy_present))
     projected_categories, projected_pairs = normalize_projection(
         node_categories, allowed_category_pairs
     )

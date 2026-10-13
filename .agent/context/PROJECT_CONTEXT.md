@@ -6,9 +6,74 @@ Este documento resume el estado metodológico y técnico del proyecto de clasifi
 
 El proyecto transforma documentos de los incubadores en una base de entidades canónicas y redes semánticas auditables. La unidad de evidencia es la oración: las relaciones entre entidades se derivan de su coocurrencia dentro de `(document_id, sentence_id)` y deben poder rastrearse hasta el documento, la oración, el contexto y las entidades originales.
 
-La fase actual es la promoción de comunidades Leiden aceptadas a nodos semánticos con título y descripción auditables. La auditoría y aceptación metodológica de los clusters ya concluyó. La construcción determinista de conexiones intercluster está implementada y validada para los meta-nodes registrados y aceptados. Siguen pendientes la revisión humana de los textos editoriales, el prompt para describir las conexiones ya calculadas y la asociación de `CHAR`/`LOC`.
+La fase de trabajo actual con la usuaria es la redacción paso a paso del
+codebook operativo en `codebook_en_construccion.md`. Las definiciones de sus
+diez categorías ya fueron acordadas; las fichas detalladas y las reglas de
+anotación siguen en construcción. El codebook servirá como especificación
+para la extracción y clasificación mediante LLM en la API, con posterior
+canonicalización, atributos de nodos y análisis de coocurrencia.
 
-### Punto de reanudación operativo — 28 Sep 2026
+### Punto de reanudación — 12 Oct 2026
+
+El foco acordado con la usuaria es definir las características específicas
+que deben identificar las menciones para clasificarse en cada categoría:
+rasgos esenciales, inclusión, exclusión, evidencia textual y fronteras.
+La usuaria pidió frenar la sucesión de casos de delimitación y nombres
+individuales. No seguir abriendo casos de artículos, siglas, enumeraciones
+o normalización mientras se revisan los criterios de clasificación.
+
+El conjunto de diez categorías es una decisión final de la usuaria:
+CHAR, KNOW, ATT, SKILL, PRAC, physical_INFRA, soft_INFRA, eco_INFRA, RUL y LOC.
+El código de extracción ya establece esas diez categorías en
+`src/categories.py`; esquema estructurado, parser, prompt y validación de
+canonicalización usan la misma fuente. INFRA se admite solo al procesar legado,
+sin reclasificar automáticamente registros antiguos.
+Las definiciones de las diez categorías ya están acordadas. CHAR reúne
+ahora una síntesis de sus criterios aprobados en la sección 5.1. No se
+presupone que las demás fichas ni todas las fronteras estén completas.
+Los ejemplos se usan únicamente cuando aclaran un criterio general.
+
+Se conservan los acuerdos de extracción, anidación LOC dentro de CHAR,
+registro de cada aparición y vinculación posterior de nombre completo
+y sigla al mismo nodo canónico. Las reglas de extracción de CHAR están
+reunidas en la sección 6.3. El último fragmento confirmado es
+«cooperativa La Esperanza», con el nombre propio íntegro.
+
+También se mantiene el criterio aprobado para planes en RUL: el contexto
+debe presentarlos como instrumentos que establecen condiciones,
+responsabilidades o criterios para las prácticas territoriales.
+
+La usuaria precisó después que necesita un codebook más básico, considerando
+el uso eficiente de Claude, y pidió revisar primero el código para aprovechar
+la estructura de persistencia existente. La revisión identificó el contrato
+NER de cuatro campos por mención (`label`, `text`, `sentence_id`, `ambiguity`),
+el enriquecimiento local y la persistencia posterior a la canonicalización.
+Los modelos y las comprobaciones locales se documentan en
+`../sessions/2026-10-12-revision-contrato-ner.md`; no se inspeccionó la DB
+en ejecución ni se hicieron llamadas a Claude.
+
+El codebook puede apoyarse en ese contrato y centrarse en las diez categorías
+y sus criterios esenciales. La adaptación local del 12 Oct actualizó código,
+prompt y demostraciones: diez ejemplos ilustrativos sustituyen los 25 del
+esquema anterior. La red completa y su visualizador admiten las diez categorías;
+los artefactos históricos pueden conservar INFRA. La proyección versionada
+`prac-infra-rul-v2` conserva su selección histórica PRAC/INFRA/RUL y no representa
+el nuevo conjunto completo. No se cambiaron datos, migraciones ni servicios
+en ejecución. Pruebas locales: 101 ejecutadas, 99 exitosas y 2 omitidas por
+dependencias opcionales de Leiden; proveedor y DB simulados.
+
+El parser aún descarta anidaciones y el nombre completo con sigla no se unifica
+automáticamente sin alias previo en el caso comprobado. Estas reglas no se
+implementaron en la adaptación de categorías. La limpieza mantiene llamadas
+propias a Claude. Consultar `tasks.md` y
+`../sessions/2026-10-12-implementacion-diez-categorias.md`. Mantener respuestas breves.
+
+Como antecedente técnico, la promoción de comunidades Leiden aceptadas a nodos
+semánticos y la construcción determinista de conexiones intercluster están
+implementadas. Sus verificaciones y pendientes anteriores se conservan más
+abajo, pero no son el punto de continuidad del trabajo del codebook.
+
+### Antecedente operativo — 28 Sep 2026
 
 La sesión más reciente volvió temporalmente al Objetivo 1 para preparar una
 nueva ingesta en Postman. La API y PostgreSQL están activos en Docker y la
@@ -53,14 +118,16 @@ documentos
   -> asociación de CHAR/LOC y descripción editorial de conexiones (pendiente)
 ```
 
-Las categorías NER actuales son `CHAR`, `LOC`, `PRAC`, `INFRA` y `RUL`.
+Las categorías NER actuales son `CHAR`, `KNOW`, `ATT`, `SKILL`, `PRAC`,
+`physical_INFRA`, `soft_INFRA`, `eco_INFRA`, `RUL` y `LOC`.
 `RUL` identifica reglas, normas e instrumentos institucionales concretos, tanto
 formales como informales: leyes, reglamentos, políticas, planes, acuerdos,
 contratos, permisos, estándares y reglas comunitarias. La gobernanza permanece
 como concepto de análisis, pero no como categoría NER. `GOV` es una etiqueta
 histórica sustituida por `RUL`; solo se conserva en migraciones, procedencia y
-lectura compatible de artefactos anteriores. La proyección activa es
-`prac-infra-rul-v2`.
+lectura compatible de artefactos anteriores. `INFRA` también queda reservado
+al legado: dividir sus menciones requiere revisar el contexto. La proyección
+registrada `prac-infra-rul-v2` conserva su definición histórica.
 
 ## 3. Evidencia y modelo de coocurrencia
 

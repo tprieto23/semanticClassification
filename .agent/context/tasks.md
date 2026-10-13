@@ -1,5 +1,79 @@
 # Tareas
 
+## Trabajo actual: codebook — punto de continuidad del 12 Oct 2026
+
+- [x] Acordar el propósito operativo, el marco conceptual y el enfoque temático.
+- [x] Acordar las definiciones de las diez categorías en
+  `codebook_en_construccion.md`.
+- [x] Delimitar funcionalmente las tres categorías de infraestructura.
+- [x] Acordar que CHAR incluye actores con nombre propio o denominación
+  genérica cuando el contexto establece su participación o papel.
+- [x] Acordar que CHAR incluye personas o colectivos afectados, aunque no
+  ejecuten una acción, cuando la afectación está respaldada por el texto.
+- [x] Acordar la inclusión de planes en RUL cuando el contexto los presenta
+  como instrumentos que establecen condiciones, responsabilidades o criterios
+  para las prácticas territoriales.
+- [x] Acordar LOC dentro de CHAR: «comunidad de San Pedro» como CHAR
+  y «San Pedro» como LOC en la misma oración. Registrar el acuerdo en la
+  sección 6 sin generalizar a otras combinaciones ni al mismo fragmento.
+- [x] Acordar que en «El taller se realizó en la comunidad de San Pedro»
+  solo se anota «San Pedro» como LOC: el contexto ubica el evento sin
+  identificar al colectivo como actor.
+- [x] Registrar «monitoreo comunitario» como PRAC en «Se realizan
+  actividades de monitoreo comunitario», por confirmación de la usuaria.
+- [x] Acordar que CHAR se extrae de expresiones que nombran al actor;
+  excluir pronombres como «Ellos», aunque su referente sea claro.
+- [x] Omitir el artículo inicial que introduce la denominación CHAR:
+  «productoras de cacao», sin «Las». Ajustar los ejemplos anteriores;
+  conservar los artículos integrantes de nombres propios por el acuerdo posterior.
+- [x] Conservar la forma literal de los fragmentos extraídos, incluido
+  el plural; distinguir las menciones de la normalización posterior.
+- [x] Registrar cada aparición de una mención repetida con su ubicación
+  y contexto; conservar las evidencias al vincularlas a un nodo canónico.
+- [x] Extraer el nombre completo y la sigla explícitos como dos registros
+  CHAR independientes: «Asociación de Productores de Cacao» y «APC».
+- [x] Vincular posteriormente esas dos menciones al mismo nodo canónico,
+  conservando los registros originales, cuando el texto establece su identidad.
+- [x] Extraer por separado actores enumerados explícitamente:
+  «productoras de cacao» y «recolectores de castaña», sin artículos ni conjunción.
+- [x] Anotar «municipalidad» como CHAR cuando su participación está
+  negada, conservando la negación en el contexto y sin afirmar participación.
+- [x] Conservar íntegros los nombres propios como «La Esperanza», sin
+  eliminar su artículo integrante ni anotarlo por separado.
+- [x] Acordar «cooperativa La Esperanza» como fragmento CHAR, conservando
+  el descriptor y el nombre propio íntegro.
+- [x] Reorientar el trabajo a las características de clasificación por
+  categoría y reunir los acuerdos de extracción de CHAR en la sección 6.3.
+- [x] Revisar el contrato NER, modelos PostgreSQL y persistencia, sin
+  ejecutar Claude ni escribir en la DB. Registrar resultados en
+  `../sessions/2026-10-12-revision-contrato-ner.md`.
+- [x] Registrar como decisión final el conjunto de diez categorías y sus
+  códigos exactos; no volver a plantear cinco frente a diez como una elección.
+- [ ] **Foco actual:** cerrar un codebook básico apoyado en la estructura
+  del código existente y en el uso eficiente de Claude. Priorizar las diez
+  categorías y sus criterios esenciales; aprovechar la salida estructurada
+  y el enriquecimiento local ya implementados. Los ejemplos solo deben
+  aclarar criterios generales, sin abrir cadenas de casos individuales.
+- [x] Establecer las diez categorías finales en el código de extracción,
+  validación y canonicalización; adaptar prompt, ejemplos, red completa y
+  visualizador. Comprobar localmente sin llamadas a Claude ni DB real.
+- [ ] Implementar la anidación acordada y resolver la unión de nombre completo
+  con sigla; estas adaptaciones no forman parte del cambio de categorías.
+- [ ] Definir una nueva proyección analítica del esquema de diez categorías
+  antes de sustituir la selección histórica `prac-infra-rul-v2`. Reclasificar
+  INFRA histórico según su contexto, sin convertirlo automáticamente.
+- [ ] Completar posteriormente las reglas de delimitación pendientes
+  y los ejemplos de validación, sin convertirlos en el foco de las fichas.
+- [ ] Consolidar las reglas mínimas de anotación y contrastarlas con el
+  contrato existente, con una validación acotada antes de adaptar la API.
+- [ ] Definir para este codebook los criterios de canonicalización, los
+  atributos adicionales de nodos y la ventana y conteo de coocurrencia;
+  contrastarlos posteriormente con la implementación existente.
+
+Contexto vigente: `PROJECT_CONTEXT.md`. Decisiones de esta sesión:
+`../sessions/2026-10-12-codebook-char.md`. Antecedente:
+`../sessions/2026-10-09-codebook-continuidad.md`.
+
 ## Objetivo 1: Ingesta de documentos ✅
 
 - [x] `src/config.py` — settings sin credenciales
@@ -134,40 +208,45 @@
 
 ## Objetivo 4: Extracción de entidades 🔧
 
-**Nuevo enfoque:** Se reemplazó el modelo BERT/XLM-RoBERTa por extracción few-shot mediante Anthropic Claude. El esquema vigente contiene 5 etiquetas, usa 25 demostraciones curadas, no usa catálogos y fuerza una salida estructurada mediante tool use.
+**Nuevo enfoque:** Extracción few-shot mediante Anthropic Claude con diez etiquetas definidas en `src/categories.py`, diez demostraciones ilustrativas y salida estructurada forzada mediante tool use.
 
 ### Etiquetas finales
 
 | Etiqueta | Descripción |
 |----------|-------------|
 | CHAR | Actores individuales o colectivos con un rol contextual concreto |
-| LOC | Lugares geográficos, territorios, regiones, países, ciudades |
-| INFRA | Infraestructura física, técnica o soportes estables |
+| KNOW | Saberes técnicos, ecológicos o tradicionales |
+| ATT | Valores, identidades, percepciones y compromisos |
+| SKILL | Destrezas y competencias para realizar tareas |
 | PRAC | Prácticas, actividades productivas, cadenas de valor |
+| physical_INFRA | Soportes de acceso, movilidad, energía y conectividad tecnológica |
+| soft_INFRA | Soportes organizados para producción, aprendizaje, monitoreo e información |
+| eco_INFRA | Estructuras que sostienen funciones ecológicas |
 | RUL | Reglas, normas e instrumentos institucionales concretos |
+| LOC | Lugares geográficos, territorios, regiones, países, ciudades |
 
 Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entidad nominal autónoma contenida en ellos conserva la etiqueta que le corresponda.
 
 ### Implementado
 
 - [x] `data/ner/annotations/a251048a.json` — anotaciones históricas retiradas del request; reservadas para trazabilidad
-- [x] `data/ner/few_shot_examples.json` — 25 ejemplos activos, cinco por categoría
+- [x] `data/ner/few_shot_examples.json` — diez ejemplos ilustrativos que cubren las diez categorías; procedencia declarada, sin atribuirlos al corpus
 - [x] `src/models/entities.py` — ORM Entity (tabla `entities` recreada vía migración)
 - [x] `src/services/llm_client.py` — cliente Anthropic compartido (reutilizado por cleaning.py y ner.py)
 - [x] `src/services/ner.py` — servicio de extracción con:
   - Prompts externos en `data/prompts/`: system prompt + user prompt template
-  - Definiciones de las 5 etiquetas + ejemplos + reglas de frontera en `data/prompts/ner_prompt.md`
-  - Few-shot curado: 25 demostraciones validadas antes de enviar cada fragmento
+  - Definiciones de las diez etiquetas incorporadas desde `src/categories.py` en `data/prompts/ner_prompt.md`
+  - Few-shot: diez demostraciones validadas antes de enviar cada fragmento
   - Chunking de máximo 3 párrafos o 12K caracteres con offsets absolutos
   - Salida estructurada forzada con `submit_entity_annotations` y JSON Schema
-  - Salida semántica: `{"annotations": [{label, text, ambiguity}]}`
+  - Salida semántica: `{"document_id": "...", "annotations": [{label, text, sentence_id, ambiguity}]}`
   - Fallo explícito si Anthropic trunca la respuesta o no usa la herramienta requerida
   - Oraciones con `sentence_id` estable para localizar menciones aunque Claude responda fuera de orden
   - Repeticiones conservadas por aparición, incluso dentro de una misma oración
   - Cálculo backend de `start`/`end` absolutos buscando el span literal en el chunk
-  - Campo `context` (texto circundante 80 chars antes/después)
+  - Campo `context` con el texto de la oración
   - Fusión de resultados de chunks conservando cada aparición por posición
-  - Parseo robusto (strip markdown wrappers)
+  - Parseo de la entrada estructurada de la herramienta
 - [x] `src/services/cleaning.py` — `linguisticCleaning()` migrado a Anthropic (ver Objetivo 3)
 - [x] `src/api/schemas/entities.py` — EntityOut con text, category, start, end, context y ambiguity
 - [x] `POST /documents/{id}/extract-entities` — endpoint que extrae entidades y guarda el resultado en JSON
@@ -209,7 +288,7 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 
 - [x] La versión anterior extrajo 133 entidades en un documento de prueba.
 - [x] Persistencia y respuesta HTTP funcionaron con el esquema anterior.
-- [ ] Repetir el piloto con el esquema vigente de cinco etiquetas y sin catálogos.
+- [ ] Repetir el piloto con el esquema final de diez etiquetas y sin catálogos.
 
 ## Objetivos 5–8: Vectores, matrices, grafos, métricas 🔧
 

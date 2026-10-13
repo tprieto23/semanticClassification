@@ -8,20 +8,20 @@ from uuid import UUID
 from rapidfuzz import fuzz
 from sqlalchemy.orm import Session
 
+from src.categories import LEGACY_CATEGORY_ALIASES, STORED_CATEGORIES
 from src.models.canonical_entities import CanonicalEntity
 from src.models.canonical_entities_repo import CanonicalEntityRepo
 from src.models.canonical_entity_aliases import CanonicalEntityAlias
 from src.models.canonical_entity_aliases_repo import CanonicalEntityAliasRepo
 
-VALID_CATEGORIES = frozenset({"CHAR", "LOC", "INFRA", "RUL", "PRAC"})
-LEGACY_CATEGORY_ALIASES = {"GOV": "RUL"}
+# La extracción admite solo las diez activas; los JSON históricos pueden
+# conservar INFRA hasta su reclasificación contextual.
+VALID_CATEGORIES = STORED_CATEGORIES
 RESOLUTION_VERSION = "deterministic-v2"
 FUZZY_THRESHOLDS = {
+    **dict.fromkeys(VALID_CATEGORIES, 96.0),
     "CHAR": 93.0,
     "LOC": 93.0,
-    "INFRA": 96.0,
-    "RUL": 96.0,
-    "PRAC": 96.0,
 }
 MIN_SCORE_MARGIN = 5.0
 MIN_FUZZY_LENGTH = 5

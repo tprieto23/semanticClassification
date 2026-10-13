@@ -28,13 +28,21 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from matplotlib.lines import Line2D
 
-CATEGORY_ORDER = ("CHAR", "LOC", "PRAC", "INFRA", "RUL")
+from src.analysis.cooccurrence import CATEGORY_ORDER, all_category_pairs
+from src.categories import LEGACY_CATEGORIES, STORED_CATEGORY_ORDER
+
 CATEGORY_STYLE = {
     "CHAR": {"color": "#E69F00", "shape": "o", "label": "CHAR"},
     "PRAC": {"color": "#009E73", "shape": "s", "label": "PRAC"},
     "INFRA": {"color": "#0072B2", "shape": "D", "label": "INFRA"},
     "RUL": {"color": "#CC79A7", "shape": "P", "label": "RUL"},
     "LOC": {"color": "#56B4E9", "shape": "h", "label": "LOC"},
+    "KNOW": {"color": "#332288", "shape": "^", "label": "KNOW"},
+    "ATT": {"color": "#AA4499", "shape": "v", "label": "ATT"},
+    "SKILL": {"color": "#882255", "shape": "p", "label": "SKILL"},
+    "physical_INFRA": {"color": "#117733", "shape": "D", "label": "physical_INFRA"},
+    "soft_INFRA": {"color": "#44AA99", "shape": "d", "label": "soft_INFRA"},
+    "eco_INFRA": {"color": "#999933", "shape": "*", "label": "eco_INFRA"},
 }
 
 
@@ -109,9 +117,18 @@ def load_core_network(
         raise ValueError("minimum_weight debe ser mayor o igual a 1")
 
     summary = _read_summary(analysis_dir)
+    nodes_path = analysis_dir / "nodes.csv"
+    edges_path = analysis_dir / "edges.csv"
+    node_rows = _read_csv(nodes_path)
+    edge_rows = _read_csv(edges_path)
+    legacy_present = {row.get("category") for row in node_rows} & LEGACY_CATEGORIES
+    default_categories = tuple(
+        category for category in STORED_CATEGORY_ORDER
+        if category in CATEGORY_ORDER or category in legacy_present
+    )
     projection = summary.get("definition", {}).get("projection", {})
     selected_categories = tuple(
-        node_categories or projection.get("node_categories") or CATEGORY_ORDER
+        node_categories or projection.get("node_categories") or default_categories
     )
     selected_category_set = set(selected_categories)
     selected_pairs = tuple(
@@ -119,15 +136,10 @@ def load_core_network(
         or projection.get("category_pairs")
         or (
             f"{source}--{target}"
-            for source_index, source in enumerate(CATEGORY_ORDER)
-            for target in CATEGORY_ORDER[source_index:]
+            for source, target in all_category_pairs(selected_categories)
         )
     )
     selected_pair_set = set(selected_pairs)
-    nodes_path = analysis_dir / "nodes.csv"
-    edges_path = analysis_dir / "edges.csv"
-    node_rows = _read_csv(nodes_path)
-    edge_rows = _read_csv(edges_path)
 
     metadata_by_id: dict[str, dict[str, Any]] = {}
     for row in node_rows:
@@ -301,7 +313,7 @@ def build_free_layout(
             sorted(
                 isolates,
                 key=lambda item: (
-                    CATEGORY_ORDER.index(graph.nodes[item]["category"]),
+                    STORED_CATEGORY_ORDER.index(graph.nodes[item]["category"]),
                     graph.nodes[item]["canonical_name"].casefold(),
                 ),
             )
@@ -657,7 +669,7 @@ def _interactive_payload(
     for node in sorted(
         graph,
         key=lambda item: (
-            CATEGORY_ORDER.index(graph.nodes[item]["category"]),
+            STORED_CATEGORY_ORDER.index(graph.nodes[item]["category"]),
             graph.nodes[item]["canonical_name"].casefold(),
         ),
     ):
@@ -787,7 +799,7 @@ def export_filtered_data(
                 graph,
                 key=lambda item: (
                     graph.nodes[item]["component"],
-                    CATEGORY_ORDER.index(graph.nodes[item]["category"]),
+                    STORED_CATEGORY_ORDER.index(graph.nodes[item]["category"]),
                     graph.nodes[item]["canonical_name"].casefold(),
                 ),
             )

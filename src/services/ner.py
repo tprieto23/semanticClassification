@@ -5,12 +5,13 @@ from pathlib import Path
 from string import Template
 from typing import Any
 
+from src.categories import ACTIVE_CATEGORIES, CATEGORY_DEFINITIONS
 from src.config import settings
 from src.services.llm_client import get_anthropic_client
 
 logger = logging.getLogger(__name__)
 
-VALID_LABELS = {"CHAR", "LOC", "INFRA", "RUL", "PRAC"}
+VALID_LABELS = ACTIVE_CATEGORIES
 NER_TOOL_NAME = "submit_entity_annotations"
 
 NER_TOOL = {
@@ -63,7 +64,12 @@ def _cargar_system_prompt() -> str:
         path = Path(settings.NER_PROMPT_PATH)
         if not path.exists():
             raise FileNotFoundError(f"System prompt no encontrado: {path}")
-        _SYSTEM_PROMPT = path.read_text(encoding="utf-8")
+        _SYSTEM_PROMPT = Template(path.read_text(encoding="utf-8")).substitute(
+            category_definitions="\n".join(
+                f"- `{label}`: {definition}"
+                for label, definition in CATEGORY_DEFINITIONS.items()
+            )
+        )
     return _SYSTEM_PROMPT
 
 
