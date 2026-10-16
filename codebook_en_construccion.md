@@ -4,63 +4,41 @@
 
 **Versión:** Borrador 0.2 — 16 de octubre de 2026.
 
-Extrae menciones literales y clasifícalas en las 10 categorías de este
-codebook. Utiliza las instrucciones y el texto recibido; no consultes
-documentos externos ni añadas información mediante conocimiento externo.
-La aplicación al corpus requiere la revisión del piloto descrita en la sección 10.
+Extrae menciones literales y clasifícalas en las 10 categorías de este codebook. Utiliza las instrucciones y el texto recibido; no consultes documentos externos ni añadas información mediante conocimiento externo. La aplicación al corpus requiere la revisión del piloto descrita en la sección 10.
 
 ## 1. Propósito de la anotación
 
 ### 1.1. Objetivo inmediato
 
-Identifica palabras o fragmentos cortos presentes en el texto y asígnales
-las etiquetas correspondientes al sistema de 10 categorías.
+Identifica palabras o fragmentos cortos presentes en el texto y asígnales las etiquetas correspondientes al sistema de 10 categorías.
 
 ### 1.2. Resultado esperado
 
-Obtén menciones clasificadas, vinculadas con sus documentos y oraciones de
-origen. Por ejemplo, una mención de «Wyss» que identifique al actor recibe
-la etiqueta `CHAR`.
+Obtén menciones clasificadas, vinculadas con sus documentos y oraciones de origen. Por ejemplo, una mención de «Wyss» que identifique al actor recibe la etiqueta `CHAR`.
 
 ### 1.3. Uso posterior y objetivo final
 
-El procesamiento se organiza en tres tareas consecutivas, ejecutadas mediante
-endpoints independientes:
+El procesamiento se organiza en tres tareas consecutivas, ejecutadas mediante endpoints independientes:
 
-1. **NER:** extraer menciones literales y clasificarlas en las 10 categorías.
-2. **Fuzzy matching:** normalizar y agrupar variantes mediante resolución de
-   entidades, conservando las menciones originales y sus evidencias.
-3. **Construcción de relaciones:** conectar las entidades consolidadas a partir
-   de la coaparición de sus menciones para construir una red semántica.
+1. **NER:** extraer menciones literales y clasificarlas en las 10 categorías. 
+2. **Fuzzy matching:** normalizar y agrupar variantes mediante resolución de entidades, conservando las menciones originales y sus evidencias.
+3. **Construcción de relaciones:** conectar las entidades consolidadas a partir de la coaparición de sus menciones para construir una red semántica.
 
-Cada tarea requiere que se haya completado la anterior. Este codebook define
-la extracción y clasificación de NER. Conserva las menciones originales;
-la normalización, resolución de entidades y construcción de relaciones
-se ejecutan en las tareas posteriores.
+Cada tarea requiere que se haya completado la anterior. Este codebook define la extracción y clasificación de NER. Conserva las menciones originales; la normalización, resolución de entidades y construcción de relaciones se ejecutan en las tareas posteriores.
 
 ### 1.4. Función operativa dentro de la API
 
-El codebook es la referencia metodológica para el prompt, los criterios de
-clasificación y el contrato de las anotaciones de NER. Sus reglas deben
-trasladarse al prompt y a los controles del código; la API no incorpora
-automáticamente este documento completo.
+El codebook es la referencia metodológica para el prompt, los criterios de clasificación y el contrato de las anotaciones de NER. Sus reglas deben trasladarse al prompt y a los controles del código; la API no incorpora automáticamente este documento completo.
 
-El modelo devuelve las menciones clasificadas mediante los campos `label`,
-`text`, `sentence_id` y `ambiguity`. El código calcula su ubicación y conserva
-la oración de origen como contexto. NER entrega esas evidencias para las
-tareas posteriores; su responsabilidad se limita a extraer y clasificar.
+El modelo devuelve las menciones clasificadas mediante los campos `label`, `text`, `sentence_id` y `ambiguity`. El código calcula su ubicación y conserva la oración de origen como contexto. NER entrega esas evidencias para las tareas posteriores; su responsabilidad se limita a extraer y clasificar.
 
 ## 2. Dominio y alcance
 
 ### 2.1. Marco temático
 
-Conservación de la naturaleza, vida sostenible y gobernanza territorial en la
-Amazonía peruana.
+Conservación de la naturaleza, vida sostenible y gobernanza territorial en la Amazonía peruana.
 
-Este marco comprende los componentes ecológicos, sociales, económicos,
-culturales e institucionales del territorio y sus interacciones en torno
-al uso, conservación y transformación de los ecosistemas y a las condiciones
-de vida de las poblaciones.
+Este marco comprende los componentes ecológicos, sociales, económicos, culturales e institucionales del territorio y sus interacciones en torno al uso, conservación y transformación de los ecosistemas y a las condiciones de vida de las poblaciones.
 
 ### 2.2. Enfoque
 
@@ -68,87 +46,43 @@ Deforestación y transiciones socioecológicas.
 
 ### 2.3. Criterios de alcance
 
-Deforestación y transiciones socioecológicas constituyen una orientación
-temática. La inclusión de una mención no requiere que su oración nombre
-expresamente la deforestación o una transición socioecológica. Su pertinencia
-se determina por la vinculación que el texto y su contexto establecen con
-el sistema territorial comprendido en el marco temático y por los criterios
-de las 10 categorías de anotación.
+Deforestación y transiciones socioecológicas constituyen una orientación temática. La inclusión de una mención no requiere que su oración nombre expresamente la deforestación o una transición socioecológica. Su pertinencia se determina por la vinculación que el texto y su contexto establecen con el sistema territorial comprendido en el marco temático y por los criterios de las 10 categorías de anotación.
 
 - Función del enfoque: orientación temática.
-- Entrada de NER: texto limpio procedente de archivos `.txt`; se procesa todo
-  su contenido por bloques. La carga y conversión de otros formatos son etapas anteriores.
+- Entrada de NER: texto limpio procedente de archivos `.txt`; se procesa todo su contenido por bloques. La carga y conversión de otros formatos son etapas anteriores.
 - Idiomas admitidos: cualquier idioma; conserva los fragmentos en el idioma original.
-- Contenido incluido: menciones pertinentes de los componentes ecológicos,
-  sociales, económicos, culturales e institucionales del sistema territorial,
-  incluidas prácticas, actores, lugares, reglas, infraestructuras, conocimientos,
-  actitudes y capacidades, según las 10 categorías. Mercados,
-  migración y otros procesos pueden incluirse cuando cumplan esos criterios,
-  aunque la oración no mencione expresamente la deforestación.
+- Contenido incluido: menciones pertinentes de los componentes ecológicos, sociales, económicos, culturales e institucionales del sistema territorial,
+  incluidas prácticas, actores, lugares, reglas, infraestructuras, conocimientos, actitudes y capacidades, según las 10 categorías. Mercados, migración y otros procesos pueden incluirse cuando cumplan esos criterios, aunque la oración no mencione expresamente la deforestación.
 - Formatos excluidos de NER: archivos que aún no se hayan convertido y limpiado a texto.
 
 ### 2.4. Contexto territorial y temático del corpus
 
-El codebook orienta la extracción de menciones en textos sobre los sistemas
-socioecológicos de la Amazonía peruana. Interesa comprender cómo se relacionan
-los ecosistemas, las poblaciones, las actividades productivas y extractivas
-y las formas de organización y gestión del territorio, en torno a la
-conservación de la naturaleza, las condiciones de vida y las transformaciones
+El codebook orienta la extracción de menciones en textos sobre los sistemas socioecológicos de la Amazonía peruana. Interesa comprender cómo se relacionan los ecosistemas, las poblaciones, las actividades productivas y extractivas y las formas de organización y gestión del territorio, en torno a la conservación de la naturaleza, las condiciones de vida y las transformaciones
 territoriales.
 
-Este contexto comprende el uso y la transformación de los bosques y otros
-ecosistemas; las prácticas productivas y extractivas; la conservación y la
-restauración; el acceso a infraestructura y mercados; y las condiciones de
-vida de las poblaciones. También abarca la tenencia y los derechos
-territoriales, la participación y coordinación entre actores, los saberes
-locales y técnicos, las identidades y valores y las capacidades para gestionar
-el territorio.
+Este contexto comprende el uso y la transformación de los bosques y otros ecosistemas; las prácticas productivas y extractivas; la conservación y la restauración; el acceso a infraestructura y mercados; y las condiciones de vida de las poblaciones. También abarca la tenencia y los derechos territoriales, la participación y coordinación entre actores, los saberes locales y técnicos, las identidades y valores y las capacidades para gestionar el territorio.
 
 ### 2.5. Lineamientos conceptuales para orientar la extracción
 
 #### 2.5.1. Cobertura del sistema socioecológico
 
-**Fundamento conceptual:** El territorio se comprende como un sistema
-socioecológico en el que los componentes ecológicos, sociales, económicos,
-culturales e institucionales se relacionan. Su comprensión requiere reconocer
-tanto las dinámicas de conservación y regeneración como las de extracción,
-degradación y conflicto, junto con las condiciones que las habilitan o limitan.
+**Fundamento conceptual:** El territorio se comprende como un sistema socioecológico en el que los componentes ecológicos, sociales, económicos, culturales e institucionales se relacionan. Su comprensión requiere reconocer tanto las dinámicas de conservación y regeneración como las de extracción, degradación y conflicto, junto con las condiciones que las habilitan o limitan.
 
-**Lineamiento operativo:** La extracción debe identificar las
-menciones pertinentes de esos componentes cuando estén sustentadas por el
-texto y cumplan los criterios de alguna de las 10 categorías. La inclusión se
-determina por su pertinencia para el dominio y su función contextual. Tanto
-las menciones presentadas como favorables como las presentadas como
-desfavorables o ambivalentes pueden ser objeto de anotación.
+**Lineamiento operativo:** La extracción debe identificar las menciones pertinentes de esos componentes cuando estén sustentadas por el
+texto y cumplan los criterios de alguna de las 10 categorías. La inclusión se determina por su pertinencia para el dominio y su función contextual. Tanto las menciones presentadas como favorables como las presentadas como desfavorables o ambivalentes pueden ser objeto de anotación.
 
-**Ejemplo conceptual:** En un pasaje sobre carreteras, minería, comunidades
-y conservación, cada expresión se evalúa según su contexto y los criterios
-de las categorías. La selección no se limita a las expresiones asociadas
-con resultados deseables.
+**Ejemplo conceptual:** En un pasaje sobre carreteras, minería, comunidades y conservación, cada expresión se evalúa según su contexto y los criterios de las categorías. La selección no se limita a las expresiones asociadas con resultados deseables.
 
 #### 2.5.2. Clasificación según la función contextual de la mención
 
-**Fundamento conceptual:** Un ámbito del sistema territorial puede reunir
-actores, reglas, prácticas, soportes, conocimientos y otros componentes.
-Un pasaje sobre gobernanza puede mencionar organizaciones, instrumentos
-institucionales y procesos de gestión. Cada mención puede corresponder a
-una categoría distinta.
+**Fundamento conceptual:** Un ámbito del sistema territorial puede reunir actores, reglas, prácticas, soportes, conocimientos y otros componentes. Un pasaje sobre gobernanza puede mencionar organizaciones, instrumentos institucionales y procesos de gestión. Cada mención puede corresponder a una categoría distinta.
 
-**Lineamiento operativo:** Cada mención se clasificará según el
-componente que identifica y la función que el texto le atribuye en su contexto,
-aplicando las definiciones y criterios de las 10 categorías. El tema
-del pasaje, el título de una sección y las palabras indicadoras podrán
-orientar la interpretación; la asignación deberá estar sustentada por la
-mención y su contexto.
+**Lineamiento operativo:** Cada mención se clasificará según el componente que identifica y la función que el texto le atribuye en su contexto, aplicando las definiciones y criterios de las 10 categorías. El tema del pasaje, el título de una sección y las palabras indicadoras podrán orientar la interpretación; la asignación deberá estar sustentada por la mención y su contexto.
 
 **Ejemplos orientativos:**
-«SERNANP» presentado como organización participante corresponde a un actor
-(`CHAR`); un «plan maestro» presentado como instrumento de gestión corresponde
-a una regla o instrumento (`RUL`); la «titulación de comunidades nativas»
-presentada como proceso corresponde a una práctica (`PRAC`).
+«SERNANP» presentado como organización participante corresponde a un actor (`CHAR`); un «plan maestro» presentado como instrumento de gestión corresponde a una regla o instrumento (`RUL`); la «titulación de comunidades nativas» presentada como proceso corresponde a una práctica (`PRAC`).
 
-Cuando la función no pueda determinarse con el contexto permitido, aplica
-la política de ambigüedad de la sección 7.
+Cuando la función no pueda determinarse con el contexto permitido, aplica la política de ambigüedad de la sección 7.
 
 ## 3. Unidades de anotación y contexto
 
@@ -156,15 +90,9 @@ la política de ambigüedad de la sección 7.
 - Unidad que recibe una etiqueta: fragmento continuo, literal y suficientemente completo para identificar lo mencionado, contenido en una oración.
 - Contexto permitido para interpretar una mención: la oración que contiene la mención y las demás oraciones del bloque recibido por el modelo. Se guarda como contexto la oración de origen.
 - Evidencia textual requerida e inferencias permitidas: toda anotación debe estar respaldada por el texto. No se añaden entidades ni atributos mediante conocimiento externo.
-- Tratamiento de menciones repetidas: se registra cada aparición como
-  una mención independiente, con su ubicación y contexto (sección 6.2).
-  La vinculación posterior al mismo nodo canónico conserva esas evidencias.
-- Distinción entre mención literal y entidad canónica: la extracción
-  conserva el texto literal del fragmento seleccionado; la normalización
-  y la vinculación a entidades canónicas corresponden a la tarea posterior
-  de fuzzy matching.
-- Alcance de esta etapa: NER extrae y clasifica menciones. La construcción
-  de relaciones y sus reglas de coaparición se definen en la tarea de red.
+- Tratamiento de menciones repetidas: se registra cada aparición como una mención independiente, con su ubicación y contexto (sección 6.2). La vinculación posterior al mismo nodo canónico conserva esas evidencias.
+- Distinción entre mención literal y entidad canónica: la extracción conserva el texto literal del fragmento seleccionado; la normalización y la vinculación a entidades canónicas corresponden a la tarea posterior de fuzzy matching.
+- Alcance de esta etapa: NER extrae y clasifica menciones. La construcción de relaciones y sus reglas de coaparición se definen en la tarea de red.
 
 ## 4. Sistema de etiquetas
 
@@ -173,8 +101,7 @@ la política de ambigüedad de la sección 7.
 - Una o varias etiquetas para el mismo fragmento: asignar la categoría que corresponda a su función contextual. Se permite anotar un fragmento LOC contenido dentro de otro CHAR conforme a la sección 6; son dos fragmentos distintos.
 - Tratamiento de expresiones que no pertenecen a ninguna categoría: omitirlas, sin forzar una clasificación.
 
-Utiliza las etiquetas exactamente como aparecen en la tabla, respetando
-mayúsculas, minúsculas y guiones bajos.
+Utiliza las etiquetas exactamente como aparecen en la tabla, respetando mayúsculas, minúsculas y guiones bajos.
 
 | Código | Categoría |
 |---|---|
@@ -205,76 +132,43 @@ Clasifica cada mención aplicando:
 **Características que debe identificar la mención:**
 
 1. Una persona, un grupo humano, una comunidad, un pueblo u organización.
-2. Una denominación explícita del actor, por nombre propio, cargo,
-   ocupación o expresión genérica.
-3. Un papel respaldado por el contexto en el sistema territorial:
-   agencia, responsabilidad, representación, derechos, intereses o
-   afectación respecto de sus procesos socioecológicos.
+2. Una denominación explícita del actor, por nombre propio, cargo, ocupación o expresión genérica.
+3. Un papel respaldado por el contexto en el sistema territorial: agencia, responsabilidad, representación, derechos, intereses o afectación respecto de sus procesos socioecológicos.
 
 **Criterios de inclusión:**
 
 - Se admiten actores individuales y colectivos, nombrados o genéricos.
 - Se incluyen los actores afectados aunque no ejecuten una acción.
-- Se incluye al actor cuya participación en una actividad está negada;
-  se conserva esa negación en el contexto, sin afirmar participación.
+- Se incluye al actor cuya participación en una actividad está negada; se conserva esa negación en el contexto, sin afirmar participación.
 
-**Criterio de exclusión:** Una expresión que solo ubica un
-proceso o evento, sin identificar al colectivo como actor en contexto,
-no recibe CHAR. En «El taller se realizó en la comunidad de San Pedro»,
-se registra únicamente «San Pedro» como LOC.
+**Criterio de exclusión:** Una expresión que solo ubica un proceso o evento, sin identificar al colectivo como actor en contexto, no recibe CHAR. En «El taller se realizó en la comunidad de San Pedro», se registra únicamente «San Pedro» como LOC.
 
-**Evidencia necesaria:** La denominación y su contexto deben permitir
-identificar al actor y su papel territorial. No se requiere un nombre
-propio ni la ejecución de una acción. Utiliza el contexto permitido
-en la sección 3.
+**Evidencia necesaria:** La denominación y su contexto deben permitir identificar al actor y su papel territorial. No se requiere un nombre propio ni la ejecución de una acción. Utiliza el contexto permitido en la sección 3.
 
 **Fronteras:**
 
-- LOC identifica el lugar; CHAR, la persona o colectivo. Se permite
-  LOC dentro de CHAR cuando ambas identificaciones están respaldadas
-  por el contexto, conforme a la sección 6.1.
-- RUL identifica la regla o instrumento; CHAR, al actor que lo establece
-  o aplica. El criterio contextual para planes está en la sección 5.9.
-- PRAC identifica la actividad; CHAR, al actor. «Monitoreo comunitario»
-  identifica una práctica en el ejemplo de la sección 5.5.
+- LOC identifica el lugar; CHAR, la persona o colectivo. Se permite LOC dentro de CHAR cuando ambas identificaciones están respaldadas por el contexto, conforme a la sección 6.1.
+- RUL identifica la regla o instrumento; CHAR, al actor que lo establece o aplica. El criterio contextual para planes está en la sección 5.9.
+- PRAC identifica la actividad; CHAR, al actor. «Monitoreo comunitario» identifica una práctica en el ejemplo de la sección 5.5.
 
 **Ejemplos:**
 
-- «La asociación de productores de Tambopata participa en el proyecto»:
-  «asociación de productores de Tambopata» identifica un actor colectivo.
-- «Los agricultores de la zona participan en el proyecto»:
-  «agricultores de la zona» identifica un actor colectivo mediante
-  una denominación genérica.
-- «La contaminación del río afecta a las comunidades ribereñas»:
-  «comunidades ribereñas» identifica un actor colectivo afectado,
-  aunque no ejecute una acción.
-- «La municipalidad aprobó el plan de manejo forestal»:
-  «municipalidad» identifica un actor colectivo. La clasificación de
-  «el plan de manejo forestal» se evalúa con el criterio contextual de
-  la sección 5.9; la sola mención de su aprobación no explicita las
-  condiciones, responsabilidades o criterios que establece.
+- «La asociación de productores de Tambopata participa en el proyecto»: «asociación de productores de Tambopata» identifica un actor colectivo.
+- «Los agricultores de la zona participan en el proyecto»: «agricultores de la zona» identifica un actor colectivo mediante una denominación genérica.
+- «La contaminación del río afecta a las comunidades ribereñas»: «comunidades ribereñas» identifica un actor colectivo afectado, aunque no ejecute una acción.
+- «La municipalidad aprobó el plan de manejo forestal»: «municipalidad» identifica un actor colectivo. La clasificación de «el plan de manejo forestal» se evalúa con el criterio contextual de la sección 5.9; la sola mención de su aprobación no explicita las condiciones, responsabilidades o criterios que establece.
 
-Los ejemplos ilustran las características de clasificación; las reglas
-sobre pronombres, artículos, nombres propios, siglas y enumeraciones
-están reunidas en la sección 6.3.
+Los ejemplos ilustran las características de clasificación; las reglas sobre pronombres, artículos, nombres propios, siglas y enumeraciones están reunidas en la sección 6.3.
 
 ### 5.2. KNOW — Conocimiento
 
-**Definición:** Saberes técnicos, ecológicos o tradicionales sobre el
-territorio, sus ecosistemas y su gestión.
+**Definición:** Saberes técnicos, ecológicos o tradicionales sobre el territorio, sus ecosistemas y su gestión.
 
-- **Conocimiento técnico:** Saberes sobre técnicas, métodos, herramientas
-  o procedimientos, por ejemplo, conocimientos sobre manejo de suelos o
-  sistemas agroforestales.
-- **Conocimiento ecológico:** Saberes sobre ecosistemas, especies, ciclos
-  y relaciones ecológicas, por ejemplo, conocimientos sobre la floración
-  de la castaña.
-- **Conocimiento tradicional:** Saberes locales o indígenas conservados
-  o transmitidos, por ejemplo, conocimientos sobre usos de plantas o
-  manejo tradicional del bosque.
+- **Conocimiento técnico:** Saberes sobre técnicas, métodos, herramientas o procedimientos, por ejemplo, conocimientos sobre manejo de suelos o sistemas agroforestales.
+- **Conocimiento ecológico:** Saberes sobre ecosistemas, especies, ciclos y relaciones ecológicas, por ejemplo, conocimientos sobre la floración de la castaña.
+- **Conocimiento tradicional:** Saberes locales o indígenas conservados o transmitidos, por ejemplo, conocimientos sobre usos de plantas o manejo tradicional del bosque.
 
-Estos tipos son referencias descriptivas dentro de KNOW; no constituyen
-nuevos códigos de categoría.
+Estos tipos son referencias descriptivas dentro de KNOW; no constituyen nuevos códigos de categoría.
 
 **Criterio de inclusión:** El texto debe identificar un saber o contenido de conocimiento. Puede hacerlo mediante una denominación explícita, como «saberes tradicionales sobre el manejo del bosque», o mediante una expresión que atribuya conocimiento, como «los productores conocen los ciclos de floración de la castaña». Extrae «ciclos de floración de la castaña» como KNOW y «productores» como CHAR.
 
