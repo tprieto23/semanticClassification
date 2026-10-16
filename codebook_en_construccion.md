@@ -364,65 +364,21 @@ Este criterio clasifica la mención del plan como instrumento. Las prescripcione
 
 ## 6. Reglas generales de anotación
 
-- **Literalidad y extensión:** extrae una palabra o el fragmento continuo
-  mínimo completo que identifica el componente, dentro de una sola oración.
-  Conserva idioma, mayúsculas, tildes, plural y forma verbal. No traduzcas,
-  lematices, completes palabras omitidas ni reformules la oración.
-- **Delimitación:** incluye nombres propios, números, descriptores y
-  modificadores necesarios para identificar el componente y su función.
-  Deja las explicaciones, circunstancias y atribuciones en el contexto;
-  aplica las reglas específicas de las fichas, como actitud con su objeto
-  y habilidad con su tarea. No extraigas una oración explicativa completa
-  si una expresión más corta identifica lo mencionado.
-  En PRAC conserva la actividad con su objeto necesario y deja actores,
-  ubicaciones y soportes separables en contexto; un producto o residuo no
-  constituye por sí solo una práctica. En KNOW extrae el contenido del saber
-  sin incorporar una explicación completa.
-- **Artículos y puntuación:** omite artículos externos que introducen la
-  denominación, preposiciones introductorias y signos externos. Conserva
-  artículos, preposiciones y puntuación integrantes del nombre o expresión.
-  En CHAR, conserva el descriptor que identifica al actor junto a su nombre,
-  como «cooperativa La Esperanza» (sección 6.3).
-- **Siglas y abreviaturas:** extrae la forma explícita cuando su contexto
-  respalde una categoría. Si aparecen nombre completo y sigla, registra
-  ambos por separado. No inventes expansiones ni resuelvas identidades.
-- **Enumeraciones:** registra cada denominación explícita por separado en
-  cualquier categoría. Ante palabras omitidas o modificadores compartidos,
-  conserva solo fragmentos continuos identificables en contexto. No copies
-  un modificador a otra posición ni reconstruyas denominaciones completas.
-- **Referencias:** no anotes pronombres ni referencias vacías como «esto»
-  o «allí», ni los sustituyas por su antecedente. Las denominaciones genéricas
-  sí se admiten si cumplen los criterios de su categoría.
-- **Una categoría por aparición:** elige la función mejor respaldada por
-  el contexto, usando las fronteras de las fichas y la sección 7. La misma
-  palabra puede recibir categorías distintas en apariciones diferentes.
-- **Anidación y solapamientos:** permite únicamente LOC contenido
-  estrictamente dentro de CHAR con evidencia para ambos (sección 6.1).
-  No generes otros fragmentos anidados, solapamientos parciales ni fragmentos
-  discontinuos. Conserva la expresión mínima completa del componente
-  principal; sus palabras internas no constituyen anotaciones adicionales.
-  Por ejemplo, en ATT «compromiso con la conservación del bosque» no añadas
-  una PRAC interna «conservación del bosque».
-- **Negación y temporalidad:** una mención explícita puede conservarse
-  aunque aparezca negada, ausente, propuesta, hipotética, futura u obligatoria,
-  si cumple los criterios de categoría. La anotación no afirma existencia,
-  posesión o ejecución. Conserva esa condición en contexto; incluye la
-  negación en el fragmento cuando forma parte de una prescripción RUL.
-  No añadas campos de polaridad o tiempo ni deduzcas KNOW, ATT o SKILL de
-  una actividad o intención.
-- **Repeticiones:** registra cada aparición con su ubicación y contexto,
-  también dentro de una misma oración (sección 6.2).
-- **Etapas posteriores:** conserva texto y categoría de cada mención.
-  La agrupación de variantes, resolución de identidades, discrepancias entre
-  nodos y relaciones corresponden a fuzzy matching y construcción de red;
-  quedan fuera de las instrucciones de NER.
+- **Literalidad y extensión:** extrae una palabra o el fragmento continuo mínimo completo que identifica el componente, dentro de una sola oración. Conserva idioma, mayúsculas, tildes, plural y forma verbal. No traduzcas, lematices, completes palabras omitidas ni reformules la oración.
+- **Delimitación:** incluye nombres propios, números, descriptores y modificadores necesarios para identificar el componente y su función. Deja las explicaciones, circunstancias y atribuciones en el contexto; aplica las reglas específicas de las fichas, como actitud con su objeto y habilidad con su tarea. No extraigas una oración explicativa completa si una expresión más corta identifica lo mencionado. En PRAC conserva la actividad con su objeto necesario y deja actores, ubicaciones y soportes separables en contexto; un producto o residuo no constituye por sí solo una práctica. En KNOW extrae el contenido del saber sin incorporar una explicación completa.
+- **Artículos y puntuación:** omite artículos externos que introducen la denominación, preposiciones introductorias y signos externos. Conserva artículos, preposiciones y puntuación integrantes del nombre o expresión. En CHAR, conserva el descriptor que identifica al actor junto a su nombre, como «cooperativa La Esperanza» (sección 6.3).
+- **Siglas y abreviaturas:** extrae la forma explícita cuando su contexto respalde una categoría. Si aparecen nombre completo y sigla, registra ambos por separado. No inventes expansiones ni resuelvas identidades.
+- **Enumeraciones:** registra cada denominación explícita por separado en cualquier categoría. Ante palabras omitidas o modificadores compartidos, conserva solo fragmentos continuos identificables en contexto. No copies un modificador a otra posición ni reconstruyas denominaciones completas.
+- **Referencias:** no anotes pronombres ni referencias vacías como «esto» o «allí», ni los sustituyas por su antecedente. Las denominaciones genéricas sí se admiten si cumplen los criterios de su categoría.
+- **Una categoría por aparición:** elige la función mejor respaldada por el contexto, usando las fronteras de las fichas y la sección 7. La misma palabra puede recibir categorías distintas en apariciones diferentes.
+- **Anidación y solapamientos:** permite únicamente LOC contenido estrictamente dentro de CHAR con evidencia para ambos (sección 6.1). No generes otros fragmentos anidados, solapamientos parciales ni fragmentos discontinuos. Conserva la expresión mínima completa del componente principal; sus palabras internas no constituyen anotaciones adicionales. Por ejemplo, en ATT «compromiso con la conservación del bosque» no añadas una PRAC interna «conservación del bosque».
+- **Negación y temporalidad:** una mención explícita puede conservarse aunque aparezca negada, ausente, propuesta, hipotética, futura u obligatoria, si cumple los criterios de categoría. La anotación no afirma existencia, posesión o ejecución. Conserva esa condición en contexto; incluye la negación en el fragmento cuando forma parte de una prescripción RUL. No añadas campos de polaridad o tiempo ni deduzcas KNOW, ATT o SKILL de una actividad o intención.
+- **Repeticiones:** registra cada aparición con su ubicación y contexto, también dentro de una misma oración (sección 6.2).
+- **Etapas posteriores:** conserva texto y categoría de cada mención. La agrupación de variantes, resolución de identidades, discrepancias entre nodos y relaciones corresponden a fuzzy matching y construcción de red; quedan fuera de las instrucciones de NER.
 
 ### 6.1. Anotación de LOC dentro de CHAR
 
-Se permite anotar un fragmento que identifica un lugar (LOC) dentro de
-otro que identifica un actor (CHAR), cuando el texto y su contexto
-respaldan ambas identificaciones. Cada anotación conserva su propio
-fragmento y categoría.
+Se permite anotar un fragmento que identifica un lugar (LOC) dentro de otro que identifica un actor (CHAR), cuando el texto y su contexto respaldan ambas identificaciones. Cada anotación conserva su propio fragmento y categoría.
 
 **Ejemplo:** «La comunidad de San Pedro decidió participar».
 
@@ -431,112 +387,55 @@ fragmento y categoría.
 | comunidad de San Pedro | CHAR | El colectivo que decidió participar; se omite el artículo inicial. |
 | San Pedro | LOC | El lugar identificado en la denominación del colectivo. |
 
-**Límite contextual:** En «El taller se realizó en la comunidad
-de San Pedro», se registra únicamente «San Pedro» como LOC. La expresión
-solo ubica el taller; no basta para añadir CHAR. La presencia de un nombre
-de lugar dentro de la expresión no activa automáticamente dos anotaciones.
+**Límite contextual:** En «El taller se realizó en la comunidad de San Pedro», se registra únicamente «San Pedro» como LOC. La expresión solo ubica el taller; no basta para añadir CHAR. La presencia de un nombre de lugar dentro de la expresión no activa automáticamente dos anotaciones.
 
-La anidación permite los dos fragmentos del ejemplo
-«La comunidad de San Pedro decidió participar», uno contenido en el otro.
-No permite asignar dos etiquetas al mismo intervalo ni generalizar la
-anidación a otras combinaciones. Las consecuencias para la canonicalización
-y el conteo de coocurrencia corresponden a sus etapas posteriores.
+La anidación permite los dos fragmentos del ejemplo «La comunidad de San Pedro decidió participar», uno contenido en el otro. No permite asignar dos etiquetas al mismo intervalo ni generalizar la anidación a otras combinaciones. Las consecuencias para la canonicalización y el conteo de coocurrencia corresponden a sus etapas posteriores.
 
 ### 6.2. Registro de menciones repetidas
 
-Se registra cada aparición de una mención como una anotación independiente,
-con su ubicación en el documento y su contexto. La repetición del mismo
-texto no elimina las apariciones posteriores.
+Se registra cada aparición de una mención como una anotación independiente, con su ubicación en el documento y su contexto. La repetición del mismo texto no elimina las apariciones posteriores.
 
-**Ejemplo:** Si «productoras de cacao» aparece en tres oraciones,
-se conservan tres menciones, cada una vinculada a su ubicación y contexto.
-Posteriormente podrán vincularse al mismo nodo canónico sin perder las
-tres evidencias.
+**Ejemplo:** Si «productoras de cacao» aparece en tres oraciones, se conservan tres menciones, cada una vinculada a su ubicación y contexto. Posteriormente podrán vincularse al mismo nodo canónico sin perder las tres evidencias.
 
-El código calcula posiciones y contexto conforme a la sección 8. El modelo
-registra las apariciones en orden textual para que la búsqueda local asigne
-posiciones sucesivas. El contrato de cuatro campos no distingue qué aparición
-se quiso seleccionar si un texto idéntico se repite en la misma oración y
-solo se anota alguna de ellas; esos casos requieren revisión del piloto.
-Las reglas de conteo o ponderación de coocurrencia se definen en la etapa de red.
+El código calcula posiciones y contexto conforme a la sección 8. El modelo registra las apariciones en orden textual para que la búsqueda local asigne posiciones sucesivas. El contrato de cuatro campos no distingue qué aparición se quiso seleccionar si un texto idéntico se repite en la misma oración y solo se anota alguna de ellas; esos casos requieren revisión del piloto. Las reglas de conteo o ponderación de coocurrencia se definen en la etapa de red.
 
 ### 6.3. Extracción de menciones CHAR
 
-**Criterio de evidencia y exclusión — pronombres:** Para CHAR
-se extraen únicamente las expresiones que nombran al actor, ya sea por
-nombre propio, cargo, ocupación o denominación del colectivo. Los pronombres
-que remiten a un actor no se anotan como CHAR, aunque su referente sea
-claro en el contexto. Esto mantiene la inclusión de denominaciones
-genéricas; no exige un nombre propio.
+**Criterio de evidencia y exclusión — pronombres:** Para CHAR se extraen únicamente las expresiones que nombran al actor, ya sea por nombre propio, cargo, ocupación o denominación del colectivo. Los pronombres que remiten a un actor no se anotan como CHAR, aunque su referente sea claro en el contexto. Esto mantiene la inclusión de denominaciones genéricas; no exige un nombre propio.
 
-**Ejemplo:** En «Los agricultores participan en el monitoreo.
-Ellos registran los cambios del bosque», se anota «agricultores»
-como CHAR y no se anota «Ellos» como CHAR. No se sustituye el pronombre
-por una nueva mención de «agricultores» en la segunda oración.
+**Ejemplo:** En «Los agricultores participan en el monitoreo. Ellos registran los cambios del bosque», se anota «agricultores» como CHAR y no se anota «Ellos» como CHAR. No se sustituye el pronombre por una nueva mención de «agricultores» en la segunda oración.
 
-**Límite del fragmento — artículo inicial:** Se omite el artículo
-que introduce la denominación del actor. En «Las productoras de cacao
-participaron en el taller», se anota «productoras de cacao» como CHAR,
-dejando fuera «Las» y conservando «de cacao».
-Los artículos integrantes de un nombre propio se conservan conforme al
-criterio siguiente; la delimitación general se aplica según el inicio de la sección 6.
+**Límite del fragmento — artículo inicial:** Se omite el artículo que introduce la denominación del actor. En «Las productoras de cacao participaron en el taller», se anota «productoras de cacao» como CHAR, dejando fuera «Las» y conservando «de cacao». Los artículos integrantes de un nombre propio se conservan conforme al criterio siguiente; la delimitación general se aplica según el inicio de la sección 6.
 
-**Nombre propio íntegro — criterio:** Se conserva completo el
-nombre propio del actor, incluidos sus artículos integrantes. «La Esperanza»
-es un nombre propio y se mantiene íntegro: no se elimina «La» ni se
-extrae como una anotación separada. La omisión del artículo que introduce
-una denominación no autoriza a recortar un artículo integrante del nombre.
+**Nombre propio íntegro — criterio:** Se conserva completo el nombre propio del actor, incluidos sus artículos integrantes. «La Esperanza» es un nombre propio y se mantiene íntegro: no se elimina «La» ni se extrae como una anotación separada. La omisión del artículo que introduce una denominación no autoriza a recortar un artículo integrante del nombre.
 
-**Fragmento:** En «La cooperativa La Esperanza participó en el
-taller», se extrae «cooperativa La Esperanza» como CHAR. Se incluye
-«cooperativa» y se conserva íntegro el nombre «La Esperanza». Incluye los
-descriptores que identifican al actor; deja las explicaciones adicionales en contexto.
+**Fragmento:** En «La cooperativa La Esperanza participó en el taller», se extrae «cooperativa La Esperanza» como CHAR. Se incluye «cooperativa» y se conserva íntegro el nombre «La Esperanza». Incluye los descriptores que identifican al actor; deja las explicaciones adicionales en contexto.
 
-**Conservación del fragmento:** Una vez delimitada la mención,
-se conserva el texto tal como aparece. En el ejemplo de las productoras
-se extrae «productoras de cacao», manteniendo el plural. La normalización queda
-para una etapa posterior y no reemplaza el fragmento original extraído.
+**Conservación del fragmento:** Una vez delimitada la mención, se conserva el texto tal como aparece. En el ejemplo de las productoras se extrae «productoras de cacao», manteniendo el plural. La normalización queda para una etapa posterior y no reemplaza el fragmento original extraído.
 
-**Nombre completo y sigla — extracción:** Cuando el nombre
-completo de un actor y su sigla aparecen explícitamente, se extraen como
-dos registros CHAR independientes, cada uno con su fragmento literal,
-ubicación y contexto.
+**Nombre completo y sigla — extracción:** Cuando el nombre completo de un actor y su sigla aparecen explícitamente, se extraen como dos registros CHAR independientes, cada uno con su fragmento literal, ubicación y contexto.
 
-**Ejemplo:** En «La Asociación de Productores de Cacao (APC)
-participó en el taller», se extraen por separado:
+**Ejemplo:** En «La Asociación de Productores de Cacao (APC) participó en el taller», se extraen por separado:
 
 - «Asociación de Productores de Cacao» → CHAR.
 - «APC» → CHAR.
 
-**Canonicalización para el ejemplo:** Las dos menciones se
-vinculan posteriormente al mismo nodo canónico porque el texto presenta
-«APC» como sigla de «Asociación de Productores de Cacao». Se conservan
-ambos registros originales, con su ubicación y contexto.
+**Canonicalización para el ejemplo:** Las dos menciones se vinculan posteriormente al mismo nodo canónico porque el texto presenta «APC» como sigla de «Asociación de Productores de Cacao». Se conservan ambos registros originales, con su ubicación y contexto.
 
-La coincidencia de siglas por sí sola no establece una identidad entre
-actores. NER clasifica la forma observada con su contexto y ambigüedad;
-la resolución de identidad corresponde a fuzzy matching.
+La coincidencia de siglas por sí sola no establece una identidad entre actores. NER clasifica la forma observada con su contexto y ambigüedad; la resolución de identidad corresponde a fuzzy matching.
 
-**Enumeraciones de actores — extracción:** Cuando el texto
-enumera actores mediante denominaciones explícitas, se extrae cada una
-como una mención CHAR independiente. Se conservan sus fragmentos
-literales y se omiten los artículos iniciales y la conjunción que los une.
+**Enumeraciones de actores — extracción:** Cuando el texto enumera actores mediante denominaciones explícitas, se extrae cada una como una mención CHAR independiente. Se conservan sus fragmentos literales y se omiten los artículos iniciales y la conjunción que los une.
 
-**Ejemplo:** En «Las productoras de cacao y los recolectores de
-castaña participaron en el taller», se extraen por separado:
+**Ejemplo:** En «Las productoras de cacao y los recolectores de castaña participaron en el taller», se extraen por separado:
 
 - «productoras de cacao» → CHAR.
 - «recolectores de castaña» → CHAR.
 
-En enumeraciones con palabras omitidas o modificadores compartidos, conserva
-solo fragmentos continuos identificables en contexto, conforme a la regla general.
+En enumeraciones con palabras omitidas o modificadores compartidos, conserva solo fragmentos continuos identificables en contexto, conforme a la regla general.
 
 ## 7. Ambigüedad y casos no resolubles
 
-Hay ambigüedad cuando el contexto permite más de una interpretación de la
-categoría, referente o límites. Elige la categoría mejor respaldada por la
-función contextual; omite la expresión si ninguna tiene evidencia suficiente.
-No uses una categoría genérica de reserva ni etiquetes por conocimiento externo.
+Hay ambigüedad cuando el contexto permite más de una interpretación de la categoría, referente o límites. Elige la categoría mejor respaldada por la función contextual; omite la expresión si ninguna tiene evidencia suficiente. No uses una categoría genérica de reserva ni etiquetes por conocimiento externo.
 
 | `ambiguity` | Criterio |
 |---|---|
@@ -544,23 +443,13 @@ No uses una categoría genérica de reserva ni etiquetes por conocimiento extern
 | `medium` | Existe otra lectura plausible, pero el contexto favorece la elegida. |
 | `high` | Persiste una duda relevante aunque haya evidencia para la categoría elegida. |
 
-Son niveles de necesidad de revisión, no probabilidades calibradas. `high`
-no compensa la ausencia de evidencia. NER devuelve solo la categoría elegida
-y el nivel; las alternativas y motivos se registran aparte durante la revisión
-del piloto, sin añadir campos al contrato. Revisa todas las menciones `high`
-y las fronteras `medium` antes de aceptar la extracción del documento.
+Son niveles de necesidad de revisión, no probabilidades calibradas. `high` no compensa la ausencia de evidencia. NER devuelve solo la categoría elegida y el nivel; las alternativas y motivos se registran aparte durante la revisión del piloto, sin añadir campos al contrato. Revisa todas las menciones `high` y las fronteras `medium` antes de aceptar la extracción del documento.
 
 ## 8. Formato de entrada y salida
 
-El servicio segmenta el texto limpio y envía bloques de hasta tres párrafos,
-con un umbral objetivo de 12.000 caracteres. Un párrafo individual mayor
-que ese umbral se conserva completo en la implementación actual.
+El servicio segmenta el texto limpio y envía bloques de hasta tres párrafos, con un umbral objetivo de 12.000 caracteres. Un párrafo individual mayor que ese umbral se conserva completo en la implementación actual.
 
-La entrada contiene `document_id`, `document_title`, `section_title` y
-`sentences`, una lista de objetos con `sentence_id` y `text`. Los títulos
-pueden estar vacíos; orientan la interpretación sin crear menciones ausentes
-de las oraciones. Los identificadores de oración se calculan localmente a
-partir de su posición absoluta y deben copiarse sin modificaciones.
+La entrada contiene `document_id`, `document_title`, `section_title` y `sentences`, una lista de objetos con `sentence_id` y `text`. Los títulos pueden estar vacíos; orientan la interpretación sin crear menciones ausentes de las oraciones. Los identificadores de oración se calculan localmente a partir de su posición absoluta y deben copiarse sin modificaciones.
 
 Ejemplo de entrada:
 
@@ -573,8 +462,7 @@ Ejemplo de entrada:
 }
 ```
 
-Responde mediante `submit_entity_annotations`, con `document_id` y
-`annotations`. Cada anotación contiene exactamente cuatro campos obligatorios:
+Responde mediante `submit_entity_annotations`, con `document_id` y `annotations`. Cada anotación contiene exactamente cuatro campos obligatorios:
 
 | Campo | Contenido |
 |---|---|
@@ -590,32 +478,17 @@ Responde mediante `submit_entity_annotations`, con `document_id` y
 }
 ```
 
-Si no hay menciones válidas, devuelve `annotations: []`. No añadas
-explicaciones, alternativas, posiciones, atributos canónicos ni relaciones.
+Si no hay menciones válidas, devuelve `annotations: []`. No añadas explicaciones, alternativas, posiciones, atributos canónicos ni relaciones.
 
-El código renombra `label` a `category`, localiza cada aparición literal y
-añade `start`, `end` (exclusivo) y `context` (oración de origen), manteniendo
-`sentence_id`, `text` y `ambiguity`. Las posiciones son índices de caracteres
-de Python sobre el texto limpio: `texto[start:end] == text`. El JSON de NER
-guarda `document_id` y `entities`; todavía no crea nodos canónicos.
+El código renombra `label` a `category`, localiza cada aparición literal y añade `start`, `end` (exclusivo) y `context` (oración de origen), manteniendo `sentence_id`, `text` y `ambiguity`. Las posiciones son índices de caracteres de Python sobre el texto limpio: `texto[start:end] == text`. El JSON de NER guarda `document_id` y `entities`; todavía no crea nodos canónicos.
 
-El servicio verifica los campos, el identificador de documento, etiquetas,
-oraciones, literalidad, ambigüedad y solapamientos. Si una respuesta pierde
-anotaciones por estos errores, solicita hasta dos correcciones del bloque al
-modelo, indicando los fragmentos en conflicto. Si persisten, falla sin guardar
-un resultado parcial; también falla ante truncamiento o falta de la herramienta
-requerida. El parser usado aisladamente conserva su modo tolerante para
-compatibilidad, pero NER exige una respuesta válida antes de aceptar el bloque.
-Una salida estructuralmente válida todavía requiere revisión semántica.
+El servicio verifica los campos, el identificador de documento, etiquetas, oraciones, literalidad, ambigüedad y solapamientos. Si una respuesta pierde anotaciones por estos errores, solicita hasta dos correcciones del bloque al modelo, indicando los fragmentos en conflicto. Si persisten, falla sin guardar un resultado parcial; también falla ante truncamiento o falta de la herramienta requerida. El parser usado aisladamente conserva su modo tolerante para compatibilidad, pero NER exige una respuesta válida antes de aceptar el bloque. Una salida estructuralmente válida todavía requiere revisión semántica.
 
 ## 9. Ejemplos completos de aplicación
 
-Las diez demostraciones de `data/ner/few_shot_examples.json` ilustran las diez
-categorías; su procedencia es ilustrativa y no son un conjunto de referencia
-anotado sobre el corpus. Las fichas de la sección 5 explican las fronteras.
+Las diez demostraciones de `data/ner/few_shot_examples.json` ilustran las diez categorías; su procedencia es ilustrativa y no son un conjunto de referencia anotado sobre el corpus. Las fichas de la sección 5 explican las fronteras.
 
-Los siguientes casos acotados muestran todas las anotaciones esperadas;
-en cada caso se copia el `sentence_id` de entrada:
+Los siguientes casos acotados muestran todas las anotaciones esperadas; en cada caso se copia el `sentence_id` de entrada:
 
 | Texto | Anotaciones (`label`: `text`, `ambiguity`) |
 |---|---|
@@ -626,47 +499,18 @@ en cada caso se copia el `sentence_id` de entrada:
 | minería y minería. | Dos anotaciones PRAC: «minería», `low`, en posiciones distintas. |
 | Gracias por su atención. | `annotations: []`. |
 
-En una oración factual como «La floración ocurre en agosto», no se añade
-KNOW sin identificación de un saber o atribución de conocimiento. Una sigla
-sin función reconocible tampoco recibe automáticamente CHAR. Las dudas
-reales del piloto se revisan con la sección 7; no se inventa un caso de alta
-ambigüedad para sustituir esa revisión.
+En una oración factual como «La floración ocurre en agosto», no se añade KNOW sin identificación de un saber o atribución de conocimiento. Una sigla sin función reconocible tampoco recibe automáticamente CHAR. Las dudas reales del piloto se revisan con la sección 7; no se inventa un caso de alta ambigüedad para sustituir esa revisión.
 
 ## 10. Validación y mantenimiento
 
-1. Selecciona un documento real de extensión manejable y conserva el texto
-   limpio completo, su identificador y huella SHA-256. Ejecuta solo NER con
-   las versiones vigentes; conserva resultados y advertencias para revisión.
-2. Comprueba etiquetas, literalidad, posiciones, oraciones, repeticiones y
-   anidación. Contrasta las anotaciones finales recibidas con las conservadas:
-   deben coincidir. Conserva también las respuestas anteriores corregidas y
-   el número de reintentos. Revisa los bloques vacíos.
-3. Lee todas las oraciones del piloto, incluidas las que no tienen menciones,
-   para detectar omisiones, asignaciones incorrectas y fragmentos demasiado
-   amplios. Revisa especialmente KNOW/ATT/SKILL/PRAC, infraestructuras/LOC,
-   reglas propuestas, siglas y las menciones `medium` o `high`.
-4. Registra correcciones y su fundamento; la revisión humana adjudica el
-   conjunto de referencia. Separa estos datos de desarrollo de una evaluación
-   posterior con documentos distintos y mantén las demostraciones identificadas
-   como ilustrativas. Un solo documento no valida categorías ausentes ni
-   demuestra calidad para todos los idiomas.
-5. Antes de iniciar el corpus, exige cero errores estructurales pendientes y
-   revisión de todos los desacuerdos detectados en el piloto. No declares una
-   precisión o cobertura medidas sin referencia adjudicada. Cuando exista,
-   calcula precisión, cobertura y F1 por coincidencia exacta de posición y
-   categoría, junto con errores por categoría; los umbrales de evaluación
-   ampliada se fijan antes de medir sobre documentos reservados.
-6. Si se cambia una regla a partir del piloto, actualiza codebook, definiciones,
-   prompt y ejemplos afectados, ejecuta las regresiones y repite únicamente
-   la validación afectada. Contrasta las anotaciones entre versiones antes
-   de procesar lotes. La repetibilidad del LLM se evalúa sobre texto fijo;
-   las pruebas con proveedor simulado verifican el código, no su estabilidad.
+1. Selecciona un documento real de extensión manejable y conserva el texto limpio completo, su identificador y huella SHA-256. Ejecuta solo NER con las versiones vigentes; conserva resultados y advertencias para revisión.
+2. Comprueba etiquetas, literalidad, posiciones, oraciones, repeticiones y anidación. Contrasta las anotaciones finales recibidas con las conservadas: deben coincidir. Conserva también las respuestas anteriores corregidas y el número de reintentos. Revisa los bloques vacíos.
+3. Lee todas las oraciones del piloto, incluidas las que no tienen menciones, para detectar omisiones, asignaciones incorrectas y fragmentos demasiado amplios. Revisa especialmente KNOW/ATT/SKILL/PRAC, infraestructuras/LOC, reglas propuestas, siglas y las menciones `medium` o `high`.
+4. Registra correcciones y su fundamento; la revisión humana adjudica el conjunto de referencia. Separa estos datos de desarrollo de una evaluaciónn posterior con documentos distintos y mantén las demostraciones identificadas como ilustrativas. Un solo documento no valida categorías ausentes ni demuestra calidad para todos los idiomas.
+5. Antes de iniciar el corpus, exige cero errores estructurales pendientes y revisión de todos los desacuerdos detectados en el piloto. No declares una precisión o cobertura medidas sin referencia adjudicada. Cuando exista, calcula precisión, cobertura y F1 por coincidencia exacta de posición y categoría, junto con errores por categoría; los umbrales de evaluación ampliada se fijan antes de medir sobre documentos reservados.
+6. Si se cambia una regla a partir del piloto, actualiza codebook, definiciones, prompt y ejemplos afectados, ejecuta las regresiones y repite únicamente la validación afectada. Contrasta las anotaciones entre versiones antes de procesar lotes. La repetibilidad del LLM se evalúa sobre texto fijo; las pruebas con proveedor simulado verifican el código, no su estabilidad.
 
-Registra versión del codebook, commit, modelo configurado y huellas del texto,
-definiciones, prompts y demostraciones en el artefacto del piloto. Al cargar
-cambios en la API, inicia o reinicia su proceso: los prompts se mantienen
-en caché en memoria y editar únicamente sus archivos no garantiza recarga.
-Fuzzy matching y relaciones se validan después mediante sus endpoints propios.
+Registra versión del codebook, commit, modelo configurado y huellas del texto, definiciones, prompts y demostraciones en el artefacto del piloto. Al cargar cambios en la API, inicia o reinicia su proceso: los prompts se mantienen en caché en memoria y editar únicamente sus archivos no garantiza recarga. Fuzzy matching y relaciones se validan después mediante sus endpoints propios.
 
 ## Anexo A. Instrucciones para el modelo de lenguaje
 
@@ -680,6 +524,4 @@ Las instrucciones operativas se mantienen en los archivos usados por el servicio
 | `data/ner/few_shot_examples.json` | Diez demostraciones ilustrativas de categorías. |
 | `src/services/ner.py` | Esquema de cuatro campos, segmentación, localización literal y controles del contrato. |
 
-El servicio incorpora las definiciones en `$category_definitions` y ensambla
-el prompt de usuario con ejemplos y entrada. No envía este codebook completo
-ni instrucciones de canonicalización o construcción de relaciones al modelo.
+El servicio incorpora las definiciones en `$category_definitions` y ensambla el prompt de usuario con ejemplos y entrada. No envía este codebook completo ni instrucciones de canonicalización o construcción de relaciones al modelo.
