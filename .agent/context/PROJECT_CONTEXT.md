@@ -6,24 +6,52 @@ Este documento resume el estado metodológico y técnico del proyecto de clasifi
 
 El proyecto transforma documentos de los incubadores en una base de entidades canónicas y redes semánticas auditables. La unidad de evidencia es la oración: las relaciones entre entidades se derivan de su coocurrencia dentro de `(document_id, sentence_id)` y deben poder rastrearse hasta el documento, la oración, el contexto y las entidades originales.
 
-La fase de trabajo actual con la usuaria es la redacción paso a paso del
-codebook operativo en `codebook_en_construccion.md`. Las definiciones de sus
-diez categorías ya fueron acordadas; las fichas detalladas y las reglas de
-anotación siguen en construcción. El codebook servirá como especificación
+La fase de trabajo actual con la usuaria es la revisión y validación del
+codebook operativo en `codebook_en_construccion.md`. Sus diez categorías,
+fichas y reglas de anotación están desarrolladas en el borrador 0.2.
+El codebook sirve como especificación
 para la extracción y clasificación mediante LLM en la API, con posterior
 canonicalización, atributos de nodos y análisis de coocurrencia.
 
-### Punto de reanudación — 15 Oct 2026
+### Punto de reanudación — 16 Oct 2026
 
-**Cierre de sesión: retomar el 16 Oct 2026 haciendo primero los commits de
-los cambios de hoy. Después continuar desde `## 6. Reglas generales de
-anotación` de `codebook_en_construccion.md`.** Revisar los cambios guardados
-y crear los commits antes de iniciar nuevas ediciones. Luego leer la sección
-6 completa, incluidas 6.1, 6.2 y 6.3, y revisarla detalladamente junto con el
-prompt y el comportamiento del código. El objetivo inmediato es cerrar las
-reglas y pendientes restantes para terminar el codebook y preparar el
-procesamiento de documentos. La agenda está al inicio de `tasks.md`; la nota
-de cierre está en `../sessions/2026-10-15-cierre-y-continuidad.md`.
+Se revisaron los cambios guardados antes de nuevas ediciones y se crearon
+los commits `56e2526` (codebook y documentación) y `7e6ff24` (definiciones,
+prompts y ejemplos) de la sesión anterior. Se leyó completa la sección 6,
+incluidas 6.1–6.3, y se contrastó con fichas, prompt y parser.
+El borrador 0.2 completa las reglas generales y las secciones 7–10 y anexo A:
+fragmentos mínimos literales, siglas separadas, enumeraciones sin reconstrucción,
+una categoría por aparición, negación en contexto y niveles de ambigüedad.
+La única anidación admitida es LOC estrictamente dentro de CHAR; el parser
+ya la conserva en ambos órdenes, también con repeticiones. No se implementó
+resolución de siglas ni relaciones dentro de NER.
+
+La validación real se ejecutó mediante `scripts/validate_ner_document.py`,
+con respuestas reales de Anthropic y artefactos separados en
+`data/output/ner_pilot/`. El script no abre conexiones ni escribe en la DB.
+Docker está detenido; no se comprobó el endpoint de la API en ejecución.
+NER tiene cachés de prompt en memoria: iniciar/reiniciar la API al validar
+su endpoint con las nuevas instrucciones.
+
+Piloto real: informe de biocarbón `6f98dc30-3b28-42aa-b519-497cec4c8627`,
+5.267 caracteres, 42 oraciones y 13 bloques. Las dos extracciones completas
+produjeron 74/68 y 86/77 anotaciones recibidas/conservadas, respectivamente,
+con descartes por solapamiento. Se incorporó validación estricta al servicio,
+con hasta dos correcciones por bloque y fallo explícito si persisten errores.
+Las ejecuciones con ese control se detuvieron en el bloque que comienza
+en 2113: el modelo insiste en añadir CHAR «UNAMAD» dentro de CHAR
+«estudiantes de la UNAMAD». Los resultados completos previos son evidencia
+de desarrollo, no extracciones aceptadas. El corpus no se ha procesado.
+Hay también errores semánticos para revisar: «podas» usadas como residuos,
+hornos productivos clasificados como infraestructura física, sedes usadas
+como actores y fragmentos explicativos demasiado amplios.
+
+Regresiones: 108 pruebas ejecutadas, 106 exitosas y 2 omitidas por las
+dependencias opcionales de Leiden. Los cambios del 16 Oct se registran en
+Git por solicitud de la usuaria. La agenda vigente está en `tasks.md`; la evidencia se resume
+en `../sessions/2026-10-16-revision-seccion-6-y-piloto.md`.
+
+### Antecedentes de la revisión — 15 Oct 2026
 
 La usuaria está realizando una última revisión del codebook, ahora junto con
 el prompt. Confirmó que NER debe dedicarse exclusivamente a extraer y

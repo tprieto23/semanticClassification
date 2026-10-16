@@ -1,6 +1,6 @@
 {
-  "version": "2.0",
-  "codebook_version": "borrador-0.1-diez-categorias",
+  "version": "2.1",
+  "codebook_version": "borrador-0.2-diez-categorias",
   "source": "Ejemplos ilustrativos basados en las definiciones de codebook_en_construccion.md; no son anotaciones del corpus",
   "labels": [
     "CHAR",

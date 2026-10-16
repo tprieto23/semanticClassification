@@ -1,35 +1,38 @@
 # Tareas
 
-## Trabajo actual: codebook — punto de continuidad del 15 Oct 2026
+## Trabajo actual: codebook y piloto NER — 16 Oct 2026
 
-### Primera tarea al retomar — 16 Oct 2026
+### Revisión y validación actual
 
-- [ ] **Primero hacer los commits de los cambios de hoy.** Revisar `git status`
-  y `git diff`, comprobar el contenido guardado y crear los commits del
-  codebook/documentación y de las definiciones, prompts y ejemplos NER.
-  Completar este paso antes de iniciar nuevas ediciones de la sección 6.
-- [ ] **Después empezar en `## 6. Reglas generales de anotación`. Leerla completa y
-  revisarla detalladamente**, incluidas 6.1, 6.2 y 6.3. Contrastar cada regla
-  con las categorías de la sección 5, el prompt y el código existente.
-- [ ] Cerrar los pendientes de delimitación, artículos y nombres propios,
-  siglas, enumeraciones, pronombres, repeticiones, anidación/solapamientos y
-  negación/temporalidad. Consolidar los criterios ya definidos en las fichas
-  sin reabrir el conjunto de diez categorías ni añadir casos individuales
-  innecesarios. Dejar normalización y relaciones en sus tareas posteriores.
-- [ ] Alinear las reglas de la sección 6 con el prompt y el parser. Revisar
-  especialmente LOC dentro de CHAR: el acuerdo está escrito, pero el parser
-  aún rechaza fragmentos solapados. Conservar la separación entre extracción
-  de nombre/sigla y su posterior resolución en fuzzy matching.
-- [ ] Continuar con las secciones 7–10 y el anexo A: ambigüedad, contrato de
-  entrada/salida, ejemplos y validación. Aprovechar `label`, `text`,
-  `sentence_id`, `ambiguity` y el cálculo local de posiciones/contexto.
-- [ ] Hacer una comprobación final de coherencia entre codebook, definiciones,
+- [x] Revisar y crear los commits pendientes antes de nuevas ediciones:
+  `56e2526` (codebook y documentación), `7e6ff24` (definiciones, prompts, ejemplos).
+- [x] Leer completa la sección 6, incluidas 6.1–6.3, y contrastarla con las
+  categorías, el prompt y el parser.
+- [x] Completar delimitación, artículos y nombres, siglas, enumeraciones,
+  pronombres, repeticiones, anidación, negación y temporalidad. Conservar
+  normalización y relaciones fuera de NER.
+- [x] Alinear el prompt y el parser con la anidación estricta LOC dentro de
+  CHAR y añadir regresiones para ambos órdenes, repeticiones y rechazos.
+- [x] Completar secciones 7–10 y anexo A sobre el contrato existente.
+- [x] Hacer una comprobación final de coherencia entre codebook, definiciones,
   prompts, ejemplos y código. Verificar los archivos guardados para evitar
   recuperar accidentalmente versiones anteriores desde el editor.
-- [ ] Validar una extracción con un documento real y revisar sus menciones
-  antes de iniciar el procesamiento del corpus. Confirmar cómo se cargan los
-  cambios en la API en ejecución; las pruebas de hoy usaron proveedor y DB
-  simulados. Ejecutar después fuzzy matching y red en su orden independiente.
+- [x] Ejecutar el piloto real de biocarbón y contrastar texto, respuestas y
+  menciones conservadas: 74/68 y 86/77 en las dos extracciones completas.
+  Artefactos: `data/output/ner_pilot/`. No se escribió en la DB.
+- [x] Añadir validación estricta de la respuesta NER, hasta dos correcciones
+  por bloque inválido y fallo explícito sin guardar una extracción parcial.
+- [ ] Cerrar la revisión de CHAR dentro de CHAR: el modelo sigue devolviendo
+  «UNAMAD» dentro de «estudiantes de la UNAMAD», prohibido en el borrador 0.2.
+  Se presentó a la usuaria la elección entre conservar la denominación completa
+  o permitir ambas cuando identifiquen actores distintos. No hay respuesta aún.
+- [ ] Revisar las correcciones semánticas del piloto (residuos/prácticas,
+  hornos productivos, sedes como ubicaciones, fragmentos amplios y omisiones).
+  Adjudicar una referencia y obtener una extracción aceptada antes del corpus.
+- [x] Revisar y registrar en Git los diez archivos con cambios del 16 Oct; los commits
+  pendientes de la sesión anterior ya quedaron creados.
+- [ ] Validar el endpoint con la API iniciada/reiniciada y el prompt vigente;
+  Docker estaba detenido. Fuzzy matching y red siguen como pasos posteriores.
 
 ### Avances de la revisión
 
@@ -41,8 +44,8 @@
 - [x] Retirar del codebook las referencias a «la usuaria», al proceso de
   elaboración y al informe externo. Conservar el antecedente bibliográfico
   en la sesión `../sessions/2026-10-15-codebook-autonomo.md`.
-- [ ] Continuar la revisión conjunta de criterios y propuestas pendientes del
-  codebook y prompt; cerrar las secciones de ambigüedad, salida y validación.
+- [x] Completar criterios generales y secciones de ambigüedad, salida y
+  procedimiento de validación; queda la revisión del piloto.
 - [x] Precisar el tratamiento de afirmaciones generales en KNOW y trasladarlo
   a la definición de categoría incorporada al prompt.
 - [x] Completar los criterios básicos de ATT, evidencia, exclusiones, amplitud,
@@ -108,15 +111,15 @@
 - [x] Establecer las diez categorías finales en el código de extracción,
   validación y canonicalización; adaptar prompt, ejemplos, red completa y
   visualizador. Comprobar localmente sin llamadas a Claude ni DB real.
-- [ ] Implementar la anidación acordada y resolver la unión de nombre completo
-  con sigla; estas adaptaciones no forman parte del cambio de categorías.
+- [x] Implementar la anidación acordada LOC dentro de CHAR.
+- [ ] Resolver en fuzzy matching la unión de nombre completo con sigla cuando
+  el texto establece su identidad, conservando las menciones. No hacerlo en NER.
 - [ ] Definir una nueva proyección analítica del esquema de diez categorías
   antes de sustituir la selección histórica `prac-infra-rul-v2`. Reclasificar
   INFRA histórico según su contexto, sin convertirlo automáticamente.
-- [ ] Completar posteriormente las reglas de delimitación pendientes
-  y los ejemplos de validación, sin convertirlos en el foco de las fichas.
-- [ ] Consolidar las reglas mínimas de anotación y contrastarlas con el
-  contrato existente, con una validación acotada antes de adaptar la API.
+- [x] Completar reglas de delimitación y ejemplos de validación básicos.
+- [x] Consolidar reglas mínimas de anotación y contrastarlas con el contrato
+  existente; regresiones locales verificadas.
 - [ ] Documentar por separado, en las especificaciones de fuzzy matching y red,
   los criterios de canonicalización, atributos adicionales de nodos y ventana
   y conteo de coocurrencia; contrastarlos con la implementación existente.

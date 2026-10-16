@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 VALID_LABELS = ACTIVE_CATEGORIES
 NER_TOOL_NAME = "submit_entity_annotations"
+MAX_CORRECTION_RETRIES = 2
 
 NER_TOOL = {
     "name": NER_TOOL_NAME,
@@ -299,7 +300,8 @@ def _segmentar_oraciones(
 def _buscar_offset_disponible(
     sentence_text: str,
     span_text: str,
-    used_ranges: list[tuple[int, int]],
+    used_ranges: list[tuple[int, int, str]],
+    label: str,
 ) -> tuple[int, int] | None:
     if not span_text:
         return None
@@ -311,7 +313,17 @@ def _buscar_offset_disponible(
         end = start + len(span_text)
         if all(
             end <= used_start or start >= used_end
-            for used_start, used_end in used_ranges
+            or (
+                label == "LOC" and used_label == "CHAR"
+                and used_start <= start and end <= used_end
+                and (start, end) != (used_start, used_end)
+            )
+            or (
+                label == "CHAR" and used_label == "LOC"
+                and start <= used_start and used_end <= end
+                and (start, end) != (used_start, used_end)
+            )
+            for used_start, used_end, used_label in used_ranges
         ):
             return start, end
         search_from = start + 1
@@ -320,39 +332,53 @@ def _buscar_offset_disponible(
 def _parsear_datos(
     data: Any,
     sentences: list[dict[str, Any]],
+    issues: list[str] | None = None,
 ) -> list[dict[str, Any]]:
+    def report(message: str, *args: Any) -> None:
+        if issues is None:
+            logger.warning(message, *args)
+        else:
+            issues.append(message % args if args else message)
+
     if not isinstance(data, dict):
-        logger.warning("Respuesta estructurada inesperada (no es objeto): %r", data)
+        report("Respuesta estructurada inesperada (no es objeto)")
         return []
 
     anotaciones = data.get("annotations", [])
     if not isinstance(anotaciones, list):
-        logger.warning("Respuesta inesperada: annotations no es un array")
+        report("Respuesta inesperada: annotations no es un array")
         return []
 
+    if issues is not None and set(data) != {"document_id", "annotations"}:
+        report("La salida debe contener exactamente document_id y annotations")
+
     sentence_by_id = {sentence["sentence_id"]: sentence for sentence in sentences}
-    used_ranges: dict[str, list[tuple[int, int]]] = {
+    used_ranges: dict[str, list[tuple[int, int, str]]] = {
         sentence_id: [] for sentence_id in sentence_by_id
     }
     entidades: list[dict[str, Any]] = []
 
     for anot in anotaciones:
         if not isinstance(anot, dict):
+            report("Cada anotación debe ser un objeto")
             continue
+        if issues is not None and set(anot) != {"label", "text", "sentence_id", "ambiguity"}:
+            report("Cada anotación debe contener exactamente label, text, sentence_id y ambiguity")
 
         label = anot.get("label")
-        if label not in VALID_LABELS:
-            logger.warning("Etiqueta inválida, se ignora anotación: %r", label)
+        if not isinstance(label, str) or label not in VALID_LABELS:
+            report("Etiqueta inválida, se ignora anotación: %r", label)
             continue
 
-        span_text = str(anot.get("text", "")).strip()
-        if not span_text:
+        span_text = anot.get("text")
+        if not isinstance(span_text, str) or not span_text.strip():
+            report("El fragmento text debe ser una cadena literal no vacía")
             continue
 
         sentence_id = str(anot.get("sentence_id", ""))
         sentence = sentence_by_id.get(sentence_id)
         if sentence is None:
-            logger.warning(
+            report(
                 "sentence_id inválido, se ignora anotación %r: %r",
                 sentence_id,
                 span_text[:100],
@@ -360,22 +386,38 @@ def _parsear_datos(
             continue
 
         offset_result = _buscar_offset_disponible(
-            sentence["text"], span_text, used_ranges[sentence_id]
+            sentence["text"], span_text, used_ranges[sentence_id], label
         )
         if offset_result is None:
-            logger.warning(
-                "Span no disponible literalmente en %s, se ignora: %r",
+            literal_start = sentence["text"].find(span_text)
+            if literal_start >= 0:
+                conflicts = [
+                    f"{used_label}: {sentence['text'][used_start:used_end]!r}"
+                    for used_start, used_end, used_label in used_ranges[sentence_id]
+                    if literal_start < used_end and used_start < literal_start + len(span_text)
+                ]
+                report(
+                    "Solapamiento o aparición duplicada en %s: %s %r entra en conflicto con %s. "
+                    "Solo se permite LOC dentro de CHAR. Si PRAC o KNOW incluye actores o "
+                    "lugares separables, acorta esa PRAC o KNOW excluyendo esos componentes; "
+                    "no elimines el actor o lugar independiente. No añadas CHAR dentro de CHAR",
+                    sentence_id, label, span_text, "; ".join(conflicts),
+                )
+                continue
+            report(
+                "Fragmento no disponible en %s: %r. Comprueba literalidad, repeticiones "
+                "y solapamientos; solo se permite LOC estrictamente dentro de CHAR",
                 sentence_id,
                 span_text[:100],
             )
             continue
 
         start_rel, end_rel = offset_result
-        used_ranges[sentence_id].append((start_rel, end_rel))
+        used_ranges[sentence_id].append((start_rel, end_rel, label))
 
         ambiguity = anot.get("ambiguity", "low")
-        if ambiguity not in {"low", "medium", "high"}:
-            logger.warning("Ambigüedad inválida, se normaliza a high: %r", ambiguity)
+        if not isinstance(ambiguity, str) or ambiguity not in {"low", "medium", "high"}:
+            report("Ambigüedad inválida, se normaliza a high: %r", ambiguity)
             ambiguity = "high"
 
         start = sentence["start"] + start_rel
@@ -456,35 +498,48 @@ def extraer_entidades(
             }
         ]
 
-        response = client.messages.create(
-            model=settings.ANTHROPIC_MODEL,
-            max_tokens=16384,
-            system=system_prompt,
-            messages=messages,
-            tools=[NER_TOOL],
-            tool_choice={"type": "tool", "name": NER_TOOL_NAME},
-        )
-
-        if getattr(response, "stop_reason", None) == "max_tokens":
-            raise RuntimeError(
-                f"Respuesta NER truncada por límite de tokens en offset {chunk_offset}"
+        for attempt in range(MAX_CORRECTION_RETRIES + 1):
+            response = client.messages.create(
+                model=settings.ANTHROPIC_MODEL,
+                max_tokens=16384,
+                system=system_prompt,
+                messages=messages,
+                tools=[NER_TOOL],
+                tool_choice={"type": "tool", "name": NER_TOOL_NAME},
             )
-
-        tool_input = next(
-            (
-                block.input
-                for block in response.content
+            if getattr(response, "stop_reason", None) == "max_tokens":
+                raise RuntimeError(
+                    f"Respuesta NER truncada por límite de tokens en offset {chunk_offset}"
+                )
+            tool_input = next((
+                block.input for block in response.content
                 if getattr(block, "type", None) == "tool_use"
                 and getattr(block, "name", None) == NER_TOOL_NAME
-            ),
-            None,
-        )
-        if tool_input is not None:
-            entities = _parsear_datos(tool_input, sentences)
-        else:
-            raise RuntimeError(
-                f"Claude no usó la herramienta NER requerida en offset {chunk_offset}"
-            )
+            ), None)
+            if tool_input is None:
+                raise RuntimeError(
+                    f"Claude no usó la herramienta NER requerida en offset {chunk_offset}"
+                )
+            issues: list[str] = []
+            entities = _parsear_datos(tool_input, sentences, issues)
+            if not isinstance(tool_input, dict) or tool_input.get("document_id") != document_id:
+                issues.append("Copia exactamente document_id de target_input")
+            if not issues:
+                break
+            if attempt == MAX_CORRECTION_RETRIES:
+                raise RuntimeError(
+                    f"Respuesta NER inválida tras {MAX_CORRECTION_RETRIES} correcciones en offset {chunk_offset}: "
+                    + "; ".join(issues)
+                )
+            logger.info("Corrigiendo %d errores NER en offset %d", len(issues), chunk_offset)
+            feedback = json.dumps({"previous_output": tool_input, "validation_issues": issues}, ensure_ascii=False)
+            messages = [messages[0], {"role": "user", "content": (
+                "Corrige la extracción anterior usando las mismas oraciones de target_input. "
+                "Devuelve el conjunto completo corregido mediante submit_entity_annotations. "
+                "Delimita fragmentos cortos literales, retira anotaciones internas redundantes "
+                "y conserva por separado actores y lugares que tengan evidencia propia. "
+                "No normalices ni construyas relaciones.\n" + feedback
+            )}]
         resultados_por_chunk.append(entities)
 
     if not resultados_por_chunk:

@@ -1,14 +1,13 @@
 # Codebook para la extracción y etiquetación de entidades semánticas
 
-**Estado:** En construcción, sección por sección.
+**Estado:** Borrador operativo para revisión; piloto aún no aprobado.
 
-**Versión:** Borrador 0.1 — 6 de octubre de 2026.
+**Versión:** Borrador 0.2 — 16 de octubre de 2026.
 
 Extrae menciones literales y clasifícalas en las 10 categorías de este
 codebook. Utiliza las instrucciones y el texto recibido; no consultes
 documentos externos ni añadas información mediante conocimiento externo.
-Los campos marcados como `[Pendiente]` y los criterios identificados como
-propuestas aún requieren definición o validación.
+La aplicación al corpus requiere la revisión del piloto descrita en la sección 10.
 
 ## 1. Propósito de la anotación
 
@@ -77,15 +76,16 @@ el sistema territorial comprendido en el marco temático y por los criterios
 de las 10 categorías de anotación.
 
 - Función del enfoque: orientación temática.
-- Documentos y secciones que se procesan: Desde la API se recibiran documentos .txt que son los que seran sometidos a este proceso de extraccion de entidades/categorias, no será otro tipo de documento y se procesara todo el docuemnto.
-- Idiomas admitidos: Se admitiran todos los documentos en cualquiera que sea su idioma.
+- Entrada de NER: texto limpio procedente de archivos `.txt`; se procesa todo
+  su contenido por bloques. La carga y conversión de otros formatos son etapas anteriores.
+- Idiomas admitidos: cualquier idioma; conserva los fragmentos en el idioma original.
 - Contenido incluido: menciones pertinentes de los componentes ecológicos,
   sociales, económicos, culturales e institucionales del sistema territorial,
   incluidas prácticas, actores, lugares, reglas, infraestructuras, conocimientos,
   actitudes y capacidades, según las 10 categorías. Mercados,
   migración y otros procesos pueden incluirse cuando cumplan esos criterios,
   aunque la oración no mencione expresamente la deforestación.
-- Contenido excluido: Se excluira docuemntos que no sean .txt.
+- Formatos excluidos de NER: archivos que aún no se hayan convertido y limpiado a texto.
 
 ### 2.4. Contexto territorial y temático del corpus
 
@@ -147,8 +147,8 @@ mención y su contexto.
 a una regla o instrumento (`RUL`); la «titulación de comunidades nativas»
 presentada como proceso corresponde a una práctica (`PRAC`).
 
-**Caso pendiente:** Cuando la función no pueda determinarse con el contexto
-permitido, aplica la política de ambigüedad de la sección 7, aún pendiente de definición.
+Cuando la función no pueda determinarse con el contexto permitido, aplica
+la política de ambigüedad de la sección 7.
 
 ## 3. Unidades de anotación y contexto
 
@@ -276,17 +276,17 @@ territorio, sus ecosistemas y su gestión.
 Estos tipos son referencias descriptivas dentro de KNOW; no constituyen
 nuevos códigos de categoría.
 
-**Criterio de inclusión:** El texto debe identificar un saber o contenido de conocimiento. Puede hacerlo mediante una denominación explícita, como «saberes tradicionales sobre el manejo del bosque», o mediante una expresión que atribuya conocimiento, como «los productores conocen los ciclos de floración de la castaña». el KNOW seria «ciclos de floración de la castaña» y CHAR «los productores».
+**Criterio de inclusión:** El texto debe identificar un saber o contenido de conocimiento. Puede hacerlo mediante una denominación explícita, como «saberes tradicionales sobre el manejo del bosque», o mediante una expresión que atribuya conocimiento, como «los productores conocen los ciclos de floración de la castaña». Extrae «ciclos de floración de la castaña» como KNOW y «productores» como CHAR.
 
 **Portador del conocimiento:** Se admiten menciones explícitas de saberes aunque el texto no identifique quién los posee. Esto no autoriza a atribuirles un portador que el texto no señale.
 
 **Tratamiento de afirmaciones generales:** Asigna KNOW únicamente cuando el texto identifique el contenido como un saber o atribuya conocimiento. Una afirmación informativa o una descripción del territorio no basta por sí sola para asignar KNOW. No se requiere identificar al portador del saber.
 
-**Evidencia y exclusiones propuestas:** La presencia de una práctica, una habilidad o un término técnico por sí sola no demuestra que el texto esté describiendo conocimiento. La realización de una actividad no permite añadir automáticamente una anotación de KNOW. Una afirmación sobre el territorio debe evaluarse en contexto para determinar si presenta un contenido de conocimiento conforme a esta definición.
+**Evidencia y exclusiones:** La presencia de una práctica, una habilidad o un término técnico por sí sola no demuestra que el texto esté describiendo conocimiento. La realización de una actividad no permite añadir automáticamente una anotación de KNOW. Una afirmación sobre el territorio debe evaluarse en contexto para determinar si presenta un contenido de conocimiento conforme a esta definición.
 
 **Distinción:** KNOW identifica el saber o contenido conocido; SKILL identifica la competencia para realizar una tarea; PRAC identifica la actividad.
 
-**Frontera propuesta con ATT:** Las valoraciones, identidades y compromisos se evalúan según ATT. Cada categoría requiere su propia evidencia.
+**Frontera con ATT:** Las valoraciones, identidades y compromisos se evalúan según ATT. Cada categoría requiere su propia evidencia.
 
 **Ejemplos de distinción entre KNOW, SKILL y PRAC:**
 
@@ -470,36 +470,58 @@ Este criterio clasifica la mención del plan como instrumento. Las prescripcione
 
 ## 6. Reglas generales de anotación
 
-- Conservación del texto literal: una vez seleccionado el
-  fragmento según las reglas de delimitación, se conserva tal como aparece
-  en el texto, incluido el plural. La normalización se realiza en una
-  etapa posterior, sin reemplazar la mención original extraída.
-- Artículo inicial que introduce una denominación CHAR: se omite
-  (sección 6.3). Los artículos integrantes de un nombre propio se conservan
-  y el nombre no se divide, como en «La Esperanza». Inclusión de descriptores
-  antepuestos al nombre, otros modificadores, puntuación y delimitación
-  en las demás categorías: [Pendiente].
-- Nombre completo y sigla de un actor: se extraen como dos registros CHAR
-  independientes cuando ambos aparecen explícitamente (sección 6.3).
-  Otras abreviaturas y categorías: [Pendiente].
-- Enumeraciones explícitas de actores: cada denominación se extrae como
-  una mención CHAR independiente (sección 6.3). Palabras omitidas,
-  modificadores compartidos y otras categorías: [Pendiente].
-- Pronombres referidos a actores: no se anotan como CHAR, aunque el
-  referente sea claro; se extraen las expresiones que nombran al actor
-  (sección 6.3). Otras referencias y categorías: [Pendiente].
-- Fragmentos anidados LOC dentro de CHAR: aplica las reglas de la sección 6.1.
-- Otros fragmentos anidados, solapamientos parciales y fragmentos
-  discontinuos: [Pendiente].
-- Negación de participación de un actor: no impide anotar CHAR; se
-  conserva en el contexto y no se afirma participación (sección 5.1).
-  Negación en otras categorías, hipótesis, intención, obligación y
-  temporalidad: [Pendiente].
-- Reglas para resolver fronteras entre categorías: [Pendiente].
-- Relación con etapas posteriores de normalización y análisis: [Pendiente].
-- Conservación de la categoría y resolución de discrepancias al consolidar nodos: [Pendiente].
-- Menciones repetidas: se registra cada aparición con su ubicación y
-  contexto, conforme a la sección 6.2.
+- **Literalidad y extensión:** extrae una palabra o el fragmento continuo
+  mínimo completo que identifica el componente, dentro de una sola oración.
+  Conserva idioma, mayúsculas, tildes, plural y forma verbal. No traduzcas,
+  lematices, completes palabras omitidas ni reformules la oración.
+- **Delimitación:** incluye nombres propios, números, descriptores y
+  modificadores necesarios para identificar el componente y su función.
+  Deja las explicaciones, circunstancias y atribuciones en el contexto;
+  aplica las reglas específicas de las fichas, como actitud con su objeto
+  y habilidad con su tarea. No extraigas una oración explicativa completa
+  si una expresión más corta identifica lo mencionado.
+  En PRAC conserva la actividad con su objeto necesario y deja actores,
+  ubicaciones y soportes separables en contexto; un producto o residuo no
+  constituye por sí solo una práctica. En KNOW extrae el contenido del saber
+  sin incorporar una explicación completa.
+- **Artículos y puntuación:** omite artículos externos que introducen la
+  denominación, preposiciones introductorias y signos externos. Conserva
+  artículos, preposiciones y puntuación integrantes del nombre o expresión.
+  En CHAR, conserva el descriptor que identifica al actor junto a su nombre,
+  como «cooperativa La Esperanza» (sección 6.3).
+- **Siglas y abreviaturas:** extrae la forma explícita cuando su contexto
+  respalde una categoría. Si aparecen nombre completo y sigla, registra
+  ambos por separado. No inventes expansiones ni resuelvas identidades.
+- **Enumeraciones:** registra cada denominación explícita por separado en
+  cualquier categoría. Ante palabras omitidas o modificadores compartidos,
+  conserva solo fragmentos continuos identificables en contexto. No copies
+  un modificador a otra posición ni reconstruyas denominaciones completas.
+- **Referencias:** no anotes pronombres ni referencias vacías como «esto»
+  o «allí», ni los sustituyas por su antecedente. Las denominaciones genéricas
+  sí se admiten si cumplen los criterios de su categoría.
+- **Una categoría por aparición:** elige la función mejor respaldada por
+  el contexto, usando las fronteras de las fichas y la sección 7. La misma
+  palabra puede recibir categorías distintas en apariciones diferentes.
+- **Anidación y solapamientos:** permite únicamente LOC contenido
+  estrictamente dentro de CHAR con evidencia para ambos (sección 6.1).
+  No generes otros fragmentos anidados, solapamientos parciales ni fragmentos
+  discontinuos. Conserva la expresión mínima completa del componente
+  principal; sus palabras internas no constituyen anotaciones adicionales.
+  Por ejemplo, en ATT «compromiso con la conservación del bosque» no añadas
+  una PRAC interna «conservación del bosque».
+- **Negación y temporalidad:** una mención explícita puede conservarse
+  aunque aparezca negada, ausente, propuesta, hipotética, futura u obligatoria,
+  si cumple los criterios de categoría. La anotación no afirma existencia,
+  posesión o ejecución. Conserva esa condición en contexto; incluye la
+  negación en el fragmento cuando forma parte de una prescripción RUL.
+  No añadas campos de polaridad o tiempo ni deduzcas KNOW, ATT o SKILL de
+  una actividad o intención.
+- **Repeticiones:** registra cada aparición con su ubicación y contexto,
+  también dentro de una misma oración (sección 6.2).
+- **Etapas posteriores:** conserva texto y categoría de cada mención.
+  La agrupación de variantes, resolución de identidades, discrepancias entre
+  nodos y relaciones corresponden a fuzzy matching y construcción de red;
+  quedan fuera de las instrucciones de NER.
 
 ### 6.1. Anotación de LOC dentro de CHAR
 
@@ -522,10 +544,9 @@ de lugar dentro de la expresión no activa automáticamente dos anotaciones.
 
 La anidación permite los dos fragmentos del ejemplo
 «La comunidad de San Pedro decidió participar», uno contenido en el otro.
-La política de asignar varias etiquetas a un mismo fragmento y el
-tratamiento de otras combinaciones anidadas siguen pendientes. Las
-consecuencias para la canonicalización y el conteo de coocurrencia se
-definirán en las etapas correspondientes.
+No permite asignar dos etiquetas al mismo intervalo ni generalizar la
+anidación a otras combinaciones. Las consecuencias para la canonicalización
+y el conteo de coocurrencia corresponden a sus etapas posteriores.
 
 ### 6.2. Registro de menciones repetidas
 
@@ -538,9 +559,12 @@ se conservan tres menciones, cada una vinculada a su ubicación y contexto.
 Posteriormente podrán vincularse al mismo nodo canónico sin perder las
 tres evidencias.
 
-El formato de los campos de localización y contexto se definirá en la
-sección 8. Este registro no fija todavía la ventana ni las reglas de
-conteo o ponderación de coocurrencia para construir la red.
+El código calcula posiciones y contexto conforme a la sección 8. El modelo
+registra las apariciones en orden textual para que la búsqueda local asigne
+posiciones sucesivas. El contrato de cuatro campos no distingue qué aparición
+se quiso seleccionar si un texto idéntico se repite en la misma oración y
+solo se anota alguna de ellas; esos casos requieren revisión del piloto.
+Las reglas de conteo o ponderación de coocurrencia se definen en la etapa de red.
 
 ### 6.3. Extracción de menciones CHAR
 
@@ -560,9 +584,8 @@ por una nueva mención de «agricultores» en la segunda oración.
 que introduce la denominación del actor. En «Las productoras de cacao
 participaron en el taller», se anota «productoras de cacao» como CHAR,
 dejando fuera «Las» y conservando «de cacao».
-Los ejemplos anteriores de CHAR se ajustan a este criterio. Los artículos
-que forman parte de un nombre propio se conservan, conforme al criterio
-siguiente; las demás reglas de delimitación siguen pendientes.
+Los artículos integrantes de un nombre propio se conservan conforme al
+criterio siguiente; la delimitación general se aplica según el inicio de la sección 6.
 
 **Nombre propio íntegro — criterio:** Se conserva completo el
 nombre propio del actor, incluidos sus artículos integrantes. «La Esperanza»
@@ -572,8 +595,8 @@ una denominación no autoriza a recortar un artículo integrante del nombre.
 
 **Fragmento:** En «La cooperativa La Esperanza participó en el
 taller», se extrae «cooperativa La Esperanza» como CHAR. Se incluye
-«cooperativa» y se conserva íntegro el nombre «La Esperanza». Este ejemplo
-no resuelve por sí solo todos los casos de descriptores antepuestos.
+«cooperativa» y se conserva íntegro el nombre «La Esperanza». Incluye los
+descriptores que identifican al actor; deja las explicaciones adicionales en contexto.
 
 **Conservación del fragmento:** Una vez delimitada la mención,
 se conserva el texto tal como aparece. En el ejemplo de las productoras
@@ -597,8 +620,8 @@ vinculan posteriormente al mismo nodo canónico porque el texto presenta
 ambos registros originales, con su ubicación y contexto.
 
 La coincidencia de siglas por sí sola no establece una identidad entre
-actores. Los criterios para resolver siglas ambiguas o sin correspondencia
-explícita siguen pendientes.
+actores. NER clasifica la forma observada con su contexto y ambigüedad;
+la resolución de identidad corresponde a fuzzy matching.
 
 **Enumeraciones de actores — extracción:** Cuando el texto
 enumera actores mediante denominaciones explícitas, se extrae cada una
@@ -611,44 +634,158 @@ castaña participaron en el taller», se extraen por separado:
 - «productoras de cacao» → CHAR.
 - «recolectores de castaña» → CHAR.
 
-El tratamiento de enumeraciones con palabras omitidas o modificadores
-compartidos sigue pendiente; conserva los fragmentos literales del texto.
+En enumeraciones con palabras omitidas o modificadores compartidos, conserva
+solo fragmentos continuos identificables en contexto, conforme a la regla general.
 
 ## 7. Ambigüedad y casos no resolubles
 
-- Qué se considera ambiguo: [Pendiente].
-- Cuándo asignar una etiqueta, omitir o solicitar revisión: [Pendiente].
-- Cómo registrar alternativas y motivos de revisión: [Pendiente].
-- Niveles de ambigüedad o confianza, si corresponde: [Pendiente].
+Hay ambigüedad cuando el contexto permite más de una interpretación de la
+categoría, referente o límites. Elige la categoría mejor respaldada por la
+función contextual; omite la expresión si ninguna tiene evidencia suficiente.
+No uses una categoría genérica de reserva ni etiquetes por conocimiento externo.
+
+| `ambiguity` | Criterio |
+|---|---|
+| `low` | Denominación, función y límites claros en el contexto recibido. |
+| `medium` | Existe otra lectura plausible, pero el contexto favorece la elegida. |
+| `high` | Persiste una duda relevante aunque haya evidencia para la categoría elegida. |
+
+Son niveles de necesidad de revisión, no probabilidades calibradas. `high`
+no compensa la ausencia de evidencia. NER devuelve solo la categoría elegida
+y el nivel; las alternativas y motivos se registran aparte durante la revisión
+del piloto, sin añadir campos al contrato. Revisa todas las menciones `high`
+y las fronteras `medium` antes de aceptar la extracción del documento.
 
 ## 8. Formato de entrada y salida
 
-- Estructura de los textos e identificadores de entrada: [Pendiente].
-- Campos obligatorios y opcionales de cada anotación: [Pendiente].
-- Localización de las menciones en el texto: [Pendiente].
-- Respuesta cuando no hay menciones válidas: [Pendiente].
-- Contrato estructurado de salida y ejemplo: [Pendiente].
+El servicio segmenta el texto limpio y envía bloques de hasta tres párrafos,
+con un umbral objetivo de 12.000 caracteres. Un párrafo individual mayor
+que ese umbral se conserva completo en la implementación actual.
+
+La entrada contiene `document_id`, `document_title`, `section_title` y
+`sentences`, una lista de objetos con `sentence_id` y `text`. Los títulos
+pueden estar vacíos; orientan la interpretación sin crear menciones ausentes
+de las oraciones. Los identificadores de oración se calculan localmente a
+partir de su posición absoluta y deben copiarse sin modificaciones.
+
+Ejemplo de entrada:
+
+```json
+{
+  "document_id": "ejemplo",
+  "document_title": "",
+  "section_title": "",
+  "sentences": [{"sentence_id": "s-000000000", "text": "La cooperativa La Esperanza participa."}]
+}
+```
+
+Responde mediante `submit_entity_annotations`, con `document_id` y
+`annotations`. Cada anotación contiene exactamente cuatro campos obligatorios:
+
+| Campo | Contenido |
+|---|---|
+| `label` | Uno de los diez códigos exactos de la sección 4. |
+| `text` | Fragmento continuo literal de una oración de entrada. |
+| `sentence_id` | Identificador de esa oración. |
+| `ambiguity` | `low`, `medium` o `high`, según la sección 7. |
+
+```json
+{
+  "document_id": "ejemplo",
+  "annotations": [{"label": "CHAR", "text": "cooperativa La Esperanza", "sentence_id": "s-000000000", "ambiguity": "low"}]
+}
+```
+
+Si no hay menciones válidas, devuelve `annotations: []`. No añadas
+explicaciones, alternativas, posiciones, atributos canónicos ni relaciones.
+
+El código renombra `label` a `category`, localiza cada aparición literal y
+añade `start`, `end` (exclusivo) y `context` (oración de origen), manteniendo
+`sentence_id`, `text` y `ambiguity`. Las posiciones son índices de caracteres
+de Python sobre el texto limpio: `texto[start:end] == text`. El JSON de NER
+guarda `document_id` y `entities`; todavía no crea nodos canónicos.
+
+El servicio verifica los campos, el identificador de documento, etiquetas,
+oraciones, literalidad, ambigüedad y solapamientos. Si una respuesta pierde
+anotaciones por estos errores, solicita hasta dos correcciones del bloque al
+modelo, indicando los fragmentos en conflicto. Si persisten, falla sin guardar
+un resultado parcial; también falla ante truncamiento o falta de la herramienta
+requerida. El parser usado aisladamente conserva su modo tolerante para
+compatibilidad, pero NER exige una respuesta válida antes de aceptar el bloque.
+Una salida estructuralmente válida todavía requiere revisión semántica.
 
 ## 9. Ejemplos completos de aplicación
 
-- Casos claros de cada categoría: [Pendiente].
-- Casos de exclusión y textos sin menciones válidas: [Pendiente].
-- Casos de frontera entre categorías: [Pendiente].
-- Casos de delimitación, repetición y ambigüedad: [Pendiente].
-- Entradas con todas sus anotaciones esperadas: [Pendiente].
+Las diez demostraciones de `data/ner/few_shot_examples.json` ilustran las diez
+categorías; su procedencia es ilustrativa y no son un conjunto de referencia
+anotado sobre el corpus. Las fichas de la sección 5 explican las fronteras.
+
+Los siguientes casos acotados muestran todas las anotaciones esperadas;
+en cada caso se copia el `sentence_id` de entrada:
+
+| Texto | Anotaciones (`label`: `text`, `ambiguity`) |
+|---|---|
+| La comunidad de San Pedro decidió participar. | CHAR: «comunidad de San Pedro», `low`; LOC: «San Pedro», `low`. |
+| El taller se realizó en la comunidad de San Pedro. | LOC: «San Pedro», `low`. |
+| La municipalidad no participó. | CHAR: «municipalidad», `low`; la negación permanece en contexto. |
+| La Asociación de Productores de Cacao (APC) participó. | CHAR: «Asociación de Productores de Cacao», `low`; CHAR: «APC», `low`. |
+| minería y minería. | Dos anotaciones PRAC: «minería», `low`, en posiciones distintas. |
+| Gracias por su atención. | `annotations: []`. |
+
+En una oración factual como «La floración ocurre en agosto», no se añade
+KNOW sin identificación de un saber o atribución de conocimiento. Una sigla
+sin función reconocible tampoco recibe automáticamente CHAR. Las dudas
+reales del piloto se revisan con la sección 7; no se inventa un caso de alta
+ambigüedad para sustituir esa revisión.
 
 ## 10. Validación y mantenimiento
 
-- Piloto de anotación y revisión de desacuerdos: [Pendiente].
-- Construcción y adjudicación del conjunto de referencia: [Pendiente].
-- Separación de ejemplos, datos de desarrollo y evaluación final: [Pendiente].
-- Métricas y criterios de aceptación: [Pendiente].
-- Controles automáticos y revisión humana: [Pendiente].
-- Evaluación de estabilidad de las anotaciones: [Pendiente].
-- Versionado del codebook, prompt, ejemplos y configuración del modelo: [Pendiente].
-- Procedimiento para modificar reglas y revisar anotaciones afectadas: [Pendiente].
+1. Selecciona un documento real de extensión manejable y conserva el texto
+   limpio completo, su identificador y huella SHA-256. Ejecuta solo NER con
+   las versiones vigentes; conserva resultados y advertencias para revisión.
+2. Comprueba etiquetas, literalidad, posiciones, oraciones, repeticiones y
+   anidación. Contrasta las anotaciones finales recibidas con las conservadas:
+   deben coincidir. Conserva también las respuestas anteriores corregidas y
+   el número de reintentos. Revisa los bloques vacíos.
+3. Lee todas las oraciones del piloto, incluidas las que no tienen menciones,
+   para detectar omisiones, asignaciones incorrectas y fragmentos demasiado
+   amplios. Revisa especialmente KNOW/ATT/SKILL/PRAC, infraestructuras/LOC,
+   reglas propuestas, siglas y las menciones `medium` o `high`.
+4. Registra correcciones y su fundamento; la revisión humana adjudica el
+   conjunto de referencia. Separa estos datos de desarrollo de una evaluación
+   posterior con documentos distintos y mantén las demostraciones identificadas
+   como ilustrativas. Un solo documento no valida categorías ausentes ni
+   demuestra calidad para todos los idiomas.
+5. Antes de iniciar el corpus, exige cero errores estructurales pendientes y
+   revisión de todos los desacuerdos detectados en el piloto. No declares una
+   precisión o cobertura medidas sin referencia adjudicada. Cuando exista,
+   calcula precisión, cobertura y F1 por coincidencia exacta de posición y
+   categoría, junto con errores por categoría; los umbrales de evaluación
+   ampliada se fijan antes de medir sobre documentos reservados.
+6. Si se cambia una regla a partir del piloto, actualiza codebook, definiciones,
+   prompt y ejemplos afectados, ejecuta las regresiones y repite únicamente
+   la validación afectada. Contrasta las anotaciones entre versiones antes
+   de procesar lotes. La repetibilidad del LLM se evalúa sobre texto fijo;
+   las pruebas con proveedor simulado verifican el código, no su estabilidad.
+
+Registra versión del codebook, commit, modelo configurado y huellas del texto,
+definiciones, prompts y demostraciones en el artefacto del piloto. Al cargar
+cambios en la API, inicia o reinicia su proceso: los prompts se mantienen
+en caché en memoria y editar únicamente sus archivos no garantiza recarga.
+Fuzzy matching y relaciones se validan después mediante sus endpoints propios.
 
 ## Anexo A. Instrucciones para el modelo de lenguaje
 
-[Pendiente: completar la correspondencia entre las reglas de extracción
-y clasificación y el prompt operativo].
+Las instrucciones operativas se mantienen en los archivos usados por el servicio:
+
+| Fuente | Reglas que incorpora |
+|---|---|
+| `src/categories.py` | Diez códigos y síntesis de las fichas de la sección 5. |
+| `data/prompts/ner_prompt.md` | Dominio, evidencia, contexto, delimitación, anidación, repeticiones, ambigüedad y salida de las secciones 1–8. |
+| `data/prompts/ner_user_prompt.md` | Demostraciones y oraciones objetivo; extracción limitada a `target_input`. |
+| `data/ner/few_shot_examples.json` | Diez demostraciones ilustrativas de categorías. |
+| `src/services/ner.py` | Esquema de cuatro campos, segmentación, localización literal y controles del contrato. |
+
+El servicio incorpora las definiciones en `$category_definitions` y ensambla
+el prompt de usuario con ejemplos y entrada. No envía este codebook completo
+ni instrucciones de canonicalización o construcción de relaciones al modelo.
