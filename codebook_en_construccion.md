@@ -4,67 +4,52 @@
 
 **Versión:** Borrador 0.1 — 6 de octubre de 2026.
 
-Los campos marcados como `[Pendiente]` requieren definición. El marco temático
-y el enfoque han sido confirmados. Los diez códigos de categoría han sido
-definidos por la usuaria y sus definiciones operativas han sido acordadas.
-El conjunto de diez categorías es una decisión final; su número y códigos
-no están pendientes de elección.
-Las fichas detalladas y las reglas generales de anotación siguen en construcción.
+Extrae menciones literales y clasifícalas en las 10 categorías de este
+codebook. Utiliza las instrucciones y el texto recibido; no consultes
+documentos externos ni añadas información mediante conocimiento externo.
+Los campos marcados como `[Pendiente]` y los criterios identificados como
+propuestas aún requieren definición o validación.
 
 ## 1. Propósito de la anotación
 
 ### 1.1. Objetivo inmediato
 
-Establecer una especificación operativa para la minería de texto, extracción
-y clasificación semántica que formará parte del procesamiento de la API.
-Esta especificación debe permitir identificar fragmentos de texto, palabras
-o términos presentes en los documentos de un corpus y asignarles las etiquetas
-correspondientes a un sistema de diez categorías.
+Identifica palabras o fragmentos cortos presentes en el texto y asígnales
+las etiquetas correspondientes al sistema de 10 categorías.
 
 ### 1.2. Resultado esperado
 
-Obtener menciones clasificadas, vinculadas con los fragmentos y documentos
-de los que proceden, que permitan construir nodos con atributos. La categoría
-asignada es uno de esos atributos: por ejemplo, una mención de «Wyss» que
-identifique al actor recibe la etiqueta `CHAR`.
-
-Los demás atributos y su formato se definirán en las secciones correspondientes.
+Obtén menciones clasificadas, vinculadas con sus documentos y oraciones de
+origen. Por ejemplo, una mención de «Wyss» que identifique al actor recibe
+la etiqueta `CHAR`.
 
 ### 1.3. Uso posterior y objetivo final
 
-Las menciones extraídas y clasificadas se someterán a un proceso de resolución
-de entidades mediante fuzzy matching, con criterios por definir, para agrupar
-las variantes que correspondan a una misma entidad o concepto y representarlas
-mediante un nodo canónico. Ese nodo deberá registrar su categoría y los demás
-atributos acordados, conservando la vinculación con sus menciones de origen.
+El procesamiento se organiza en tres tareas consecutivas, ejecutadas mediante
+endpoints independientes:
 
-El objetivo final es construir una red semántica cuyos nodos representen las
-entidades o conceptos identificados y cuyas relaciones se deriven de la
-coocurrencia o coaparición de sus menciones dentro del corpus.
+1. **NER:** extraer menciones literales y clasificarlas en las 10 categorías.
+2. **Fuzzy matching:** normalizar y agrupar variantes mediante resolución de
+   entidades, conservando las menciones originales y sus evidencias.
+3. **Construcción de relaciones:** conectar las entidades consolidadas a partir
+   de la coaparición de sus menciones para construir una red semántica.
 
-La secuencia prevista es:
-
-1. Extraer menciones y asignarles categorías.
-2. Resolver variantes mediante fuzzy matching y consolidar nodos con atributos.
-3. Construir relaciones a partir de la coaparición de las menciones de esos nodos.
-
-La unidad o ventana que define la coaparición, sus reglas de conteo y el
-tratamiento de posibles discrepancias de categoría durante la consolidación
-quedan pendientes de definición. Estos acuerdos no se presuponen a partir de
-la mera pertenencia de dos entidades al mismo corpus.
+Cada tarea requiere que se haya completado la anterior. Este codebook define
+la extracción y clasificación de NER. Conserva las menciones originales;
+la normalización, resolución de entidades y construcción de relaciones
+se ejecutan en las tareas posteriores.
 
 ### 1.4. Función operativa dentro de la API
 
-El codebook será la referencia para las instrucciones del modelo de lenguaje,
-los criterios de clasificación y el contrato de las anotaciones generadas
-durante el procesamiento. Sus definiciones y lineamientos deberán traducirse
-en instrucciones aplicables, salidas estructuradas y controles de validación.
+El codebook es la referencia metodológica para el prompt, los criterios de
+clasificación y el contrato de las anotaciones de NER. Sus reglas deben
+trasladarse al prompt y a los controles del código; la API no incorpora
+automáticamente este documento completo.
 
-También establecerá los requisitos que la extracción debe satisfacer para
-alimentar la resolución mediante fuzzy matching, el registro de atributos de
-los nodos y la construcción de relaciones por coaparición. La distribución de
-responsabilidades entre el modelo de lenguaje y los servicios de la API se
-precisará al definir cada etapa.
+El modelo devuelve las menciones clasificadas mediante los campos `label`,
+`text`, `sentence_id` y `ambiguity`. El código calcula su ubicación y conserva
+la oración de origen como contexto. NER entrega esas evidencias para las
+tareas posteriores; su responsabilidad se limita a extraer y clasificar.
 
 ## 2. Dominio y alcance
 
@@ -89,57 +74,39 @@ temática. La inclusión de una mención no requiere que su oración nombre
 expresamente la deforestación o una transición socioecológica. Su pertinencia
 se determina por la vinculación que el texto y su contexto establecen con
 el sistema territorial comprendido en el marco temático y por los criterios
-de las categorías de anotación acordadas.
+de las 10 categorías de anotación.
 
 - Función del enfoque: orientación temática.
-- Documentos y secciones que se procesan: [Pendiente].
-- Idiomas admitidos: [Pendiente].
+- Documentos y secciones que se procesan: Desde la API se recibiran documentos .txt que son los que seran sometidos a este proceso de extraccion de entidades/categorias, no será otro tipo de documento y se procesara todo el docuemnto.
+- Idiomas admitidos: Se admitiran todos los documentos en cualquiera que sea su idioma.
 - Contenido incluido: menciones pertinentes de los componentes ecológicos,
   sociales, económicos, culturales e institucionales del sistema territorial,
   incluidas prácticas, actores, lugares, reglas, infraestructuras, conocimientos,
-  actitudes y capacidades, según las categorías que se acuerden. Mercados,
+  actitudes y capacidades, según las 10 categorías. Mercados,
   migración y otros procesos pueden incluirse cuando cumplan esos criterios,
   aunque la oración no mencione expresamente la deforestación.
-- Contenido excluido: [Pendiente].
+- Contenido excluido: Se excluira docuemntos que no sean .txt.
 
-### 2.4. Referencia para el marco conceptual y los lineamientos
+### 2.4. Contexto territorial y temático del corpus
 
-El informe «Análisis de Sensibilidad Participativo en Tambopata», proporcionado
-para fortalecer y enriquecer el marco conceptual y los lineamientos del
-codebook, presenta una lectura participativa del sistema socioecológico de
-Tambopata. Describe dieciséis factores y sus
-interacciones, organizados en siete dominios temáticos: economía, uso del suelo,
-naturaleza, infraestructura, población, bienestar e interés público.
+El codebook orienta la extracción de menciones en textos sobre los sistemas
+socioecológicos de la Amazonía peruana. Interesa comprender cómo se relacionan
+los ecosistemas, las poblaciones, las actividades productivas y extractivas
+y las formas de organización y gestión del territorio, en torno a la
+conservación de la naturaleza, las condiciones de vida y las transformaciones
+territoriales.
 
-Su función en esta elaboración es fundamentar la comprensión del dominio,
-revisar la cobertura conceptual de las categorías y orientar las distinciones
-que deberán convertirse en reglas operativas. Los acuerdos sobre el corpus
-que procesará la API se definirán por separado.
-
-Su contenido aporta referencias sobre prácticas productivas y extractivas,
-conservación y restauración, infraestructura, mercados, migración, economía
-criminal, cambio climático, participación, saberes e identidad, gobernanza,
-tenencia y capacidades colectivas. También identifica actores y lugares
-concretos y registra actividades presentes, actividades ausentes o propuestas
-y diferentes perspectivas de los participantes.
-
-Tambopata constituye aquí un caso de referencia dentro del marco amazónico
-confirmado. Los dieciséis factores y los siete dominios del informe son
-niveles de organización de su análisis territorial; la lista y las definiciones
-de las diez categorías de anotación del codebook se acordarán por separado.
-
-El informe distingue entre calificaciones de los participantes, discusiones
-grupales y elaboraciones posteriores del equipo. Sus relaciones de influencia
-representan juicios participativos. La red prevista en este codebook se
-construirá a partir de coapariciones; la dirección, intensidad o valoración
-de las influencias descritas en el informe no se trasladan automáticamente
-a esas relaciones.
+Este contexto comprende el uso y la transformación de los bosques y otros
+ecosistemas; las prácticas productivas y extractivas; la conservación y la
+restauración; el acceso a infraestructura y mercados; y las condiciones de
+vida de las poblaciones. También abarca la tenencia y los derechos
+territoriales, la participación y coordinación entre actores, los saberes
+locales y técnicos, las identidades y valores y las capacidades para gestionar
+el territorio.
 
 ### 2.5. Lineamientos conceptuales para orientar la extracción
 
 #### 2.5.1. Cobertura del sistema socioecológico
-
-**Estado:** Acordado.
 
 **Fundamento conceptual:** El territorio se comprende como un sistema
 socioecológico en el que los componentes ecológicos, sociales, económicos,
@@ -149,15 +116,10 @@ degradación y conflicto, junto con las condiciones que las habilitan o limitan.
 
 **Lineamiento operativo:** La extracción debe identificar las
 menciones pertinentes de esos componentes cuando estén sustentadas por el
-texto y cumplan los criterios de una categoría acordada. La inclusión se
+texto y cumplan los criterios de alguna de las 10 categorías. La inclusión se
 determina por su pertinencia para el dominio y su función contextual. Tanto
 las menciones presentadas como favorables como las presentadas como
 desfavorables o ambivalentes pueden ser objeto de anotación.
-
-**Implicación para las categorías:** El conjunto de las diez categorías deberá
-revisarse para comprobar qué componentes del dominio puede representar y
-cuáles quedan fuera. Esta revisión de cobertura no presupone una equivalencia
-entre las categorías de anotación y los factores o dominios del informe.
 
 **Ejemplo conceptual:** En un pasaje sobre carreteras, minería, comunidades
 y conservación, cada expresión se evalúa según su contexto y los criterios
@@ -166,57 +128,53 @@ con resultados deseables.
 
 #### 2.5.2. Clasificación según la función contextual de la mención
 
-**Estado:** Acordado.
-
 **Fundamento conceptual:** Un ámbito del sistema territorial puede reunir
 actores, reglas, prácticas, soportes, conocimientos y otros componentes.
-El informe muestra, por ejemplo, que los marcos de gobernanza y la seguridad
-jurídica incluyen organizaciones, instrumentos institucionales y procesos de
-gestión. El tema de un pasaje puede contener menciones de categorías distintas.
+Un pasaje sobre gobernanza puede mencionar organizaciones, instrumentos
+institucionales y procesos de gestión. Cada mención puede corresponder a
+una categoría distinta.
 
 **Lineamiento operativo:** Cada mención se clasificará según el
 componente que identifica y la función que el texto le atribuye en su contexto,
-aplicando las definiciones y criterios de las categorías acordadas. El nombre
-de un factor, el título de una sección y las palabras indicadoras podrán
+aplicando las definiciones y criterios de las 10 categorías. El tema
+del pasaje, el título de una sección y las palabras indicadoras podrán
 orientar la interpretación; la asignación deberá estar sustentada por la
 mención y su contexto.
 
-**Ejemplos orientativos:** Con las categorías actualmente propuestas,
+**Ejemplos orientativos:**
 «SERNANP» presentado como organización participante corresponde a un actor
 (`CHAR`); un «plan maestro» presentado como instrumento de gestión corresponde
 a una regla o instrumento (`RUL`); la «titulación de comunidades nativas»
-presentada como proceso corresponde a una práctica (`PRAC`). Las definiciones
-operativas y los límites exactos de estos fragmentos se desarrollarán después.
+presentada como proceso corresponde a una práctica (`PRAC`).
 
 **Caso pendiente:** Cuando la función no pueda determinarse con el contexto
-permitido, se aplicará la política de ambigüedad que se acuerde en la sección 7.
+permitido, aplica la política de ambigüedad de la sección 7, aún pendiente de definición.
 
 ## 3. Unidades de anotación y contexto
 
-- Qué se entiende por entidad o mención en esta tarea: [Pendiente].
-- Unidad que recibe una etiqueta: [Pendiente].
-- Contexto permitido para interpretar una mención: [Pendiente].
-- Evidencia textual requerida e inferencias permitidas: [Pendiente].
+- Qué se entiende por entidad o mención en esta tarea: palabra o fragmento corto del texto que identifica un componente del territorio clasificable en alguna de las 10 categorías.
+- Unidad que recibe una etiqueta: fragmento continuo, literal y suficientemente completo para identificar lo mencionado, contenido en una oración.
+- Contexto permitido para interpretar una mención: la oración que contiene la mención y las demás oraciones del bloque recibido por el modelo. Se guarda como contexto la oración de origen.
+- Evidencia textual requerida e inferencias permitidas: toda anotación debe estar respaldada por el texto. No se añaden entidades ni atributos mediante conocimiento externo.
 - Tratamiento de menciones repetidas: se registra cada aparición como
   una mención independiente, con su ubicación y contexto (sección 6.2).
   La vinculación posterior al mismo nodo canónico conserva esas evidencias.
 - Distinción entre mención literal y entidad canónica: la extracción
   conserva el texto literal del fragmento seleccionado; la normalización
-  se realiza posteriormente. Criterios de normalización: [Pendiente].
-- Unidad o ventana de coaparición para las relaciones posteriores: [Pendiente].
+  y la vinculación a entidades canónicas corresponden a la tarea posterior
+  de fuzzy matching.
+- Alcance de esta etapa: NER extrae y clasifica menciones. La construcción
+  de relaciones y sus reglas de coaparición se definen en la tarea de red.
 
 ## 4. Sistema de etiquetas
 
-- Número de categorías: diez, por decisión final de la usuaria.
-- Conjunto de etiquetas: fijado en los diez códigos de la tabla siguiente.
-- Una o varias etiquetas para el mismo fragmento: [Pendiente]. Se permite
-  anotar un fragmento LOC contenido dentro de otro CHAR conforme al
-  acuerdo de la sección 6; son dos fragmentos distintos.
-- Tratamiento de expresiones que no pertenecen a ninguna categoría: [Pendiente].
+- Número de categorías: 10.
+- Conjunto de etiquetas: fijado en los 10 códigos de la tabla siguiente.
+- Una o varias etiquetas para el mismo fragmento: asignar la categoría que corresponda a su función contextual. Se permite anotar un fragmento LOC contenido dentro de otro CHAR conforme a la sección 6; son dos fragmentos distintos.
+- Tratamiento de expresiones que no pertenecen a ninguna categoría: omitirlas, sin forzar una clasificación.
 
-Las diez categorías y sus códigos son los proporcionados por la usuaria.
-Los códigos se conservarán con esta grafía en las anotaciones y los atributos
-de los nodos. Las definiciones y fronteras se revisarán categoría por categoría.
+Utiliza las etiquetas exactamente como aparecen en la tabla, respetando
+mayúsculas, minúsculas y guiones bajos.
 
 | Código | Categoría |
 |---|---|
@@ -233,35 +191,16 @@ de los nodos. Las definiciones y fronteras se revisarán categoría por categor�
 
 ## 5. Definiciones operativas por categoría
 
-El trabajo actual se centra en definir las características que debe
-identificar una mención para clasificarse en cada categoría. Se revisan
-criterios generales aplicables al corpus, utilizando ejemplos solo cuando
-ayuden a aclarar una frontera entre categorías.
-
-Cada ficha desarrolla:
+Clasifica cada mención aplicando:
 
 - Definición operativa y características esenciales.
 - Criterios de inclusión y exclusión.
 - Evidencia textual necesaria para asignar la etiqueta.
 - Distinción respecto de categorías cercanas.
 
-Las definiciones operativas de las diez categorías ya fueron acordadas.
-Cada ficha distingue los criterios acordados de las propuestas y pendientes.
-Los acuerdos de delimitación, registro de menciones y normalización se
-conservan en las secciones correspondientes; su resolución exhaustiva no
-es el foco de la revisión actual de categorías.
-
 ### 5.1. CHAR — Actores
 
-**Estado:** Síntesis de los criterios de clasificación ya acordados.
-Los acuerdos de extracción se conservan en la sección 6. La revisión
-operativa y la validación del codebook siguen pendientes.
-
-**Definición:** Actor individual o colectivo que el texto identifica como
-participante del sistema territorial, con agencia, responsabilidad,
-representación, derechos, intereses o afectación en relación con sus procesos
-socioecológicos. Un actor individual es una persona; un actor colectivo puede
-ser un grupo humano, una comunidad, un pueblo u organización.
+**Definición:** Actor individual o colectivo que el texto identifica como participante del sistema territorial, con agencia, responsabilidad, representación, derechos, intereses o afectación en relación con sus procesos socioecológicos. Un actor individual es una persona; un actor colectivo puede ser un grupo humano, una comunidad, un pueblo u organización.
 
 **Características que debe identificar la mención:**
 
@@ -272,24 +211,24 @@ ser un grupo humano, una comunidad, un pueblo u organización.
    agencia, responsabilidad, representación, derechos, intereses o
    afectación respecto de sus procesos socioecológicos.
 
-**Criterios de inclusión acordados:**
+**Criterios de inclusión:**
 
 - Se admiten actores individuales y colectivos, nombrados o genéricos.
 - Se incluyen los actores afectados aunque no ejecuten una acción.
 - Se incluye al actor cuya participación en una actividad está negada;
   se conserva esa negación en el contexto, sin afirmar participación.
 
-**Criterio de exclusión acordado:** Una expresión que solo ubica un
+**Criterio de exclusión:** Una expresión que solo ubica un
 proceso o evento, sin identificar al colectivo como actor en contexto,
 no recibe CHAR. En «El taller se realizó en la comunidad de San Pedro»,
 se registra únicamente «San Pedro» como LOC.
 
 **Evidencia necesaria:** La denominación y su contexto deben permitir
 identificar al actor y su papel territorial. No se requiere un nombre
-propio ni la ejecución de una acción. La ventana de contexto permitida
-se definirá en la sección 3.
+propio ni la ejecución de una acción. Utiliza el contexto permitido
+en la sección 3.
 
-**Fronteras acordadas:**
+**Fronteras:**
 
 - LOC identifica el lugar; CHAR, la persona o colectivo. Se permite
   LOC dentro de CHAR cuando ambas identificaciones están respaldadas
@@ -297,9 +236,9 @@ se definirá en la sección 3.
 - RUL identifica la regla o instrumento; CHAR, al actor que lo establece
   o aplica. El criterio contextual para planes está en la sección 5.9.
 - PRAC identifica la actividad; CHAR, al actor. «Monitoreo comunitario»
-  identifica una práctica en el ejemplo acordado de la sección 5.5.
+  identifica una práctica en el ejemplo de la sección 5.5.
 
-**Ejemplos acordados:**
+**Ejemplos:**
 
 - «La asociación de productores de Tambopata participa en el proyecto»:
   «asociación de productores de Tambopata» identifica un actor colectivo.
@@ -315,15 +254,11 @@ se definirá en la sección 3.
   la sección 5.9; la sola mención de su aprobación no explicita las
   condiciones, responsabilidades o criterios que establece.
 
-Los criterios adicionales y las demás fronteras siguen sujetos a revisión.
 Los ejemplos ilustran las características de clasificación; las reglas
 sobre pronombres, artículos, nombres propios, siglas y enumeraciones
 están reunidas en la sección 6.3.
 
 ### 5.2. KNOW — Conocimiento
-
-**Estado:** Definición, criterio de inclusión, portador y distinción frente
-a SKILL y PRAC acordados; el resto de la ficha continúa en revisión.
 
 **Definición:** Saberes técnicos, ecológicos o tradicionales sobre el
 territorio, sus ecosistemas y su gestión.
@@ -341,31 +276,19 @@ territorio, sus ecosistemas y su gestión.
 Estos tipos son referencias descriptivas dentro de KNOW; no constituyen
 nuevos códigos de categoría.
 
-**Criterio de inclusión acordado:** El texto debe identificar un saber
-o contenido de conocimiento. Puede hacerlo mediante una denominación
-explícita, como «saberes tradicionales sobre el manejo del bosque», o
-mediante una expresión que atribuya conocimiento, como «los productores
-conocen los ciclos de floración de la castaña».
+**Criterio de inclusión:** El texto debe identificar un saber o contenido de conocimiento. Puede hacerlo mediante una denominación explícita, como «saberes tradicionales sobre el manejo del bosque», o mediante una expresión que atribuya conocimiento, como «los productores conocen los ciclos de floración de la castaña». el KNOW seria «ciclos de floración de la castaña» y CHAR «los productores».
 
-**Portador del conocimiento — acordado:** Se admiten menciones explícitas
-de saberes aunque el texto no identifique quién los posee. Esto no autoriza
-a atribuirles un portador que el texto no señale.
+**Portador del conocimiento:** Se admiten menciones explícitas de saberes aunque el texto no identifique quién los posee. Esto no autoriza a atribuirles un portador que el texto no señale.
 
-**Evidencia y exclusiones propuestas:** La presencia de una práctica,
-una habilidad o un término técnico por sí sola no demuestra que el texto
-esté describiendo conocimiento. La realización de una actividad no
-permite añadir automáticamente una anotación de KNOW. Una afirmación
-sobre el territorio debe evaluarse en contexto para determinar si presenta
-un contenido de conocimiento conforme a esta definición.
+**Tratamiento de afirmaciones generales:** Asigna KNOW únicamente cuando el texto identifique el contenido como un saber o atribuya conocimiento. Una afirmación informativa o una descripción del territorio no basta por sí sola para asignar KNOW. No se requiere identificar al portador del saber.
 
-**Distinción acordada:** KNOW identifica el saber o contenido conocido;
-SKILL identifica la competencia para realizar una tarea; PRAC identifica
-la actividad.
+**Evidencia y exclusiones propuestas:** La presencia de una práctica, una habilidad o un término técnico por sí sola no demuestra que el texto esté describiendo conocimiento. La realización de una actividad no permite añadir automáticamente una anotación de KNOW. Una afirmación sobre el territorio debe evaluarse en contexto para determinar si presenta un contenido de conocimiento conforme a esta definición.
 
-**Frontera propuesta con ATT:** Las valoraciones, identidades y compromisos
-se evalúan según ATT. Cada categoría requiere su propia evidencia.
+**Distinción:** KNOW identifica el saber o contenido conocido; SKILL identifica la competencia para realizar una tarea; PRAC identifica la actividad.
 
-**Ejemplos construidos para discutir la frontera:**
+**Frontera propuesta con ATT:** Las valoraciones, identidades y compromisos se evalúan según ATT. Cada categoría requiere su propia evidencia.
+
+**Ejemplos de distinción entre KNOW, SKILL y PRAC:**
 
 | Texto | Interpretación orientativa |
 |---|---|
@@ -373,212 +296,181 @@ se evalúan según ATT. Cada categoría requiere su propia evidencia.
 | Las productoras saben usar equipos de monitoreo. | SKILL: expresa competencia operativa. |
 | Las productoras monitorean la floración de la castaña. | PRAC: expresa una actividad. |
 
-[Pendiente: revisar las exclusiones y precisar las fronteras con ATT,
-el tratamiento de afirmaciones generales, los límites de los fragmentos
-y ejemplos completos de anotación].
+- Exclusiones: una actividad, habilidad o término técnico aislado no basta para asignar KNOW.
+- Frontera con ATT: KNOW identifica saberes o contenidos conocidos; ATT identifica valoraciones, percepciones, identidades y compromisos.
+- Afirmaciones generales: una descripción del territorio no recibe automáticamente KNOW. El texto debe presentarla como un saber o contenido de conocimiento.
+- Fragmento: extraer el contenido del saber, conservando en el contexto la expresión que permite reconocerlo.
 
 ### 5.3. ATT — Actitudes y valores
 
-**Estado:** Definición y distinción frente a KNOW y PRAC acordadas;
-el resto de la ficha está pendiente.
+**Definición:** Valores, identidades, percepciones y compromisos que el texto atribuye a actores individuales o colectivos respecto del territorio, sus ecosistemas o su gestión.
 
-**Definición:** Valores, identidades, percepciones y compromisos que el
-texto atribuye a actores individuales o colectivos respecto del territorio,
-sus ecosistemas o su gestión.
+**Inclusión y evidencia:** Asigna ATT cuando el texto exprese una valoración, percepción, identidad o compromiso y lo atribuya a un actor individual o colectivo.
 
-**Referencias proporcionadas:** Valores, identidades, percepciones y compromisos.
+**Exclusión:** Una descripción factual, un saber o la realización de una actividad no bastan por sí solos para asignar ATT.
 
-**Ejemplos orientativos:** Sentido de pertenencia, valoración del bosque
-y compromiso con su conservación.
+**Amplitud:** Incluye actitudes favorables, desfavorables o ambivalentes respecto del territorio, sus ecosistemas o su gestión.
 
-**Distinción acordada:** Valorar o percibir corresponde a ATT; conocer,
-a KNOW; actuar, a PRAC. No se infiere una actitud únicamente porque
-alguien realice una actividad.
+**Fragmento:** Extrae la expresión que identifica la actitud y aquello a lo que se refiere, conservando al actor y la atribución en el contexto.
 
-[Pendiente: completar criterios, evidencia, límites y ejemplos].
+**Ejemplos orientativos:** Sentido de pertenencia, valoración del bosque y compromiso con su conservación.
+
+**Distinción:** Valorar o percibir corresponde a ATT; conocer, a KNOW; actuar, a PRAC. No se infiere una actitud únicamente porque alguien realice una actividad.
+
+**Ejemplo de anotación:** En «Las productoras expresan su compromiso con la conservación del bosque», extrae «compromiso con la conservación del bosque» como ATT y «productoras» como CHAR.
 
 ### 5.4. SKILL — Habilidades
 
-**Estado:** Definición y distinción frente a KNOW y PRAC acordadas;
-el resto de la ficha está pendiente.
+**Definición:** Destrezas o competencias que el texto atribuye a actores individuales o colectivos para realizar tareas técnicas, de gestión o de monitoreo en el territorio.
 
-**Definición:** Destrezas o competencias que el texto atribuye a actores
-individuales o colectivos para realizar tareas técnicas, de gestión o de
-monitoreo en el territorio.
+**Tipos de habilidades:** Técnicas, de gestión y de monitoreo.
 
-**Referencias proporcionadas:** Habilidades técnicas, de gestión y de monitoreo.
+**Inclusión y evidencia:** Asigna SKILL cuando el texto atribuya a un actor una destreza o competencia para realizar una tarea técnica, de gestión o de monitoreo.
 
-**Ejemplos orientativos:** Capacidad para manejar equipos, gestionar
-proyectos o aplicar técnicas de restauración.
+**Exclusión:** Conocer una técnica, querer aplicarla o realizar una actividad no demuestra por sí solo una habilidad.
 
-**Distinción acordada:** Conocer una técnica corresponde a KNOW; saber
-aplicarla, a SKILL; aplicarla, a PRAC. Realizar una actividad no basta,
-por sí solo, para anotar una habilidad.
+**Capacidad operativa:** Distingue la competencia para hacer algo de tener permiso, recursos u oportunidad para hacerlo. La palabra «puede» por sí sola no basta para asignar SKILL.
 
-[Pendiente: completar criterios, evidencia, límites y ejemplos].
+**Fragmento:** Extrae la expresión que identifica la habilidad y la tarea correspondiente, conservando al actor y la atribución en el contexto.
+
+**Ejemplos orientativos:** Capacidad para manejar equipos, gestionar proyectos o aplicar técnicas de restauración.
+
+**Distinción:** Conocer una técnica corresponde a KNOW; saber aplicarla, a SKILL; aplicarla, a PRAC. Realizar una actividad no basta, por sí solo, para anotar una habilidad.
+
+**Ejemplo de anotación:** En «Las productoras poseen capacidad para manejar equipos de monitoreo», extrae «capacidad para manejar equipos de monitoreo» como SKILL y «productoras» como CHAR.
 
 ### 5.5. PRAC — Prácticas
 
-**Estado:** Definición, amplitud y distinción frente a SKILL y RUL
-acordadas, así como la anotación de «monitoreo comunitario» como PRAC
-en el ejemplo revisado; el resto de la ficha está pendiente.
+**Definición:** Actividades, rutinas o procesos que el texto identifica para producir, aprovechar, conservar, restaurar, monitorear, comercializar o gestionar componentes del territorio.
 
-**Definición:** Actividades, rutinas o procesos que el texto identifica
-para producir, aprovechar, conservar, restaurar, monitorear, comercializar
-o gestionar componentes del territorio.
+**Actividades comprendidas:** Agroforestería, monitoreo, comercialización, restauración y gobernanza como actividad o proceso.
 
-**Referencias proporcionadas:** Agroforestería, monitoreo, comercialización,
-restauración y gobernanza como actividad o proceso.
+**Inclusión y evidencia:** Asigna PRAC cuando el texto nombre una actividad o describa una acción concreta pertinente para el territorio. Puede expresarse como sustantivo o como expresión verbal. No se requiere identificar al actor si la actividad está explícita.
 
-**Ejemplos orientativos:** Agroforestería, extracción minera, monitoreo
-comunitario, comercialización y coordinación entre instituciones.
+**Exclusión:** Un actor, un soporte, una regla, un saber o una habilidad no constituyen por sí solos una práctica. No anotes verbos genéricos como «mejorar», «fortalecer» o «promover»; si acompañan una actividad concreta, extrae la expresión que identifica esa actividad.
 
-**Amplitud acordada:** Las prácticas pueden ser sostenibles, degradantes
-o ambivalentes.
+**Amplitud:** Las prácticas pueden ser sostenibles, degradantes o ambivalentes.
 
-**Distinción acordada:** Saber realizar una actividad corresponde a SKILL;
-la actividad, a PRAC; las normas que la regulan, a RUL.
+**Actividades existentes, propuestas o negadas:** Extrae las actividades explícitas aunque se presenten como propuestas, futuras, necesarias o negadas. Conserva esa condición en el contexto; la anotación identifica la actividad, sin afirmar que se haya realizado. Un deseo u objetivo general sin una actividad identificable no basta para asignar PRAC.
 
-**Ejemplo de anotación acordado:** En «Se realizan actividades de
-monitoreo comunitario», el fragmento «monitoreo comunitario» se anota
-como PRAC porque identifica una actividad. Este acuerdo fija el fragmento
-y la categoría para este ejemplo; no resuelve el tratamiento general de
-adjetivos como «comunitario» para la extracción de actores.
+**Fragmento:** Extrae la denominación de la actividad o la expresión verbal mínima que la identifica. Conserva sus complementos necesarios y su forma literal, sin convertir verbos a infinitivo ni reconstruir palabras omitidas.
 
-[Pendiente: completar criterios, evidencia, límites, tratamiento de
-actividades existentes o propuestas y ejemplos].
+**Distinción:** Saber realizar una actividad corresponde a SKILL; la actividad, a PRAC; las normas que la regulan, a RUL.
+
+**Ejemplos de anotación:**
+
+- En «Se realizan actividades de monitoreo comunitario», extrae «monitoreo comunitario» como PRAC. El adjetivo «comunitario» no nombra por sí solo un actor y no basta para añadir CHAR.
+- En «Se propone la restauración del bosque», extrae «restauración del bosque» como PRAC; conserva la propuesta en el contexto sin afirmar su ejecución.
 
 ### 5.6. physical_INFRA — Infraestructura física
 
-**Estado:** Definición, ejemplos y distinción frente a PRAC acordados;
-delimitación funcional frente a soft_INFRA acordada. El resto de la ficha
-está pendiente.
+**Definición:** Elementos materiales construidos o instalados que permiten o condicionan el acceso, la movilidad, el suministro de energía o la conectividad tecnológica en el territorio.
 
-**Definición:** Elementos materiales construidos o instalados que permiten
-o condicionan el acceso, la movilidad, el suministro de energía o la
-conectividad tecnológica en el territorio.
+**Ejemplos:** Carreteras, puentes, puertos, redes eléctricas y antenas de telecomunicaciones.
 
-**Ejemplos acordados:** Carreteras, puentes, puertos, redes eléctricas y
-antenas de telecomunicaciones.
+**Inclusión y evidencia:** Asigna physical_INFRA cuando la denominación del elemento y su contexto permitan identificar una estructura construida o instalada con alguna de esas funciones. La función puede estar expresada en la propia denominación o descrita en el contexto.
 
-**Distinción acordada:** La carretera corresponde a physical_INFRA;
-su construcción o mantenimiento, a PRAC. La clasificación depende de la
-función descrita, no solo de que sea un objeto físico.
+**Exclusión:** La materialidad de un objeto no basta. Un equipo, edificio o instalación no recibe automáticamente physical_INFRA por ser físico. Tampoco se clasifican aquí las actividades de construirlo, mantenerlo o utilizarlo, ni las estructuras naturales por su función ecológica.
 
-**Frontera acordada con soft_INFRA:** Se distingue por la función descrita:
-physical_INFRA corresponde al acceso, movilidad, energía o conectividad
-tecnológica; soft_INFRA, a los soportes organizados definidos en su ficha.
-La presencia de componentes materiales no determina por sí sola la etiqueta.
+**Fragmento:** Extrae la denominación del elemento, incluidos el nombre propio y los modificadores necesarios para identificarlo. Conserva el texto literal; las actividades realizadas sobre él se evalúan por separado como PRAC.
 
-[Pendiente: completar criterios, evidencia, límites y ejemplos de frontera,
-incluidos casos de equipamiento de monitoreo].
+**Distinción:** La carretera corresponde a physical_INFRA; su construcción o mantenimiento, a PRAC. La clasificación depende de la función descrita, no solo de que sea un objeto físico.
+
+**Frontera con soft_INFRA:** Se distingue por la función descrita: physical_INFRA corresponde al acceso, movilidad, energía o conectividad tecnológica; soft_INFRA, a los soportes organizados definidos en su ficha. La presencia de componentes materiales no determina por sí sola la etiqueta.
+
+**Equipamiento de monitoreo:** Si el texto lo presenta como un recurso organizado para el monitoreo, evalúalo como soft_INFRA. Si describe una estructura de conectividad tecnológica, evalúala como physical_INFRA. La palabra «equipo» por sí sola no resuelve la categoría.
+
+**Ejemplo de anotación:** En «El puente permite el acceso al territorio», extrae «puente» como physical_INFRA.
 
 ### 5.7. soft_INFRA — Infraestructura de soporte
 
-**Estado:** Definición, ejemplos y delimitación funcional frente a PRAC,
-physical_INFRA y eco_INFRA acordados; el resto de la ficha está pendiente.
+**Definición:** Sistemas, instalaciones y recursos organizados que sostienen la producción, el aprendizaje, el monitoreo o la gestión de información en el territorio.
 
-**Definición:** Sistemas, instalaciones y recursos organizados que
-sostienen la producción, el aprendizaje, el monitoreo o la gestión de
-información en el territorio.
+**Ejemplos:** Viveros, bancos de semillas, sistemas de monitoreo y plataformas digitales.
 
-**Ejemplos acordados:** Viveros, bancos de semillas, sistemas de monitoreo
-y plataformas digitales.
+**Inclusión y evidencia:** Asigna soft_INFRA cuando el texto identifique un sistema, instalación o recurso organizado y su función de soporte para esas actividades. La función puede estar expresada en la denominación o descrita en el contexto; la simple mención de recursos sin esa función no basta.
 
-**Criterio funcional acordado:** Estos soportes pueden tener componentes
-materiales; importa su función de soporte, no solo su materialidad.
+**Exclusión:** Una actividad, un saber, una competencia, una organización o una regla no constituyen por sí solos infraestructura de soporte. Distingue el soporte de la actividad que permite, del actor que lo gestiona y de sus reglas de uso.
 
-**Distinción acordada frente a PRAC:** El sistema de monitoreo corresponde
-a soft_INFRA; realizar el monitoreo, a PRAC.
+**Criterio funcional:** Estos soportes pueden tener componentes materiales; importa su función de soporte, no solo su materialidad.
 
-**Delimitación acordada frente a eco_INFRA:** Bosque primario y corredores,
-incluidos originalmente entre las referencias de soft_INFRA, se evalúan
-como eco_INFRA cuando cumplen funciones ecológicas. La función descrita
-en contexto determina la clasificación.
+**Fragmento:** Extrae la denominación del soporte con los modificadores necesarios para identificar su función, como «sistema de monitoreo» o «banco de semillas». Conserva el texto literal y los nombres propios.
 
-[Pendiente: completar criterios, evidencia, límites y ejemplos de frontera].
+**Distinción frente a PRAC:** El sistema de monitoreo corresponde a soft_INFRA; realizar el monitoreo, a PRAC.
+
+**Frontera con physical_INFRA:** Viveros, bancos de semillas y equipamiento organizado para el monitoreo corresponden a soft_INFRA por su función de soporte. Las estructuras de acceso, movilidad, energía o conectividad tecnológica se evalúan como physical_INFRA.
+
+**Delimitación frente a eco_INFRA:** Bosque primario y corredores se evalúan como eco_INFRA cuando cumplen funciones ecológicas. La función descrita en contexto determina la clasificación.
+
+**Ejemplo de anotación:** En «El banco de semillas conserva material para la producción de plantas», extrae «banco de semillas» como soft_INFRA.
 
 ### 5.8. eco_INFRA — Infraestructura ecológica
 
-**Estado:** Definición, ejemplos y distinción frente a LOC y PRAC
-acordados; el resto de la ficha está pendiente.
+**Definición:** Estructuras ecológicas naturales o restauradas que sostienen funciones ecosistémicas, conectividad ecológica, resiliencia, biodiversidad o regeneración del territorio.
 
-**Definición:** Estructuras ecológicas naturales o restauradas que sostienen
-funciones ecosistémicas, conectividad ecológica, resiliencia, biodiversidad
-o regeneración del territorio.
+**Ejemplos:** Bosques primarios, corredores biológicos y humedales.
 
-**Ejemplos acordados:** Bosques primarios, corredores biológicos y humedales.
+**Inclusión y evidencia:** Asigna eco_INFRA cuando el texto identifique una estructura ecológica y respalde su función ecosistémica, de conectividad, resiliencia, biodiversidad o regeneración. Su carácter natural o su nombre por sí solos no bastan; no atribuyas funciones mediante conocimiento externo.
 
-**Distinción acordada:** La estructura por su función ecológica corresponde
-a eco_INFRA; el espacio por su ubicación o delimitación, a LOC;
-conservarlo o restaurarlo, a PRAC.
+**Exclusión:** La ubicación de un evento, una delimitación territorial o la mención de un lugar no demuestran por sí solas una función ecológica. Las actividades de conservar, restaurar o manejar una estructura se evalúan como PRAC. Los soportes organizados para producir plantas o monitorear se
+evalúan como soft_INFRA.
 
-**Frontera acordada con soft_INFRA:** Bosque primario y corredores se
-evalúan como eco_INFRA cuando cumplen funciones ecológicas, conforme a
-la delimitación de la sección 5.7.
+**Fragmento:** Extrae la denominación de la estructura ecológica, conservando los modificadores y nombres propios necesarios para identificarla. La explicación de su función permanece en el contexto.
 
-[Pendiente: completar criterios, evidencia, límites y ejemplos de frontera,
-incluidos casos específicos de infraestructura y lugares].
+**Distinción:** La estructura por su función ecológica corresponde a eco_INFRA; el espacio por su ubicación o delimitación, a LOC; conservarlo o restaurarlo, a PRAC.
+
+**Frontera con soft_INFRA:** Bosque primario y corredores se evalúan como eco_INFRA cuando el texto respalde sus funciones ecológicas. Un vivero o banco de semillas se clasifica por su función de soporte a la producción, aunque contribuya a la restauración.
+
+**Ejemplos de anotación y frontera:**
+
+- En «Los humedales regulan el agua y sostienen la biodiversidad», extrae «humedales» como eco_INFRA.
+- En «El taller se realizó en el humedal», «humedal» identifica la ubicación del evento y corresponde a LOC; esa oración no respalda eco_INFRA.
 
 ### 5.9. RUL — Reglas
 
-**Estado:** Definición, ejemplos y distinción frente a CHAR y PRAC
-acordados, así como el criterio de inclusión contextual de planes;
-el resto de la ficha está pendiente.
+**Definición:** Normas, instrumentos o acuerdos que establecen derechos, obligaciones, permisos o criterios para orientar las decisiones, la participación y las prácticas en el territorio.
 
-**Definición:** Normas, instrumentos o acuerdos que establecen derechos,
-obligaciones, permisos o criterios para orientar las decisiones, la
-participación y las prácticas en el territorio.
+**Ejemplos:** Leyes, ordenanzas, políticas, acuerdos comunitarios, estándares de certificación y mecanismos de participación.
 
-**Ejemplos acordados:** Leyes, ordenanzas, políticas, acuerdos comunitarios,
-estándares de certificación y mecanismos de participación.
+**Inclusión y evidencia:** Asigna RUL cuando el texto identifique una regla o presente un instrumento o acuerdo con función reguladora: establecer derechos, obligaciones, permisos, condiciones o criterios para las decisiones y prácticas territoriales. Una denominación genérica como «acuerdo», «plan» o «mecanismo» por sí sola no basta sin esa función.
 
-**Distinción acordada:** La regla corresponde a RUL; el actor que la
-establece o aplica, a CHAR; la actividad de aplicarla, a PRAC.
+**Formalidad:** Incluye reglas legales, institucionales o comunitarias, formales o informales, cuando su función reguladora esté respaldada por el texto. No se requiere verificar su reconocimiento en fuentes externas.
 
-**Criterio de inclusión acordado — planes:** Incluir los planes en RUL
-cuando el contexto los presente como instrumentos que establecen
-condiciones, responsabilidades o criterios para las prácticas territoriales.
-La denominación «plan» por sí sola no basta para asignar RUL; el texto y
-su contexto deben respaldar esa función.
+**Exclusión:** Un deseo, preferencia o compromiso personal no constituye por sí solo una regla. Distingue la norma de la organización que la establece, del soporte que permite aplicarla y de la actividad de elaborarla o ejecutarla.
 
-Este criterio clasifica la mención del plan como instrumento. Las
-prescripciones que contiene y las actividades de elaborarlo o implementarlo
-deben distinguirse de esa mención y evaluarse según sus categorías.
+**Fragmento:** Extrae la denominación de la norma, instrumento o acuerdo, conservando el nombre, número y modificadores necesarios para identificarlo. Si no tiene denominación, extrae la expresión mínima que formula el derecho, obligación, permiso o prohibición. Conserva la negación cuando forme parte del contenido de la regla.
 
-[Pendiente: completar criterios, formalidad de las reglas, evidencia,
-límites y ejemplos].
+**Distinción:** La regla corresponde a RUL; el actor que la establece o aplica, a CHAR; la actividad de aplicarla, a PRAC.
+
+**Criterio de inclusión — planes:** Incluir los planes en RUL cuando el contexto los presente como instrumentos que establecen condiciones, responsabilidades o criterios para las prácticas territoriales. La denominación «plan» por sí sola no basta para asignar RUL; el texto y su contexto deben respaldar esa función.
+
+Este criterio clasifica la mención del plan como instrumento. Las prescripciones que contiene y las actividades de elaborarlo o implementarlo deben distinguirse de esa mención y evaluarse según sus categorías.
+
+**Ejemplo de anotación:** En «El plan de manejo forestal establece responsabilidades», extrae «plan de manejo forestal» como RUL.
 
 ### 5.10. LOC — Lugares
 
-**Estado:** Definición, ejemplos y distinción frente a CHAR y eco_INFRA
-acordados; el resto de la ficha está pendiente.
+**Definición:** Espacios o unidades geográficas, territoriales, administrativas o ecológicas que el texto identifica por su ubicación, extensión o delimitación.
 
-**Definición:** Espacios o unidades geográficas, territoriales,
-administrativas o ecológicas que el texto identifica por su ubicación,
-extensión o delimitación.
+**Ejemplos:** Territorios indígenas, comunidades como lugares, reservas, cuencas, áreas protegidas y zonas de intervención.
 
-**Ejemplos acordados:** Territorios indígenas, comunidades como lugares,
-reservas, cuencas, áreas protegidas y zonas de intervención.
+**Inclusión y evidencia:** Asigna LOC cuando el texto nombre un espacio o unidad territorial o lo identifique por su ubicación, extensión o delimitación. Admite nombres propios y denominaciones genéricas cuando el contexto permita reconocer su referente espacial; no se requiere un topónimo.
 
-**Distinción acordada:** La comunidad como colectivo corresponde a CHAR;
-su territorio, a LOC. Un bosque como espacio geográfico corresponde a LOC;
-como estructura que sostiene funciones ecológicas, a eco_INFRA.
+**Exclusión:** Una persona, colectivo u organización no recibe LOC por su vinculación con un territorio. Una estructura descrita por su función ecológica se evalúa como eco_INFRA. No añadas información geográfica ni reconstruyas nombres o límites que no aparezcan en el texto.
 
-**Anotación acordada dentro de CHAR:** En «La comunidad de San Pedro
-decidió participar», «San Pedro» se anota como LOC dentro del fragmento
-«comunidad de San Pedro», anotado como CHAR, sin el artículo inicial.
-Véase la sección 6.
+**Fragmento:** Extrae la denominación del lugar con los términos necesarios para identificar su unidad geográfica, como «cuenca del río Tambopata». Conserva nombres propios completos y sus artículos integrantes. Omite preposiciones externas que solo introducen la ubicación, como «en» o «hacia».
 
-**Ejemplo de ubicación acordado:** En «El taller se realizó en la comunidad
-de San Pedro», se registra únicamente «San Pedro» como LOC. En ese
-contexto no se identifica al colectivo como actor.
+**Distinción:** La comunidad como colectivo corresponde a CHAR; su territorio, a LOC. Un bosque como espacio geográfico corresponde a LOC; como estructura que sostiene funciones ecológicas, a eco_INFRA.
 
-[Pendiente: completar criterios, evidencia, límites y ejemplos].
+**Anotación dentro de CHAR:** En «La comunidad de San Pedro decidió participar», «San Pedro» se anota como LOC dentro del fragmento «comunidad de San Pedro», anotado como CHAR, sin el artículo inicial. Véase la sección 6.
+
+**Ejemplo de ubicación:** En «El taller se realizó en la comunidad de San Pedro», se registra únicamente «San Pedro» como LOC. En ese contexto no se identifica al colectivo como actor.
+
+**Anidación y contexto:** En los dos ejemplos anteriores, el fragmento LOC es «San Pedro». La anotación adicional de CHAR requiere que el texto identifique al colectivo como actor. No añadas CHAR únicamente porque un evento se ubique en una comunidad.
 
 ## 6. Reglas generales de anotación
 
-- Conservación del texto literal: acordada. Una vez seleccionado el
+- Conservación del texto literal: una vez seleccionado el
   fragmento según las reglas de delimitación, se conserva tal como aparece
   en el texto, incluido el plural. La normalización se realiza en una
   etapa posterior, sin reemplazar la mención original extraída.
@@ -596,7 +488,7 @@ contexto no se identifica al colectivo como actor.
 - Pronombres referidos a actores: no se anotan como CHAR, aunque el
   referente sea claro; se extraen las expresiones que nombran al actor
   (sección 6.3). Otras referencias y categorías: [Pendiente].
-- Fragmentos anidados LOC dentro de CHAR: acuerdo detallado a continuación.
+- Fragmentos anidados LOC dentro de CHAR: aplica las reglas de la sección 6.1.
 - Otros fragmentos anidados, solapamientos parciales y fragmentos
   discontinuos: [Pendiente].
 - Negación de participación de un actor: no impide anotar CHAR; se
@@ -607,30 +499,28 @@ contexto no se identifica al colectivo como actor.
 - Relación con etapas posteriores de normalización y análisis: [Pendiente].
 - Conservación de la categoría y resolución de discrepancias al consolidar nodos: [Pendiente].
 - Menciones repetidas: se registra cada aparición con su ubicación y
-  contexto, conforme al acuerdo de la sección 6.2.
+  contexto, conforme a la sección 6.2.
 
 ### 6.1. Anotación de LOC dentro de CHAR
-
-**Estado:** Acordado para la combinación LOC dentro de CHAR.
 
 Se permite anotar un fragmento que identifica un lugar (LOC) dentro de
 otro que identifica un actor (CHAR), cuando el texto y su contexto
 respaldan ambas identificaciones. Cada anotación conserva su propio
 fragmento y categoría.
 
-**Ejemplo acordado:** «La comunidad de San Pedro decidió participar».
+**Ejemplo:** «La comunidad de San Pedro decidió participar».
 
 | Fragmento | Categoría | Referente |
 |---|---|---|
 | comunidad de San Pedro | CHAR | El colectivo que decidió participar; se omite el artículo inicial. |
 | San Pedro | LOC | El lugar identificado en la denominación del colectivo. |
 
-**Límite contextual acordado:** En «El taller se realizó en la comunidad
+**Límite contextual:** En «El taller se realizó en la comunidad
 de San Pedro», se registra únicamente «San Pedro» como LOC. La expresión
 solo ubica el taller; no basta para añadir CHAR. La presencia de un nombre
 de lugar dentro de la expresión no activa automáticamente dos anotaciones.
 
-El acuerdo de anidación permite los dos fragmentos del ejemplo
+La anidación permite los dos fragmentos del ejemplo
 «La comunidad de San Pedro decidió participar», uno contenido en el otro.
 La política de asignar varias etiquetas a un mismo fragmento y el
 tratamiento de otras combinaciones anidadas siguen pendientes. Las
@@ -639,13 +529,11 @@ definirán en las etapas correspondientes.
 
 ### 6.2. Registro de menciones repetidas
 
-**Estado:** Acordado.
-
 Se registra cada aparición de una mención como una anotación independiente,
 con su ubicación en el documento y su contexto. La repetición del mismo
 texto no elimina las apariciones posteriores.
 
-**Ejemplo acordado:** Si «productoras de cacao» aparece en tres oraciones,
+**Ejemplo:** Si «productoras de cacao» aparece en tres oraciones,
 se conservan tres menciones, cada una vinculada a su ubicación y contexto.
 Posteriormente podrán vincularse al mismo nodo canónico sin perder las
 tres evidencias.
@@ -654,60 +542,56 @@ El formato de los campos de localización y contexto se definirá en la
 sección 8. Este registro no fija todavía la ventana ni las reglas de
 conteo o ponderación de coocurrencia para construir la red.
 
-### 6.3. Acuerdos de extracción de menciones CHAR
+### 6.3. Extracción de menciones CHAR
 
-Estas reglas conservan los acuerdos de anotación alcanzados. La prioridad
-actual es precisar las características de clasificación de las categorías;
-los demás detalles de extracción se retomarán en su etapa correspondiente.
-
-**Criterio de evidencia y exclusión acordado — pronombres:** Para CHAR
+**Criterio de evidencia y exclusión — pronombres:** Para CHAR
 se extraen únicamente las expresiones que nombran al actor, ya sea por
 nombre propio, cargo, ocupación o denominación del colectivo. Los pronombres
 que remiten a un actor no se anotan como CHAR, aunque su referente sea
 claro en el contexto. Esto mantiene la inclusión de denominaciones
 genéricas; no exige un nombre propio.
 
-**Ejemplo acordado:** En «Los agricultores participan en el monitoreo.
+**Ejemplo:** En «Los agricultores participan en el monitoreo.
 Ellos registran los cambios del bosque», se anota «agricultores»
 como CHAR y no se anota «Ellos» como CHAR. No se sustituye el pronombre
 por una nueva mención de «agricultores» en la segunda oración.
 
-**Límite del fragmento acordado — artículo inicial:** Se omite el artículo
+**Límite del fragmento — artículo inicial:** Se omite el artículo
 que introduce la denominación del actor. En «Las productoras de cacao
 participaron en el taller», se anota «productoras de cacao» como CHAR,
 dejando fuera «Las» y conservando «de cacao».
 Los ejemplos anteriores de CHAR se ajustan a este criterio. Los artículos
-que forman parte de un nombre propio se conservan, conforme al acuerdo
+que forman parte de un nombre propio se conservan, conforme al criterio
 siguiente; las demás reglas de delimitación siguen pendientes.
 
-**Nombre propio íntegro — criterio acordado:** Se conserva completo el
+**Nombre propio íntegro — criterio:** Se conserva completo el
 nombre propio del actor, incluidos sus artículos integrantes. «La Esperanza»
 es un nombre propio y se mantiene íntegro: no se elimina «La» ni se
 extrae como una anotación separada. La omisión del artículo que introduce
 una denominación no autoriza a recortar un artículo integrante del nombre.
 
-**Fragmento acordado:** En «La cooperativa La Esperanza participó en el
+**Fragmento:** En «La cooperativa La Esperanza participó en el
 taller», se extrae «cooperativa La Esperanza» como CHAR. Se incluye
 «cooperativa» y se conserva íntegro el nombre «La Esperanza». Este ejemplo
 no resuelve por sí solo todos los casos de descriptores antepuestos.
 
-**Conservación del fragmento acordada:** Una vez delimitada la mención,
+**Conservación del fragmento:** Una vez delimitada la mención,
 se conserva el texto tal como aparece. En el ejemplo de las productoras
 se extrae «productoras de cacao», manteniendo el plural. La normalización queda
 para una etapa posterior y no reemplaza el fragmento original extraído.
 
-**Nombre completo y sigla — extracción acordada:** Cuando el nombre
+**Nombre completo y sigla — extracción:** Cuando el nombre
 completo de un actor y su sigla aparecen explícitamente, se extraen como
 dos registros CHAR independientes, cada uno con su fragmento literal,
 ubicación y contexto.
 
-**Ejemplo acordado:** En «La Asociación de Productores de Cacao (APC)
+**Ejemplo:** En «La Asociación de Productores de Cacao (APC)
 participó en el taller», se extraen por separado:
 
 - «Asociación de Productores de Cacao» → CHAR.
 - «APC» → CHAR.
 
-**Canonicalización acordada para el ejemplo:** Las dos menciones se
+**Canonicalización para el ejemplo:** Las dos menciones se
 vinculan posteriormente al mismo nodo canónico porque el texto presenta
 «APC» como sigla de «Asociación de Productores de Cacao». Se conservan
 ambos registros originales, con su ubicación y contexto.
@@ -716,19 +600,19 @@ La coincidencia de siglas por sí sola no establece una identidad entre
 actores. Los criterios para resolver siglas ambiguas o sin correspondencia
 explícita siguen pendientes.
 
-**Enumeraciones de actores — extracción acordada:** Cuando el texto
+**Enumeraciones de actores — extracción:** Cuando el texto
 enumera actores mediante denominaciones explícitas, se extrae cada una
 como una mención CHAR independiente. Se conservan sus fragmentos
 literales y se omiten los artículos iniciales y la conjunción que los une.
 
-**Ejemplo acordado:** En «Las productoras de cacao y los recolectores de
+**Ejemplo:** En «Las productoras de cacao y los recolectores de
 castaña participaron en el taller», se extraen por separado:
 
 - «productoras de cacao» → CHAR.
 - «recolectores de castaña» → CHAR.
 
 El tratamiento de enumeraciones con palabras omitidas o modificadores
-compartidos sigue pendiente; no se reconstruyen fragmentos en este acuerdo.
+compartidos sigue pendiente; conserva los fragmentos literales del texto.
 
 ## 7. Ambigüedad y casos no resolubles
 
@@ -766,18 +650,5 @@ compartidos sigue pendiente; no se reconstruyen fragmentos en este acuerdo.
 
 ## Anexo A. Instrucciones para el modelo de lenguaje
 
-[Pendiente: redactar el prompt operativo a partir de las secciones acordadas].
-
-## Anexo B. Referencias y fundamento de las decisiones
-
-### B.1. Análisis de Sensibilidad Participativo en Tambopata
-
-- Procedencia: texto proporcionado por la usuaria en la conversación.
-- Ejercicio reportado: taller del 13 y 14 de mayo de 2026 y devolución del
-  12 de agosto de 2026, en Puerto Maldonado.
-- Uso en el codebook: fortalecer y enriquecer el marco conceptual y los
-  lineamientos que se traducirán en reglas operativas para el procesamiento
-  de la API.
-- Autoría, versión y ubicación del documento de referencia: [Pendiente].
-
-[Pendiente: registrar las demás fuentes y decisiones metodológicas adoptadas].
+[Pendiente: completar la correspondencia entre las reglas de extracción
+y clasificación y el prompt operativo].

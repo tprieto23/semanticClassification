@@ -1,6 +1,57 @@
 # Tareas
 
-## Trabajo actual: codebook — punto de continuidad del 12 Oct 2026
+## Trabajo actual: codebook — punto de continuidad del 15 Oct 2026
+
+### Primera tarea al retomar — 16 Oct 2026
+
+- [ ] **Primero hacer los commits de los cambios de hoy.** Revisar `git status`
+  y `git diff`, comprobar el contenido guardado y crear los commits del
+  codebook/documentación y de las definiciones, prompts y ejemplos NER.
+  Completar este paso antes de iniciar nuevas ediciones de la sección 6.
+- [ ] **Después empezar en `## 6. Reglas generales de anotación`. Leerla completa y
+  revisarla detalladamente**, incluidas 6.1, 6.2 y 6.3. Contrastar cada regla
+  con las categorías de la sección 5, el prompt y el código existente.
+- [ ] Cerrar los pendientes de delimitación, artículos y nombres propios,
+  siglas, enumeraciones, pronombres, repeticiones, anidación/solapamientos y
+  negación/temporalidad. Consolidar los criterios ya definidos en las fichas
+  sin reabrir el conjunto de diez categorías ni añadir casos individuales
+  innecesarios. Dejar normalización y relaciones en sus tareas posteriores.
+- [ ] Alinear las reglas de la sección 6 con el prompt y el parser. Revisar
+  especialmente LOC dentro de CHAR: el acuerdo está escrito, pero el parser
+  aún rechaza fragmentos solapados. Conservar la separación entre extracción
+  de nombre/sigla y su posterior resolución en fuzzy matching.
+- [ ] Continuar con las secciones 7–10 y el anexo A: ambigüedad, contrato de
+  entrada/salida, ejemplos y validación. Aprovechar `label`, `text`,
+  `sentence_id`, `ambiguity` y el cálculo local de posiciones/contexto.
+- [ ] Hacer una comprobación final de coherencia entre codebook, definiciones,
+  prompts, ejemplos y código. Verificar los archivos guardados para evitar
+  recuperar accidentalmente versiones anteriores desde el editor.
+- [ ] Validar una extracción con un documento real y revisar sus menciones
+  antes de iniciar el procesamiento del corpus. Confirmar cómo se cargan los
+  cambios en la API en ejecución; las pruebas de hoy usaron proveedor y DB
+  simulados. Ejecutar después fuzzy matching y red en su orden independiente.
+
+### Avances de la revisión
+
+- [x] Sustituir la sección 2.4 por el contexto territorial y temático aprobado,
+  retirando de esa sección la descripción del informe de Tambopata.
+- [x] Delimitar NER a extracción y clasificación en el codebook y ambos prompts;
+  mantener normalización y relaciones como tareas posteriores independientes.
+- [x] Registrar el contexto permitido y la evidencia requeridos en la sección 3.
+- [x] Retirar del codebook las referencias a «la usuaria», al proceso de
+  elaboración y al informe externo. Conservar el antecedente bibliográfico
+  en la sesión `../sessions/2026-10-15-codebook-autonomo.md`.
+- [ ] Continuar la revisión conjunta de criterios y propuestas pendientes del
+  codebook y prompt; cerrar las secciones de ambigüedad, salida y validación.
+- [x] Precisar el tratamiento de afirmaciones generales en KNOW y trasladarlo
+  a la definición de categoría incorporada al prompt.
+- [x] Completar los criterios básicos de ATT, evidencia, exclusiones, amplitud,
+  delimitación y ejemplo; incorporar la delimitación aprobada al prompt.
+- [x] Completar los criterios básicos de SKILL, evidencia, exclusiones,
+  capacidad operativa, delimitación y ejemplo; incorporarlos al prompt.
+- [x] Completar las fichas PRAC, physical_INFRA, soft_INFRA, eco_INFRA, RUL y LOC
+  con evidencia, exclusiones, delimitación, fronteras y ejemplos; actualizar
+  las definiciones incorporadas al prompt y la demostración de soft_INFRA.
 
 - [x] Acordar el propósito operativo, el marco conceptual y el enfoque temático.
 - [x] Acordar las definiciones de las diez categorías en
@@ -66,9 +117,9 @@
   y los ejemplos de validación, sin convertirlos en el foco de las fichas.
 - [ ] Consolidar las reglas mínimas de anotación y contrastarlas con el
   contrato existente, con una validación acotada antes de adaptar la API.
-- [ ] Definir para este codebook los criterios de canonicalización, los
-  atributos adicionales de nodos y la ventana y conteo de coocurrencia;
-  contrastarlos posteriormente con la implementación existente.
+- [ ] Documentar por separado, en las especificaciones de fuzzy matching y red,
+  los criterios de canonicalización, atributos adicionales de nodos y ventana
+  y conteo de coocurrencia; contrastarlos con la implementación existente.
 
 Contexto vigente: `PROJECT_CONTEXT.md`. Decisiones de esta sesión:
 `../sessions/2026-10-12-codebook-char.md`. Antecedente:

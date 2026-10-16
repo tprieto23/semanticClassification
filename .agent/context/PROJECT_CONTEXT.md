@@ -13,7 +13,72 @@ anotación siguen en construcción. El codebook servirá como especificación
 para la extracción y clasificación mediante LLM en la API, con posterior
 canonicalización, atributos de nodos y análisis de coocurrencia.
 
-### Punto de reanudación — 12 Oct 2026
+### Punto de reanudación — 15 Oct 2026
+
+**Cierre de sesión: retomar el 16 Oct 2026 haciendo primero los commits de
+los cambios de hoy. Después continuar desde `## 6. Reglas generales de
+anotación` de `codebook_en_construccion.md`.** Revisar los cambios guardados
+y crear los commits antes de iniciar nuevas ediciones. Luego leer la sección
+6 completa, incluidas 6.1, 6.2 y 6.3, y revisarla detalladamente junto con el
+prompt y el comportamiento del código. El objetivo inmediato es cerrar las
+reglas y pendientes restantes para terminar el codebook y preparar el
+procesamiento de documentos. La agenda está al inicio de `tasks.md`; la nota
+de cierre está en `../sessions/2026-10-15-cierre-y-continuidad.md`.
+
+La usuaria está realizando una última revisión del codebook, ahora junto con
+el prompt. Confirmó que NER debe dedicarse exclusivamente a extraer y
+clasificar menciones. Fuzzy matching y construcción de relaciones son tareas
+posteriores mediante endpoints independientes y consecutivos. Se precisó ese
+alcance en las secciones 1 y 3 y en ambos prompts NER, conservando el contrato
+de cuatro campos. El código ya exige `ner` antes de fuzzy matching y
+`fuzzyMatching` antes de construir la red del documento.
+
+La sección 2.4 contiene los dos párrafos aprobados sobre contexto territorial
+y temático del corpus. El informe de Tambopata fue un insumo para comprender
+ese contexto; la usuaria pidió que las instrucciones sean autónomas y que no
+describan ni dependan de ese informe. Se retiraron también las referencias al
+informe de la sección 2.5 y el anexo bibliográfico se conservó en la sesión
+`../sessions/2026-10-15-codebook-autonomo.md`. La limpieza editorial elimina
+referencias a «la usuaria» y al proceso de elaboración, sin cambiar las diez
+definiciones ni aprobar propuestas pendientes. Ambos prompts usan instrucciones
+autónomas; el de sistema explicita que no se consulten documentos externos.
+En la sección 3, la usuaria ya escribió definición de mención, unidad de
+anotación, contexto permitido y evidencia. La sección 4 incluye la regla de
+omitir expresiones fuera de las categorías y conservar la grafía de los códigos.
+En KNOW se confirmó reservar la etiqueta para contenidos que el texto
+identifique como saberes o mediante atribución de conocimiento. Una afirmación
+informativa o descripción territorial no basta por sí sola. Se admite el saber
+sin portador identificado. La regla está en la ficha 5.2 y en `src/categories.py`,
+cuya definición se incorpora al prompt. La ficha recoge también los criterios
+de exclusión, frontera con ATT y extracción del contenido del saber; el
+pendiente general fue sustituido por esas reglas durante la revisión.
+La delimitación de ATT fue aprobada y aplicada en la ficha 5.3 y la definición
+que se incorpora al prompt: evidencia explícita y atribución a un actor,
+exclusión de descripciones factuales, saberes o actividades por sí solos,
+actitudes favorables/desfavorables/ambivalentes y extracción de la actitud con
+su objeto. El ejemplo productoras/compromiso ya está en las demostraciones.
+Se retiró el pendiente general de ATT; esto no completa las demás fichas.
+La delimitación de SKILL también fue aprobada y aplicada en la ficha 5.4 y
+`src/categories.py`: competencia atribuida a un actor; conocer, querer o actuar
+no basta por sí solo; permiso, recursos u oportunidad tampoco demuestran
+habilidad. La palabra «puede» requiere evidencia contextual de competencia.
+Se extrae la habilidad con su tarea, conservando la atribución en contexto.
+Se retiró el pendiente general de SKILL; el ejemplo ya está en las demostraciones.
+Por petición de la usuaria, se completaron las fichas 5.5–5.10: PRAC,
+physical_INFRA, soft_INFRA, eco_INFRA, RUL y LOC. Incluyen evidencia, exclusiones,
+delimitación literal, fronteras y ejemplos, sin pendientes dentro de esas fichas.
+PRAC conserva actividades propuestas, futuras o negadas sin afirmar ejecución;
+infraestructura se clasifica por función; eco_INFRA exige respaldo textual de
+su función ecológica; RUL incluye reglas formales o informales con función
+reguladora y conserva la negación en prescripciones; LOC admite denominaciones
+genéricas con referente espacial reconocible y mantiene los ejemplos San Pedro.
+Las síntesis están en `src/categories.py`, incorporadas al prompt. Se precisó
+la función de la plataforma digital en la demostración soft_INFRA, conservando
+diez ejemplos. Siguen pendientes las reglas generales y la validación del
+codebook; la anidación LOC/CHAR continúa requiriendo adaptación del parser.
+Continuar paso a paso, con respuestas breves, revisando codebook y prompt juntos.
+
+### Acuerdos y comprobaciones anteriores — 12 Oct 2026
 
 El foco acordado con la usuaria es definir las características específicas
 que deben identificar las menciones para clasificarse en cada categoría:
