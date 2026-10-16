@@ -93,11 +93,11 @@
     },
     {
       "id": "soft-infra-001",
-      "text": "La plataforma digital está operativa.",
+      "text": "La plataforma digital de información territorial está operativa.",
       "annotations": [
         {
           "label": "soft_INFRA",
-          "text": "plataforma digital",
+          "text": "plataforma digital de información territorial",
           "ambiguity": "low"
         }
       ]
