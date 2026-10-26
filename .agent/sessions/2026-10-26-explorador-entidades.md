@@ -75,3 +75,14 @@ quedan fuera. `/analysis/network`, las proyecciones y Leiden no cambiaron.
 - `import-on-ec2.sh` admite `IMPORT_DOCKER_NETWORK` para la base dentro del EC2;
   probado con RDS simulado y con red Docker.
 - `CLAUDE.md` con instrucciones del proyecto y las reglas del Agent Toolkit de AWS.
+
+### Corrección del runbook para zsh (macOS)
+
+El primer intento en la Mac se detuvo en el paso 2, sin crear recursos:
+`aws: [ERROR]: Unknown options: --profile ... --region ...`. Causa: zsh no separa en
+palabras una variable sin comillas, y el runbook guardaba las opciones en `R="..."`. Se
+reprodujo el error con zsh 5.9. Corrección: `AWS_PROFILE`/`AWS_REGION` como variables
+de entorno, funciones `ec2_ssh`/`ec2_scp`, `grep -E` y la versión de Postgres
+consultada sin `sort -V`. Todos los bloques se validaron con `bash -n` y `zsh -n`, y el
+entorno y las consultas de solo lectura del paso 2 se ejecutaron en ambos shells. Se
+auditó el project: no quedó ningún recurso del intento fallido.
