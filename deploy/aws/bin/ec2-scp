@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Copia archivos locales al EC2.
+# Uso: deploy/aws/bin/ec2-scp <archivo>... <ruta remota relativa al home de ubuntu>
+set -euo pipefail
+source "$(dirname "$0")/_state.sh"
+: "${EIP:?Falta EIP en deploy/aws/.state.env (paso 2)}"
+[ $# -ge 2 ] || { echo "Uso: ec2-scp <archivo>... <destino>" >&2; exit 2; }
+dest="${*: -1}"
+exec scp -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new "${@:1:$#-1}" "ubuntu@$EIP:$dest"

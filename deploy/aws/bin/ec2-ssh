@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Ejecuta un comando en el EC2. Uso: deploy/aws/bin/ec2-ssh 'cd ~/semanticClassification && ls'
+set -euo pipefail
+source "$(dirname "$0")/_state.sh"
+: "${EIP:?Falta EIP en deploy/aws/.state.env (paso 2)}"
+exec ssh -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new "ubuntu@$EIP" "$@"

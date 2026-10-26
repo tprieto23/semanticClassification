@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# AWS CLI siempre con el perfil del project y la región us-east-2.
+# Uso: deploy/aws/bin/aws-project ec2 describe-instances ...
+set -euo pipefail
+source "$(dirname "$0")/_state.sh"
+exec aws "$@"

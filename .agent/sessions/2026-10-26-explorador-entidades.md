@@ -86,3 +86,19 @@ de entorno, funciones `ec2_ssh`/`ec2_scp`, `grep -E` y la versión de Postgres
 consultada sin `sort -V`. Todos los bloques se validaron con `bash -n` y `zsh -n`, y el
 entorno y las consultas de solo lectura del paso 2 se ejecutaron en ambos shells. Se
 auditó el project: no quedó ningún recurso del intento fallido.
+
+### Corrección del runbook: un comando, una shell
+
+El agente de la Mac se detuvo en el paso 5 con `zsh:1: command not found: ec2_ssh`:
+su herramienta ejecuta cada comando en una shell nueva, así que las funciones y
+variables de un bloque anterior no existen. Corrección: scripts sin estado en
+`deploy/aws/bin/` (`aws-project`, `ec2-ssh`, `ec2-scp`), que leen el perfil, la región
+y la IP de `deploy/aws/.state.env` en cada llamada y fallan si falta `AWS_PROFILE`, en
+lugar de usar el perfil `default`. Cada bloque carga el estado por sí mismo. Se probó
+ejecutando cada bloque en una shell zsh nueva (lectura real de AWS y del gateway;
+ssh/scp simulados).
+
+Estado auditado en el project antes de corregir: EC2 `m7i-flex.large` en ejecución con
+Elastic IP, PostgreSQL dentro del EC2 (sin RDS), puertos 22/8000 limitados a la IP de
+la usuaria, IMDSv2 obligatorio. El gateway responde con 83 documentos Agroforestry
+(78 excluidos por sector) y `/documents` da 404.
