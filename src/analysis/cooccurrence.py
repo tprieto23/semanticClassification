@@ -554,9 +554,14 @@ def load_db_mentions(
     status: str | None = None,
     incubator_number: int | None = None,
     language: str | None = None,
+    document_ids: Sequence[str] | None = None,
     db: Any | None = None,
 ) -> list[MentionRecord]:
-    """Consulta menciones canonicalizadas para un documento o un corpus."""
+    """Consulta menciones canonicalizadas para un documento o un corpus.
+
+    ``document_ids`` restringe el corpus a un conjunto explícito de documentos;
+    una lista vacía no devuelve menciones.
+    """
 
     from sqlalchemy import select
 
@@ -591,6 +596,12 @@ def load_db_mentions(
         statement = statement.where(Document.incubator_number == incubator_number)
     if language is not None:
         statement = statement.where(Document.language == language)
+    if document_ids is not None:
+        if not document_ids:
+            return []
+        statement = statement.where(
+            Entity.document_id.in_([UUID(value) for value in document_ids])
+        )
     statement = statement.order_by(
         Entity.document_id, Entity.position_start, Entity.position_end, Entity.id
     )

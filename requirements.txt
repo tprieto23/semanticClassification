@@ -29,6 +29,7 @@ rapidfuzz>=3.9.0,<4.0.0
 
 # Análisis y visualización de redes (Objetivo 5)
 networkx>=3.2,<4.0
+scipy>=1.11,<2.0  # requerido por networkx.pagerank (explorador de entidades)
 igraph>=1.0.0,<2.0.0
 leidenalg>=0.11.0,<0.13.0
 matplotlib>=3.8,<4.0

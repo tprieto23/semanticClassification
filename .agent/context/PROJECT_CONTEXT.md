@@ -13,6 +13,14 @@ El codebook sirve como especificación
 para la extracción y clasificación mediante LLM en la API, con posterior
 canonicalización, atributos de nodos y análisis de coocurrencia.
 
+### Explorador de entidades — 26 Oct 2026
+
+En paralelo al codebook, la rama `feat/explorador-entidades` añade la API de
+lectura `/analysis/explorer/v1/*` para un dashboard interactivo en un repositorio
+de frontend aparte. Enlaza las diez categorías, filtra por recurrencia documental,
+peso y centralidad, y compara rankings entre 2021–2023 y 2024–2026. La meta-red
+queda en espera. Ver `../sessions/2026-10-26-explorador-entidades.md`.
+
 ### Punto de reanudación — 16 Oct 2026
 
 La usuaria descartó el mecanismo few-shot porque el codebook ya define la tarea completa. El servicio carga directamente `data/codebooks/codebook_en_construccion_en.md`, configurado mediante `NER_CODEBOOK_PATH`, y lo inserta en `$codebook` de la plantilla única `data/prompts/ner_prompt.md`. La misma plantilla incluye `$json_input` con las oraciones del bloque; `ner.py` envía el resultado como un mensaje de usuario, sin prompt de sistema separado. Se retiraron `ner_user_prompt.md` y `NER_USER_PROMPT_PATH`. Se eliminaron el archivo de demostraciones, su cargador y `NER_FEW_SHOT_PATH`; ya no se inyectan las definiciones de `src/categories.py` en el prompt. La taxonomía conserva los diez códigos para el esquema y la validación local. Los ejemplos internos del codebook permanecen como parte de sus reglas. La versión española de la raíz se conserva como antecedente; la fuente operativa es la inglesa en `data/codebooks/`.

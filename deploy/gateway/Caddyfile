@@ -1,0 +1,22 @@
+# Puerta pública del EC2: HTTPS automático y solo el explorador (lectura).
+# El resto de la API (/documents, /docs, DELETE...) no es accesible por aquí;
+# se usa directamente en el puerto 8000, abierto únicamente a la IP de Tania.
+{$GATEWAY_HOST} {
+	encode gzip
+
+	@explorer {
+		path /analysis/explorer/v1/*
+		method GET POST OPTIONS
+	}
+	handle @explorer {
+		reverse_proxy api:8000
+	}
+
+	handle /health {
+		reverse_proxy api:8000
+	}
+
+	handle {
+		respond "Not found" 404
+	}
+}

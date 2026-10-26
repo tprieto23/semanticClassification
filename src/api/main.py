@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from src.api.routers import (
     analysis_networks,
     documents,
+    explorer,
     semantic_nodes,
     semantic_relationships,
 )
@@ -56,5 +57,6 @@ def health() -> dict[str, str]:
 
 app.include_router(documents.router)
 app.include_router(analysis_networks.router)
+app.include_router(explorer.router)
 app.include_router(semantic_nodes.router)
 app.include_router(semantic_relationships.router)

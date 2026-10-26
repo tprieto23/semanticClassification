@@ -1,0 +1,55 @@
+# Producción en EC2: API + gateway HTTPS de solo lectura.
+# Uso: docker compose -f docker-compose.prod.yml up -d --build
+# La base es RDS (DATABASE_URL en .env). Para una base local en el mismo
+# servidor, agregar --profile local-db y apuntar DATABASE_URL a "db".
+services:
+  api:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    command: >
+      uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+      --workers ${API_WORKERS:-2} --proxy-headers
+    ports:
+      # El Security Group de AWS limita este puerto a la IP de Tania.
+      - "8000:8000"
+    volumes:
+      - ./s3:/app/s3
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  gateway:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    environment:
+      GATEWAY_HOST: ${GATEWAY_HOST:?Definir GATEWAY_HOST en .env (ej. 18-228-10-5.sslip.io)}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/gateway/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+
+  db:
+    image: pgvector/pgvector:pg16
+    profiles: ["local-db"]
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-semantic_db}
+      POSTGRES_USER: ${POSTGRES_USER:-sc_user}
+      # Obligatoria si se usa este perfil: la imagen no arranca sin contraseña.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  caddy_data:
+  caddy_config:
+  postgres_data:

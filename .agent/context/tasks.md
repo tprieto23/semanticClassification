@@ -1,6 +1,26 @@
 # Tareas
 
-## Trabajo actual: codebook y piloto NER — 16 Oct 2026
+## Explorador interactivo de entidades — 26 Oct 2026
+
+Decisiones: enlazar las diez categorías; importancia = recurrencia documental +
+centralidad; evolución por períodos 2021–2023 y 2024–2026; priorizar la red de
+entidades. La meta-red y los clusters quedan en espera hasta definir si los
+clusters son por categoría o mixtos.
+
+- [x] `src/analysis/explorer.py` — filtros por etapa, métricas, top-n y comparación entre períodos.
+- [x] `src/services/explorer.py` y `src/api/routers/explorer.py` — `/analysis/explorer/v1/{meta,network,compare,evidence}`.
+- [x] `load_db_mentions(document_ids=...)` — filtro aditivo por documentos.
+- [x] `scipy` declarado en `requirements.txt` (lo exige `networkx.pagerank`).
+- [x] 20 pruebas en `tests/test_explorer.py`; prueba de punta a punta sobre PostgreSQL temporal con corpus sintético.
+- [x] Filtro `productive_sector` (Agroforestry por defecto) en todos los endpoints del explorador.
+- [x] Despliegue preparado: `docker-compose.prod.yml`, gateway Caddy, scripts y guía en `deploy/aws/`.
+- [ ] Ejecutar la guía `deploy/aws/README.md` en la cuenta AWS (sa-east-1) y migrar la base real.
+- [ ] Decidir si `/analysis/network`, las proyecciones y Leiden también filtran por sector.
+- [ ] Asignar `year` a los documentos del corpus; sin año no entran en la evolución.
+- [ ] Probar el explorador sobre la DB real después de reprocesar con las diez categorías.
+- [ ] Evaluar una caché de redes si el corpus completo hace lentas las respuestas.
+
+## Trabajo anterior: codebook y piloto NER — 16 Oct 2026
 
 ### Revisión y validación actual
 

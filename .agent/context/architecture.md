@@ -396,6 +396,44 @@ sensibilidad. Las comunidades resultantes no se presentan automáticamente como
 configuraciones semánticas: la validación de tamaño, evidencia y composición sigue
 siendo una fase posterior.
 
+## Explorador de entidades (`entity-explorer-v1`)
+
+Lectura en vivo para el dashboard interactivo (repo de frontend aparte). No
+escribe en PostgreSQL ni en `s3/`; reutiliza la coocurrencia por oración y el
+núcleo `document-recurrent-core-v1`. Enlaza las diez categorías por defecto y
+admite el legado `INFRA` solo si aparece en los datos.
+
+```
+POST /analysis/explorer/v1/network
+  → ExplorerService.network()
+    → documentos fuzzyMatching filtrados por período/incubadora/idioma/document_ids
+    → load_db_mentions(document_ids=...)
+    → build_explorer_network()                       (src/analysis/explorer.py)
+        1. categorías + link_mode (any | between | within | pairs)
+        2. recurrencia documental mínima por nodo
+        3. peso analítico mínimo de arista (se eliminan nodos huérfanos)
+        4. métricas sobre la red filtrada completa:
+           degree, strength, betweenness, closeness, pagerank, document_count
+        5. top_n por ranking_metric (las métricas no cambian con el recorte)
+  ← nodos + métricas + rangos, aristas, conteo por etapa y advertencias
+```
+
+- Períodos fijos: `2021-2023` y `2024-2026` (`PERIODS` en `src/analysis/explorer.py`).
+  Los documentos sin `year` quedan fuera de cualquier período y se contabilizan.
+- Betweenness y closeness usan distancia `1/analysis_weight`; betweenness es
+  exacta hasta 1.500 nodos y por muestreo fijo (500 fuentes, semilla 42) por encima.
+- `POST /compare` construye cada período con los mismos filtros y sin `top_n`, y
+  devuelve trayectorias de rango, entradas/salidas del top-k y el nodo líder por
+  métrica en cada período.
+- `GET /evidence` devuelve las oraciones compartidas por dos entidades dentro del
+  mismo alcance; su total coincide con `sentence_count` de la arista.
+- Filtros imposibles responden 422 (`ExplorerFiltroInvalido`); un alcance sin
+  datos responde 200 con red vacía y advertencias.
+- Solo entran documentos con `productive_sector = Agroforestry`, salvo que se envíe
+  `productive_sector: "all"`.
+- En producción, el gateway Caddy (`deploy/gateway/Caddyfile`) solo expone este prefijo
+  y `/health`; ver `deploy/aws/README.md`.
+
 ## Flujo Revertir
 
 ```
@@ -445,6 +483,10 @@ s3/
 | POST | `/analysis/network` | Construir red de corpus/incubadora |
 | GET | `/analysis/network/latest` | Leer resumen/URLs sin recalcular |
 | POST | `/analysis/network/projections/{projection_id}` | Construir proyección tipada o construcción analítica parametrizada |
+| GET | `/analysis/explorer/v1/meta` | Categorías, períodos, incubadoras, idiomas y documentos listos |
+| POST | `/analysis/explorer/v1/network` | Red de entidades filtrada con métricas de centralidad |
+| POST | `/analysis/explorer/v1/compare` | Evolución del ranking de centralidad entre períodos |
+| GET | `/analysis/explorer/v1/evidence` | Oraciones que respaldan un link entre dos entidades |
 | GET | `/files/graphs/{path}` | Servir solo artefactos oficiales de grafos |
 | GET | `/health` | Health check |
 | POST | `/semantic-network/relationships/build` | Construir relaciones deterministas entre nodos semánticos |
