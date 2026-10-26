@@ -14,7 +14,7 @@ clusters son por categoría o mixtos.
 - [x] 20 pruebas en `tests/test_explorer.py`; prueba de punta a punta sobre PostgreSQL temporal con corpus sintético.
 - [x] Filtro `productive_sector` (Agroforestry por defecto) en todos los endpoints del explorador.
 - [x] Despliegue preparado: `docker-compose.prod.yml`, gateway Caddy, scripts y guía en `deploy/aws/`.
-- [ ] Ejecutar la guía `deploy/aws/README.md` en la cuenta AWS (sa-east-1) y migrar la base real.
+- [ ] Desplegar en el project AWS (us-east-2) siguiendo `deploy/aws/AGENT-RUNBOOK.md` desde la Mac de Tania y migrar la base real.
 - [ ] Decidir si `/analysis/network`, las proyecciones y Leiden también filtran por sector.
 - [ ] Asignar `year` a los documentos del corpus; sin año no entran en la evolución.
 - [ ] Probar el explorador sobre la DB real después de reprocesar con las diez categorías.

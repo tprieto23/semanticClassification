@@ -35,3 +35,7 @@ train_output.log
 
 # ML Models (too large for git)
 /models/
+
+# Despliegue: datos exportados y estado local de AWS (nunca al repo)
+export/
+deploy/aws/.state.env

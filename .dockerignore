@@ -55,3 +55,4 @@ temp/
 
 # Archivos subidos y artefactos: viven en un volumen, nunca en la imagen
 s3/
+export/

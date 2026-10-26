@@ -44,7 +44,7 @@ Decisión de la usuaria: no usar en el análisis los documentos que no tengan
 explícitamente, y `meta.documents_excluded_by_sector` informa cuántos documentos listos
 quedan fuera. `/analysis/network`, las proyecciones y Leiden no cambiaron.
 
-## Despliegue en AWS (sa-east-1)
+## Despliegue en AWS (us-east-2)
 
 - `docker-compose.prod.yml`: API sin `--reload`, `s3/` y `data/` montados, y gateway
   Caddy con HTTPS automático (dominio `sslip.io`) que solo expone
@@ -58,3 +58,20 @@ quedan fuera. `/analysis/network`, las proyecciones y Leiden no cambiaron.
   `/docs`, `DELETE` 404), preflight CORS y migración `pg_dump` → `pg_restore` con conteos
   idénticos y pgvector restaurado.
 - El dashboard se publica en Vercel con `VITE_API_BASE_URL` apuntando al gateway.
+
+### Project de AWS y runbook para agentes
+
+- El project usa la nueva experiencia de AWS y solo permite recursos en `us-east-2`;
+  se descartó `sa-east-1`. Plan FREE con USD 100 de créditos (vence el 2027-04-26).
+- Tipos de EC2 permitidos por el plan: hasta `m7i-flex.large` (8 GB), el elegido para
+  docling. RDS: `db.t4g.micro`. Precios on-demand consultados en la API de precios:
+  ~USD 90 al mes con todo encendido 24/7.
+- `deploy/aws/AGENT-RUNBOOK.md`: despliegue por AWS CLI pensado para que lo ejecute el
+  agente de la Mac de Tania, con confirmaciones de costo, estado en
+  `deploy/aws/.state.env` (ignorado por Git) y comprobaciones por paso. Los comandos
+  de EC2 se validaron con `--dry-run` en el project.
+- `export/` y `deploy/aws/.state.env` agregados a `.gitignore`: el repo es público y
+  esos archivos contienen datos o secretos.
+- `import-on-ec2.sh` admite `IMPORT_DOCKER_NETWORK` para la base dentro del EC2;
+  probado con RDS simulado y con red Docker.
+- `CLAUDE.md` con instrucciones del proyecto y las reglas del Agent Toolkit de AWS.

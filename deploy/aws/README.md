@@ -1,7 +1,10 @@
-# Despliegue en AWS (sa-east-1)
+# Despliegue en AWS (us-east-2)
 
 Guía paso a paso para llevar la API y la base PostgreSQL a AWS. El dashboard
 (`semantic-network-explorer`) se publica en Vercel y consume la API por HTTPS.
+
+> **Si eres un agente de IA**, sigue [`AGENT-RUNBOOK.md`](AGENT-RUNBOOK.md): define el
+> orden, las confirmaciones obligatorias y las comprobaciones de cada paso.
 
 ```
 Vercel (dashboard) ──HTTPS──▶ EC2 :443 Caddy ── solo /analysis/explorer/v1/* ──▶ API :8000
@@ -17,34 +20,61 @@ Tania (su IP) ─────HTTP─────▶ EC2 :8000 API completa (Post
 No hay autenticación todavía. Cualquiera que tenga la URL del gateway puede leer los
 resultados del explorador, pero no modificarlos.
 
-## Costo aproximado (on-demand, sa-east-1)
+## Datos del project
 
-| Recurso | Tipo | USD/mes aprox. |
-|---|---|---|
-| EC2 | t3.medium (2 vCPU, 4 GB) + 30 GB gp3 | 50–55 |
-| RDS | db.t4g.micro + 20 GB | 25–30 |
-| IP pública | Elastic IP | ~4 |
-| **Total** | | **~80–90** |
+| Dato | Valor |
+|---|---|
+| Experiencia | Nueva experiencia de AWS (*project*, inicio de sesión social) |
+| Región | **us-east-2 (Ohio)**. Obligatoria: el project no puede crear recursos en otras regiones |
+| Plan | FREE, USD 100 de créditos, vence el 2027-04-26 (consultado el 2026-10-26) |
+| Tipos de EC2 permitidos | t3/t4g/t8i micro y small, `c7i-flex.large` (4 GB), `m7i-flex.large` (8 GB) |
+| Clases de RDS permitidas | `db.t3.micro`, `db.t4g.micro` |
 
-Son valores de referencia: confírmalos en la
-[AWS Pricing Calculator](https://calculator.aws/). Si la cuenta tiene créditos de la
-capa gratuita, cubren parte de los primeros meses. Para ahorrar, `t4g.medium` (ARM)
-cuesta ~20 % menos; la imagen ya funciona en ARM porque se usa en una Mac con Apple
-Silicon.
+Comprueba el estado del plan con:
+
+```bash
+aws freetier get-account-plan-state --profile <perfil> --region us-east-2
+```
+
+## Costo (on-demand, us-east-2, precios del 2026-10-26)
+
+| Recurso | Tipo | USD/hora | USD/mes 24/7 |
+|---|---|---|---|
+| EC2 | `m7i-flex.large` (2 vCPU, 8 GB) | 0,0958 | 69,9 |
+| RDS | `db.t4g.micro` | 0,0160 | 11,7 |
+| Discos | EBS 30 GB gp3 + RDS 20 GB | — | ~5 |
+| IP pública | Elastic IP | 0,005 | ~3,6 |
+| **Total** | | | **~90** |
+
+Con todo encendido las 24 horas, **los USD 100 de créditos alcanzan para un mes**.
+Formas de estirarlos:
+
+- **Apagar el EC2 cuando no se use.** Encendido 10 h en días hábiles cuesta ~USD 21 al
+  mes de cómputo. Mientras está detenido solo se pagan los discos y la IP.
+- **PostgreSQL dentro del EC2** en lugar de RDS ahorra ~USD 14 al mes, pero se pierden
+  los backups automáticos (perfil `local-db` en `docker-compose.prod.yml`).
+- `c7i-flex.large` (4 GB) cuesta ~USD 8 menos al mes, con menos margen para docling.
+
+Antes de que se acaben los créditos o venza el plan, hay que pasar al plan pago en
+AWS Settings para no perder los recursos.
 
 ---
 
-## Paso 1 — Asegurar la cuenta (una sola vez)
+## Paso 1 — Preparar el project (una sola vez)
 
-1. Inicia sesión como **root** y activa **MFA**: menú de la cuenta → *Security
-   credentials* → *Assign MFA device*.
-2. Crea un usuario para el trabajo diario: **IAM → Users → Create user**, con acceso a la
-   consola y la política `AdministratorAccess`. Activa MFA también para ese usuario. A
-   partir de aquí, no uses root.
+En la nueva experiencia, la administración se hace en **AWS Settings**
+(<https://settings.aws.com>), no en IAM:
+
+1. **Región**: confirma que sea `us-east-2` en *AWS Settings → View all projects →
+   Overview → Additional info → Region*.
+2. **Límite de gasto**: si el project pasa al plan pago, configura un *spend limit* en
+   *AWS Settings → Billing*. Al superarlo, el project se pausa.
 3. **Alerta de gastos**: *Billing and Cost Management → Budgets → Create budget* →
-   plantilla *Monthly cost budget*, por ejemplo USD 100, con aviso a tu correo.
-4. Arriba a la derecha, selecciona la región **South America (São Paulo) sa-east-1**.
-   Todos los recursos van en esa región.
+   *Monthly cost budget*, por ejemplo USD 50, con aviso por correo.
+4. **Colaboradores**: se invitan como *team members* por correo desde AWS Settings.
+   No se crean usuarios IAM.
+5. En la consola (<https://console.aws.amazon.com>), selecciona arriba a la derecha la
+   región **US East (Ohio) us-east-2**.
 
 ## Paso 2 — Crear el servidor EC2
 
@@ -54,11 +84,11 @@ Silicon.
 |---|---|
 | Name | `semantic-api` |
 | AMI | Ubuntu Server 24.04 LTS (x86_64) |
-| Instance type | `t3.medium` |
+| Instance type | `m7i-flex.large` |
 | Key pair | *Create new key pair* → `semantic-ec2`, tipo RSA, `.pem`. Guárdala en `~/.ssh/` y ejecuta `chmod 400 ~/.ssh/semantic-ec2.pem` |
 | Storage | 30 GiB gp3 |
 
-En *Network settings* → *Edit* → crea el security group `semantic-ec2-sg` con estas
+En *Network settings* → *Edit*, crea el security group `semantic-ec2-sg` con estas
 reglas de entrada:
 
 | Tipo | Puerto | Origen | Para qué |
@@ -71,9 +101,9 @@ reglas de entrada:
 *Launch instance*.
 
 **IP fija**: *EC2 → Elastic IPs → Allocate Elastic IP address* → *Actions → Associate*
-con la instancia `semantic-api`. Anota la IP, por ejemplo `18.228.10.5`.
+con la instancia `semantic-api`. Anota la IP, por ejemplo `3.141.20.7`.
 
-El dominio del gateway se forma con esa IP: `18-228-10-5.sslip.io`. Es un servicio
+El dominio del gateway se forma con esa IP: `3-141-20-7.sslip.io`. Es un servicio
 gratuito que resuelve a la IP y permite obtener el certificado HTTPS sin comprar un
 dominio. Más adelante se puede cambiar por un dominio propio.
 
@@ -112,7 +142,7 @@ pgvector ya viene disponible en RDS. La restauración crea la extensión automá
 Desde la Mac de Tania:
 
 ```bash
-ssh -i ~/.ssh/semantic-ec2.pem ubuntu@18.228.10.5
+ssh -i ~/.ssh/semantic-ec2.pem ubuntu@3.141.20.7
 ```
 
 En el EC2:
@@ -122,13 +152,13 @@ curl -fsSL https://raw.githubusercontent.com/tprieto23/semanticClassification/fe
 exit   # vuelve a entrar para usar docker sin sudo
 ```
 
-El script instala Docker, crea 4 GB de swap, clona la rama y crea `~/semanticClassification/.env`.
-Complétalo con `nano ~/semanticClassification/.env`:
+El script instala Docker, crea 4 GB de swap, clona la rama y crea
+`~/semanticClassification/.env`. Complétalo con `nano ~/semanticClassification/.env`:
 
 ```bash
 DATABASE_URL=postgresql://sc_admin:<password>@<endpoint-rds>:5432/semantic_db?sslmode=require
 ANTHROPIC_API_KEY=<la clave actual>
-GATEWAY_HOST=18-228-10-5.sslip.io
+GATEWAY_HOST=3-141-20-7.sslip.io
 API_WORKERS=2
 ```
 
@@ -143,7 +173,7 @@ corriendo:
 ```bash
 bash deploy/aws/export-from-mac.sh
 scp -i ~/.ssh/semantic-ec2.pem export/semantic_db.dump export/s3.tar.gz \
-    ubuntu@18.228.10.5:~/semanticClassification/
+    ubuntu@3.141.20.7:~/semanticClassification/
 ```
 
 El script muestra cuántos documentos hay por estado y sector, para comparar después.
@@ -159,34 +189,36 @@ El script se niega a restaurar si la base de destino ya tiene tablas, para no pi
 datos por error. Al terminar muestra los mismos conteos: deben coincidir con los de la
 Mac.
 
-La Mac sigue teniendo su copia: la migración no borra nada en origen.
+La Mac conserva su copia: la migración no borra nada en el origen. El archivo
+`export/` contiene datos de investigación; no lo subas a Git y bórralo cuando la
+migración esté verificada.
 
 ## Paso 6 — Levantar los servicios
 
 ```bash
 cd ~/semanticClassification
 docker compose -f docker-compose.prod.yml up -d --build
-docker compose -f docker-compose.prod.yml exec api alembic upgrade head   # no-op si ya está al día
+docker compose -f docker-compose.prod.yml exec api alembic upgrade head   # no hace nada si ya está al día
 ```
 
-La primera construcción tarda 10–15 minutos (torch y docling). Para verificar:
+La primera construcción tarda entre 10 y 15 minutos (torch y docling). Para verificar:
 
 ```bash
-curl https://18-228-10-5.sslip.io/health                       # {"status":"ok"} público
-curl https://18-228-10-5.sslip.io/analysis/explorer/v1/meta    # explorador público
-curl https://18-228-10-5.sslip.io/documents                    # 404: no expuesto
-curl http://18.228.10.5:8000/docs                              # API completa, solo desde la IP de Tania
+curl https://3-141-20-7.sslip.io/health                       # {"status":"ok"}, público
+curl https://3-141-20-7.sslip.io/analysis/explorer/v1/meta    # explorador, público
+curl https://3-141-20-7.sslip.io/documents                    # 404: no expuesto
+curl http://3.141.20.7:8000/docs                              # API completa, solo desde la IP de Tania
 ```
 
 En Postman, Tania cambia la URL base de `http://localhost:8000` a
-`http://18.228.10.5:8000`.
+`http://3.141.20.7:8000`.
 
 ## Paso 7 — Publicar el dashboard en Vercel
 
 1. En Vercel (cuenta de Tania): *Add New → Project* → importar
    `tprieto23/semantic-network-explorer`.
 2. Framework: **Vite** (lo detecta solo por `vercel.json`).
-3. *Environment Variables*: `VITE_API_BASE_URL` = `https://18-228-10-5.sslip.io`
+3. *Environment Variables*: `VITE_API_BASE_URL` = `https://3-141-20-7.sslip.io`
 4. *Deploy*.
 
 `VITE_API_BASE_URL` se fija al construir. Si cambia el gateway, actualiza la variable y
@@ -194,13 +226,18 @@ vuelve a desplegar.
 
 ## Operación diaria
 
-| Tarea | Comando (en el EC2, dentro de `~/semanticClassification`) |
+| Tarea | Comando o acción |
 |---|---|
-| Actualizar a la última versión de la rama | `git pull && docker compose -f docker-compose.prod.yml up -d --build` |
+| Actualizar a la última versión de la rama | En el EC2: `git pull && docker compose -f docker-compose.prod.yml up -d --build` |
 | Ver logs | `docker compose -f docker-compose.prod.yml logs -f api` |
 | Reiniciar | `docker compose -f docker-compose.prod.yml restart` |
 | Aplicar migraciones | `docker compose -f docker-compose.prod.yml exec api alembic upgrade head` |
-| Pausar gastos de cómputo | Detener la instancia EC2 desde la consola (RDS se detiene hasta 7 días) |
+| Apagar el servidor | `aws ec2 stop-instances --instance-ids <id> --profile <perfil> --region us-east-2` |
+| Encenderlo | `aws ec2 start-instances --instance-ids <id> --profile <perfil> --region us-east-2` |
+| Consultar créditos | `aws freetier get-account-plan-state --profile <perfil> --region us-east-2` |
+
+Los servicios se levantan solos al encender el EC2 (`restart: unless-stopped`). La IP
+elástica no cambia al apagar y encender.
 
 Los backups automáticos de RDS se restauran desde *RDS → Automated backups*. La
 carpeta `s3/` vive en el disco del EC2; antes de usar el servidor como única fuente de
@@ -212,3 +249,4 @@ moverla a un bucket S3.
 - Autenticación de la API (planificada).
 - Restringir el CORS de la API al dominio de Vercel.
 - Dominio propio en lugar de `sslip.io`.
+- Pasar al plan pago antes de que se agoten los créditos.
