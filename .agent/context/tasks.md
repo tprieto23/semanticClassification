@@ -4,6 +4,12 @@
 
 ### Revisión y validación actual
 
+- [x] Descartar los ejemplos few-shot, eliminar su archivo y cargador e incorporar el codebook inglés completo al prompt mediante `NER_CODEBOOK_PATH`.
+- [x] Limitar el prompt de usuario a las oraciones e identificadores del documento; retirar la inyección independiente de definiciones y conservar los diez códigos del esquema.
+- [x] Verificar el flujo sin demostraciones: 108 pruebas exitosas y 2 omitidas; preparar el piloto con huellas del codebook vigente y conservar el formato de párrafos en una sola línea.
+- [x] Unificar codebook e instrucciones del bloque en `ner_prompt.md`; retirar `ner_user_prompt.md` y su configuración.
+- [ ] Validar un piloto real con la estrategia `codebook-single-prompt`; los resultados anteriores con demostraciones no validan este cambio.
+
 - [x] Revisar y crear los commits pendientes antes de nuevas ediciones:
   `56e2526` (codebook y documentación), `7e6ff24` (definiciones, prompts, ejemplos).
 - [x] Leer completa la sección 6, incluidas 6.1–6.3, y contrastarla con las
@@ -262,7 +268,7 @@ Contexto vigente: `PROJECT_CONTEXT.md`. Decisiones de esta sesión:
 
 ## Objetivo 4: Extracción de entidades 🔧
 
-**Nuevo enfoque:** Extracción few-shot mediante Anthropic Claude con diez etiquetas definidas en `src/categories.py`, diez demostraciones ilustrativas y salida estructurada forzada mediante tool use.
+**Enfoque vigente:** Extracción mediante Anthropic Claude con el codebook inglés completo como especificación, diez códigos validados desde `src/categories.py` y salida estructurada mediante tool use.
 
 ### Etiquetas finales
 
@@ -284,13 +290,13 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 ### Implementado
 
 - [x] `data/ner/annotations/a251048a.json` — anotaciones históricas retiradas del request; reservadas para trazabilidad
-- [x] `data/ner/few_shot_examples.json` — diez ejemplos ilustrativos que cubren las diez categorías; procedencia declarada, sin atribuirlos al corpus
+- [x] `data/codebooks/codebook_en_construccion_en.md` — especificación completa cargada directamente en el prompt; se retiró el archivo independiente de demostraciones
 - [x] `src/models/entities.py` — ORM Entity (tabla `entities` recreada vía migración)
 - [x] `src/services/llm_client.py` — cliente Anthropic compartido (reutilizado por cleaning.py y ner.py)
 - [x] `src/services/ner.py` — servicio de extracción con:
-  - Prompts externos en `data/prompts/`: system prompt + user prompt template
-  - Definiciones de las diez etiquetas incorporadas desde `src/categories.py` en `data/prompts/ner_prompt.md`
-  - Few-shot: diez demostraciones validadas antes de enviar cada fragmento
+  - Plantilla única `data/prompts/ner_prompt.md`: codebook + bloque objetivo
+  - Codebook completo incorporado mediante `$codebook` en `data/prompts/ner_prompt.md`
+  - Bloque objetivo incorporado mediante `$json_input`, sin demostraciones adicionales
   - Chunking de máximo 3 párrafos o 12K caracteres con offsets absolutos
   - Salida estructurada forzada con `submit_entity_annotations` y JSON Schema
   - Salida semántica: `{"document_id": "...", "annotations": [{label, text, sentence_id, ambiguity}]}`
@@ -308,7 +314,7 @@ Los objetivos, visiones e intenciones no son entidades por sí mismos. Una entid
 - [x] `requirements.txt` — dependencia `anthropic` (removido spacy/langdetect)
 - [x] `src/services/documents.py` — `extraer_entidades_de_documento()` no modifica la tabla `entities`; esa persistencia queda para un endpoint posterior
 - [x] `migrations/versions/b8e3f2a1c4d5_recreate_entities_table.py` — recrea tabla entities
-- [x] `src/config.py` — `STORAGE_NER = s3/archivosNER`, `NER_PROMPT_PATH = data/prompts/ner_prompt.md`, `NER_USER_PROMPT_PATH = data/prompts/ner_user_prompt.md`
+- [x] `src/config.py` — `STORAGE_NER = s3/archivosNER`, `NER_PROMPT_PATH = data/prompts/ner_prompt.md`, `NER_CODEBOOK_PATH = data/codebooks/codebook_en_construccion_en.md`
 - [x] `src/models/documents.py` — columna `ner_path`
 - [x] `migrations/versions/5ea1bb7e236a_add_ner_path_to_documents.py` — migración para `ner_path`
 - [x] `src/services/documents.py` — `extraer_entidades_de_documento()` guarda JSON en `s3/archivosNER/{id}.json`, devuelve el array de entidades y actualiza status a `ner`

@@ -15,10 +15,10 @@ src/
 │       ├── entities.py        ← EntityOut, ExtractEntitiesResponse
 │       └── network.py         ← respuesta tipada de red, cobertura y artefactos
 data/
+├── codebooks/codebook_en_construccion_en.md ← especificación completa de NER
 ├── ner/annotations/a251048a.json  ← anotaciones históricas reservadas para evaluación futura
 └── prompts/
-    ├── ner_prompt.md              ← system prompt del anotador semántico
-    └── ner_user_prompt.md         ← plantilla del user prompt (inyecta el JSON de entrada)
+    └── ner_prompt.md              ← plantilla única: codebook + bloque objetivo del anotador semántico
 ├── models/
 │   ├── database.py                ← engine, SessionLocal, Base, get_db
 │   ├── documents.py               ← ORM Document + incubator_number controlado (1..8)
@@ -198,12 +198,13 @@ POST /documents/{id}/extract-entities
      → DocumentRepo.leer_uno()              → SELECT
      → Storage.leer(cleaned_path)           → lee el .txt limpio
      → extraer_entidades(texto, document_id, document_title):
-         → _cargar_system_prompt()          → lee data/prompts/ner_prompt.md (caché)
+         → _cargar_prompt()                 → lee ner_prompt.md y codebook completo (caché)
+           → NER_CODEBOOK_PATH              → data/codebooks/codebook_en_construccion_en.md
          → _partir_por_parrafos()           → chunks de máximo 3 párrafos / 12K caracteres
          → _segmentar_oraciones()           → asigna sentence_id estable y offset absoluto
          → _construir_json_entrada()        → arma JSON con document_id, title y sentences
-         → _cargar_few_shot_examples()      → valida y formatea 25 ejemplos curados
-         → Anthropic API (claude-sonnet)    → system + ejemplos + fragmento objetivo
+         → _build_prompt()                  → inserta codebook y JSON objetivo en la plantilla única
+         → Anthropic API (claude-sonnet)    → un mensaje de usuario con codebook + fragmento objetivo
          → tool submit_entity_annotations   → salida validada por JSON Schema
          → _parsear_datos()                 → localiza cada span dentro de su sentence_id
          → fallo explícito                  → no persiste resultados truncados o sin tool use

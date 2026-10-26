@@ -5,7 +5,7 @@ from pathlib import Path
 from string import Template
 from typing import Any
 
-from src.categories import ACTIVE_CATEGORIES, CATEGORY_DEFINITIONS
+from src.categories import ACTIVE_CATEGORIES
 from src.config import settings
 from src.services.llm_client import get_anthropic_client
 
@@ -54,124 +54,28 @@ NER_TOOL = {
     },
 }
 
-_SYSTEM_PROMPT: str | None = None
-_USER_PROMPT_TEMPLATE: Template | None = None
-_FEW_SHOT_EXAMPLES: str | None = None
+_PROMPT_RESOURCES: tuple[Template, str] | None = None
 
 
-def _cargar_system_prompt() -> str:
-    global _SYSTEM_PROMPT
-    if _SYSTEM_PROMPT is None:
+def _cargar_prompt() -> tuple[Template, str]:
+    global _PROMPT_RESOURCES
+    if _PROMPT_RESOURCES is None:
         path = Path(settings.NER_PROMPT_PATH)
         if not path.exists():
-            raise FileNotFoundError(f"System prompt no encontrado: {path}")
-        _SYSTEM_PROMPT = Template(path.read_text(encoding="utf-8")).substitute(
-            category_definitions="\n".join(
-                f"- `{label}`: {definition}"
-                for label, definition in CATEGORY_DEFINITIONS.items()
-            )
-        )
-    return _SYSTEM_PROMPT
+            raise FileNotFoundError(f"Prompt NER no encontrado: {path}")
+        codebook_path = Path(settings.NER_CODEBOOK_PATH)
+        if not codebook_path.exists():
+            raise FileNotFoundError(f"Codebook NER no encontrado: {codebook_path}")
+        codebook = codebook_path.read_text(encoding="utf-8")
+        if not codebook.strip():
+            raise ValueError(f"Codebook NER vacío: {codebook_path}")
+        _PROMPT_RESOURCES = (Template(path.read_text(encoding="utf-8")), codebook)
+    return _PROMPT_RESOURCES
 
 
-def _cargar_user_prompt_template() -> Template:
-    global _USER_PROMPT_TEMPLATE
-    if _USER_PROMPT_TEMPLATE is None:
-        path = Path(settings.NER_USER_PROMPT_PATH)
-        if not path.exists():
-            raise FileNotFoundError(f"User prompt no encontrado: {path}")
-        _USER_PROMPT_TEMPLATE = Template(path.read_text(encoding="utf-8"))
-    return _USER_PROMPT_TEMPLATE
-
-
-def _cargar_few_shot_examples() -> str:
-    global _FEW_SHOT_EXAMPLES
-    if _FEW_SHOT_EXAMPLES is not None:
-        return _FEW_SHOT_EXAMPLES
-
-    path = Path(settings.NER_FEW_SHOT_PATH)
-    if not path.exists():
-        raise FileNotFoundError(f"Ejemplos few-shot no encontrados: {path}")
-
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise ValueError(f"JSON few-shot inválido en {path}: {exc}") from exc
-
-    examples = payload.get("examples") if isinstance(payload, dict) else None
-    if not isinstance(examples, list) or not examples:
-        raise ValueError(
-            "El archivo few-shot debe contener una lista examples no vacía"
-        )
-
-    formatted: list[str] = []
-    for index, example in enumerate(examples, start=1):
-        if not isinstance(example, dict):
-            raise ValueError(f"Ejemplo few-shot #{index} no es un objeto")
-
-        example_id = str(example.get("id", f"example-{index}"))
-        source_text = example.get("text")
-        annotations = example.get("annotations")
-        if not isinstance(source_text, str) or not source_text.strip():
-            raise ValueError(f"Texto inválido en ejemplo few-shot {example_id}")
-        if not isinstance(annotations, list):
-            raise ValueError(f"Annotations inválido en ejemplo few-shot {example_id}")
-
-        sentence_id = f"{example_id}-s1"
-        validated_annotations: list[dict[str, str]] = []
-        for annotation in annotations:
-            if not isinstance(annotation, dict):
-                raise ValueError(f"Anotación inválida en ejemplo {example_id}")
-            label = annotation.get("label")
-            span_text = annotation.get("text")
-            ambiguity = annotation.get("ambiguity")
-            if label not in VALID_LABELS:
-                raise ValueError(
-                    f"Etiqueta no permitida {label!r} en ejemplo {example_id}"
-                )
-            if not isinstance(span_text, str) or span_text not in source_text:
-                raise ValueError(
-                    f"Span no literal en ejemplo {example_id}: {span_text!r}"
-                )
-            if ambiguity not in {"low", "medium", "high"}:
-                raise ValueError(
-                    f"Ambigüedad no permitida en ejemplo {example_id}: {ambiguity!r}"
-                )
-            validated_annotations.append(
-                {
-                    "label": label,
-                    "text": span_text,
-                    "sentence_id": sentence_id,
-                    "ambiguity": ambiguity,
-                }
-            )
-
-        demonstration = {
-            "id": example_id,
-            "input": {
-                "document_id": example_id,
-                "document_title": "",
-                "section_title": "",
-                "sentences": [{"sentence_id": sentence_id, "text": source_text}],
-            },
-            "expected_output": {
-                "document_id": example_id,
-                "annotations": validated_annotations,
-            },
-        }
-        formatted.append(json.dumps(demonstration, ensure_ascii=False))
-
-    _FEW_SHOT_EXAMPLES = "\n".join(formatted)
-    logger.info("Cargados %d ejemplos few-shot desde %s", len(examples), path)
-    return _FEW_SHOT_EXAMPLES
-
-
-def _build_user_prompt(json_input: str, few_shot_examples: str) -> str:
-    template = _cargar_user_prompt_template()
-    return template.substitute(
-        few_shot_examples=few_shot_examples,
-        json_input=json_input,
-    )
+def _build_prompt(json_input: str) -> str:
+    template, codebook = _cargar_prompt()
+    return template.substitute(codebook=codebook, json_input=json_input)
 
 
 def _construir_json_entrada(
@@ -464,8 +368,7 @@ def extraer_entidades(
         logger.warning("Texto vacío, no hay entidades que extraer")
         return []
 
-    system_prompt = _cargar_system_prompt()
-    few_shot_examples = _cargar_few_shot_examples()
+    _cargar_prompt()
     max_chunk = settings.NER_MAX_CHUNK_LEN
     chunks = _partir_por_parrafos(texto, max_chunk)
 
@@ -494,7 +397,7 @@ def extraer_entidades(
         messages = [
             {
                 "role": "user",
-                "content": _build_user_prompt(json_input, few_shot_examples),
+                "content": _build_prompt(json_input),
             }
         ]
 
@@ -502,7 +405,6 @@ def extraer_entidades(
             response = client.messages.create(
                 model=settings.ANTHROPIC_MODEL,
                 max_tokens=16384,
-                system=system_prompt,
                 messages=messages,
                 tools=[NER_TOOL],
                 tool_choice={"type": "tool", "name": NER_TOOL_NAME},

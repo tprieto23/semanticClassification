@@ -7,13 +7,21 @@ Este documento resume el estado metodológico y técnico del proyecto de clasifi
 El proyecto transforma documentos de los incubadores en una base de entidades canónicas y redes semánticas auditables. La unidad de evidencia es la oración: las relaciones entre entidades se derivan de su coocurrencia dentro de `(document_id, sentence_id)` y deben poder rastrearse hasta el documento, la oración, el contexto y las entidades originales.
 
 La fase de trabajo actual con la usuaria es la revisión y validación del
-codebook operativo en `codebook_en_construccion.md`. Sus diez categorías,
-fichas y reglas de anotación están desarrolladas en el borrador 0.2.
+codebook operativo en `data/codebooks/codebook_en_construccion_en.md`. Sus diez categorías,
+fichas y reglas de anotación están desarrolladas en el borrador 0.4.
 El codebook sirve como especificación
 para la extracción y clasificación mediante LLM en la API, con posterior
 canonicalización, atributos de nodos y análisis de coocurrencia.
 
 ### Punto de reanudación — 16 Oct 2026
+
+La usuaria descartó el mecanismo few-shot porque el codebook ya define la tarea completa. El servicio carga directamente `data/codebooks/codebook_en_construccion_en.md`, configurado mediante `NER_CODEBOOK_PATH`, y lo inserta en `$codebook` de la plantilla única `data/prompts/ner_prompt.md`. La misma plantilla incluye `$json_input` con las oraciones del bloque; `ner.py` envía el resultado como un mensaje de usuario, sin prompt de sistema separado. Se retiraron `ner_user_prompt.md` y `NER_USER_PROMPT_PATH`. Se eliminaron el archivo de demostraciones, su cargador y `NER_FEW_SHOT_PATH`; ya no se inyectan las definiciones de `src/categories.py` en el prompt. La taxonomía conserva los diez códigos para el esquema y la validación local. Los ejemplos internos del codebook permanecen como parte de sus reglas. La versión española de la raíz se conserva como antecedente; la fuente operativa es la inglesa en `data/codebooks/`.
+
+Los resultados del piloto anterior corresponden al flujo con demostraciones y no validan esta nueva estrategia. El script de validación registra `prompt_strategy: codebook-single-prompt` y exige coincidencia de esa estrategia y del codebook para reanudar respuestas guardadas. Al iniciar/reiniciar la API se recarga el prompt con el codebook; las ediciones no sustituyen automáticamente su caché en memoria.
+
+Comprobación local del cambio: 110 pruebas ejecutadas, 108 exitosas y 2 omitidas por dependencias opcionales de Leiden. Se verificaron la carga del codebook completo, la ausencia de demostraciones externas, el fallo previo a contactar al proveedor si falta el codebook o está vacío, y el formato sin saltos internos de párrafo. Se preparó inicialmente el piloto sin demostraciones y después se unificó la plantilla; no se ejecutó una nueva extracción real ni se reinició la API.
+
+### Antecedente — reglas y piloto del 16 Oct 2026
 
 Se revisaron los cambios guardados antes de nuevas ediciones y se crearon
 los commits `56e2526` (codebook y documentación) y `7e6ff24` (definiciones,

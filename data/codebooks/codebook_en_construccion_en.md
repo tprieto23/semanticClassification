@@ -2,8 +2,6 @@
 
 **Status:** Operational draft for review; pilot not yet approved.
 
-**Version:** Draft 0.2 — October 16, 2026.
-
 Extract literal mentions and classify them into the 10 categories in this codebook. Use the instructions and the text provided; do not consult external documents or add information from external knowledge. Applying the codebook to the corpus requires the pilot review described in section 10.
 
 ## 1. Purpose of Annotation
@@ -28,7 +26,7 @@ Each task requires the previous one to be completed. This codebook defines NER e
 
 ### 1.4. Operational Role within the API
 
-The codebook is the methodological reference for the prompt, classification criteria, and NER annotation contract. Its rules must be incorporated into the prompt and code checks; the API does not automatically include this entire document.
+The codebook is the methodological reference for the classification criteria and NER annotation contract. The service loads this entire document into a single prompt together with the target input. The prompt template introduces the codebook and the sentences to process; it does not maintain separate category definitions or demonstrations. Code checks enforce the annotation contract.
 
 The model returns classified mentions through the `label`, `text`, `sentence_id`, and `ambiguity` fields. The code calculates their positions and preserves the source sentence as context. NER provides this evidence for the subsequent tasks; its responsibility is limited to extraction and classification.
 
@@ -481,7 +479,7 @@ The service checks the fields, document identifier, labels, sentences, literal w
 
 ## 9. Complete Application Examples
 
-The ten demonstrations in `data/ner/few_shot_examples.json` illustrate the ten categories; their provenance is illustrative, and they are not an annotated reference set drawn from the corpus. The category descriptions in section 5 explain the category boundaries.
+The examples within this codebook illustrate its categories and rules; they are not an annotated reference set drawn from the corpus. The category descriptions in section 5 explain the category boundaries. The service does not load a separate demonstration file.
 
 The following limited cases show all expected annotations; copy the input `sentence_id` in each case:
 
@@ -501,11 +499,11 @@ In a factual sentence such as “Flowering occurs in August,” do not add KNOW 
 1. Select a real document of manageable length and preserve its complete clean text, identifier, and SHA-256 hash. Run only NER with the current versions; preserve results and warnings for review.
 2. Check labels, literal wording, positions, sentences, repetitions, and nesting. Compare the final annotations received with those retained: they must match. Also preserve the previous corrected responses and the number of retries. Review empty chunks.
 3. Read all pilot sentences, including those without mentions, to detect omissions, incorrect assignments, and overly broad spans. Pay particular attention to KNOW/ATT/SKILL/PRAC, infrastructure/LOC, proposed rules, acronyms, and `medium` or `high` mentions.
-4. Record corrections and their rationale; human review adjudicates the reference set. Separate these development data from a subsequent evaluation using different documents, and keep the demonstrations identified as illustrative. A single document does not validate absent categories or demonstrate quality across all languages.
+4. Record corrections and their rationale; human review adjudicates the reference set. Separate these development data from a subsequent evaluation using different documents, and keep the examples within the codebook identified as illustrative. A single document does not validate absent categories or demonstrate quality across all languages.
 5. Before processing the corpus, require zero unresolved structural errors and review all disagreements detected in the pilot. Do not claim measured precision or recall without an adjudicated reference set. Once one exists, calculate precision, recall, and F1 using exact matches of position and category, together with errors by category; set the thresholds for expanded evaluation before measuring performance on held-out documents.
-6. If a rule changes as a result of the pilot, update the codebook, definitions, prompt, and affected examples, run the regression checks, and repeat only the affected validation. Compare annotations across versions before processing batches. Evaluate LLM repeatability on fixed text; tests with a simulated provider verify the code, not its stability.
+6. If a rule changes as a result of the pilot, update the codebook and its affected examples. Update the prompt template or contract checks when required, run the regression checks, and repeat only the affected validation. Compare annotations across versions before processing batches. Evaluate LLM repeatability on fixed text; tests with a simulated provider verify the code, not its stability.
 
-Record the codebook version, commit, configured model, and hashes of the text, definitions, prompts, and demonstrations in the pilot artifact. When loading changes into the API, start or restart its process: prompts are cached in memory, and editing their files alone does not guarantee reloading. Validate fuzzy matching and relationships afterward through their own endpoints.
+Record the codebook version, commit, configured model, and hashes of the text, codebook, taxonomy, and prompt template in the pilot artifact. When loading changes into the API, start or restart its process: the prompt template and codebook are cached in memory, and editing their files alone does not guarantee reloading. Each chunk's target input is inserted separately when its prompt is built. Validate fuzzy matching and relationships afterward through their own endpoints.
 
 ## Appendix A. Instructions for the Language Model
 
@@ -513,10 +511,9 @@ Operational instructions are maintained in the files used by the service:
 
 | Source | Rules incorporated |
 |---|---|
-| `src/categories.py` | Ten codes and summaries of the category descriptions in section 5. |
-| `data/prompts/ner_prompt.md` | Domain, evidence, context, span boundaries, nesting, repetitions, ambiguity, and output from sections 1–8. |
-| `data/prompts/ner_user_prompt.md` | Demonstrations and target sentences; extraction limited to `target_input`. |
-| `data/ner/few_shot_examples.json` | Ten illustrative category demonstrations. |
+| `data/codebooks/codebook_en_construccion_en.md` | Complete annotation specification, including category definitions, rules, and examples. |
+| `src/categories.py` | Ten valid codes used by the tool schema and local validation. Category summaries in this module are not inserted into the prompt. |
+| `data/prompts/ner_prompt.md` | Single template with `$codebook` for the complete specification and `$json_input` for the target sentences and identifiers; limits the task to extraction and classification. |
 | `src/services/ner.py` | Four-field schema, segmentation, literal span location, and contract checks. |
 
-The service inserts the definitions into `$category_definitions` and assembles the user prompt with examples and input. It does not send this entire codebook or instructions for canonicalization or relationship construction to the model.
+The service loads the complete codebook configured in `NER_CODEBOOK_PATH` and the single template configured in `NER_PROMPT_PATH`. For each chunk, it substitutes `$codebook` and `$json_input` and sends the assembled prompt as a user message with the structured output tool. There is no separate system prompt, user prompt file, few-shot example loader, or category-definition injection. Although the codebook describes the wider workflow, the model's task is limited to extracting and classifying literal mentions; canonicalization and relationship construction remain subsequent stages.

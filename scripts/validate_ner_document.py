@@ -52,14 +52,14 @@ def main():
         ner._segmentar_oraciones(chunk, offset), args.source.stem, args.document_title
     )) for chunk, offset in ner._partir_por_parrafos(text, settings.NER_MAX_CHUNK_LEN)]
     write_json(args.output / "inputs.json", inputs)
-    files = ["codebook_en_construccion.md", "src/categories.py", "src/services/ner.py",
-             "data/prompts/ner_prompt.md", "data/prompts/ner_user_prompt.md",
-             "data/ner/few_shot_examples.json", "scripts/validate_ner_document.py"]
+    files = [str(settings.NER_CODEBOOK_PATH), "src/categories.py", "src/services/ner.py",
+             str(settings.NER_PROMPT_PATH),
+             "scripts/validate_ner_document.py"]
     manifest = {
         "status": "prepared", "created_at": datetime.now(timezone.utc).isoformat(),
         "source": str(args.source), "source_sha256": hashlib.sha256(source_bytes).hexdigest(),
         "document_id": args.source.stem, "characters": len(text),
-        "model": settings.ANTHROPIC_MODEL, "chunks": len(inputs),
+        "model": settings.ANTHROPIC_MODEL, "prompt_strategy": "codebook-single-prompt", "chunks": len(inputs),
         "sentences": sum(len(i["sentences"]) for i in inputs),
         "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "file_sha256": {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in files},
@@ -78,9 +78,10 @@ def main():
         previous = json.loads((args.resume_from / "manifest.json").read_text())
         assert previous["source_sha256"] == manifest["source_sha256"]
         assert previous["model"] == manifest["model"]
+        assert previous.get("prompt_strategy") == manifest["prompt_strategy"], "No se pueden reutilizar respuestas de otra estrategia de prompt"
         assert json.loads((args.resume_from / "inputs.json").read_text()) == inputs
         for name in files:
-            if name.startswith("data/") or name == "src/categories.py":
+            if name.startswith("data/") or name in {"src/categories.py", str(settings.NER_CODEBOOK_PATH), str(settings.NER_PROMPT_PATH)}:
                 assert previous["file_sha256"][name] == manifest["file_sha256"][name]
         for record in json.loads((args.resume_from / "provider_responses.json").read_text()):
             saved[tuple(record["sentence_ids"])] = record["response"]
