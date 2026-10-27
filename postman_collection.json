@@ -225,7 +225,7 @@
                   "key": "year",
                   "type": "text",
                   "value": "2025",
-                  "description": "(Opcional) Año del documento, entre 1000 y 9999"
+                  "description": "(Opcional) Año del documento, entre 1990 y 2030"
                 },
                 {
                   "key": "productive_sector",

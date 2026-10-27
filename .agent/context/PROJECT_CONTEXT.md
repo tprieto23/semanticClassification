@@ -13,6 +13,26 @@ El codebook sirve como especificación
 para la extracción y clasificación mediante LLM en la API, con posterior
 canonicalización, atributos de nodos y análisis de coocurrencia.
 
+### Metadatos del corpus local — 27 Oct 2026
+
+Se registraron y verificaron `language`, `year` y `document_type` para los
+116 documentos que actualmente tienen `productive_sector = Agroforestry` en
+PostgreSQL local, usando la tabla suministrada por la usuaria. Idiomas: 62 `es`,
+53 `en` y 1 `pt`; años entre 2001 y 2026. `document_type` conserva literalmente
+los valores de la tabla, incluidos `Other`, `WA SAM Hub` y nombres de autores o
+revistas. La última columna `Other` fue descartada por indicación de la usuaria;
+no se escribió metadata. Se comprobaron los tres campos después del commit y
+que el resto de los campos y documentos permanecieran intactos.
+
+Se corrigieron dos UUID transcritos incorrectamente por el asistente en la
+lista original, comprobando el nombre del documento en la DB:
+`1f2f0bca-2f12-4060-9f63-be48be52c58e` (tesis de Elisabeth Lagneaux) y
+`8d9ec319-2663-42a3-ac22-7e837a2921b9` (Plant Composition and Species Use).
+Tabla recibida, CSV validado, respaldo previo, importador y reporte de la carga
+están en `export/metadata_2026-10-27/`, excluido de Git. La migración local es
+`e9f0a1b2c3d4`: `year` admite 1990–2030 y `document_type` es texto libre de hasta
+50 caracteres. Esta carga solo actualizó la base local; no sincronizó AWS.
+
 ### Explorador de entidades — 26 Oct 2026
 
 En paralelo al codebook, la rama `feat/explorador-entidades` añade la API de

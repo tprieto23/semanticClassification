@@ -31,17 +31,12 @@ class Document(Base):
             name="ck_documents_incubator_number",
         ),
         CheckConstraint(
-            "year BETWEEN 1000 AND 9999",
+            "year BETWEEN 1990 AND 2030",
             name="ck_documents_year",
         ),
         CheckConstraint(
             "productive_sector IN ('Agroforestry')",
             name="ck_documents_productive_sector",
-        ),
-        CheckConstraint(
-            "document_type IN ('academic', 'technical_report', 'project_report', "
-            "'policy_document', 'manual_or_guide', 'institutional_document', 'other')",
-            name="ck_documents_document_type",
         ),
         Index("ix_documents_incubator_number", "incubator_number"),
         Index("ix_documents_year", "year"),

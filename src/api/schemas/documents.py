@@ -49,7 +49,9 @@ class DocumentRead(BaseModel):
     language: str | None = None
     year: int | None = None
     productive_sector: ProductiveSector | None = None
-    document_type: DocumentType | None = None
+    # Historical values use a controlled vocabulary, but the corpus also
+    # records sources/authors/journals such as "WA SAM Hub" and "Elsevier".
+    document_type: str | None = None
     uploaded_at: datetime
     metadata: dict[str, Any] | None = Field(None, validation_alias="metadata_")
     converted_path: str | None = None

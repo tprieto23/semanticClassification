@@ -43,9 +43,9 @@ router = APIRouter(prefix="/documents", tags=["Documents"])
 def upload(
     file: Annotated[UploadFile, File()],
     incubator_number: Annotated[IncubatorNumber, Form()],
-    year: Annotated[int | None, Form(ge=1000, le=9999)] = None,
+    year: Annotated[int | None, Form(ge=1990, le=2030)] = None,
     productive_sector: Annotated[ProductiveSector | None, Form()] = None,
-    document_type: Annotated[DocumentType | None, Form()] = None,
+    document_type: Annotated[str | None, Form(max_length=50)] = None,
     metadata: Annotated[str | None, Form()] = None,
     language: Annotated[str | None, Form(min_length=2, max_length=10)] = None,
     db: Session = Depends(get_db),
@@ -57,7 +57,7 @@ def upload(
         int(incubator_number),
         year,
         productive_sector.value if productive_sector else None,
-        document_type.value if document_type else None,
+        document_type,
         metadata,
         language_limpio,
     )
@@ -69,9 +69,9 @@ def upload(
 def upload_batch(
     files: Annotated[list[UploadFile], File()],
     incubator_number: Annotated[IncubatorNumber, Form()],
-    year: Annotated[int | None, Form(ge=1000, le=9999)] = None,
+    year: Annotated[int | None, Form(ge=1990, le=2030)] = None,
     productive_sector: Annotated[ProductiveSector | None, Form()] = None,
-    document_type: Annotated[DocumentType | None, Form()] = None,
+    document_type: Annotated[str | None, Form(max_length=50)] = None,
     metadata: Annotated[str | None, Form()] = None,
     language: Annotated[str | None, Form(min_length=2, max_length=10)] = None,
     db: Session = Depends(get_db),
@@ -83,7 +83,7 @@ def upload_batch(
         int(incubator_number),
         year,
         productive_sector.value if productive_sector else None,
-        document_type.value if document_type else None,
+        document_type,
         metadata,
         language_limpio,
     )
@@ -146,8 +146,8 @@ def update_document_language(
                         "properties": {
                             "year": {
                                 "type": "integer",
-                                "minimum": 1000,
-                                "maximum": 9999,
+                                "minimum": 1990,
+                                "maximum": 2030,
                             },
                             "productive_sector": {
                                 "type": "string",
@@ -155,7 +155,8 @@ def update_document_language(
                             },
                             "document_type": {
                                 "type": "string",
-                                "enum": [item.value for item in DocumentType],
+                                "maxLength": 50,
+                                "description": "Tipo, fuente, autor o revista según el catálogo del corpus.",
                             },
                         },
                     }
@@ -166,9 +167,9 @@ def update_document_language(
 )
 def update_document_classification(
     document_id: UUID,
-    year: Annotated[int | None, Form(ge=1000, le=9999)] = None,
+    year: Annotated[int | None, Form(ge=1990, le=2030)] = None,
     productive_sector: Annotated[ProductiveSector | None, Form()] = None,
-    document_type: Annotated[DocumentType | None, Form()] = None,
+    document_type: Annotated[str | None, Form(max_length=50)] = None,
     db: Session = Depends(get_db),
 ):
     return DocumentService.actualizar_clasificacion(
@@ -176,7 +177,7 @@ def update_document_classification(
         str(document_id),
         year,
         productive_sector.value if productive_sector else None,
-        document_type.value if document_type else None,
+        document_type,
     )
 
 

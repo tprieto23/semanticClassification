@@ -16,7 +16,8 @@ clusters son por categoría o mixtos.
 - [x] Despliegue preparado: `docker-compose.prod.yml`, gateway Caddy, scripts y guía en `deploy/aws/`.
 - [ ] Desplegar en el project AWS (us-east-2) siguiendo `deploy/aws/AGENT-RUNBOOK.md` desde la Mac de Tania y migrar la base real.
 - [ ] Decidir si `/analysis/network`, las proyecciones y Leiden también filtran por sector.
-- [ ] Asignar `year` a los documentos del corpus; sin año no entran en la evolución.
+- [x] Registrar y verificar `language`, `year` y `document_type` de los 116 documentos Agroforestry locales según la tabla de la usuaria (27 Oct 2026).
+- [ ] Completar los metadatos del resto del corpus si se incorpora al análisis; sin año los documentos no entran en la evolución.
 - [ ] Probar el explorador sobre la DB real después de reprocesar con las diez categorías.
 - [x] Red del explorador más rápida: métricas con igraph y caché de redes por alcance y filtros estructurales.
 
