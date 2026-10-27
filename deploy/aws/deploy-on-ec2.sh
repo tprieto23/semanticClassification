@@ -20,10 +20,12 @@ echo "==> 1/4 Actualizando el código a $EXPECTED ($BRANCH)"
 git fetch --quiet origin "$BRANCH"
 git checkout --quiet "$BRANCH"
 if [ "$(git rev-parse HEAD)" != "$EXPECTED" ] && git merge-base --is-ancestor "$EXPECTED" HEAD; then
-  # Otro despliegue ya dejó una versión más nueva: no se retrocede.
+  # El código ya está en una versión posterior: no se retrocede.
   echo "El servidor ya tiene una versión posterior ($(git rev-parse --short HEAD)); nada que hacer."
   exit 0
 fi
+# Si el código ya está en ese commit (por ejemplo, tras un git pull a mano), igual se
+# reconstruye: la imagen de la API puede ser de una versión anterior.
 # Solo avanza (fast-forward) hasta el commit probado; nunca descarta trabajo local.
 git merge --ff-only --quiet "$EXPECTED"
 echo "Código en $(git log -1 --format='%h %s')"

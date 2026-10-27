@@ -22,9 +22,12 @@ main() {
   exec 9>"$state_dir/lock"
   flock -n 9 || { echo "Otro despliegue en curso; se omite este ciclo."; return 0; }
 
+  # Se compara con el último commit que este script desplegó con éxito, no con la
+  # carpeta del repo: un git pull a mano en el servidor cambia la carpeta sin
+  # reconstruir la API. Sin registro (primera vez), se despliega una vez.
   local latest deployed
   latest=$(github "$api/commits/$branch" | json '["sha"]')
-  deployed=$(git -C "$app_dir" rev-parse HEAD)
+  deployed=$(cat "$state_dir/deployed" 2>/dev/null || echo none)
   if [ "$latest" = "$deployed" ]; then
     return 0
   fi
@@ -44,6 +47,14 @@ main() {
     return 0
   fi
 
+  # Si el mismo commit ya falló 3 veces, no se insiste hasta que llegue otro.
+  local failures
+  failures=$(grep -c " error $latest\$" "$state_dir/history" 2>/dev/null || true)
+  if [ "${failures:-0}" -ge 3 ]; then
+    note "$state_dir" "$latest" "Commit ${latest:0:7}: falló 3 veces; se espera un commit nuevo."
+    return 0
+  fi
+
   echo "Desplegando ${latest:0:7} (antes ${deployed:0:7})"
   git -C "$app_dir" fetch --quiet origin "$branch"
   # El script de despliegue se toma del commit que se despliega.
@@ -51,6 +62,7 @@ main() {
   if DEPLOY_BRANCH="$branch" DB_MODE="${DB_MODE:-local-db}" APP_DIR="$app_dir" \
     bash "$state_dir/deploy-on-ec2.sh" "$latest"; then
     printf '%s ok %s\n' "$(date -Is)" "$latest" >>"$state_dir/history"
+    printf '%s\n' "$latest" >"$state_dir/deployed"
     echo "Despliegue de ${latest:0:7} terminado."
   else
     printf '%s error %s\n' "$(date -Is)" "$latest" >>"$state_dir/history"

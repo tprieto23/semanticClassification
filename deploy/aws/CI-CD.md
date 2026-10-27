@@ -68,8 +68,11 @@ Para ver qué pasó:
 deploy/aws/bin/autodeploy-status
 ```
 
-Muestra la próxima revisión, la versión desplegada, el historial de despliegues y los
-últimos mensajes, por ejemplo:
+Muestra la próxima revisión, el commit del código, el último commit desplegado por el
+temporizador, cuándo se construyó la imagen de la API, el historial y los últimos
+mensajes. El temporizador compara GitHub con lo que **él mismo desplegó** (no con la
+carpeta del repo), así que un `git pull` a mano en el servidor no lo confunde: en el
+siguiente ciclo reconstruye la API. Ejemplo de mensajes:
 
 ```
 Commit 3a1b2c4: tests aún no terminan (in_progress); se reintenta en el próximo ciclo.
@@ -85,6 +88,7 @@ Despliegue de 3a1b2c4 terminado.
 | `los tests no pasaron (failure); no se despliega` | Corregir y hacer push; el servidor sigue con la versión anterior |
 | `tests aún no terminan (none)` durante mucho tiempo | El commit no tiene job «Tests» (por ejemplo, se canceló el workflow). Volver a ejecutarlo en *Actions* |
 | `El despliegue de … falló; se reintentará` | Ver el detalle con `autodeploy-status`. Si la API no arranca, el log muestra sus últimas líneas |
+| `falló 3 veces; se espera un commit nuevo` | Tras 3 intentos fallidos con el mismo commit deja de reconstruir. Corregir y hacer push; para reintentar el mismo commit, borrar `~/.semantic-autodeploy/history` en el EC2 |
 | `fatal: Not possible to fast-forward` | Alguien cambió código directamente en el EC2: revisar `git status` ahí |
 
 Si un despliegue deja la API rota, hacer push de un commit que lo revierta

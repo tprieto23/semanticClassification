@@ -3,6 +3,8 @@
 # historial y últimos mensajes. Uso: deploy/aws/bin/autodeploy-status
 set -euo pipefail
 exec "$(dirname "$0")/ec2-ssh" 'systemctl list-timers semantic-autodeploy.timer --no-pager
-echo; echo "Versión desplegada: $(git -C ~/semanticClassification log -1 --format="%h %s (%cr)")"
+echo; echo "Código en el servidor: $(git -C ~/semanticClassification log -1 --format="%h %s (%cr)")"
+echo "Último despliegue automático: $(cut -c1-7 ~/.semantic-autodeploy/deployed 2>/dev/null || echo "ninguno todavía")"
+echo "API construida: $(docker inspect -f "{{.Created}}" semanticclassification-api-1 2>/dev/null | cut -c1-19 || echo "?")"
 echo; echo "Historial (últimos 10):"; tail -n 10 ~/.semantic-autodeploy/history 2>/dev/null || echo "  sin despliegues todavía"
 echo; journalctl -u semantic-autodeploy.service -n 25 --no-pager' </dev/null
