@@ -34,7 +34,7 @@ from src.analysis.explorer import (
     select_shown_network,
 )
 from src.api.main import app
-from src.api.routers.explorer import _scope, explorer_network
+from src.api.routers.explorer import _filters, _scope, explorer_network
 from src.api.schemas.explorer import (
     ExplorerCompareRequest,
     ExplorerCompareResponse,
@@ -249,6 +249,44 @@ class ExplorerNetworkTests(unittest.TestCase):
 
         self.assertEqual(network["nodes"][0]["id"], "podas")
         self.assertEqual(network["metric_provenance"]["betweenness"], "exact")
+
+    def test_excluded_entities_are_removed_before_metrics(self) -> None:
+        filters = ExplorerFilters(minimum_node_document_count=1, top_n=None)
+        full = build_explorer_network(CORPUS, filters)
+        without = build_explorer_network(
+            CORPUS, replace(filters, excluded_entity_ids=("coop", "fantasma"))
+        )
+
+        self.assertIn("coop", _node_ids(full))
+        self.assertNotIn("coop", _node_ids(without))
+        coop_mentions = sum(1 for mention in CORPUS if mention.canonical_id == "coop")
+        self.assertEqual(
+            without["stages"]["mentions"], full["stages"]["mentions"] - coop_mentions
+        )
+        # Las métricas del resto se recalculan sin la entidad: alguien más es #1.
+        leader = min(without["nodes"], key=lambda node: node["ranks"]["pagerank"])
+        self.assertEqual(leader["ranks"]["pagerank"], 1)
+        self.assertNotEqual(leader["id"], "coop")
+        self.assertEqual(
+            without["excluded_entities"],
+            [
+                {
+                    "id": "coop",
+                    "name": "cooperativa",
+                    "category": "CHAR",
+                    "mention_count": coop_mentions,
+                },
+                {"id": "fantasma", "name": None, "category": None, "mention_count": 0},
+            ],
+        )
+        self.assertEqual(full["excluded_entities"], [])
+
+    def test_exclusions_are_part_of_the_cached_network(self) -> None:
+        base = ExplorerFilters()
+        self.assertNotEqual(
+            replace(base, excluded_entity_ids=("coop",)).structural(),
+            base.structural(),
+        )
 
     def test_empty_results_return_warnings_instead_of_errors(self) -> None:
         no_mentions = build_explorer_network([], ExplorerFilters())
@@ -771,6 +809,16 @@ class ExplorerApiTests(unittest.TestCase):
         self.assertEqual(_data_fingerprint(db, documents), (120, 40, "2026-10-27"))
         where = str(db.execute.call_args.args[0].whereclause)
         self.assertIn("entities.document_id IN", where)
+
+    def test_excluded_entity_ids_are_validated_sorted_and_deduplicated(self) -> None:
+        first = "00000000-0000-0000-0000-0000000000f1"
+        second = "00000000-0000-0000-0000-0000000000f2"
+        request = ExplorerNetworkRequest(excluded_entity_ids=[second, first, second])
+
+        self.assertEqual(_filters(request, 10).excluded_entity_ids, (first, second))
+        self.assertEqual(_filters(ExplorerNetworkRequest(), 10).excluded_entity_ids, ())
+        with self.assertRaises(ValidationError):
+            ExplorerNetworkRequest(excluded_entity_ids=["MADRE DE DIOS"])
 
     def test_load_db_mentions_with_empty_document_list_returns_nothing(self) -> None:
         db = Mock()

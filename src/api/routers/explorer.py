@@ -58,6 +58,11 @@ def _filters(selection: ExplorerFiltersRequest, top_n: int | None) -> ExplorerFi
         minimum_edge_weight=selection.minimum_edge_weight,
         ranking_metric=selection.ranking_metric,
         top_n=top_n,
+        excluded_entity_ids=tuple(
+            sorted(
+                {str(entity_id) for entity_id in selection.excluded_entity_ids or []}
+            )
+        ),
     )
 
 

@@ -99,6 +99,9 @@ class ExplorerFilters:
     minimum_edge_weight: float = 0.0
     ranking_metric: RankingMetric = "pagerank"
     top_n: int | None = 150
+    # Entidades canónicas que se quitan antes de construir la red (por ejemplo, la
+    # región que da contexto a todo el corpus); ordenadas para la clave de caché.
+    excluded_entity_ids: tuple[str, ...] = ()
 
     def structural(self) -> "ExplorerFilters":
         """Los mismos filtros sin lo que solo afecta la selección final.
@@ -120,6 +123,7 @@ class RankedNetwork:
     stages: dict[str, Any]
     provenance: dict[str, Any]
     warnings: tuple[str, ...]
+    excluded: tuple[dict[str, Any], ...] = ()
 
 
 def resolve_categories(
@@ -295,6 +299,45 @@ def rank_nodes(
     )
 
 
+def exclude_entities(
+    mentions: Sequence[MentionRecord],
+    excluded_ids: Sequence[str],
+) -> tuple[list[MentionRecord], tuple[dict[str, Any], ...]]:
+    """Quita las menciones de las entidades excluidas y describe cada una.
+
+    Una entidad pedida que no aparece en el alcance se informa con nombre nulo, para
+    que la interfaz pueda mostrarla y permitir quitarla del filtro.
+    """
+
+    if not excluded_ids:
+        return list(mentions), ()
+    wanted = set(excluded_ids)
+    kept: list[MentionRecord] = []
+    found: dict[str, dict[str, Any]] = {}
+    for mention in mentions:
+        if mention.canonical_id in wanted:
+            entity = found.setdefault(
+                mention.canonical_id,
+                {
+                    "id": mention.canonical_id,
+                    "name": mention.canonical_name,
+                    "category": mention.category,
+                    "mention_count": 0,
+                },
+            )
+            entity["mention_count"] += 1
+        else:
+            kept.append(mention)
+    described = tuple(
+        found.get(
+            entity_id,
+            {"id": entity_id, "name": None, "category": None, "mention_count": 0},
+        )
+        for entity_id in sorted(wanted)
+    )
+    return kept, described
+
+
 def _validate_ranking_metric(metric: str) -> None:
     if metric not in RANKING_METRICS:
         raise ExplorerFilterError(f"ranking_metric no soportada: {metric!r}")
@@ -310,6 +353,7 @@ def build_ranked_network(
     modifica después de construirlo, así que puede reutilizarse.
     """
 
+    mentions, excluded = exclude_entities(mentions, filters.excluded_entity_ids)
     categories = resolve_categories(filters.categories, mentions)
     pairs = resolve_category_pairs(
         categories, filters.link_mode, filters.category_pairs
@@ -341,6 +385,7 @@ def build_ranked_network(
             stages=stages,
             provenance={"betweenness": "exact", "betweenness_sample_size": None},
             warnings=(warning,),
+            excluded=excluded,
         )
 
     if not any(mention.category in categories for mention in mentions):
@@ -396,6 +441,7 @@ def build_ranked_network(
         stages=stages,
         provenance=provenance,
         warnings=(),
+        excluded=excluded,
     )
 
 
@@ -422,6 +468,7 @@ def select_shown_network(
             "stages": stages,
             "metric_provenance": dict(ranked.provenance),
             "warnings": warnings,
+            "excluded_entities": [dict(entity) for entity in ranked.excluded],
         }
 
     ordered = ranked.ordered[ranking_metric]
@@ -471,6 +518,7 @@ def select_shown_network(
         "stages": stages,
         "metric_provenance": dict(ranked.provenance),
         "warnings": warnings,
+        "excluded_entities": [dict(entity) for entity in ranked.excluded],
     }
 
 

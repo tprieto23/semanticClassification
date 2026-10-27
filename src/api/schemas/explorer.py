@@ -68,6 +68,14 @@ class ExplorerFiltersRequest(BaseModel):
     edge_weighting: EdgeWeighting = "fractional-document"
     minimum_edge_weight: float = Field(default=0.0, ge=0, allow_inf_nan=False)
     ranking_metric: RankingMetric = "pagerank"
+    excluded_entity_ids: list[UUID] | None = Field(
+        default=None,
+        max_length=500,
+        description=(
+            "Entidades canónicas que se quitan antes de construir la red; las métricas "
+            "del resto se calculan sin ellas"
+        ),
+    )
 
 
 class ExplorerNetworkRequest(ExplorerScopeRequest, ExplorerFiltersRequest):
@@ -195,6 +203,16 @@ class ExplorerFiltersSummary(BaseModel):
     minimum_edge_weight: float
     ranking_metric: RankingMetric
     top_n: int | None
+    excluded_entity_ids: list[str] | None = None
+
+
+class ExplorerExcludedEntity(BaseModel):
+    id: str
+    name: str | None = Field(
+        description="null si la entidad no aparece en este alcance"
+    )
+    category: str | None
+    mention_count: int
 
 
 class ExplorerNetworkResponse(BaseModel):
@@ -207,6 +225,7 @@ class ExplorerNetworkResponse(BaseModel):
     stages: ExplorerStages
     metric_provenance: ExplorerMetricProvenance
     warnings: list[str]
+    excluded_entities: list[ExplorerExcludedEntity] = []
 
 
 class ExplorerEntityRef(BaseModel):

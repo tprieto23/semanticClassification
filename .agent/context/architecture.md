@@ -437,6 +437,11 @@ POST /analysis/explorer/v1/network
   mismo alcance; su total coincide con `sentence_count` de la arista.
 - Filtros imposibles responden 422 (`ExplorerFiltroInvalido`); un alcance sin
   datos responde 200 con red vacía y advertencias.
+- `excluded_entity_ids` quita entidades canónicas antes del paso 1 (por ejemplo, la
+  región que da contexto a todo el corpus): las métricas del resto se calculan sin
+  ellas. La respuesta trae `excluded_entities` con nombre, categoría y menciones
+  quitadas (nombre nulo si la entidad no está en el alcance). Es parte de la clave de
+  la caché.
 - Solo entran documentos con `productive_sector = Agroforestry`, salvo que se envíe
   `productive_sector: "all"`.
 - En producción, el gateway Caddy (`deploy/gateway/Caddyfile`) solo expone este prefijo

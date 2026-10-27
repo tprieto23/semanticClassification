@@ -274,6 +274,7 @@ def _filters_summary(filters: ExplorerFilters) -> dict[str, Any]:
         "minimum_edge_weight": filters.minimum_edge_weight,
         "ranking_metric": filters.ranking_metric,
         "top_n": filters.top_n,
+        "excluded_entity_ids": list(filters.excluded_entity_ids) or None,
     }
 
 
