@@ -3,13 +3,21 @@
 No escribe en PostgreSQL ni en ``s3/``: consulta documentos listos y sus
 menciones canonicalizadas y delega la construcción de la red en
 :mod:`src.analysis.explorer`.
+
+Las redes con métricas se guardan en una caché en memoria por proceso. La
+clave combina los documentos del alcance, una huella de sus menciones y los
+filtros estructurales, así que ``top_n`` y ``ranking_metric`` reutilizan la
+red ya calculada. Ver "Caché del explorador" en ``.agent/context/architecture.md``.
 """
 
 from __future__ import annotations
 
+import threading
+import time
+from collections import OrderedDict
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
-from typing import Any, Sequence
+from typing import Any, Callable, Hashable, Sequence
 from uuid import UUID
 
 from sqlalchemy import func, select
@@ -21,10 +29,13 @@ from src.analysis.explorer import (
     EXPLORER_VERSION,
     PERIODS,
     PERIODS_BY_ID,
+    RANKING_METRICS,
     ExplorerFilterError,
     ExplorerFilters,
-    build_explorer_network,
+    RankedNetwork,
+    build_ranked_network,
     compare_rankings,
+    select_shown_network,
 )
 from src.categories import ACTIVE_CATEGORIES, CATEGORY_DEFINITIONS, LEGACY_CATEGORIES
 from src.models.canonical_entities import CanonicalEntity
@@ -36,6 +47,15 @@ from src.services.documents import DocumentoError
 READY_STATUS = "fuzzyMatching"
 # Solo el sector acordado entra en el análisis salvo que se pida explícitamente "all".
 DEFAULT_PRODUCTIVE_SECTOR = "Agroforestry"
+
+# Una red ocupa alrededor de 1 KB por link: unos 14 MB con los filtros por
+# defecto y unos 90 MB con recurrencia 1. El presupuesto de links limita la
+# memoria de cada worker a unos 300 MB aunque se guarden redes grandes.
+RANKED_CACHE_MAX_ENTRIES = 16
+RANKED_CACHE_MAX_EDGES = 300_000
+# La huella no detecta un cambio de nombre canónico sin cambio de menciones;
+# el vencimiento acota cuánto puede durar ese caso.
+RANKED_CACHE_TTL_SECONDS = 30 * 60
 
 
 class ExplorerFiltroInvalido(DocumentoError):
@@ -66,6 +86,117 @@ class ExplorerScope:
                 f"Período desconocido: {self.period!r}. Use 'all' o uno de: "
                 + ", ".join(PERIODS_BY_ID)
             )
+
+
+class RankedNetworkCache:
+    """Caché LRU con vencimiento, segura entre hilos, de redes con métricas.
+
+    Descarta las redes usadas hace más tiempo cuando se supera la cantidad de
+    entradas o la suma de links; la red recién calculada siempre se conserva.
+    FastAPI ejecuta los endpoints síncronos en un pool de hilos: si llegan dos
+    peticiones con la misma clave, la segunda espera a la primera en lugar de
+    repetir el cálculo. Los errores no se guardan.
+    """
+
+    def __init__(
+        self,
+        max_entries: int,
+        ttl_seconds: float,
+        max_edges: int | None = None,
+        clock: Callable[[], float] = time.monotonic,
+    ):
+        self._max_entries = max_entries
+        self._max_edges = max_edges
+        self._ttl_seconds = ttl_seconds
+        self._clock = clock
+        self._entries: OrderedDict[Hashable, tuple[float, RankedNetwork]] = (
+            OrderedDict()
+        )
+        self._lock = threading.Lock()
+        self._building: dict[Hashable, threading.Lock] = {}
+
+    @staticmethod
+    def _size(value: RankedNetwork) -> int:
+        return value.graph.number_of_edges()
+
+    def _over_budget(self) -> bool:
+        if len(self._entries) > self._max_entries:
+            return True
+        if self._max_edges is None:
+            return False
+        stored = sum(self._size(value) for _, value in self._entries.values())
+        return stored > self._max_edges
+
+    def _fresh(self, key: Hashable) -> RankedNetwork | None:
+        entry = self._entries.get(key)
+        if entry is None:
+            return None
+        expires_at, value = entry
+        if self._clock() >= expires_at:
+            del self._entries[key]
+            return None
+        self._entries.move_to_end(key)
+        return value
+
+    def get_or_build(
+        self, key: Hashable, build: Callable[[], RankedNetwork]
+    ) -> RankedNetwork:
+        with self._lock:
+            value = self._fresh(key)
+            if value is not None:
+                return value
+            key_lock = self._building.setdefault(key, threading.Lock())
+
+        with key_lock:
+            with self._lock:
+                value = self._fresh(key)
+                if value is not None:
+                    return value
+            try:
+                value = build()
+            finally:
+                with self._lock:
+                    self._building.pop(key, None)
+            with self._lock:
+                self._entries[key] = (self._clock() + self._ttl_seconds, value)
+                self._entries.move_to_end(key)
+                while len(self._entries) > 1 and self._over_budget():
+                    self._entries.popitem(last=False)
+            return value
+
+    def clear(self) -> None:
+        with self._lock:
+            self._entries.clear()
+
+    def __len__(self) -> int:
+        with self._lock:
+            return len(self._entries)
+
+
+_RANKED_NETWORKS = RankedNetworkCache(
+    RANKED_CACHE_MAX_ENTRIES,
+    RANKED_CACHE_TTL_SECONDS,
+    max_edges=RANKED_CACHE_MAX_EDGES,
+)
+
+
+def _data_fingerprint(db: Session, documents: Sequence[Any]) -> tuple[Any, ...]:
+    """Huella barata de las menciones del alcance.
+
+    Cambia si se agregan, borran o reprocesan menciones, o si cambia su
+    asignación a entidades canónicas.
+    """
+
+    if not documents:
+        return ()
+    row = db.execute(
+        select(
+            func.count(Entity.id),
+            func.count(func.distinct(Entity.canonical_id)),
+            func.max(Entity.created_at),
+        ).where(Entity.document_id.in_([document.id for document in documents]))
+    ).one()
+    return tuple(row)
 
 
 def _utcnow() -> str:
@@ -219,18 +350,34 @@ class ExplorerService:
         filters: ExplorerFilters,
     ) -> tuple[list[Any], dict[str, Any]]:
         scope.validate()
-        documents = _scoped_documents(db, scope)
-        mentions = (
-            load_db_mentions(
-                status=READY_STATUS,
-                document_ids=[str(document.id) for document in documents],
-                db=db,
+        if filters.ranking_metric not in RANKING_METRICS:
+            raise ExplorerFiltroInvalido(
+                f"ranking_metric no soportada: {filters.ranking_metric!r}"
             )
-            if documents
-            else []
+        documents = _scoped_documents(db, scope)
+        document_ids = [str(document.id) for document in documents]
+        structural = filters.structural()
+
+        def build() -> RankedNetwork:
+            mentions = (
+                load_db_mentions(status=READY_STATUS, document_ids=document_ids, db=db)
+                if documents
+                else []
+            )
+            return build_ranked_network(mentions, structural)
+
+        # El conjunto de documentos, y no el alcance pedido, define la red: dos
+        # alcances que seleccionan los mismos documentos comparten resultado.
+        key = (
+            tuple(sorted(document_ids)),
+            _data_fingerprint(db, documents),
+            structural,
         )
         try:
-            network = build_explorer_network(mentions, filters)
+            ranked = _RANKED_NETWORKS.get_or_build(key, build)
+            network = select_shown_network(
+                ranked, filters.ranking_metric, filters.top_n
+            )
         except ExplorerFilterError as error:
             raise ExplorerFiltroInvalido(str(error)) from error
         if not documents:

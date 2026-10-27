@@ -13,14 +13,19 @@ Los filtros se aplican en un orden fijo y cada etapa queda contabilizada:
 5. selección de los ``top_n`` nodos por la métrica elegida.
 
 Las métricas se calculan antes del recorte del paso 5, de modo que la posición
-de un nodo no depende de cuántos nodos se dibujen.
+de un nodo no depende de cuántos nodos se dibujen. Los pasos 1 a 4
+(:func:`build_ranked_network`) no dependen de ``top_n`` ni de
+``ranking_metric``; por eso su resultado se puede reutilizar y el paso 5
+(:func:`select_shown_network`) es barato.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import copy
+from dataclasses import dataclass, replace
 from typing import Any, Literal, Sequence
 
+import igraph as ig
 import networkx as nx
 
 from src.analysis.backbone import (
@@ -77,12 +82,6 @@ CATEGORY_LABELS = {
     "INFRA": "Infraestructura (legado)",
 }
 
-# Por encima de este tamaño, betweenness se estima con una muestra fija de
-# fuentes para que la respuesta siga siendo interactiva.
-EXACT_BETWEENNESS_MAX_NODES = 1500
-BETWEENNESS_SAMPLE_SIZE = 500
-METRIC_SEED = 42
-
 
 class ExplorerFilterError(ValueError):
     """Combinación de filtros imposible de construir."""
@@ -98,6 +97,27 @@ class ExplorerFilters:
     minimum_edge_weight: float = 0.0
     ranking_metric: RankingMetric = "pagerank"
     top_n: int | None = 150
+
+    def structural(self) -> "ExplorerFilters":
+        """Los mismos filtros sin lo que solo afecta la selección final.
+
+        Dos peticiones con el mismo valor estructural comparten red y métricas.
+        """
+
+        return replace(self, ranking_metric="pagerank", top_n=None)
+
+
+@dataclass(frozen=True)
+class RankedNetwork:
+    """Red filtrada con sus métricas y rankings, antes de elegir ``top_n``."""
+
+    graph: nx.Graph
+    metrics: dict[str, dict[str, float]]
+    ranking: dict[str, dict[str, int]]
+    ordered: dict[str, tuple[str, ...]]
+    stages: dict[str, Any]
+    provenance: dict[str, Any]
+    warnings: tuple[str, ...]
 
 
 def resolve_categories(
@@ -167,43 +187,74 @@ def resolve_category_pairs(
     return pairs
 
 
-def _distance_graph(graph: nx.Graph) -> nx.Graph:
-    """Copia con distancia inversa al peso: un link fuerte acorta el camino."""
+def _metric_igraph(graph: nx.Graph) -> tuple[list[str], ig.Graph, list[float]]:
+    """Traduce la red a igraph con distancia inversa al peso.
 
-    distance_graph = nx.Graph()
-    distance_graph.add_nodes_from(graph.nodes)
+    Un link fuerte acorta el camino. igraph implementa en C los caminos mínimos
+    que dominan el costo de cercanía e intermediación.
+    """
+
+    nodes = list(graph)
+    index = {node: position for position, node in enumerate(nodes)}
+    edges: list[tuple[int, int]] = []
+    distances: list[float] = []
     for source, target, attributes in graph.edges(data=True):
-        weight = float(attributes["analysis_weight"])
-        distance_graph.add_edge(source, target, distance=1.0 / weight)
-    return distance_graph
+        edges.append((index[source], index[target]))
+        distances.append(1.0 / float(attributes["analysis_weight"]))
+    return nodes, ig.Graph(n=len(nodes), edges=edges, directed=False), distances
+
+
+def _closeness(
+    nodes: Sequence[str], metric_graph: ig.Graph, distances: Sequence[float]
+) -> dict[str, float]:
+    """Cercanía con la corrección de Wasserman y Faust para redes desconectadas.
+
+    Coincide con ``networkx.closeness_centrality`` (``wf_improved=True``):
+    igraph promedia solo sobre los nodos alcanzables y aquí se escala por la
+    fracción de la red que cada nodo alcanza.
+    """
+
+    node_count = len(nodes)
+    reachable = [0] * node_count
+    for component in metric_graph.connected_components():
+        for position in component:
+            reachable[position] = len(component) - 1
+    raw = metric_graph.closeness(weights=list(distances), normalized=True)
+
+    closeness: dict[str, float] = {}
+    for position, node in enumerate(nodes):
+        value = raw[position]
+        if node_count <= 1 or reachable[position] == 0 or value != value:
+            closeness[node] = 0.0
+        else:
+            closeness[node] = value * reachable[position] / (node_count - 1)
+    return closeness
+
+
+def _betweenness(
+    nodes: Sequence[str], metric_graph: ig.Graph, distances: Sequence[float]
+) -> dict[str, float]:
+    """Intermediación exacta, normalizada como ``networkx`` en redes no dirigidas."""
+
+    node_count = len(nodes)
+    if node_count <= 2:
+        return {node: 0.0 for node in nodes}
+    raw = metric_graph.betweenness(directed=False, weights=list(distances))
+    scale = 2.0 / ((node_count - 1) * (node_count - 2))
+    return {node: raw[position] * scale for position, node in enumerate(nodes)}
 
 
 def compute_node_metrics(graph: nx.Graph) -> tuple[dict[str, dict[str, float]], dict]:
     """Calcula centralidades ponderadas y devuelve también su procedencia."""
 
+    provenance = {"betweenness": "exact", "betweenness_sample_size": None}
     if graph.number_of_nodes() == 0:
-        return {}, {"betweenness": "exact", "betweenness_sample_size": None}
+        return {}, provenance
 
-    distance_graph = _distance_graph(graph)
     pagerank = nx.pagerank(graph, weight="analysis_weight")
-    closeness = nx.closeness_centrality(distance_graph, distance="distance")
-
-    node_count = graph.number_of_nodes()
-    if node_count > EXACT_BETWEENNESS_MAX_NODES:
-        sample_size = min(BETWEENNESS_SAMPLE_SIZE, node_count)
-        betweenness = nx.betweenness_centrality(
-            distance_graph,
-            k=sample_size,
-            weight="distance",
-            normalized=True,
-            seed=METRIC_SEED,
-        )
-        provenance = {"betweenness": "sampled", "betweenness_sample_size": sample_size}
-    else:
-        betweenness = nx.betweenness_centrality(
-            distance_graph, weight="distance", normalized=True
-        )
-        provenance = {"betweenness": "exact", "betweenness_sample_size": None}
+    nodes, metric_graph, distances = _metric_igraph(graph)
+    closeness = _closeness(nodes, metric_graph, distances)
+    betweenness = _betweenness(nodes, metric_graph, distances)
 
     metrics: dict[str, dict[str, float]] = {}
     for node in graph:
@@ -242,26 +293,21 @@ def rank_nodes(
     )
 
 
-def _empty_network(stages: dict[str, Any], warnings: list[str]) -> dict[str, Any]:
-    return {
-        "nodes": [],
-        "edges": [],
-        "stages": stages,
-        "metric_provenance": {"betweenness": "exact", "betweenness_sample_size": None},
-        "warnings": warnings,
-    }
+def _validate_ranking_metric(metric: str) -> None:
+    if metric not in RANKING_METRICS:
+        raise ExplorerFilterError(f"ranking_metric no soportada: {metric!r}")
 
 
-def build_explorer_network(
+def build_ranked_network(
     mentions: Sequence[MentionRecord],
     filters: ExplorerFilters,
-) -> dict[str, Any]:
-    """Construye la red filtrada, sus métricas y el conteo de cada etapa."""
+) -> RankedNetwork:
+    """Pasos 1 a 4: filtra la red y calcula métricas y rankings de cada nodo.
 
-    if filters.ranking_metric not in RANKING_METRICS:
-        raise ExplorerFilterError(
-            f"ranking_metric no soportada: {filters.ranking_metric!r}"
-        )
+    El resultado no depende de ``top_n`` ni de ``ranking_metric`` y no se
+    modifica después de construirlo, así que puede reutilizarse.
+    """
+
     categories = resolve_categories(filters.categories, mentions)
     pairs = resolve_category_pairs(
         categories, filters.link_mode, filters.category_pairs
@@ -282,18 +328,21 @@ def build_explorer_network(
         "cooccurrence": {"nodes": 0, "edges": 0},
         "document_recurrence": {"nodes": 0, "edges": 0},
         "edge_weight": {"nodes": 0, "edges": 0},
-        "shown": {"nodes": 0, "edges": 0},
     }
-    warnings: list[str] = []
 
-    selected_mentions = [
-        mention for mention in mentions if mention.category in categories
-    ]
-    if not selected_mentions:
-        warnings.append(
-            "No hay menciones de las categorías seleccionadas en este alcance"
+    def empty(warning: str) -> RankedNetwork:
+        return RankedNetwork(
+            graph=nx.Graph(),
+            metrics={},
+            ranking={metric: {} for metric in RANKING_METRICS},
+            ordered={metric: () for metric in RANKING_METRICS},
+            stages=stages,
+            provenance={"betweenness": "exact", "betweenness_sample_size": None},
+            warnings=(warning,),
         )
-        return _empty_network(stages, warnings)
+
+    if not any(mention.category in categories for mention in mentions):
+        return empty("No hay menciones de las categorías seleccionadas en este alcance")
 
     result = build_sentence_cooccurrence(
         mentions, node_categories=categories, allowed_category_pairs=pairs
@@ -324,22 +373,57 @@ def build_explorer_network(
     }
 
     if graph.number_of_nodes() == 0:
-        warnings.append(
+        return empty(
             "Ningún link supera los filtros de recurrencia y peso; "
             "pruebe bajar minimum_node_document_count o minimum_edge_weight"
         )
-        return _empty_network(stages, warnings)
 
     metrics, provenance = compute_node_metrics(graph)
-    ranking = {
-        metric: {
-            node: index
-            for index, node in enumerate(rank_nodes(graph, metrics, metric), start=1)
-        }
-        for metric in RANKING_METRICS
+    ordered = {
+        metric: tuple(rank_nodes(graph, metrics, metric)) for metric in RANKING_METRICS
     }
-    ordered = rank_nodes(graph, metrics, filters.ranking_metric)
-    shown_ids = ordered if filters.top_n is None else ordered[: filters.top_n]
+    ranking = {
+        metric: {node: index for index, node in enumerate(nodes, start=1)}
+        for metric, nodes in ordered.items()
+    }
+    return RankedNetwork(
+        graph=graph,
+        metrics=metrics,
+        ranking=ranking,
+        ordered=ordered,
+        stages=stages,
+        provenance=provenance,
+        warnings=(),
+    )
+
+
+def select_shown_network(
+    ranked: RankedNetwork,
+    ranking_metric: str,
+    top_n: int | None,
+) -> dict[str, Any]:
+    """Paso 5: elige los ``top_n`` nodos y arma una respuesta nueva.
+
+    Copia todo lo que devuelve, de modo que quien la use puede modificarla sin
+    alterar ``ranked``.
+    """
+
+    _validate_ranking_metric(ranking_metric)
+    graph = ranked.graph
+    stages = copy.deepcopy(ranked.stages)
+    warnings = list(ranked.warnings)
+    if graph.number_of_nodes() == 0:
+        stages["shown"] = {"nodes": 0, "edges": 0}
+        return {
+            "nodes": [],
+            "edges": [],
+            "stages": stages,
+            "metric_provenance": dict(ranked.provenance),
+            "warnings": warnings,
+        }
+
+    ordered = ranked.ordered[ranking_metric]
+    shown_ids = ordered if top_n is None else ordered[:top_n]
     shown = graph.subgraph(shown_ids)
 
     nodes = [
@@ -349,8 +433,10 @@ def build_explorer_network(
             "category": graph.nodes[node]["category"],
             "mention_count": graph.nodes[node]["mention_count"],
             "sentence_count": graph.nodes[node]["sentence_count"],
-            "metrics": metrics[node],
-            "ranks": {metric: ranking[metric][node] for metric in RANKING_METRICS},
+            "metrics": dict(ranked.metrics[node]),
+            "ranks": {
+                metric: ranked.ranking[metric][node] for metric in RANKING_METRICS
+            },
             "shown_degree": shown.degree(node),
         }
         for node in shown_ids
@@ -371,9 +457,9 @@ def build_explorer_network(
         )
     ]
     stages["shown"] = {"nodes": len(nodes), "edges": len(edges)}
-    if filters.top_n is not None and len(ordered) > filters.top_n:
+    if top_n is not None and len(ordered) > top_n:
         warnings.append(
-            f"Se muestran los {filters.top_n} nodos con mayor {filters.ranking_metric} "
+            f"Se muestran los {top_n} nodos con mayor {ranking_metric} "
             f"de {len(ordered)} que superan los filtros"
         )
 
@@ -381,9 +467,23 @@ def build_explorer_network(
         "nodes": nodes,
         "edges": edges,
         "stages": stages,
-        "metric_provenance": provenance,
+        "metric_provenance": dict(ranked.provenance),
         "warnings": warnings,
     }
+
+
+def build_explorer_network(
+    mentions: Sequence[MentionRecord],
+    filters: ExplorerFilters,
+) -> dict[str, Any]:
+    """Construye la red filtrada, sus métricas y el conteo de cada etapa."""
+
+    _validate_ranking_metric(filters.ranking_metric)
+    return select_shown_network(
+        build_ranked_network(mentions, filters),
+        filters.ranking_metric,
+        filters.top_n,
+    )
 
 
 def compare_rankings(

@@ -407,21 +407,28 @@ admite el legado `INFRA` solo si aparece en los datos.
 POST /analysis/explorer/v1/network
   → ExplorerService.network()
     → documentos fuzzyMatching filtrados por período/incubadora/idioma/document_ids
-    → load_db_mentions(document_ids=...)
-    → build_explorer_network()                       (src/analysis/explorer.py)
+    → caché de redes (clave: documentos + huella de menciones + filtros estructurales)
+      si no está: load_db_mentions(document_ids=...)
+                  → build_ranked_network()           (src/analysis/explorer.py)
         1. categorías + link_mode (any | between | within | pairs)
         2. recurrencia documental mínima por nodo
         3. peso analítico mínimo de arista (se eliminan nodos huérfanos)
         4. métricas sobre la red filtrada completa:
            degree, strength, betweenness, closeness, pagerank, document_count
+    → select_shown_network()
         5. top_n por ranking_metric (las métricas no cambian con el recorte)
   ← nodos + métricas + rangos, aristas, conteo por etapa y advertencias
 ```
 
 - Períodos fijos: `2021-2023` y `2024-2026` (`PERIODS` en `src/analysis/explorer.py`).
   Los documentos sin `year` quedan fuera de cualquier período y se contabilizan.
-- Betweenness y closeness usan distancia `1/analysis_weight`; betweenness es
-  exacta hasta 1.500 nodos y por muestreo fijo (500 fuentes, semilla 42) por encima.
+- Betweenness y closeness usan distancia `1/analysis_weight` y se calculan con
+  igraph (C), siempre exactas. Closeness aplica la corrección de Wasserman y Faust
+  para redes desconectadas, como `networkx.closeness_centrality`. PageRank sigue en
+  networkx. Con networkx puro, una red de 3.000 nodos tardaba más de un minuto; con
+  igraph, unos segundos. Además, igraph reconoce como empate los caminos mínimos que
+  en coma flotante difieren en el último decimal; networkx no, y su intermediación
+  se desviaba hasta 2e-4 (ver `NodeMetricsTests`).
 - `POST /compare` construye cada período con los mismos filtros y sin `top_n`, y
   devuelve trayectorias de rango, entradas/salidas del top-k y el nodo líder por
   métrica en cada período.
@@ -433,6 +440,29 @@ POST /analysis/explorer/v1/network
   `productive_sector: "all"`.
 - En producción, el gateway Caddy (`deploy/gateway/Caddyfile`) solo expone este prefijo
   y `/health`; ver `deploy/aws/README.md`.
+
+### Caché del explorador
+
+`RankedNetworkCache` (`src/services/explorer.py`) guarda la salida de los pasos 1 a 4
+(`RankedNetwork`). Cambiar `top_n` o `ranking_metric` reutiliza la red sin recalcular,
+y `/compare` comparte resultado con `/network` del mismo período.
+
+- Clave: ids de los documentos del alcance, huella de sus menciones (cantidad,
+  canónicos distintos y último `created_at`, en `_data_fingerprint`) y
+  `ExplorerFilters.structural()`.
+- LRU de hasta 16 redes y 300.000 links en total por worker (cerca de 1 KB por
+  link: ~14 MB la red por defecto, ~90 MB con recurrencia 1), con vencimiento de
+  30 minutos. La red recién calculada se conserva siempre. Es segura entre hilos y, si dos
+  peticiones piden la misma clave a la vez, el cálculo se hace una sola vez. Los
+  errores no se guardan.
+- Límites conocidos:
+  - Es por proceso: con `API_WORKERS=2`, cada worker calcula su copia la primera vez.
+  - La huella no detecta un cambio de `canonical_name` sin cambio de menciones; el
+    vencimiento acota ese caso a 30 minutos. Reiniciar la API vacía la caché, y
+    `resync-from-mac.sh` la reinicia.
+- Si el corpus o las usuarias crecen: mover la caché a Redis o precalcular la red al
+  terminar el fuzzy matching, y sacar el cálculo del request a un trabajo en segundo
+  plano.
 
 ## Flujo Revertir
 

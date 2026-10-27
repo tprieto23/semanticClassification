@@ -123,3 +123,21 @@ la usuaria, IMDSv2 obligatorio. El gateway responde con 83 documentos Agroforest
   vista de Evolución queda vacía. La red por defecto tardó ~52 s (36.873 nodos y 122.131
   aristas de coocurrencia); con recurrencia 1 no terminó en 5 minutos. Pendiente:
   optimizar el rendimiento y cargar los metadatos.
+
+## Rendimiento del explorador (2026-10-27)
+
+- Diagnóstico con un grafo sintético del tamaño de la red por defecto: closeness de
+  networkx ~74 s y betweenness por muestreo ~22 s; PageRank 0,3 s.
+- Cambio autorizado por la usuaria: closeness y betweenness con igraph (ya estaba en
+  `requirements.txt` por Leiden), betweenness siempre exacta, y caché en memoria de la
+  red con métricas (`RankedNetworkCache`), con presupuesto de 16 redes y 300.000 links
+  por worker. `top_n` y `ranking_metric` ya no recalculan.
+- igraph coincide con networkx usando distancias racionales exactas (5e-13); networkx en
+  coma flotante no reconocía algunos caminos empatados y se desviaba hasta 2e-4.
+- Corpus sintético a escala real (83 documentos, 108.654 menciones; núcleo de 3.421
+  nodos y 19.477 links): la red pasó de 126,6 s a 13,6 s en la WSL de Camila, con el
+  mismo top 150, las mismas aristas y las mismas etapas. Prueba HTTP contra Postgres
+  real: primera carga 22 s (4 s de carga de menciones), repetida 0,2 s, cambio de
+  top_n o métrica 0,1 s, invalidación al agregar una mención, 422 en filtros inválidos.
+- Pendiente: recurrencia 1 (~37.000 nodos) sigue tardando minutos; requiere aproximar
+  closeness y betweenness por muestreo en redes grandes.

@@ -18,7 +18,7 @@ clusters son por categoría o mixtos.
 - [ ] Decidir si `/analysis/network`, las proyecciones y Leiden también filtran por sector.
 - [ ] Asignar `year` a los documentos del corpus; sin año no entran en la evolución.
 - [ ] Probar el explorador sobre la DB real después de reprocesar con las diez categorías.
-- [ ] Evaluar una caché de redes si el corpus completo hace lentas las respuestas.
+- [x] Red del explorador más rápida: métricas con igraph y caché de redes por alcance y filtros estructurales.
 
 ## Trabajo anterior: codebook y piloto NER — 16 Oct 2026
 
