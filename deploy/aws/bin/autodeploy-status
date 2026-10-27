@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Estado del despliegue automático en el EC2: próxima revisión, versión desplegada,
+# historial y últimos mensajes. Uso: deploy/aws/bin/autodeploy-status
+set -euo pipefail
+exec "$(dirname "$0")/ec2-ssh" 'systemctl list-timers semantic-autodeploy.timer --no-pager
+echo; echo "Versión desplegada: $(git -C ~/semanticClassification log -1 --format="%h %s (%cr)")"
+echo; echo "Historial (últimos 10):"; tail -n 10 ~/.semantic-autodeploy/history 2>/dev/null || echo "  sin despliegues todavía"
+echo; journalctl -u semantic-autodeploy.service -n 25 --no-pager' </dev/null

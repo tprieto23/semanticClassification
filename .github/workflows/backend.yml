@@ -1,6 +1,8 @@
-# Tests del backend en cada push y pull request. Si pasan en la rama desplegada,
-# despliega la API en el EC2 de AWS mediante Systems Manager (ver deploy/aws/CI-CD.md).
-name: Backend · tests y despliegue
+# Tests del backend en cada push y pull request. El EC2 solo despliega los commits
+# cuyo job «Tests» terminó bien: revisa este resultado cada 5 minutos (ver
+# deploy/aws/CI-CD.md). Si cambias el nombre del job, cámbialo también en
+# deploy/aws/autodeploy/autodeploy.sh.
+name: Backend · tests
 
 on:
   push:
@@ -35,39 +37,3 @@ jobs:
         env:
           DATABASE_URL: postgresql://test:test@localhost/test
         run: python -m pytest -q
-
-  deploy:
-    name: Desplegar en AWS
-    needs: test
-    # Solo la rama desplegada, y solo cuando el despliegue ya está configurado.
-    if: >-
-      github.event_name != 'pull_request'
-      && github.ref == 'refs/heads/feat/explorador-entidades'
-      && vars.AWS_DEPLOY_ROLE_ARN != ''
-    runs-on: ubuntu-latest
-    # El rol de AWS solo confía en este environment (ver la política de confianza).
-    environment: production
-    # Un despliegue a la vez; si llegan varios pushes, se aplican en orden.
-    concurrency:
-      group: deploy-aws
-      cancel-in-progress: false
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Credenciales temporales de AWS (OIDC, sin claves guardadas)
-        uses: aws-actions/configure-aws-credentials@v6
-        with:
-          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
-          aws-region: us-east-2
-
-      - name: Desplegar
-        env:
-          INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
-          COMMIT_SHA: ${{ github.sha }}
-          DEPLOY_BRANCH: feat/explorador-entidades
-          GATEWAY_URL: ${{ vars.GATEWAY_URL }}
-          DB_MODE: local-db
-        run: bash deploy/aws/ci/deploy-via-ssm.sh

@@ -1,111 +1,112 @@
-# Despliegue automático de la API (GitHub Actions → AWS)
+# Despliegue automático de la API
 
-Cada push a `feat/explorador-entidades` corre los tests del backend en GitHub. Si
-pasan, GitHub le ordena al EC2 que actualice el código y reconstruya la API, a través
-de **AWS Systems Manager**. No hace falta entrar por SSH ni correr nada a mano.
+Cada push a `feat/explorador-entidades` corre los tests del backend en GitHub Actions.
+El EC2 revisa GitHub cada 5 minutos: si la rama tiene un commit nuevo **y su job
+«Tests» terminó bien**, actualiza el código y reconstruye la API. No hace falta entrar
+por SSH ni correr nada a mano.
 
 ```
 push a feat/explorador-entidades
-  → GitHub Actions: tests (pytest)
-  → si pasan: credenciales temporales de AWS (OIDC, sin claves guardadas)
-  → Systems Manager ejecuta deploy/aws/deploy-on-ec2.sh en el EC2
-  → el workflow comprueba /health y /meta en el gateway y queda ✅ o ❌
+  → GitHub Actions: job «Tests» (pytest)
+  → el EC2, cada 5 minutos: ¿commit nuevo con «Tests» en verde?
+  → sí: deploy/aws/deploy-on-ec2.sh <commit> (fast-forward, reconstruye la API,
+         espera /health, aplica migraciones)
 ```
 
-- **No despliega código con tests rotos.** En pull requests solo corre los tests.
+- **No despliega código con tests rotos**, ni commits cuyos tests siguen corriendo.
 - **No toca la base de datos.** Los datos se siguen actualizando desde la Mac con
   `resync-from-mac.sh`, porque la base principal está ahí (opción A).
-- **No abre puertos ni guarda llaves.** GitHub obtiene permisos temporales de AWS que
-  solo sirven para enviar ese comando a ese servidor.
-- **Costo: ninguno.** IAM, STS y Systems Manager Run Command son gratuitos y están
-  incluidos en el plan Free de la nueva experiencia de AWS. GitHub Actions es gratis
-  para repositorios públicos.
+- **No hay credenciales.** El repo es público: el EC2 solo lee la API de GitHub. No se
+  guardan llaves de AWS en GitHub ni se abren puertos.
+- **Costo: ninguno.** GitHub Actions es gratis en repos públicos y el sondeo corre en el
+  EC2 que ya existe.
+
+### Por qué así y no desde GitHub
+
+La forma habitual es que GitHub Actions entre a AWS con credenciales temporales (OIDC).
+En la nueva experiencia de AWS no es posible: la política administrada del project
+prohíbe `iam:*Provider*`, tanto en el plan Free como en el pago, así que no se puede
+registrar a GitHub como proveedor de identidad. La alternativa, una llave de AWS fija
+guardada en GitHub, es menos segura. Por eso el servidor consulta a GitHub.
 
 Archivos:
 
 | Archivo | Qué hace |
 |---|---|
-| `.github/workflows/backend.yml` | Tests en cada push y PR; despliegue en la rama desplegada |
-| `deploy/aws/ci/deploy-via-ssm.sh` | Corre en GitHub: envía el despliegue y espera el resultado |
-| `deploy/aws/deploy-on-ec2.sh` | Corre en el EC2: `git` fast-forward, reconstruye la API, espera `/health`, migra |
-| `deploy/aws/setup-cicd.sh` | Configuración única de AWS (este documento, paso 1) |
+| `.github/workflows/backend.yml` | Job «Tests» en cada push a la rama y en cada pull request |
+| `deploy/aws/autodeploy/autodeploy.sh` | Corre en el EC2 cada 5 minutos y decide si desplegar |
+| `deploy/aws/deploy-on-ec2.sh` | Despliega un commit: fast-forward, reconstruye la API, espera `/health`, migra |
+| `deploy/aws/autodeploy/install.sh` | Crea el servicio y el temporizador de systemd en el EC2 |
+| `deploy/aws/install-autodeploy.sh` | Lo instala desde la Mac (una sola vez) |
+| `deploy/aws/bin/autodeploy-status` | Muestra el estado desde la Mac |
 
-## Configuración (una sola vez)
+## Instalación (una sola vez)
 
-### 1. AWS: permisos para Systems Manager y para GitHub
-
-Desde la Mac, en la raíz del repo, con la sesión del AWS CLI activa
-(`aws login --profile tania-semantic` si expiró). Usa SSH en el último paso, así que
-un agente necesita permisos elevados:
+Desde la Mac, en la raíz del repo, en la Terminal (usa SSH; un agente necesita permisos
+elevados):
 
 ```bash
-bash deploy/aws/setup-cicd.sh
+git checkout feat/explorador-entidades && git pull
+bash deploy/aws/install-autodeploy.sh
 ```
 
-El script muestra qué va a crear y pide confirmación:
-
-1. **Rol `semantic-ec2-ssm`** para el EC2, con la política administrada
-   `AmazonSSMManagedInstanceCore`. Si el EC2 ya tiene un rol, le agrega esa política.
-2. **Proveedor OIDC de GitHub** (`token.actions.githubusercontent.com`).
-3. **Rol `github-deploy-semantic`**. Solo lo puede asumir GitHub Actions desde
-   `tprieto23/semanticClassification` en el environment `production`, y solo puede
-   ejecutar `AWS-RunShellScript` en este EC2 y leer el resultado.
-
-Al final reinicia el agente de Systems Manager del EC2 (viene instalado en Ubuntu),
-espera a que aparezca conectado e imprime los valores para GitHub.
-
-### 2. GitHub: environment y variables
-
-En el repo, **Settings**:
-
-1. **Environments → New environment** → `production`. Opcional: en *Required
-   reviewers* puedes exigir una aprobación antes de cada despliegue.
-2. **Secrets and variables → Actions → Variables → New repository variable**, con los
-   valores que imprimió el script:
-
-| Variable | Ejemplo |
-|---|---|
-| `AWS_DEPLOY_ROLE_ARN` | `arn:aws:iam::<cuenta>:role/github-deploy-semantic` |
-| `EC2_INSTANCE_ID` | `i-0abc…` |
-| `GATEWAY_URL` | `https://3-13-151-74.sslip.io` |
-
-No son secretos: no dan acceso por sí solos. El permiso real es la política de
-confianza del rol, que solo acepta a este repo y a este environment.
-
-Mientras `AWS_DEPLOY_ROLE_ARN` no exista, el workflow solo corre los tests.
-
-### 3. Probar
-
-**Actions → Backend · tests y despliegue → Run workflow** sobre
-`feat/explorador-entidades`. El job *Desplegar en AWS* debe terminar con algo como:
-
-```
-DEPLOY_OK <commit>
-Gateway OK: 115 documentos; períodos: 2000–2020 (33), 2021–2023 (31), 2024–2026 (51)
-```
+El script pide confirmación, actualiza el repo del EC2, instala el temporizador
+`semantic-autodeploy.timer` y hace una primera revisión. Si el servidor ya está al día,
+esa revisión no hace nada.
 
 ## Uso diario
 
-- Hacer push a `feat/explorador-entidades` y esperar el ✅ en la pestaña *Actions*
-  (de 3 a 15 minutos, según cuánto cambie la imagen).
-- Si llegan varios pushes seguidos, se despliegan en orden, uno a la vez.
-- Mientras se reconstruye, la API puede responder 502 durante unos segundos.
+- Hacer push a `feat/explorador-entidades`.
+- Ver el job «Tests» en la pestaña *Actions* de GitHub (menos de un minuto).
+- Dentro de los 5 minutos siguientes, el EC2 despliega. La reconstrucción tarda de 3 a
+  15 minutos, según cuánto cambie la imagen; mientras tanto la API puede responder 502
+  durante unos segundos.
+
+Para ver qué pasó:
+
+```bash
+deploy/aws/bin/autodeploy-status
+```
+
+Muestra la próxima revisión, la versión desplegada, el historial de despliegues y los
+últimos mensajes, por ejemplo:
+
+```
+Commit 3a1b2c4: tests aún no terminan (in_progress); se reintenta en el próximo ciclo.
+Desplegando 3a1b2c4 (antes 415fa73)
+DEPLOY_OK 3a1b2c4…
+Despliegue de 3a1b2c4 terminado.
+```
 
 ## Si algo falla
 
-| Mensaje en el workflow | Qué hacer |
+| Mensaje | Qué hacer |
 |---|---|
-| `El EC2 está 'stopped'` | Encenderlo: `deploy/aws/bin/aws-project ec2 start-instances --instance-ids <id>` y volver a ejecutar el workflow |
-| `El agente de Systems Manager del EC2 no está conectado` | Volver a correr `bash deploy/aws/setup-cicd.sh` (es idempotente) |
-| `Not authorized to perform sts:AssumeRoleWithWebIdentity` | El environment no se llama `production` o el repo cambió de nombre: revisar el paso 2 o correr el script con `GITHUB_REPO=dueño/repo` |
-| `La API no respondió en 150 s` | El log del job muestra los últimos logs de la API; corregir y hacer push |
+| `los tests no pasaron (failure); no se despliega` | Corregir y hacer push; el servidor sigue con la versión anterior |
+| `tests aún no terminan (none)` durante mucho tiempo | El commit no tiene job «Tests» (por ejemplo, se canceló el workflow). Volver a ejecutarlo en *Actions* |
+| `El despliegue de … falló; se reintentará` | Ver el detalle con `autodeploy-status`. Si la API no arranca, el log muestra sus últimas líneas |
 | `fatal: Not possible to fast-forward` | Alguien cambió código directamente en el EC2: revisar `git status` ahí |
 
 Si un despliegue deja la API rota, hacer push de un commit que lo revierta
 (`git revert <commit>`) también lo despliega.
 
-## Desactivar
+El sondeo hace unas 24 consultas por hora a la API pública de GitHub, que permite 60
+sin token.
 
-Borrar la variable `AWS_DEPLOY_ROLE_ARN` en GitHub: los tests siguen corriendo, pero no
-se despliega. Para quitar también los permisos en AWS, borrar el rol
-`github-deploy-semantic` en IAM.
+## Pausar o desinstalar
+
+```bash
+deploy/aws/bin/ec2-ssh 'sudo systemctl disable --now semantic-autodeploy.timer'   # pausar
+deploy/aws/bin/ec2-ssh 'sudo systemctl enable --now semantic-autodeploy.timer'    # reanudar
+```
+
+Para desinstalarlo, además de pausar, borrar
+`/etc/systemd/system/semantic-autodeploy.{service,timer}` en el EC2.
+
+## Recurso que quedó de la primera versión
+
+Durante la primera configuración se creó el rol de IAM `semantic-ec2-ssm`, asociado al
+EC2 con la política `AmazonSSMManagedInstanceCore`. No tiene costo y permite usar
+*Systems Manager → Session Manager* para abrir una terminal en el servidor desde la
+consola, sin SSH. Si no se quiere, se puede desasociar en *EC2 → Actions → Security →
+Modify IAM role* y borrar en IAM.

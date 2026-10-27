@@ -3,8 +3,8 @@
 # API y espera a que responda. No toca la base de datos (la resincronización desde la
 # Mac sigue siendo resync-from-mac.sh).
 #
-# Lo ejecuta el pipeline de GitHub Actions vía AWS Systems Manager, como el usuario
-# ubuntu. También sirve a mano:  bash deploy/aws/deploy-on-ec2.sh <commit>
+# Lo ejecuta el despliegue automático (deploy/aws/autodeploy/autodeploy.sh) como el
+# usuario ubuntu. También sirve a mano:  bash deploy/aws/deploy-on-ec2.sh <commit>
 # Variables: DEPLOY_BRANCH (feat/explorador-entidades), DB_MODE (local-db o vacío).
 set -euo pipefail
 

@@ -8,8 +8,9 @@ orden, las confirmaciones obligatorias y las comprobaciones.
 Los comandos del AWS CLI se validaron con `--dry-run` en el project el 2026-10-26.
 
 Para actualizar el código del servidor después del despliegue inicial, el camino
-normal es el pipeline de GitHub Actions: ver [`CI-CD.md`](CI-CD.md). Su configuración
-única es `bash deploy/aws/setup-cicd.sh`, que crea roles de IAM: aplica la regla 1.
+normal es el despliegue automático: el EC2 despliega solo los commits con el job
+«Tests» en verde. Ver [`CI-CD.md`](CI-CD.md); se activa una vez con
+`bash deploy/aws/install-autodeploy.sh` y no crea recursos en AWS.
 
 ## Reglas para el agente
 

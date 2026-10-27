@@ -444,13 +444,16 @@ POST /analysis/explorer/v1/network
 
 ### Despliegue continuo
 
-`.github/workflows/backend.yml` corre `pytest` en cada push y pull request. En
-`feat/explorador-entidades`, si pasan, asume por OIDC el rol `github-deploy-semantic`
-(solo para el environment `production` de este repo) y ejecuta
-`deploy/aws/deploy-on-ec2.sh <commit>` en el EC2 mediante Systems Manager Run Command:
-fast-forward al commit probado, `up -d --build api`, espera `/health` y aplica
-migraciones. No toca la base de datos ni `s3/`; los datos se siguen resincronizando
-desde la Mac. Configuración y diagnóstico en `deploy/aws/CI-CD.md`.
+`.github/workflows/backend.yml` corre `pytest` (job «Tests») en cada push y pull
+request. El EC2 sondea GitHub cada 5 minutos con un temporizador de systemd
+(`deploy/aws/autodeploy/autodeploy.sh`): si `feat/explorador-entidades` tiene un commit
+nuevo y su job «Tests» terminó bien, ejecuta `deploy/aws/deploy-on-ec2.sh <commit>`
+(fast-forward, `up -d --build api`, espera `/health`, migraciones). No toca la base de
+datos ni `s3/`; los datos se siguen resincronizando desde la Mac.
+
+Se descartó desplegar desde GitHub con OIDC: la SCP administrada de los projects de la
+nueva experiencia niega `iam:*Provider*` en los planes Free y pago. Detalle en
+`deploy/aws/CI-CD.md`.
 
 ### Caché del explorador
 
