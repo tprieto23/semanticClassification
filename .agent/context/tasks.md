@@ -14,7 +14,8 @@ clusters son por categoría o mixtos.
 - [x] 20 pruebas en `tests/test_explorer.py`; prueba de punta a punta sobre PostgreSQL temporal con corpus sintético.
 - [x] Filtro `productive_sector` (Agroforestry por defecto) en todos los endpoints del explorador.
 - [x] Despliegue preparado: `docker-compose.prod.yml`, gateway Caddy, scripts y guía en `deploy/aws/`.
-- [ ] Desplegar en el project AWS (us-east-2) siguiendo `deploy/aws/AGENT-RUNBOOK.md` desde la Mac de Tania y migrar la base real.
+- [x] Desplegar en el project AWS (us-east-2) siguiendo `deploy/aws/AGENT-RUNBOOK.md` desde la Mac de Tania y migrar la base real.
+- [ ] Activar el despliegue automático: `bash deploy/aws/setup-cicd.sh` y las variables de GitHub (`deploy/aws/CI-CD.md`).
 - [ ] Decidir si `/analysis/network`, las proyecciones y Leiden también filtran por sector.
 - [x] Registrar y verificar `language`, `year` y `document_type` de los 116 documentos Agroforestry locales según la tabla de la usuaria (27 Oct 2026).
 - [ ] Completar los metadatos del resto del corpus si se incorpora al análisis; sin año los documentos no entran en la evolución.

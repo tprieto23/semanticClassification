@@ -442,6 +442,16 @@ POST /analysis/explorer/v1/network
 - En producción, el gateway Caddy (`deploy/gateway/Caddyfile`) solo expone este prefijo
   y `/health`; ver `deploy/aws/README.md`.
 
+### Despliegue continuo
+
+`.github/workflows/backend.yml` corre `pytest` en cada push y pull request. En
+`feat/explorador-entidades`, si pasan, asume por OIDC el rol `github-deploy-semantic`
+(solo para el environment `production` de este repo) y ejecuta
+`deploy/aws/deploy-on-ec2.sh <commit>` en el EC2 mediante Systems Manager Run Command:
+fast-forward al commit probado, `up -d --build api`, espera `/health` y aplica
+migraciones. No toca la base de datos ni `s3/`; los datos se siguen resincronizando
+desde la Mac. Configuración y diagnóstico en `deploy/aws/CI-CD.md`.
+
 ### Caché del explorador
 
 `RankedNetworkCache` (`src/services/explorer.py`) guarda la salida de los pasos 1 a 4

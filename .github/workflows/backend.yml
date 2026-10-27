@@ -1,0 +1,73 @@
+# Tests del backend en cada push y pull request. Si pasan en la rama desplegada,
+# despliega la API en el EC2 de AWS mediante Systems Manager (ver deploy/aws/CI-CD.md).
+name: Backend · tests y despliegue
+
+on:
+  push:
+    branches: [feat/explorador-entidades]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          # La misma versión que la imagen de producción (Dockerfile).
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar dependencias
+        # docling y transformers (con torch) pesan varios GB y los tests no los usan:
+        # los módulos que los importan se reemplazan por stubs en los tests.
+        run: |
+          grep -vE '^(docling|transformers)\b' requirements.txt > "$RUNNER_TEMP/requirements-ci.txt"
+          pip install -r "$RUNNER_TEMP/requirements-ci.txt" pytest
+
+      - name: Tests
+        env:
+          DATABASE_URL: postgresql://test:test@localhost/test
+        run: python -m pytest -q
+
+  deploy:
+    name: Desplegar en AWS
+    needs: test
+    # Solo la rama desplegada, y solo cuando el despliegue ya está configurado.
+    if: >-
+      github.event_name != 'pull_request'
+      && github.ref == 'refs/heads/feat/explorador-entidades'
+      && vars.AWS_DEPLOY_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    # El rol de AWS solo confía en este environment (ver la política de confianza).
+    environment: production
+    # Un despliegue a la vez; si llegan varios pushes, se aplican en orden.
+    concurrency:
+      group: deploy-aws
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Credenciales temporales de AWS (OIDC, sin claves guardadas)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-2
+
+      - name: Desplegar
+        env:
+          INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
+          COMMIT_SHA: ${{ github.sha }}
+          DEPLOY_BRANCH: feat/explorador-entidades
+          GATEWAY_URL: ${{ vars.GATEWAY_URL }}
+          DB_MODE: local-db
+        run: bash deploy/aws/ci/deploy-via-ssm.sh

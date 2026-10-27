@@ -10,6 +10,7 @@ from uuid import uuid4
 import networkx as nx
 from sqlalchemy import create_engine, func, select
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import sessionmaker
 
@@ -35,6 +36,27 @@ def _compile_jsonb_for_sqlite(type_, compiler, **kw):
     return "JSON"
 
 
+@compiles(PG_UUID, "sqlite")
+def _compile_uuid_for_sqlite(type_, compiler, **kw):
+    return "CHAR(36)"
+
+
+def _without_postgres_server_defaults(test, tables):
+    """SQLite no conoce gen_random_uuid(): los ids ya se generan en Python (uuid4).
+
+    Quita los server_default solo mientras dura el test y los restaura después,
+    para no alterar los modelos que usan los demás tests.
+    """
+
+    for table in tables:
+        for column in table.columns:
+            if column.server_default is not None:
+                test.addCleanup(
+                    setattr, column, "server_default", column.server_default
+                )
+                column.server_default = None
+
+
 # The relationship builder is deterministic, but the shared DocumentoError
 # currently lives in the document service, whose optional Anthropic dependency
 # is not needed by these unit tests.
@@ -42,13 +64,16 @@ if "anthropic" not in sys.modules:
     sys.modules["anthropic"] = types.SimpleNamespace(Anthropic=object)
 if "src.services.documents" not in sys.modules:
     documents_stub = types.ModuleType("src.services.documents")
+
     class DocumentoError(Exception):
         def __init__(self, mensaje, codigo_http=409):
             self.mensaje = mensaje
             self.codigo_http = codigo_http
             super().__init__(mensaje)
+
     class DocumentoNoEncontrado(DocumentoError):
         pass
+
     documents_stub.DocumentoError = DocumentoError
     documents_stub.DocumentoNoEncontrado = DocumentoNoEncontrado
     sys.modules["src.services.documents"] = documents_stub
@@ -112,16 +137,15 @@ class SemanticRelationshipServiceTests(unittest.TestCase):
 
         self.engine = create_engine("sqlite:///:memory:")
         self.addCleanup(self.engine.dispose)
-        Base.metadata.create_all(
-            self.engine,
-            tables=[
-                CanonicalEntity.__table__,
-                SemanticNode.__table__,
-                SemanticNodeMember.__table__,
-                SemanticNetworkSourceEdge.__table__,
-                SemanticNodeRelationship.__table__,
-            ],
-        )
+        tables = [
+            CanonicalEntity.__table__,
+            SemanticNode.__table__,
+            SemanticNodeMember.__table__,
+            SemanticNetworkSourceEdge.__table__,
+            SemanticNodeRelationship.__table__,
+        ]
+        _without_postgres_server_defaults(self, tables)
+        Base.metadata.create_all(self.engine, tables=tables)
         session_factory = sessionmaker(
             bind=self.engine, autoflush=False, expire_on_commit=False
         )
@@ -156,9 +180,11 @@ class SemanticRelationshipServiceTests(unittest.TestCase):
                 canonical_name=canonical_name,
                 label=canonical_name,
             )
-            canonical_entities.append(CanonicalEntity(
-                id=canonical_id, canonical_name=canonical_name, category=category
-            ))
+            canonical_entities.append(
+                CanonicalEntity(
+                    id=canonical_id, canonical_name=canonical_name, category=category
+                )
+            )
 
         nodes_by_community = {}
         for community_id, keys, title in (
@@ -243,11 +269,14 @@ class SemanticRelationshipServiceTests(unittest.TestCase):
     def test_build_aggregates_only_cross_edges_between_registered_meta_nodes(self):
         result = self._build()
 
-        self.assertEqual(result["counts"], {
-            "semantic_nodes": 2,
-            "relationships": 1,
-            "source_edges": 3,
-        })
+        self.assertEqual(
+            result["counts"],
+            {
+                "semantic_nodes": 2,
+                "relationships": 1,
+                "source_edges": 3,
+            },
+        )
         relationship = result["relationships"][0]
         self.assertEqual(
             {relationship["source_community_id"], relationship["target_community_id"]},
@@ -290,11 +319,14 @@ class SemanticRelationshipServiceTests(unittest.TestCase):
             minimum_source_edge_weight=0.0,
             include_isolates=True,
         )
-        self.assertEqual(exported["counts"], {
-            "nodes": 3,
-            "relationships": 1,
-            "isolates": 1,
-        })
+        self.assertEqual(
+            exported["counts"],
+            {
+                "nodes": 3,
+                "relationships": 1,
+                "isolates": 1,
+            },
+        )
         graphml_path = self.graph_storage / exported["graphml_path"]
         graph = nx.read_graphml(graphml_path)
         self.assertEqual(
@@ -313,8 +345,11 @@ class SemanticRelationshipServiceTests(unittest.TestCase):
             minimum_source_edge_weight=0.0,
             include_isolates=False,
         )
-        self.assertEqual(without_isolates["counts"], {
-            "nodes": 2,
-            "relationships": 1,
-            "isolates": 0,
-        })
+        self.assertEqual(
+            without_isolates["counts"],
+            {
+                "nodes": 2,
+                "relationships": 1,
+                "isolates": 0,
+            },
+        )

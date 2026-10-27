@@ -246,7 +246,7 @@ se borran en el servidor.
 
 | Tarea | Comando o acción |
 |---|---|
-| Actualizar a la última versión de la rama | En el EC2: `git pull && docker compose -f docker-compose.prod.yml up -d --build` |
+| Actualizar a la última versión de la rama | Automático con cada push, si está configurado [`CI-CD.md`](CI-CD.md). A mano, en el EC2: `bash deploy/aws/deploy-on-ec2.sh $(git rev-parse origin/feat/explorador-entidades)` |
 | Ver logs | `docker compose -f docker-compose.prod.yml logs -f api` |
 | Reiniciar | `docker compose -f docker-compose.prod.yml restart` |
 | Aplicar migraciones | `docker compose -f docker-compose.prod.yml exec api alembic upgrade head` |
