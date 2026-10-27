@@ -224,6 +224,24 @@ En Postman, Tania cambia la URL base de `http://localhost:8000` a
 `VITE_API_BASE_URL` se fija al construir. Si cambia el gateway, actualiza la variable y
 vuelve a desplegar.
 
+## Resincronizar el servidor con la Mac
+
+Mientras la Mac sea la base principal (se procesan documentos ahí), el servidor es una
+copia que hay que actualizar después de procesar documentos nuevos. Desde la raíz del
+repo, en la **Terminal** (no dentro del sandbox del agente, que bloquea SSH):
+
+```bash
+bash deploy/aws/resync-from-mac.sh
+```
+
+El script pide confirmación, exporta la base y `s3/`, los sube, detiene la API,
+reemplaza la base del servidor, actualiza `s3/`, vuelve a levantar la API y compara los
+conteos de documentos y entidades. Si no coinciden, termina con error y muestra las
+diferencias. El dashboard queda sin datos un par de minutos mientras corre.
+
+`s3/` se actualiza agregando y sobrescribiendo archivos; los que se borren en la Mac no
+se borran en el servidor.
+
 ## Operación diaria
 
 | Tarea | Comando o acción |

@@ -323,6 +323,13 @@ muestra Agroforestería y no hay errores en la consola del navegador.
    `CLAUDE.md`).
 5. Agrega en `.agent/sessions/` una bitácora con lo desplegado. Usa IDs, nunca secretos.
 
+## Mantenimiento: resincronizar desde la Mac
+
+La Mac es la base principal. Cuando Tania procese documentos nuevos, el servidor se
+actualiza con `bash deploy/aws/resync-from-mac.sh`. Reemplaza la base del servidor, así
+que **pídele confirmación antes de proponerlo**. Necesita SSH: si el sandbox lo bloquea
+(`Operation not permitted`), pídele a Tania que lo ejecute en la Terminal.
+
 ## Deshacer (solo con confirmación explícita de Tania)
 
 Borrar recursos es irreversible. Muestra la lista exacta de lo que se borrará y pide

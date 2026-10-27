@@ -102,3 +102,24 @@ Estado auditado en el project antes de corregir: EC2 `m7i-flex.large` en ejecuci
 Elastic IP, PostgreSQL dentro del EC2 (sin RDS), puertos 22/8000 limitados a la IP de
 la usuaria, IMDSv2 obligatorio. El gateway responde con 83 documentos Agroforestry
 (78 excluidos por sector) y `/documents` da 404.
+
+### Migración verificada y resincronización
+
+- Conteos idénticos Mac/servidor después de migrar: 83 Agroforestry y 78 sin sector en
+  `fuzzyMatching`, 34 en `ner`, 108.602 entidades. Alembic al día; `/health` 200 y
+  `/documents` 404 en el gateway.
+- El sandbox de Claude Code en macOS bloquea SSH (`Operation not permitted`) y no dejó
+  pasar los endpoints de AWS aunque se agregaron a `allowedDomains`. Los pasos que
+  necesitan SSH o el AWS CLI se ejecutan desde la Terminal.
+- Decisión de la usuaria (opción A): la Mac sigue siendo la base principal. Los 34
+  documentos en `ner` se procesaron en la Mac después de migrar.
+- `deploy/aws/resync-from-mac.sh` + `replace-db-on-ec2.sh`: reemplazan la copia del
+  servidor y comparan conteos. Probado con un servidor simulado (compose de producción,
+  base local-db con datos distintos y ssh/scp simulados). El primer intento enviaba el
+  script por `bash -s` y `docker compose exec` consumía el resto como entrada; ahora se
+  sube y se ejecuta en el servidor. `s3/` se extrae con `sudo` porque la API crea
+  carpetas como root.
+- Datos reales: los 83 documentos no tienen año, idioma ni tipo documental, así que la
+  vista de Evolución queda vacía. La red por defecto tardó ~52 s (36.873 nodos y 122.131
+  aristas de coocurrencia); con recurrencia 1 no terminó en 5 minutos. Pendiente:
+  optimizar el rendimiento y cargar los metadatos.
