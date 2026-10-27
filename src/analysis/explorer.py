@@ -61,8 +61,10 @@ RANKING_METRICS: tuple[str, ...] = (
     "document_count",
 )
 
-# Períodos de análisis acordados para la evolución temporal.
+# Períodos de análisis acordados para la evolución temporal, en orden cronológico.
+# 2000–2020 agrupa la literatura de referencia anterior a las incubadoras.
 PERIODS: tuple[dict[str, Any], ...] = (
+    {"id": "2000-2020", "label": "2000–2020", "year_from": 2000, "year_to": 2020},
     {"id": "2021-2023", "label": "2021–2023", "year_from": 2021, "year_to": 2023},
     {"id": "2024-2026", "label": "2024–2026", "year_from": 2024, "year_to": 2026},
 )

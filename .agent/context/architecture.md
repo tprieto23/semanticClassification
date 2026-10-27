@@ -420,7 +420,8 @@ POST /analysis/explorer/v1/network
   ← nodos + métricas + rangos, aristas, conteo por etapa y advertencias
 ```
 
-- Períodos fijos: `2021-2023` y `2024-2026` (`PERIODS` en `src/analysis/explorer.py`).
+- Períodos fijos, en orden cronológico: `2000-2020`, `2021-2023` y `2024-2026` (`PERIODS` en
+  `src/analysis/explorer.py`). `/compare` usa los tres por defecto.
   Los documentos sin `year` quedan fuera de cualquier período y se contabilizan.
 - Betweenness y closeness usan distancia `1/analysis_weight` y se calculan con
   igraph (C), siempre exactas. Closeness aplica la corrección de Wasserman y Faust

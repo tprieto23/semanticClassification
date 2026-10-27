@@ -7,7 +7,8 @@ from src.analysis.explorer import PERIODS_BY_ID
 from src.api.schemas.network import EdgeWeighting, IncubatorFilter
 from src.categories import STORED_CATEGORIES
 
-PeriodFilter = Literal["all", "2021-2023", "2024-2026"]
+PeriodId = Literal["2000-2020", "2021-2023", "2024-2026"]
+PeriodFilter = Literal["all", "2000-2020", "2021-2023", "2024-2026"]
 ProductiveSectorFilter = Literal["all", "Agroforestry"]
 LinkMode = Literal["any", "between", "within", "pairs"]
 RankingMetric = Literal[
@@ -80,7 +81,7 @@ class ExplorerNetworkRequest(ExplorerScopeRequest, ExplorerFiltersRequest):
 
 
 class ExplorerCompareRequest(ExplorerScopeRequest, ExplorerFiltersRequest):
-    periods: list[Literal["2021-2023", "2024-2026"]] = Field(
+    periods: list[PeriodId] = Field(
         default_factory=lambda: list(PERIODS_BY_ID), min_length=2
     )
     top_k: int = Field(default=20, ge=1, le=200)

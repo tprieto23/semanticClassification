@@ -23,6 +23,7 @@ from pydantic import ValidationError
 
 from src.analysis.cooccurrence import MentionRecord, load_db_mentions
 from src.analysis.explorer import (
+    PERIODS,
     ExplorerFilterError,
     ExplorerFilters,
     build_explorer_network,
@@ -575,6 +576,22 @@ class ExplorerServiceTests(unittest.TestCase):
         self.assertNotIn(
             "productive_sector", compiled_where(ExplorerScope(productive_sector=None))
         )
+
+    def test_periods_are_chronological_and_include_2000_2020(self) -> None:
+        self.assertEqual(
+            [period["id"] for period in PERIODS],
+            ["2000-2020", "2021-2023", "2024-2026"],
+        )
+        self.assertEqual(ExplorerCompareRequest().periods, [p["id"] for p in PERIODS])
+        self.assertEqual(ExplorerNetworkRequest(period="2000-2020").period, "2000-2020")
+
+        db = Mock()
+        db.execute.return_value.all.return_value = []
+        _scoped_documents(db, ExplorerScope(period="2000-2020"))
+        where = db.execute.call_args.args[0].whereclause.compile(
+            compile_kwargs={"literal_binds": True}
+        )
+        self.assertIn("BETWEEN 2000 AND 2020", str(where))
 
     def test_unknown_period_is_rejected(self) -> None:
         with self.assertRaises(ExplorerFiltroInvalido):
