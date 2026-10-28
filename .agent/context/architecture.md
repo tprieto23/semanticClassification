@@ -406,7 +406,7 @@ admite el legado `INFRA` solo si aparece en los datos.
 ```
 POST /analysis/explorer/v1/network
   → ExplorerService.network()
-    → documentos fuzzyMatching filtrados por período/incubadora/idioma/document_ids
+    → documentos fuzzyMatching filtrados por período/incubadora/idioma/tipo/document_ids
     → caché de redes (clave: documentos + huella de menciones + filtros estructurales)
       si no está: load_db_mentions(document_ids=...)
                   → build_ranked_network()           (src/analysis/explorer.py)
@@ -442,6 +442,11 @@ POST /analysis/explorer/v1/network
   ellas. La respuesta trae `excluded_entities` con nombre, categoría y menciones
   quitadas (nombre nulo si la entidad no está en el alcance). Es parte de la clave de
   la caché.
+- `language` y `document_type` (con `document_type_mode`: `only` o `exclude`) filtran
+  documentos antes de construir la red, en `/network`, `/compare` y `/evidence`, y se
+  combinan entre sí. Excluir un tipo conserva los documentos sin tipo. `/meta` trae
+  `document_types` con su conteo. La caché no necesita nada extra: su clave ya es el
+  conjunto de documentos.
 - Solo entran documentos con `productive_sector = Agroforestry`, salvo que se envíe
   `productive_sector: "all"`.
 - En producción, el gateway Caddy (`deploy/gateway/Caddyfile`) solo expone este prefijo
@@ -532,7 +537,7 @@ s3/
 | POST | `/analysis/network` | Construir red de corpus/incubadora |
 | GET | `/analysis/network/latest` | Leer resumen/URLs sin recalcular |
 | POST | `/analysis/network/projections/{projection_id}` | Construir proyección tipada o construcción analítica parametrizada |
-| GET | `/analysis/explorer/v1/meta` | Categorías, períodos, incubadoras, idiomas y documentos listos |
+| GET | `/analysis/explorer/v1/meta` | Categorías, períodos, incubadoras, idiomas, tipos de documento y documentos listos |
 | POST | `/analysis/explorer/v1/network` | Red de entidades filtrada con métricas de centralidad |
 | POST | `/analysis/explorer/v1/compare` | Evolución del ranking de centralidad entre períodos |
 | GET | `/analysis/explorer/v1/evidence` | Oraciones que respaldan un link entre dos entidades |

@@ -14,13 +14,13 @@ from __future__ import annotations
 
 import threading
 import time
-from collections import OrderedDict
+from collections import Counter, OrderedDict
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from typing import Any, Callable, Hashable, Sequence
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from src.analysis.cooccurrence import CATEGORY_RANK, load_db_mentions
@@ -77,6 +77,10 @@ class ExplorerScope:
     period: str | None = None
     incubator_number: int | None = None
     language: str | None = None
+    # Con mode "exclude" se quitan solo los documentos de ese tipo; los que no
+    # tienen tipo se conservan.
+    document_type: str | None = None
+    document_type_mode: str = "only"
     document_ids: tuple[str, ...] | None = None
     productive_sector: str | None = DEFAULT_PRODUCTIVE_SECTOR
 
@@ -237,6 +241,16 @@ def _scoped_documents(db: Session, scope: ExplorerScope) -> list[Any]:
         statement = statement.where(Document.incubator_number == scope.incubator_number)
     if scope.language is not None:
         statement = statement.where(Document.language == scope.language)
+    if scope.document_type is not None:
+        if scope.document_type_mode == "exclude":
+            statement = statement.where(
+                or_(
+                    Document.document_type.is_(None),
+                    Document.document_type != scope.document_type,
+                )
+            )
+        else:
+            statement = statement.where(Document.document_type == scope.document_type)
     if scope.document_ids is not None:
         statement = statement.where(
             Document.id.in_([UUID(value) for value in scope.document_ids])
@@ -251,6 +265,8 @@ def _scope_summary(scope: ExplorerScope, documents: Sequence[Any]) -> dict[str, 
         "period": scope.period or "all",
         "incubator_number": scope.incubator_number or "all",
         "language": scope.language or "all",
+        "document_type": scope.document_type,
+        "document_type_mode": scope.document_type_mode,
         "document_ids": list(scope.document_ids) if scope.document_ids else None,
         "productive_sector": scope.productive_sector or "all",
         "document_count": len(documents),
@@ -335,6 +351,15 @@ class ExplorerService:
                 }
             ),
             "languages": sorted({d.language for d in documents if d.language}),
+            "document_types": [
+                {"name": name, "document_count": count}
+                for name, count in sorted(
+                    Counter(
+                        d.document_type for d in documents if d.document_type
+                    ).items(),
+                    key=lambda item: (-item[1], item[0]),
+                )
+            ],
             "documents": [_document_row(document) for document in documents],
             "documents_without_year": sum(1 for d in documents if d.year is None),
             "productive_sector": productive_sector or "all",
@@ -449,6 +474,8 @@ class ExplorerService:
             "scope": {
                 "incubator_number": scope.incubator_number or "all",
                 "language": scope.language or "all",
+                "document_type": scope.document_type,
+                "document_type_mode": scope.document_type_mode,
                 "document_ids": (
                     list(scope.document_ids) if scope.document_ids else None
                 ),

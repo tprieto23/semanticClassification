@@ -11,6 +11,7 @@ PeriodId = Literal["2000-2020", "2021-2023", "2024-2026"]
 PeriodFilter = Literal["all", "2000-2020", "2021-2023", "2024-2026"]
 ProductiveSectorFilter = Literal["all", "Agroforestry"]
 LinkMode = Literal["any", "between", "within", "pairs"]
+DocumentTypeMode = Literal["only", "exclude"]
 RankingMetric = Literal[
     "pagerank",
     "degree",
@@ -34,6 +35,19 @@ class ExplorerScopeRequest(BaseModel):
     productive_sector: ProductiveSectorFilter = Field(
         default="Agroforestry",
         description="Sector productivo del corpus; 'all' incluye documentos sin sector",
+    )
+    document_type: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=200,
+        description="Tipo de documento (document_type); null usa todos los tipos",
+    )
+    document_type_mode: DocumentTypeMode = Field(
+        default="only",
+        description=(
+            "only: solo documentos de ese tipo; exclude: todos menos ese tipo "
+            "(incluye los que no tienen tipo)"
+        ),
     )
 
     @field_validator("language")
@@ -120,6 +134,11 @@ class ExplorerDocument(BaseModel):
     document_type: str | None
 
 
+class ExplorerDocumentType(BaseModel):
+    name: str
+    document_count: int
+
+
 class ExplorerMetaResponse(BaseModel):
     version: str
     generated_at: str
@@ -127,6 +146,7 @@ class ExplorerMetaResponse(BaseModel):
     periods: list[ExplorerPeriod]
     incubators: list[int]
     languages: list[str]
+    document_types: list[ExplorerDocumentType]
     documents: list[ExplorerDocument]
     documents_without_year: int
     productive_sector: str
@@ -188,6 +208,8 @@ class ExplorerScopeSummary(BaseModel):
     period: str
     incubator_number: int | Literal["all"]
     language: str
+    document_type: str | None
+    document_type_mode: DocumentTypeMode
     document_ids: list[str] | None
     productive_sector: str
     document_count: int
@@ -273,6 +295,8 @@ class ExplorerPeriodSummary(BaseModel):
 class ExplorerCompareScope(BaseModel):
     incubator_number: int | Literal["all"]
     language: str
+    document_type: str | None
+    document_type_mode: DocumentTypeMode
     document_ids: list[str] | None
     productive_sector: str
 

@@ -631,6 +631,102 @@ class ExplorerServiceTests(unittest.TestCase):
         )
         self.assertIn("BETWEEN 2000 AND 2020", str(where))
 
+    @staticmethod
+    def _where(scope: ExplorerScope) -> str:
+        db = Mock()
+        db.execute.return_value.all.return_value = []
+        _scoped_documents(db, scope)
+        return str(
+            db.execute.call_args.args[0].whereclause.compile(
+                compile_kwargs={"literal_binds": True}
+            )
+        )
+
+    def test_document_type_filter_selects_only_or_all_but_one_type(self) -> None:
+        self.assertNotIn("document_type", self._where(ExplorerScope()))
+        self.assertIn(
+            "documents.document_type = 'WA SAM Hub'",
+            self._where(ExplorerScope(document_type="WA SAM Hub")),
+        )
+        excluded = self._where(
+            ExplorerScope(document_type="WA SAM Hub", document_type_mode="exclude")
+        )
+        # Excluir un tipo conserva los documentos sin tipo.
+        self.assertIn("documents.document_type IS NULL", excluded)
+        self.assertIn("documents.document_type != 'WA SAM Hub'", excluded)
+
+    def test_document_type_and_language_filters_combine(self) -> None:
+        where = self._where(
+            ExplorerScope(
+                language="en", document_type="Other", document_type_mode="exclude"
+            )
+        )
+        self.assertIn("documents.language = 'en'", where)
+        self.assertIn("documents.document_type != 'Other'", where)
+
+    def test_request_maps_document_type_to_the_scope(self) -> None:
+        default = _scope(ExplorerNetworkRequest())
+        self.assertIsNone(default.document_type)
+        self.assertEqual(default.document_type_mode, "only")
+        scope = _scope(
+            ExplorerNetworkRequest(
+                language="es",
+                document_type="WA SAM Hub",
+                document_type_mode="exclude",
+            )
+        )
+        self.assertEqual(
+            (scope.language, scope.document_type, scope.document_type_mode),
+            ("es", "WA SAM Hub", "exclude"),
+        )
+        with self.assertRaises(ValidationError):
+            ExplorerNetworkRequest(document_type_mode="except")
+        with self.assertRaises(ValidationError):
+            ExplorerNetworkRequest(document_type="")
+
+    def test_network_reports_the_document_type_in_its_scope(self) -> None:
+        with (
+            patch(
+                "src.services.explorer._scoped_documents",
+                return_value=[self._document(DOC_A, 2022)],
+            ),
+            patch("src.services.explorer.load_db_mentions", return_value=CORPUS),
+        ):
+            payload = ExplorerService.network(
+                Mock(),
+                ExplorerScope(document_type="technical_report"),
+                ExplorerFilters(),
+            )
+
+        self.assertEqual(payload["scope"]["document_type"], "technical_report")
+        self.assertEqual(payload["scope"]["document_type_mode"], "only")
+        ExplorerNetworkResponse.model_validate(payload)
+
+    def test_meta_lists_document_types_by_document_count(self) -> None:
+        documents = [
+            SimpleNamespace(
+                **vars(self._document(document_id, 2022)),
+                productive_sector="Agroforestry",
+            )
+            for document_id in (DOC_A, DOC_B, DOC_C)
+        ]
+        documents[0].document_type = "WA SAM Hub"
+        documents[2].document_type = None
+        db = Mock()
+        db.execute.return_value.all.return_value = []
+        with patch(
+            "src.services.explorer._scoped_documents", return_value=documents
+        ):
+            payload = ExplorerService.meta(db)
+
+        self.assertEqual(
+            payload["document_types"],
+            [
+                {"name": "WA SAM Hub", "document_count": 1},
+                {"name": "technical_report", "document_count": 1},
+            ],
+        )
+
     def test_unknown_period_is_rejected(self) -> None:
         with self.assertRaises(ExplorerFiltroInvalido):
             ExplorerService.network(

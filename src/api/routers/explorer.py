@@ -13,6 +13,7 @@ from src.api.schemas.explorer import (
     ExplorerMetaResponse,
     ExplorerNetworkRequest,
     ExplorerNetworkResponse,
+    DocumentTypeMode,
     ExplorerScopeRequest,
     PeriodFilter,
     ProductiveSectorFilter,
@@ -31,6 +32,8 @@ def _scope(selection: ExplorerScopeRequest, period: str | None = None) -> Explor
             None if selection.incubator_number == "all" else selection.incubator_number
         ),
         language=None if selection.language == "all" else selection.language,
+        document_type=selection.document_type,
+        document_type_mode=selection.document_type_mode,
         document_ids=(
             tuple(str(document_id) for document_id in selection.document_ids)
             if selection.document_ids is not None
@@ -111,6 +114,8 @@ def explorer_evidence(
     period: Annotated[PeriodFilter, Query()] = "all",
     incubator_number: Annotated[IncubatorFilter, Query()] = "all",
     language: Annotated[str, Query(min_length=2, max_length=10)] = "all",
+    document_type: Annotated[str | None, Query(min_length=1, max_length=200)] = None,
+    document_type_mode: Annotated[DocumentTypeMode, Query()] = "only",
     document_ids: Annotated[list[UUID] | None, Query()] = None,
     productive_sector: Annotated[ProductiveSectorFilter, Query()] = "Agroforestry",
     offset: Annotated[int, Query(ge=0)] = 0,
@@ -120,6 +125,8 @@ def explorer_evidence(
     selection = ExplorerScopeRequest(
         incubator_number=incubator_number,
         language=language,
+        document_type=document_type,
+        document_type_mode=document_type_mode,
         document_ids=document_ids,
         productive_sector=productive_sector,
     )
