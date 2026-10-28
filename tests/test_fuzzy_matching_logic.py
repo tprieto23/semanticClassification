@@ -138,6 +138,61 @@ class FuzzyMatchingLogicTests(unittest.TestCase):
 
     @patch("src.services.fuzzy_matching.CanonicalEntityRepo.crear")
     @patch("src.services.fuzzy_matching.CanonicalEntityRepo.leer_todas")
+    def test_saf_prac_forms_share_agroforestry_canonical(
+        self, leer_todas: Mock, crear: Mock
+    ) -> None:
+        existing = canonical("Sistemas Agroflorestais", "PRAC")
+        leer_todas.return_value = [existing]
+        forms = [
+            "SAF", "SAFs", "SAF-A", "SAF-F", "SAFs-A", "SAFs-F",
+            "SAF-A/F", "SAFs-A/F", "Sistemas Agroflorestais",
+        ]
+
+        result, stats = asociar_entidades_canonicas(
+            self.db, [mention(form, "PRAC") for form in forms]
+        )
+
+        self.assertEqual([item["text"] for item in result], forms)
+        self.assertEqual({item["canonical_id"] for item in result}, {existing.id})
+        self.assertEqual(stats["controlled_alias"], len(forms) - 1)
+        self.assertEqual(result[-1]["match_type"], "exact")
+        crear.assert_not_called()
+
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.crear")
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.leer_todas")
+    def test_saf_rule_does_not_merge_other_categories(
+        self, leer_todas: Mock, crear: Mock
+    ) -> None:
+        leer_todas.return_value = [canonical("Sistemas Agroflorestais", "PRAC")]
+        other = canonical("SAF", "CHAR")
+        crear.return_value = other
+
+        result, stats = asociar_entidades_canonicas(self.db, [mention("SAF", "CHAR")])
+
+        self.assertEqual(result[0]["canonical_id"], other.id)
+        self.assertEqual(stats["controlled_alias"], 0)
+        crear.assert_called_once_with(self.db, canonical_name="SAF", category="CHAR")
+
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.crear")
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.leer_todas", return_value=[])
+    def test_saf_alias_creates_one_full_name_canonical_when_absent(
+        self, _leer_todas: Mock, crear: Mock
+    ) -> None:
+        created = canonical("Sistemas Agroflorestais", "PRAC")
+        crear.return_value = created
+
+        result, stats = asociar_entidades_canonicas(
+            self.db, [mention("SAFs-F", "PRAC"), mention("SAF", "PRAC")]
+        )
+
+        self.assertEqual({item["canonical_id"] for item in result}, {created.id})
+        self.assertEqual(stats["controlled_alias"], 2)
+        crear.assert_called_once_with(
+            self.db, canonical_name="Sistemas Agroflorestais", category="PRAC"
+        )
+
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.crear")
+    @patch("src.services.fuzzy_matching.CanonicalEntityRepo.leer_todas")
     def test_legacy_gov_mentions_are_normalized_to_rul(
         self, leer_todas: Mock, crear: Mock
     ) -> None:

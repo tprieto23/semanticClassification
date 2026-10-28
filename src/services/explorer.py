@@ -298,6 +298,20 @@ def _filters_summary(filters: ExplorerFilters) -> dict[str, Any]:
     }
 
 
+def _filters_for_single_document(
+    filters: ExplorerFilters, document_count: int
+) -> ExplorerFilters:
+    """Permite una red para un alcance con un único documento listo.
+
+    El valor 2 es el mínimo estándar de recurrencia entre documentos, pero es
+    imposible cumplirlo si el filtro deja exactamente un documento. Los
+    umbrales mayores (3+) siguen siendo explícitos y se respetan.
+    """
+    if document_count == 1 and filters.minimum_node_document_count == 2:
+        return replace(filters, minimum_node_document_count=1)
+    return filters
+
+
 class ExplorerService:
     @staticmethod
     def meta(
@@ -378,6 +392,8 @@ class ExplorerService:
         db: Session,
         scope: ExplorerScope,
         filters: ExplorerFilters,
+        *,
+        auto_singleton: bool = False,
     ) -> tuple[list[Any], dict[str, Any]]:
         scope.validate()
         if filters.ranking_metric not in RANKING_METRICS:
@@ -385,6 +401,13 @@ class ExplorerService:
                 f"ranking_metric no soportada: {filters.ranking_metric!r}"
             )
         documents = _scoped_documents(db, scope)
+        auto_adjusted = (
+            auto_singleton
+            and len(documents) == 1
+            and filters.minimum_node_document_count == 2
+        )
+        if auto_singleton:
+            filters = _filters_for_single_document(filters, len(documents))
         document_ids = [str(document.id) for document in documents]
         structural = filters.structural()
 
@@ -412,6 +435,11 @@ class ExplorerService:
             raise ExplorerFiltroInvalido(str(error)) from error
         if not documents:
             network["warnings"].insert(0, "No hay documentos listos en este alcance")
+        elif auto_adjusted:
+            network["warnings"].insert(
+                0,
+                "Alcance de un documento: la recurrencia mínima de nodos se ajustó a 1",
+            )
         return documents, network
 
     @staticmethod
@@ -420,12 +448,15 @@ class ExplorerService:
         scope: ExplorerScope,
         filters: ExplorerFilters,
     ) -> dict[str, Any]:
-        documents, network = ExplorerService._network_for_scope(db, scope, filters)
+        documents, network = ExplorerService._network_for_scope(
+            db, scope, filters, auto_singleton=True
+        )
+        effective_filters = _filters_for_single_document(filters, len(documents))
         return {
             "version": EXPLORER_VERSION,
             "generated_at": _utcnow(),
             "scope": _scope_summary(scope, documents),
-            "filters": _filters_summary(filters),
+            "filters": _filters_summary(effective_filters),
             **network,
         }
 

@@ -17,7 +17,7 @@ from src.models.canonical_entity_aliases_repo import CanonicalEntityAliasRepo
 # La extracción admite solo las diez activas; los JSON históricos pueden
 # conservar INFRA hasta su reclasificación contextual.
 VALID_CATEGORIES = STORED_CATEGORIES
-RESOLUTION_VERSION = "deterministic-v2"
+RESOLUTION_VERSION = "deterministic-v3"
 FUZZY_THRESHOLDS = {
     **dict.fromkeys(VALID_CATEGORIES, 96.0),
     "CHAR": 93.0,
@@ -28,6 +28,7 @@ MIN_FUZZY_LENGTH = 5
 MATCH_TYPES = (
     "exact",
     "morphology",
+    "controlled_alias",
     "person_alias",
     "stored_alias",
     "person_name",
@@ -216,6 +217,19 @@ def normalizar_nombre(texto: str) -> str:
         if not unicodedata.combining(caracter)
     )
     return re.sub(r"\s+", " ", normalizado).strip().casefold()
+
+
+# El codebook clasifica los sistemas agroforestales como prácticas. En el
+# documento portugués aparecen estas siglas para el mismo concepto; la
+# equivalencia se aplica únicamente a menciones ya etiquetadas PRAC.
+_SAF_CANONICAL = "Sistemas Agroflorestais"
+_SAF_ALIASES = frozenset(
+    normalizar_nombre(form)
+    for form in (
+        "SAF", "SAFs", "SAF-A", "SAF-F", "SAFs-A", "SAFs-F",
+        "SAF-A/F", "SAFs-A/F", _SAF_CANONICAL,
+    )
+)
 
 
 def canonicalizar_actor_generico(texto: str) -> str | None:
@@ -432,6 +446,17 @@ def _planear_menciones(menciones: list[dict[str, Any]]) -> list[MentionPlan]:
     planes: list[MentionPlan] = []
     for mencion in menciones:
         texto = _nombre_canonico(mencion["text"])
+        if mencion["category"] == "PRAC" and normalizar_nombre(texto) in _SAF_ALIASES:
+            planes.append(
+                MentionPlan(
+                    preferred_name=_SAF_CANONICAL,
+                    comparison_key=normalizar_nombre(_SAF_CANONICAL),
+                    strategy="controlled_alias",
+                    confidence=100.0,
+                    details={"rule": "agroforestry_saf_equivalence", "source_name": texto},
+                )
+            )
+            continue
         actor_generico = (
             canonicalizar_actor_generico(texto)
             if mencion["category"] == "CHAR"
@@ -630,7 +655,7 @@ def _cantidad_acentos(texto: str) -> int:
 
 
 def _seleccionar_plan_representativo(planes: list[MentionPlan]) -> MentionPlan:
-    prioridad = {"generic_actor": 2, "document_person": 1, "standard": 0}
+    prioridad = {"controlled_alias": 3, "generic_actor": 2, "document_person": 1, "standard": 0}
     return max(
         planes,
         key=lambda plan: (
@@ -811,6 +836,8 @@ def _metodo_para_mencion(
     texto = _nombre_canonico(mencion["text"])
     if plan.strategy == "generic_actor" and texto != plan.preferred_name:
         return "morphology", plan.confidence
+    if plan.strategy == "controlled_alias" and normalizar_nombre(texto) != plan.comparison_key:
+        return "controlled_alias", plan.confidence
     if plan.strategy == "document_person" and texto != plan.preferred_name:
         return "person_alias", plan.confidence
     return decision.match_type, decision.score

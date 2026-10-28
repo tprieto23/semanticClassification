@@ -760,6 +760,42 @@ class ExplorerServiceTests(unittest.TestCase):
         self.assertEqual(payload["version"], "entity-explorer-v1")
         ExplorerNetworkResponse.model_validate(payload)
 
+    def test_single_document_scope_shows_network_with_default_recurrence(self) -> None:
+        mentions = [item for item in CORPUS if item.document_id == DOC_A]
+        with (
+            patch(
+                "src.services.explorer._scoped_documents",
+                return_value=[self._document(DOC_A, 2022)],
+            ),
+            patch("src.services.explorer.load_db_mentions", return_value=mentions),
+        ):
+            payload = ExplorerService.network(
+                Mock(), ExplorerScope(language="pt"), ExplorerFilters()
+            )
+
+        self.assertEqual(payload["scope"]["document_count"], 1)
+        self.assertEqual(payload["filters"]["minimum_node_document_count"], 1)
+        self.assertGreater(payload["stages"]["shown"]["nodes"], 0)
+        self.assertIn("se ajustó a 1", payload["warnings"][0])
+        ExplorerNetworkResponse.model_validate(payload)
+
+    def test_single_document_respects_stricter_recurrence(self) -> None:
+        mentions = [item for item in CORPUS if item.document_id == DOC_A]
+        with (
+            patch(
+                "src.services.explorer._scoped_documents",
+                return_value=[self._document(DOC_A, 2022)],
+            ),
+            patch("src.services.explorer.load_db_mentions", return_value=mentions),
+        ):
+            payload = ExplorerService.network(
+                Mock(), ExplorerScope(language="pt"),
+                ExplorerFilters(minimum_node_document_count=3),
+            )
+
+        self.assertEqual(payload["filters"]["minimum_node_document_count"], 3)
+        self.assertEqual(payload["stages"]["shown"]["nodes"], 0)
+
     def test_network_without_documents_skips_database_mentions(self) -> None:
         with (
             patch("src.services.explorer._scoped_documents", return_value=[]),
