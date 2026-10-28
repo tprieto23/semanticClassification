@@ -1,7 +1,7 @@
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from src.analysis.explorer import PERIODS_BY_ID
 from src.api.schemas.network import EdgeWeighting, IncubatorFilter
@@ -36,19 +36,37 @@ class ExplorerScopeRequest(BaseModel):
         default="Agroforestry",
         description="Sector productivo del corpus; 'all' incluye documentos sin sector",
     )
-    document_type: str | None = Field(
-        default=None,
-        min_length=1,
-        max_length=200,
-        description="Tipo de documento (document_type); null usa todos los tipos",
+    document_types: list[Annotated[str, Field(min_length=1, max_length=200)]] | None = (
+        Field(
+            default=None,
+            min_length=1,
+            max_length=100,
+            description="Tipos de documento (document_type); null usa todos los tipos",
+        )
     )
     document_type_mode: DocumentTypeMode = Field(
         default="only",
         description=(
-            "only: solo documentos de ese tipo; exclude: todos menos ese tipo "
+            "only: solo documentos de esos tipos; exclude: todos menos esos tipos "
             "(incluye los que no tienen tipo)"
         ),
     )
+    document_type: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=200,
+        description="Obsoleto: un solo tipo; usar document_types",
+        json_schema_extra={"deprecated": True},
+    )
+
+    @model_validator(mode="after")
+    def merge_legacy_document_type(self) -> "ExplorerScopeRequest":
+        if self.document_type is not None:
+            self.document_types = sorted(
+                {*(self.document_types or []), self.document_type}
+            )
+            self.document_type = None
+        return self
 
     @field_validator("language")
     @classmethod
@@ -208,7 +226,7 @@ class ExplorerScopeSummary(BaseModel):
     period: str
     incubator_number: int | Literal["all"]
     language: str
-    document_type: str | None
+    document_types: list[str] | None
     document_type_mode: DocumentTypeMode
     document_ids: list[str] | None
     productive_sector: str
@@ -295,7 +313,7 @@ class ExplorerPeriodSummary(BaseModel):
 class ExplorerCompareScope(BaseModel):
     incubator_number: int | Literal["all"]
     language: str
-    document_type: str | None
+    document_types: list[str] | None
     document_type_mode: DocumentTypeMode
     document_ids: list[str] | None
     productive_sector: str

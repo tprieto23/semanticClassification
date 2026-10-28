@@ -642,49 +642,58 @@ class ExplorerServiceTests(unittest.TestCase):
             )
         )
 
-    def test_document_type_filter_selects_only_or_all_but_one_type(self) -> None:
+    def test_document_type_filter_selects_some_types_or_all_but_some(self) -> None:
         self.assertNotIn("document_type", self._where(ExplorerScope()))
         self.assertIn(
-            "documents.document_type = 'WA SAM Hub'",
-            self._where(ExplorerScope(document_type="WA SAM Hub")),
+            "documents.document_type IN ('Other', 'WA SAM Hub')",
+            self._where(ExplorerScope(document_types=("Other", "WA SAM Hub"))),
         )
         excluded = self._where(
-            ExplorerScope(document_type="WA SAM Hub", document_type_mode="exclude")
+            ExplorerScope(document_types=("WA SAM Hub",), document_type_mode="exclude")
         )
-        # Excluir un tipo conserva los documentos sin tipo.
+        # Excluir tipos conserva los documentos sin tipo.
         self.assertIn("documents.document_type IS NULL", excluded)
-        self.assertIn("documents.document_type != 'WA SAM Hub'", excluded)
+        self.assertIn("documents.document_type NOT IN ('WA SAM Hub')", excluded)
 
     def test_document_type_and_language_filters_combine(self) -> None:
         where = self._where(
             ExplorerScope(
-                language="en", document_type="Other", document_type_mode="exclude"
+                language="en", document_types=("Other",), document_type_mode="exclude"
             )
         )
         self.assertIn("documents.language = 'en'", where)
-        self.assertIn("documents.document_type != 'Other'", where)
+        self.assertIn("documents.document_type NOT IN ('Other')", where)
 
-    def test_request_maps_document_type_to_the_scope(self) -> None:
+    def test_request_maps_document_types_to_the_scope(self) -> None:
         default = _scope(ExplorerNetworkRequest())
-        self.assertIsNone(default.document_type)
+        self.assertIsNone(default.document_types)
         self.assertEqual(default.document_type_mode, "only")
         scope = _scope(
             ExplorerNetworkRequest(
                 language="es",
-                document_type="WA SAM Hub",
+                document_types=["WA SAM Hub", "Other", "WA SAM Hub"],
                 document_type_mode="exclude",
             )
         )
         self.assertEqual(
-            (scope.language, scope.document_type, scope.document_type_mode),
-            ("es", "WA SAM Hub", "exclude"),
+            (scope.language, scope.document_types, scope.document_type_mode),
+            ("es", ("Other", "WA SAM Hub"), "exclude"),
         )
         with self.assertRaises(ValidationError):
             ExplorerNetworkRequest(document_type_mode="except")
         with self.assertRaises(ValidationError):
-            ExplorerNetworkRequest(document_type="")
+            ExplorerNetworkRequest(document_types=[])
+        with self.assertRaises(ValidationError):
+            ExplorerNetworkRequest(document_types=[""])
 
-    def test_network_reports_the_document_type_in_its_scope(self) -> None:
+    def test_legacy_single_document_type_is_still_accepted(self) -> None:
+        # El frontend anterior envía document_type; se suma a la lista.
+        scope = _scope(ExplorerNetworkRequest(document_type="SERFOR"))
+        self.assertEqual(scope.document_types, ("SERFOR",))
+        legacy_none = _scope(ExplorerNetworkRequest(document_type=None))
+        self.assertIsNone(legacy_none.document_types)
+
+    def test_network_reports_the_document_types_in_its_scope(self) -> None:
         with (
             patch(
                 "src.services.explorer._scoped_documents",
@@ -694,11 +703,11 @@ class ExplorerServiceTests(unittest.TestCase):
         ):
             payload = ExplorerService.network(
                 Mock(),
-                ExplorerScope(document_type="technical_report"),
+                ExplorerScope(document_types=("technical_report",)),
                 ExplorerFilters(),
             )
 
-        self.assertEqual(payload["scope"]["document_type"], "technical_report")
+        self.assertEqual(payload["scope"]["document_types"], ["technical_report"])
         self.assertEqual(payload["scope"]["document_type_mode"], "only")
         ExplorerNetworkResponse.model_validate(payload)
 

@@ -442,11 +442,12 @@ POST /analysis/explorer/v1/network
   ellas. La respuesta trae `excluded_entities` con nombre, categoría y menciones
   quitadas (nombre nulo si la entidad no está en el alcance). Es parte de la clave de
   la caché.
-- `language` y `document_type` (con `document_type_mode`: `only` o `exclude`) filtran
-  documentos antes de construir la red, en `/network`, `/compare` y `/evidence`, y se
-  combinan entre sí. Excluir un tipo conserva los documentos sin tipo. `/meta` trae
-  `document_types` con su conteo. La caché no necesita nada extra: su clave ya es el
-  conjunto de documentos.
+- `language` y `document_types` (lista, con `document_type_mode`: `only` o `exclude`)
+  filtran documentos antes de construir la red, en `/network`, `/compare` y `/evidence`,
+  y se combinan entre sí. Excluir tipos conserva los documentos sin tipo. El campo
+  anterior `document_type` (un solo tipo) se sigue aceptando y se suma a la lista.
+  `/meta` trae `document_types` con su conteo. La caché no necesita nada extra: su clave
+  ya es el conjunto de documentos.
 - Solo entran documentos con `productive_sector = Agroforestry`, salvo que se envíe
   `productive_sector: "all"`.
 - En producción, el gateway Caddy (`deploy/gateway/Caddyfile`) solo expone este prefijo

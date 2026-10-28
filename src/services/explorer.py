@@ -77,9 +77,9 @@ class ExplorerScope:
     period: str | None = None
     incubator_number: int | None = None
     language: str | None = None
-    # Con mode "exclude" se quitan solo los documentos de ese tipo; los que no
+    # Con mode "exclude" se quitan solo los documentos de esos tipos; los que no
     # tienen tipo se conservan.
-    document_type: str | None = None
+    document_types: tuple[str, ...] | None = None
     document_type_mode: str = "only"
     document_ids: tuple[str, ...] | None = None
     productive_sector: str | None = DEFAULT_PRODUCTIVE_SECTOR
@@ -241,16 +241,18 @@ def _scoped_documents(db: Session, scope: ExplorerScope) -> list[Any]:
         statement = statement.where(Document.incubator_number == scope.incubator_number)
     if scope.language is not None:
         statement = statement.where(Document.language == scope.language)
-    if scope.document_type is not None:
+    if scope.document_types is not None:
         if scope.document_type_mode == "exclude":
             statement = statement.where(
                 or_(
                     Document.document_type.is_(None),
-                    Document.document_type != scope.document_type,
+                    Document.document_type.not_in(scope.document_types),
                 )
             )
         else:
-            statement = statement.where(Document.document_type == scope.document_type)
+            statement = statement.where(
+                Document.document_type.in_(scope.document_types)
+            )
     if scope.document_ids is not None:
         statement = statement.where(
             Document.id.in_([UUID(value) for value in scope.document_ids])
@@ -265,7 +267,9 @@ def _scope_summary(scope: ExplorerScope, documents: Sequence[Any]) -> dict[str, 
         "period": scope.period or "all",
         "incubator_number": scope.incubator_number or "all",
         "language": scope.language or "all",
-        "document_type": scope.document_type,
+        "document_types": (
+            list(scope.document_types) if scope.document_types is not None else None
+        ),
         "document_type_mode": scope.document_type_mode,
         "document_ids": list(scope.document_ids) if scope.document_ids else None,
         "productive_sector": scope.productive_sector or "all",
@@ -474,7 +478,11 @@ class ExplorerService:
             "scope": {
                 "incubator_number": scope.incubator_number or "all",
                 "language": scope.language or "all",
-                "document_type": scope.document_type,
+                "document_types": (
+                    list(scope.document_types)
+                    if scope.document_types is not None
+                    else None
+                ),
                 "document_type_mode": scope.document_type_mode,
                 "document_ids": (
                     list(scope.document_ids) if scope.document_ids else None
